@@ -1,0 +1,41 @@
+<form 
+	id="<?=$this->rawControlId?>"
+	enctype="application/x-www-form-urlencoded"
+	action="<?=$this->grid->getUrl('filterSubmit', 'formAction')?>"
+	method="GET">
+	
+	<? foreach ($this->formElements as $filterKey => $formElmOptions): ?>
+
+		<? if (count($formElmOptions->controls) > 1): ?>
+
+			<label><?=$this->translate($formElmOptions->mainLabelText)?></label>
+
+			<? foreach ($formElmOptions->controls as $filterControlKey => $formControlOptions): ?>
+
+				<?
+					$element = $this->form->getElement($formControlOptions->controlName);
+					$renderInFormAs = $this->filterOptions[$filterKey]['renderInFormAs'];
+				?>
+				<? if ($renderInFormAs == 'textInputsInterval'): ?>
+					<label for="<?=$element->getId()?>"><?=$this->translate($formControlOptions->labelText)?></label>
+					<?=$element?>
+				<? elseif ($renderInFormAs == 'checkboxes'): ?>
+					<?=$element?>
+					<label for="<?=$element->getId()?>"><?=$this->translate($formControlOptions->labelText)?></label>
+				<? endif; ?>
+
+			<? endforeach; ?>
+
+		<? else: ?>
+
+			<? $element = $this->form->getElement($formElmOptions->controls[0]->controlName); ?>
+			<label for="<?=$element->getId()?>"><?=$this->translate($formElmOptions->mainLabelText)?></label>
+			<?=$element?>
+
+		<? endif; ?>
+
+	<? endforeach; ?>
+
+	<input type="submit" value="<?=$this->translate('Filter')?>" />
+
+</form>

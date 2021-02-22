@@ -1,0 +1,15 @@
+<form 
+	id="<?=$this->rawControlId?>"
+	enctype="application/x-www-form-urlencoded"
+	action="<?=$this->grid->getUrl('pageSubmit', 'formAction')?>"
+	method="GET">
+	
+	<? $element = $this->form->getElement($this->pageName); ?>
+	<label for="<?=$element->getId()?>"><?=$this->translate('page')?></label>
+	<?=$element?>
+
+	<input type="submit" value="<?=$this->translate('Go')?>" />
+
+	<?=$this->form->getElement($this->pagesCountName)?>
+
+</form>

@@ -1,0 +1,13 @@
+<form 
+	id="<?=$this->rawControlId?>"
+	enctype="application/x-www-form-urlencoded"
+	action="<?=$this->grid->getUrl('countSubmit', 'formAction')?>"
+	method="GET">
+	
+	<? $element = $this->form->getElement($this->elementName); ?>
+	<label for="<?=$element->getId()?>"><?=$this->translate('items per page')?></label>
+	<?=$element?>
+
+	<input type="submit" value="<?=$this->translate('Ok')?>" />
+
+</form>
