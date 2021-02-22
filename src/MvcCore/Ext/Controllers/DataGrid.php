@@ -52,6 +52,11 @@ implements	\MvcCore\Ext\Controllers\DataGrid\IConstants {
 		if ($this->dispatchState > \MvcCore\IController::DISPATCH_STATE_CREATED) return;
 		parent::Init();
 		
+		if ($this->urlConfig === NULL)
+			$this->urlConfig = new \MvcCore\Ext\Controllers\DataGrids\UrlConfig;
+		if ($this->renderConfig === NULL)
+			$this->renderConfig = new \MvcCore\Ext\Controllers\DataGrids\RenderConfig;
+
 		$this->gridParam = $this->GetParam(static::PARAM_GRID);
 		xxx($this->gridParam);
 	}

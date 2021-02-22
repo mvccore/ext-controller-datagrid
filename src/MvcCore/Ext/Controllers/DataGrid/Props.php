@@ -24,4 +24,16 @@ trait Props {
 	protected $filtering = [];
 
 	protected $ordering = [];
+
+	/**
+	 * 
+	 * @var \MvcCore\Ext\Controllers\DataGrids\UrlConfig|NULL
+	 */
+	protected $urlConfig = NULL;
+
+	/**
+	 * 
+	 * @var \MvcCore\Ext\Controllers\DataGrids\RenderConfig|NULL
+	 */
+	protected $renderConfig = NULL;
 }
