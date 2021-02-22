@@ -48,8 +48,9 @@ class DataGrid extends \MvcCore\Controller {
 	 */
 	public function Init () {
 		if ($this->dispatchState > \MvcCore\IController::DISPATCH_STATE_CREATED) return;
+		parent::Init();
+		
 
-		x($this);
 	}
 
 	/**
@@ -58,7 +59,21 @@ class DataGrid extends \MvcCore\Controller {
 	 */
 	public function PreDispatch () {
 		if ($this->dispatchState >= \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED) return;
-
+		$this->view = new \MvcCore\Ext\Controllers\DataGrids\View;
+		parent::PreDispatch();
 		x($this);
+	}
+
+	/**
+	 * @param string $controllerOrActionNameDashed 
+	 * @param string $actionNameDashed 
+	 */
+	public function Render ($controllerOrActionNameDashed = NULL, $actionNameDashed = NULL): string {
+		if ($this->dispatchState < \MvcCore\IController::DISPATCH_STATE_INITIALIZED)
+			$this->Init();
+		if ($this->dispatchState < \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED)
+			$this->PreDispatch();
+		$this->dispatchState = \MvcCore\IController::DISPATCH_STATE_RENDERED;
+		return $this->view->Render(__DIR__ . '/DataGrids/Views', 'grid.phtml');
 	}
 }

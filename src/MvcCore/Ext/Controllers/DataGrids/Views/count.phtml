@@ -1,0 +1,24 @@
+<table id="<?=$this->rawControlId?>">
+	<tbody>
+		<tr>
+			<? foreach ($this->countScale as $countKey => $countValue): ?>
+				<td>
+					<? $textValue = ($countValue == 0) ? $this->translate('all') : $countValue ; ?>
+
+					<? if ($countValue == $this->countPerPage): ?>
+						<b><?=$textValue?></b>
+					<? else: ?>
+
+						<a href="<?
+							echo $this->grid->getUrl(
+								$countValue,
+								'count'
+							);
+						?>"><?=$textValue?></a>
+
+					<? endif; ?>
+				</td>
+			<? endforeach; ?>
+		</tr>
+	</tbody>
+</table>

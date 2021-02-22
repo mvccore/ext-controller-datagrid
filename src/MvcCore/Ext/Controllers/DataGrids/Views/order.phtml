@@ -1,0 +1,74 @@
+<table id="<?=$this->rawControlId?>">
+	<tbody>
+		<tr>
+			<? foreach ($this->orderOptions as $orderKey => $orderOptions): ?>
+				<? if (!isset($orderOptions['name'])) continue; ?>
+				<td>
+					<?/*
+					<?=$this->grid->getUrl(
+						array(
+							$orderKey => 'ASC'
+						),
+						'order'
+					)?>
+					<br />
+					<?=$this->grid->getUrl(
+						array(
+							$orderKey => 'DESC'
+						),
+						'order'
+					)?>
+					<br /><br /></tr><tr>
+					*/?>
+
+					<?=$orderOptions['name']?>
+
+					<a href="<?
+						echo $this->grid->getUrl(
+							array(
+								$orderKey => 'ASC'
+							),
+							'order'
+						);
+					?>">
+						<? if (isset($this->modelOrder[$orderKey]) && $this->modelOrder[$orderKey] == 'ASC'): ?>
+							<b>&#8681;</b>
+						<? else: ?>
+							&#8681;
+						<? endif; ?>
+					</a>
+
+					<a href="<?
+						echo $this->grid->getUrl(
+							array(
+								$orderKey => 'DESC'
+							),
+							'order'
+						);
+					?>">
+						<? if (isset($this->modelOrder[$orderKey]) && $this->modelOrder[$orderKey] == 'DESC'): ?>
+							<b>&#8679;</b>
+						<? else: ?>
+							&#8679;
+						<? endif; ?>
+					</a>
+
+					<? if (isset($this->modelOrder[$orderKey])): ?>
+						(<?=$this->orderIndexes[$orderKey]?>)
+						<a href="<?
+							echo $this->grid->getUrl(
+								array(
+									$orderKey => ''
+								),
+								'order'
+							);
+						?>">x</a>
+					<? endif; ?>
+
+					&nbsp;&nbsp;&nbsp;
+
+				</td>
+			<? endforeach; ?>
+		</tr>
+	</tbody>
+</table>

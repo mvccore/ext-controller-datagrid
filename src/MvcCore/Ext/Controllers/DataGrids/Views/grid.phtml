@@ -1,0 +1,11 @@
+<table>
+	<tbody>
+		<tr>
+			<? foreach ($this->grid->GetModel()->GetPageData() as $item): ?>
+				<td>
+					<? echo $item; ?>
+				</td>
+			<? endforeach; ?>
+		</tr>
+	</tbody>
+</table>
