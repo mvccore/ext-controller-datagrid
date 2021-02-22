@@ -1,0 +1,37 @@
+{
+	"name": "mvccore/ext-controller-datagrid",
+	"type": "library",
+	"description": "MvcCore controller extension to define and render datagrid component by model class.",
+	"keywords": [
+		"mvc",
+		"mvccore",
+		"framework",
+		"extension",
+		"plugin",
+		"plug-in",
+		"ext",
+		"grid",
+		"datagrid",
+		"model"
+	],
+	"license": [ "BSD-3-Clause" ],
+	"authors": [{
+		"name": "Tom Flidr",
+		"homepage": "https://github.com/tomFlidr"
+	}],
+	"require": {
+		"php": ">=5.4.0",
+		"mvccore/mvccore": "^5.0.8",
+		"mvccore/ext-model-db": "^5.0.5",
+		"mvccore/ext-form": "^5.1.4",
+		"mvccore/ext-form-field-text": "^5.1.2",
+		"mvccore/ext-form-field-button": "^5.1.2"
+	},
+	"suggest": {
+		"mvccore/ext-cache-*": "MvcCore cache extensions to speed up operations driven by class anotations."
+	},
+	"autoload": {
+		"classmap": [ "src/" ]
+	},
+	"minimum-stability": "dev"
+}
