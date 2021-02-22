@@ -2,7 +2,9 @@
 
 namespace MvcCore\Ext\Controllers;
 
-class DataGrid extends \MvcCore\Controller {
+class		DataGrid 
+extends		\MvcCore\Controller
+implements	\MvcCore\Ext\Controllers\DataGrid\IConstants {
 
 	use \MvcCore\Ext\Controllers\DataGrid\Props,
 		\MvcCore\Ext\Controllers\DataGrid\GettersSetters;
@@ -50,7 +52,8 @@ class DataGrid extends \MvcCore\Controller {
 		if ($this->dispatchState > \MvcCore\IController::DISPATCH_STATE_CREATED) return;
 		parent::Init();
 		
-
+		$this->gridParam = $this->GetParam(static::PARAM_GRID);
+		xxx($this->gridParam);
 	}
 
 	/**
@@ -61,7 +64,9 @@ class DataGrid extends \MvcCore\Controller {
 		if ($this->dispatchState >= \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED) return;
 		$this->view = new \MvcCore\Ext\Controllers\DataGrids\View;
 		parent::PreDispatch();
-		x($this);
+
+
+		$this->view->grid = $this;
 	}
 
 	/**
@@ -74,6 +79,6 @@ class DataGrid extends \MvcCore\Controller {
 		if ($this->dispatchState < \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED)
 			$this->PreDispatch();
 		$this->dispatchState = \MvcCore\IController::DISPATCH_STATE_RENDERED;
-		return $this->view->Render(__DIR__ . '/DataGrids/Views', 'grid.phtml');
+		return $this->view->Render('Views', 'grid');
 	}
 }

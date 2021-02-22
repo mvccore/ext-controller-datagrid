@@ -3,7 +3,7 @@
 		<tr>
 			<? foreach ($this->grid->GetModel()->GetPageData() as $item): ?>
 				<td>
-					<? echo $item; ?>
+					<? echo $item->GetName(); ?>
 				</td>
 			<? endforeach; ?>
 		</tr>
