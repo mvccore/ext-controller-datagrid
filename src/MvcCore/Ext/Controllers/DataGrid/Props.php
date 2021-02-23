@@ -33,8 +33,17 @@ trait Props {
 	 */
 	protected $countsScale = self::COUNTS_SCALE_DEFAULT;
 
-
-	protected $paramGrid = NULL;
+	/**
+	 * 
+	 * @var \MvcCore\Route|NULL
+	 */
+	protected $route = NULL;
+	
+	/**
+	 * 
+	 * @var array|NULL
+	 */
+	protected $urlParams = NULL;
 
 	protected $columns = [];
 

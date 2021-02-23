@@ -63,6 +63,12 @@ class UrlConfig {
 	 * @var string
 	 */
 	protected $urlDelimiterValues = '|';
+	
+	/**
+	 * 
+	 * @var string|NULL
+	 */
+	protected $routePattern = NULL;
 
 	/**
 	 * 
@@ -70,6 +76,7 @@ class UrlConfig {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\UrlConfig
 	 */
 	public function SetUrlPrefixPage ($urlPrefixPage) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		$this->urlPrefixPage = $urlPrefixPage;
 		return $this;
 	}
@@ -78,6 +85,7 @@ class UrlConfig {
 	 * @return string
 	 */
 	public function GetUrlPrefixPage () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		return $this->urlPrefixPage;
 	}
 
@@ -87,6 +95,7 @@ class UrlConfig {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\UrlConfig
 	 */
 	public function SetUrlPrefixCount ($urlPrefixCount) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		$this->urlPrefixCount = $urlPrefixCount;
 		return $this;
 	}
@@ -95,6 +104,7 @@ class UrlConfig {
 	 * @return string
 	 */
 	public function GetUrlPrefixCount () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		return $this->urlPrefixCount;
 	}
 
@@ -104,6 +114,7 @@ class UrlConfig {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\UrlConfig
 	 */
 	public function SetUrlPrefixOrder ($urlPrefixOrder) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		$this->urlPrefixOrder = $urlPrefixOrder;
 		return $this;
 	}
@@ -112,6 +123,7 @@ class UrlConfig {
 	 * @return string
 	 */
 	public function GetUrlPrefixOrder () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		return $this->urlPrefixOrder;
 	}
 
@@ -121,6 +133,7 @@ class UrlConfig {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\UrlConfig
 	 */
 	public function SetUrlPrefixFilter ($urlPrefixFilter) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		$this->urlPrefixFilter = $urlPrefixFilter;
 		return $this;
 	}
@@ -129,6 +142,7 @@ class UrlConfig {
 	 * @return string
 	 */
 	public function GetUrlPrefixFilter () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		return $this->urlPrefixFilter;
 	}
 
@@ -138,6 +152,7 @@ class UrlConfig {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\UrlConfig
 	 */
 	public function SetUrlSuffixOrderAsc ($urlSuffixOrderAsc) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		$this->urlSuffixOrderAsc = $urlSuffixOrderAsc;
 		return $this;
 	}
@@ -146,6 +161,7 @@ class UrlConfig {
 	 * @return string
 	 */
 	public function GetUrlSuffixOrderAsc () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		return $this->urlSuffixOrderAsc;
 	}
 
@@ -155,6 +171,7 @@ class UrlConfig {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\UrlConfig
 	 */
 	public function SetUrlSuffixOrderDesc ($urlSuffixOrderDesc) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		$this->urlSuffixOrderDesc = $urlSuffixOrderDesc;
 		return $this;
 	}
@@ -163,6 +180,7 @@ class UrlConfig {
 	 * @return string
 	 */
 	public function GetUrlSuffixOrderDesc () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		return $this->urlSuffixOrderDesc;
 	}
 
@@ -172,6 +190,7 @@ class UrlConfig {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\UrlConfig
 	 */
 	public function SetUrlDelimiterSections ($urlDelimiterSections) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		$this->urlDelimiterSections = $urlDelimiterSections;
 		return $this;
 	}
@@ -180,6 +199,7 @@ class UrlConfig {
 	 * @return string
 	 */
 	public function GetUrlDelimiterSections () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		return $this->urlDelimiterSections;
 	}
 
@@ -189,6 +209,7 @@ class UrlConfig {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\UrlConfig
 	 */
 	public function SetUrlDelimiterPrefix ($urlDelimiterPrefix) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		$this->urlDelimiterPrefix = $urlDelimiterPrefix;
 		return $this;
 	}
@@ -197,6 +218,7 @@ class UrlConfig {
 	 * @return string
 	 */
 	public function GetUrlDelimiterPrefix () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		return $this->urlDelimiterPrefix;
 	}
 
@@ -206,6 +228,7 @@ class UrlConfig {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\UrlConfig
 	 */
 	public function SetUrlDelimiterSubjects ($urlDelimiterSubjects) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		$this->urlDelimiterSubjects = $urlDelimiterSubjects;
 		return $this;
 	}
@@ -214,6 +237,7 @@ class UrlConfig {
 	 * @return string
 	 */
 	public function GetUrlDelimiterSubjects () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		return $this->urlDelimiterSubjects;
 	}
 
@@ -223,6 +247,7 @@ class UrlConfig {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\UrlConfig
 	 */
 	public function SetUrlDelimiterValues ($urlDelimiterValues) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		$this->urlDelimiterValues = $urlDelimiterValues;
 		return $this;
 	}
@@ -231,7 +256,36 @@ class UrlConfig {
 	 * @return string
 	 */
 	public function GetUrlDelimiterValues () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
 		return $this->urlDelimiterValues;
 	}
-
+	
+	/**
+	 * 
+	 * @param  string|NULL $routePattern
+	 * @return \MvcCore\Ext\Controllers\DataGrids\UrlConfig
+	 */
+	public function SetRoutePattern ($routePattern) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
+		$this->routePattern = $routePattern;
+		return $this;
+	}
+	/**
+	 * 
+	 * @return string
+	 */
+	public function GetRoutePattern () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\UrlConfig */
+		if ($this->routePattern === NULL) {
+			$secDelim = $this->urlDelimiterSections;
+			$prefDelim = $this->urlDelimiterPrefix;
+			$page	= mb_strlen($this->urlPrefixPage) > 0	? $secDelim . $this->urlPrefixPage	. $prefDelim : $secDelim;
+			$count	= mb_strlen($this->urlPrefixCount) > 0	? $secDelim . $this->urlPrefixCount	. $prefDelim : $secDelim;
+			$order	= mb_strlen($this->urlPrefixOrder) > 0	? $secDelim . $this->urlPrefixOrder	. $prefDelim : $secDelim;
+			$filter	= mb_strlen($this->urlPrefixFilter) > 0	? $secDelim . $this->urlPrefixFilter. $prefDelim : $secDelim;
+			// `/<page>[/<count>][/order-<order>][/filter-<filter>]`
+			$this->routePattern = "[{$page}<page>][{$count}<count>][{$order}<order>][{$filter}<filter>]";
+		}
+		return $this->routePattern;
+	}
 }

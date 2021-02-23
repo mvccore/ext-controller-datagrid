@@ -89,6 +89,76 @@ trait GettersSetters {
 		return $this->countsScale;
 	}
 
+	/**
+	 * @param  \MvcCore\Route|NULL $urlConfig
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetRoute (\MvcCore\IRoute $route) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		/** @var $route \MvcCore\Route */
+		$this->route = $route;
+		return $this;
+	}
+	/**
+	 * @return \MvcCore\Route|NULL
+	 */
+	public function GetRoute () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		if ($this->route === NULL) {
+			$this->route = new \MvcCore\Route([
+				'pattern'		=> $this->GetUrlConfig()->GetRoutePattern(),
+				'constraints'	=> [
+					'page'		=> '[0-9]+',
+					'count'		=> '[0-9]+',
+					'order'		=> '[^/]+',
+					'filter'	=> '[^/]+',
+				]
+			]);
+			$this->route->SetRouter($this->router);
+		}
+		return $this->route;
+	}
+
+	/**
+	 * @param  array $urlParams
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetUrlParams (array $urlParams) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$this->urlParams = $urlParams;
+		return $this;
+	}
+	/**
+	 * @return array
+	 */
+	public function GetUrlParams () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		if ($this->urlParams === NULL) {
+			$gridParam = $this->GetParam(static::PARAM_GRID); // get param from application request object
+			if ($gridParam !== NULL) {
+				$gridParam = '/' . ltrim($gridParam, '/');
+				$gridServer = array_merge(
+					[], $this->request->GetGlobalCollection('server'), 
+					['REQUEST_URI' => $gridParam]
+				);
+				$gridRequest = \MvcCore\Request::CreateInstance($gridServer);
+				$matches = $this->GetRoute()->Matches($gridRequest);
+				if ($matches !== NULL) {
+					if (isset($matches['page']))
+						$matches['page'] = intval($matches['page']);
+					if (isset($matches['count']))
+						$matches['count'] = intval($matches['count']);
+					$this->urlParams = $matches;
+				}
+			}
+		}
+		return $this->urlParams;
+	}
+
+
+
+
+
 
 
 	/**
@@ -105,6 +175,8 @@ trait GettersSetters {
 	 */
 	public function GetUrlConfig () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		if ($this->urlConfig === NULL)
+			$this->urlConfig = new \MvcCore\Ext\Controllers\DataGrids\UrlConfig;
 		return $this->urlConfig;
 	}
 
@@ -122,6 +194,8 @@ trait GettersSetters {
 	 */
 	public function GetRenderConfig () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		if ($this->renderConfig === NULL)
+			$this->renderConfig = new \MvcCore\Ext\Controllers\DataGrids\RenderConfig;
 		return $this->renderConfig;
 	}
 }
