@@ -2,25 +2,13 @@
 
 namespace MvcCore\Ext\Controllers\DataGrid;
 
-trait Props {
+trait ConfigProps {
 	
 	/**
 	 * @var \MvcCore\Ext\Controllers\DataGrids\IModel
 	 */
 	protected $model = NULL;
 
-	/**
-	 * 
-	 * @var int
-	 */
-	protected $offset = 0;
-	
-	/**
-	 * 
-	 * @var int
-	 */
-	protected $limit = 0;
-	
 	/**
 	 * 
 	 * @var int
@@ -38,18 +26,12 @@ trait Props {
 	 * @var \MvcCore\Route|NULL
 	 */
 	protected $route = NULL;
-	
+
 	/**
 	 * 
 	 * @var array|NULL
 	 */
 	protected $urlParams = NULL;
-
-	protected $columns = [];
-
-	protected $filtering = [];
-
-	protected $ordering = [];
 
 	/**
 	 * 

@@ -2,7 +2,7 @@
 
 namespace MvcCore\Ext\Controllers\DataGrid;
 
-trait GettersSetters {
+trait ConfigGettersSetters {
 
 	/**
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\IModel $model 
@@ -19,40 +19,6 @@ trait GettersSetters {
 	public function GetModel () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->model;
-	}
-
-	/**
-	 * @param  int $offset
-	 * @return \MvcCore\Ext\Controllers\DataGrid
-	 */
-	public function SetOffset ($offset) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$this->offset = $offset;
-		return $this;
-	}
-	/**
-	 * @return int
-	 */
-	public function GetOffset () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		return $this->offset;
-	}
-
-	/**
-	 * @param  int $limit
-	 * @return \MvcCore\Ext\Controllers\DataGrid
-	 */
-	public function SetLimit ($limit) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$this->limit = $limit;
-		return $this;
-	}
-	/**
-	 * @return int
-	 */
-	public function GetLimit () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		return $this->limit;
 	}
 
 	/**
@@ -107,6 +73,10 @@ trait GettersSetters {
 		if ($this->route === NULL) {
 			$this->route = new \MvcCore\Route([
 				'pattern'		=> $this->GetUrlConfig()->GetRoutePattern(),
+				'defaults'		=> [
+					'page'		=> 1,
+					'count'		=> $this->GetItemsPerPage(),
+				],
 				'constraints'	=> [
 					'page'		=> '[0-9]+',
 					'count'		=> '[0-9]+',
@@ -134,32 +104,19 @@ trait GettersSetters {
 	public function GetUrlParams () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->urlParams === NULL) {
-			$gridParam = $this->GetParam(static::PARAM_GRID); // get param from application request object
-			if ($gridParam !== NULL) {
-				$gridParam = '/' . ltrim($gridParam, '/');
-				$gridServer = array_merge(
-					[], $this->request->GetGlobalCollection('server'), 
-					['REQUEST_URI' => $gridParam]
-				);
-				$gridRequest = \MvcCore\Request::CreateInstance($gridServer);
-				$matches = $this->GetRoute()->Matches($gridRequest);
-				if ($matches !== NULL) {
-					if (isset($matches['page']))
-						$matches['page'] = intval($matches['page']);
-					if (isset($matches['count']))
-						$matches['count'] = intval($matches['count']);
-					$this->urlParams = $matches;
-				}
+			$matches = $this->GetRoute()->Matches($this->GetGridRequest());
+			if ($matches === NULL) {
+				$this->urlParams = [];
+			} else {
+				if (isset($matches['page'])) 
+					$matches['page'] = intval($matches['page']);
+				if (isset($matches['count'])) 
+					$matches['count'] = intval($matches['count']);
+				$this->urlParams = $matches;
 			}
 		}
 		return $this->urlParams;
 	}
-
-
-
-
-
-
 
 	/**
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\UrlConfig $urlConfig

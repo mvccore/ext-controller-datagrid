@@ -8,6 +8,6 @@ interface IConstants {
 	
 	const ITEMS_PER_PAGE_DEFAULT = 10;
 
-	const COUNTS_SCALE_DEFAULT = [10,50,100,0];
+	const COUNTS_SCALE_DEFAULT = [10,100,1000,0];
 
 }

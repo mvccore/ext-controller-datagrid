@@ -15,6 +15,18 @@ interface IModel {
 	public function GetPageData ();
 
 	/**
+	 * @param  int $offset 
+	 * @return \MvcCore\Ext\Controllers\DataGrids\IModel
+	 */
+	public function SetOffset ($offset);
+	
+	/**
+	 * @param  int|NULL $limit 
+	 * @return \MvcCore\Ext\Controllers\DataGrids\IModel
+	 */
+	public function SetLimit ($limit);
+
+	/**
 	 * @param  array $filtering 
 	 * @return \MvcCore\Ext\Controllers\DataGrids\IModel
 	 */
