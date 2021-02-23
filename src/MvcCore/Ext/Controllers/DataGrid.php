@@ -28,6 +28,7 @@ implements	\MvcCore\Ext\Controllers\DataGrid\IConstants {
 
 		// TODO: nastavit limit a offset a zpracovat nastavení sloupců, ordering a filtering
 		$this->setUpOffsetLimit();
+		$this->GetConfigColumns();
 		//$this->setUpColumnsConfig();
 		//$this->setUpOrdering();
 		//$this->setUpFiltering();
@@ -42,8 +43,8 @@ implements	\MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function LoadModel () {
-		if ($this->model === NULL || $this->model instanceof \MvcCore\Ext\Controllers\DataGrids\IModel)
-			throw new \InvalidArgumentException("No model defined or model doesn't implement `\\MvcCore\\Ext\\Controllers\\DataGrids\\IModel`.");
+		$model = $this->GetModel(TRUE);
+
 		/*$this->model->SetOffset();
 		$this->model->SetLimit();
 		$this->model->SetFiltering();

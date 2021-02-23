@@ -5,7 +5,7 @@ namespace MvcCore\Ext\Controllers\DataGrid;
 trait ConfigProps {
 	
 	/**
-	 * @var \MvcCore\Ext\Controllers\DataGrids\IModel
+	 * @var \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel
 	 */
 	protected $model = NULL;
 
@@ -19,7 +19,7 @@ trait ConfigProps {
 	 * 
 	 * @var \int[]
 	 */
-	protected $countsScale = self::COUNTS_SCALE_DEFAULT;
+	protected $countScales = self::COUNTS_SCALE_DEFAULT;
 
 	/**
 	 * 
@@ -35,13 +35,19 @@ trait ConfigProps {
 
 	/**
 	 * 
-	 * @var \MvcCore\Ext\Controllers\DataGrids\UrlConfig|NULL
+	 * @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments|NULL
 	 */
-	protected $urlConfig = NULL;
+	protected $configUrlSegments = NULL;
 
 	/**
 	 * 
-	 * @var \MvcCore\Ext\Controllers\DataGrids\RenderConfig|NULL
+	 * @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering|NULL
 	 */
-	protected $renderConfig = NULL;
+	protected $configRendering = NULL;
+
+	/**
+	 * 
+	 * @var \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns|NULL
+	 */
+	protected $configColumns = NULL;
 }

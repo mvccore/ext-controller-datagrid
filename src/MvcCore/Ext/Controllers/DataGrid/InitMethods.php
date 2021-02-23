@@ -81,7 +81,7 @@ trait InitMethods {
 			$this->urlParams['count'] = $this->GetItemsPerPage();
 		} else {
 			$urlCount = $this->urlParams['count'];
-			$lastCountsScale = $this->countsScale[count($this->countsScale) - 1];
+			$lastCountsScale = $this->countScales[count($this->countScales) - 1];
 			if ($lastCountsScale !== 0 && ($urlCount === 0 || $urlCount > $lastCountsScale)) {
 				// redirect to allowed max count:
 				$redirectUrl = $this->GridUrl([

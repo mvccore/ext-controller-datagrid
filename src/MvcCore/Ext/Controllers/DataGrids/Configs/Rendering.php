@@ -1,8 +1,8 @@
 <?php
 
-namespace MvcCore\Ext\Controllers\DataGrids;
+namespace MvcCore\Ext\Controllers\DataGrids\Configs;
 
-class RenderConfig {
+class Rendering {
 
 	/**
 	 * 
@@ -55,7 +55,7 @@ class RenderConfig {
 	/**
 	 * 
 	 * @param  bool $renderPageControl
-	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderPageControl ($renderPageControl) {
 		$this->renderPageControl = $renderPageControl;
@@ -72,7 +72,7 @@ class RenderConfig {
 	/**
 	 * 
 	 * @param  bool $renderOrderControl
-	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderOrderControl ($renderOrderControl) {
 		$this->renderOrderControl = $renderOrderControl;
@@ -89,7 +89,7 @@ class RenderConfig {
 	/**
 	 * 
 	 * @param  bool $renderCountControl
-	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderCountControl ($renderCountControl) {
 		$this->renderCountControl = $renderCountControl;
@@ -106,7 +106,7 @@ class RenderConfig {
 	/**
 	 * 
 	 * @param  bool $renderFilterForm
-	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderFilterForm ($renderFilterForm) {
 		$this->renderFilterForm = $renderFilterForm;
@@ -123,7 +123,7 @@ class RenderConfig {
 	/**
 	 * 
 	 * @param  string $templatePageControl
-	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetTemplatePageControl ($templatePageControl) {
 		$this->templatePageControl = $templatePageControl;
@@ -140,7 +140,7 @@ class RenderConfig {
 	/**
 	 * 
 	 * @param  string $templateOrderControl
-	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetTemplateOrderControl ($templateOrderControl) {
 		$this->templateOrderControl = $templateOrderControl;
@@ -157,7 +157,7 @@ class RenderConfig {
 	/**
 	 * 
 	 * @param  string $templateCountControl
-	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetTemplateCountControl ($templateCountControl) {
 		$this->templateCountControl = $templateCountControl;
@@ -174,7 +174,7 @@ class RenderConfig {
 	/**
 	 * 
 	 * @param  string $templateFilterForm
-	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetTemplateFilterForm ($templateFilterForm) {
 		$this->templateFilterForm = $templateFilterForm;

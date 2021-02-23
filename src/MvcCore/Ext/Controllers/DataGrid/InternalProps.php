@@ -33,7 +33,6 @@ trait InternalProps {
 	protected $limit = NULL;
 
 
-	protected $columns = [];
 
 	protected $filtering = [];
 

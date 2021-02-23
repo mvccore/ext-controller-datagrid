@@ -5,19 +5,24 @@ namespace MvcCore\Ext\Controllers\DataGrid;
 trait ConfigGettersSetters {
 
 	/**
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\IModel $model 
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model 
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
-	public function SetModel (\MvcCore\Ext\Controllers\DataGrids\IModel $model) {
+	public function SetModel (\MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->model = $model;
 		return $this;
 	}
 	/**
-	 * @return \MvcCore\Ext\Controllers\DataGrids\IModel
+	 * @throws \InvalidArgumentException
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel|NULL
 	 */
-	public function GetModel () {
+	public function GetModel ($throwExceptionIfNull = FALSE) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		if (
+			($this->model === NULL && $throwExceptionIfNull) || 
+			($this->model !== NULL && $this->model instanceof \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel)
+		) throw new \InvalidArgumentException("No model defined or model doesn't implement `\\MvcCore\\Ext\\Controllers\\DataGrids\\Models\\IGridModel`.");
 		return $this->model;
 	}
 
@@ -39,24 +44,24 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @param  \int[] $countsScale
+	 * @param  \int[] $countScales
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
-	public function SetCountsScale (array $countsScale) {
+	public function SetCountScales (array $countScales) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$this->countsScale = $countsScale;
+		$this->countScales = $countScales;
 		return $this;
 	}
 	/**
 	 * @return \int[]
 	 */
-	public function GetCountsScale () {
+	public function GetCountScales () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		return $this->countsScale;
+		return $this->countScales;
 	}
 
 	/**
-	 * @param  \MvcCore\Route|NULL $urlConfig
+	 * @param  \MvcCore\Route|NULL $route
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetRoute (\MvcCore\IRoute $route) {
@@ -119,40 +124,72 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\UrlConfig $urlConfig
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $configUrlSegments
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
-	public function SetUrlConfig (\MvcCore\Ext\Controllers\DataGrids\UrlConfig $urlConfig) {
+	public function SetConfigUrlSegments (\MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $configUrlSegments) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$this->urlConfig = $urlConfig;
+		$this->configUrlSegments = $configUrlSegments;
 		return $this;
 	}
 	/**
-	 * @return \MvcCore\Ext\Controllers\DataGrids\UrlConfig
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
-	public function GetUrlConfig () {
+	public function GetConfigUrlSegments () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		if ($this->urlConfig === NULL)
-			$this->urlConfig = new \MvcCore\Ext\Controllers\DataGrids\UrlConfig;
-		return $this->urlConfig;
+		if ($this->configUrlSegments === NULL)
+			$this->configUrlSegments = new \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments;
+		return $this->configUrlSegments;
 	}
 
 	/**
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\RenderConfig $renderConfig
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column[]|\MvcCore\Ext\Controllers\DataGrids\Iterators\Columns $configRendering
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
-	public function SetRenderConfig (\MvcCore\Ext\Controllers\DataGrids\RenderConfig $renderConfig) {
+	public function SetConfigColumns ($configColumns) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$this->renderConfig = $renderConfig;
+		if ($configColumns instanceof \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns) {
+			$this->configColumns = $configColumns;	
+		} else if (is_array($configColumns)) {
+			$this->configColumns = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns($configColumns);
+		} else {
+			throw new \InvalidArgumentException(
+				"Columns config has to be array of `\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column`."
+			);
+		}
 		return $this;
 	}
 	/**
-	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column[]|NULL
 	 */
-	public function GetRenderConfig () {
+	public function GetConfigColumns () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		if ($this->renderConfig === NULL)
-			$this->renderConfig = new \MvcCore\Ext\Controllers\DataGrids\RenderConfig;
-		return $this->renderConfig;
+		if ($this->configColumns === NULL) {
+			$model = $this->GetModel(TRUE);
+			if ($model instanceof \MvcCore\Ext\Controllers\DataGrids\Models\IGridColumns)
+			// check if model implements any config loading
+
+			$this->configColumns = [];
+		}
+		return $this->configColumns;
+	}
+
+	/**
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetConfigRendering (\MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$this->configRendering = $configRendering;
+		return $this;
+	}
+	/**
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function GetConfigRendering () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		if ($this->configRendering === NULL)
+			$this->configRendering = new \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering;
+		return $this->configRendering;
 	}
 }
