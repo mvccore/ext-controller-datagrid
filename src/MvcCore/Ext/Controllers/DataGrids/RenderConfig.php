@@ -53,6 +53,7 @@ class RenderConfig {
 	protected $templateFilterForm	= './Form/filter.phtml';
 
 	/**
+	 * 
 	 * @param  bool $renderPageControl
 	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
 	 */
@@ -61,6 +62,7 @@ class RenderConfig {
 		return $this;
 	}
 	/**
+	 * 
 	 * @return bool
 	 */
 	public function GetRenderPageControl () {
@@ -68,6 +70,7 @@ class RenderConfig {
 	}
 
 	/**
+	 * 
 	 * @param  bool $renderOrderControl
 	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
 	 */
@@ -76,6 +79,7 @@ class RenderConfig {
 		return $this;
 	}
 	/**
+	 * 
 	 * @return bool
 	 */
 	public function GetRenderOrderControl () {
@@ -83,6 +87,7 @@ class RenderConfig {
 	}
 
 	/**
+	 * 
 	 * @param  bool $renderCountControl
 	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
 	 */
@@ -91,6 +96,7 @@ class RenderConfig {
 		return $this;
 	}
 	/**
+	 * 
 	 * @return bool
 	 */
 	public function GetRenderCountControl () {
@@ -98,6 +104,7 @@ class RenderConfig {
 	}
 
 	/**
+	 * 
 	 * @param  bool $renderFilterForm
 	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
 	 */
@@ -106,6 +113,7 @@ class RenderConfig {
 		return $this;
 	}
 	/**
+	 * 
 	 * @return bool
 	 */
 	public function GetRenderFilterForm () {
@@ -113,6 +121,7 @@ class RenderConfig {
 	}
 
 	/**
+	 * 
 	 * @param  string $templatePageControl
 	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
 	 */
@@ -121,6 +130,7 @@ class RenderConfig {
 		return $this;
 	}
 	/**
+	 * 
 	 * @return string
 	 */
 	public function GetTemplatePageControl () {
@@ -128,6 +138,7 @@ class RenderConfig {
 	}
 
 	/**
+	 * 
 	 * @param  string $templateOrderControl
 	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
 	 */
@@ -136,6 +147,7 @@ class RenderConfig {
 		return $this;
 	}
 	/**
+	 * 
 	 * @return string
 	 */
 	public function GetTemplateOrderControl () {
@@ -143,6 +155,7 @@ class RenderConfig {
 	}
 
 	/**
+	 * 
 	 * @param  string $templateCountControl
 	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
 	 */
@@ -151,6 +164,7 @@ class RenderConfig {
 		return $this;
 	}
 	/**
+	 * 
 	 * @return string
 	 */
 	public function GetTemplateCountControl () {
@@ -158,6 +172,7 @@ class RenderConfig {
 	}
 
 	/**
+	 * 
 	 * @param  string $templateFilterForm
 	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
 	 */
@@ -166,6 +181,7 @@ class RenderConfig {
 		return $this;
 	}
 	/**
+	 * 
 	 * @return string
 	 */
 	public function GetTemplateFilterForm () {

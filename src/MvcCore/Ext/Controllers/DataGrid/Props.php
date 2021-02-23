@@ -9,15 +9,32 @@ trait Props {
 	 */
 	protected $model = NULL;
 
-	protected $paramGrid = NULL;
-
+	/**
+	 * 
+	 * @var int
+	 */
 	protected $offset = 0;
-
+	
+	/**
+	 * 
+	 * @var int
+	 */
 	protected $limit = 0;
-
+	
+	/**
+	 * 
+	 * @var int
+	 */
 	protected $itemsPerPage = self::ITEMS_PER_PAGE_DEFAULT;
-
+	
+	/**
+	 * 
+	 * @var \int[]
+	 */
 	protected $countsScale = self::COUNTS_SCALE_DEFAULT;
+
+
+	protected $paramGrid = NULL;
 
 	protected $columns = [];
 

@@ -89,4 +89,39 @@ trait GettersSetters {
 		return $this->countsScale;
 	}
 
+
+
+	/**
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\UrlConfig $urlConfig
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetUrlConfig (\MvcCore\Ext\Controllers\DataGrids\UrlConfig $urlConfig) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$this->urlConfig = $urlConfig;
+		return $this;
+	}
+	/**
+	 * @return \MvcCore\Ext\Controllers\DataGrids\UrlConfig
+	 */
+	public function GetUrlConfig () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		return $this->urlConfig;
+	}
+
+	/**
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\RenderConfig $renderConfig
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetRenderConfig (\MvcCore\Ext\Controllers\DataGrids\RenderConfig $renderConfig) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$this->renderConfig = $renderConfig;
+		return $this;
+	}
+	/**
+	 * @return \MvcCore\Ext\Controllers\DataGrids\RenderConfig
+	 */
+	public function GetRenderConfig () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		return $this->renderConfig;
+	}
 }
