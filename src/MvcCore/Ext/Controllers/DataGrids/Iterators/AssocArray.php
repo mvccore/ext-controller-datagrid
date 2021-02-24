@@ -122,7 +122,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * @param  mixed  $value 
 	 * @return void
 	 */
-	public function offsetSet ($offset = NULL, $value) {
+	public function offsetSet ($offset = NULL, $value = NULL) {
 		if ($offset === NULL) {
 			$this->array[] = $value;
 		} else {

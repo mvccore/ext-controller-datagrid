@@ -5,6 +5,8 @@ namespace MvcCore\Ext\Controllers\DataGrids\Configs;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class Column {
 	
+	const PHP_DOCS_TAG_NAME = '@datagrid';
+
 	/**
 	 * Human readable name used in grid heading.
 	 * @var string|NULL

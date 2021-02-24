@@ -11,6 +11,7 @@ trait ConfigGettersSetters {
 	public function SetModel (\MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->model = $model;
+		$this->GetModel(TRUE);// validate
 		return $this;
 	}
 	/**
@@ -21,7 +22,7 @@ trait ConfigGettersSetters {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if (
 			($this->model === NULL && $throwExceptionIfNull) || 
-			($this->model !== NULL && $this->model instanceof \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel)
+			($this->model !== NULL && !($this->model instanceof \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel))
 		) throw new \InvalidArgumentException("No model defined or model doesn't implement `\\MvcCore\\Ext\\Controllers\\DataGrids\\Models\\IGridModel`.");
 		return $this->model;
 	}
@@ -77,7 +78,7 @@ trait ConfigGettersSetters {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->route === NULL) {
 			$this->route = new \MvcCore\Route([
-				'pattern'		=> $this->GetUrlConfig()->GetRoutePattern(),
+				'pattern'		=> $this->GetConfigUrlSegments()->GetRoutePattern(),
 				'defaults'		=> [
 					'page'		=> 1,
 					'count'		=> $this->GetItemsPerPage(),
@@ -151,10 +152,14 @@ trait ConfigGettersSetters {
 		if ($configColumns instanceof \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns) {
 			$this->configColumns = $configColumns;	
 		} else if (is_array($configColumns)) {
-			$this->configColumns = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns($configColumns);
+			$this->configColumns = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns(
+				$configColumns
+			);
 		} else {
 			throw new \InvalidArgumentException(
-				"Columns config has to be array of `\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column`."
+				"Columns config has to be array of ".
+				"`\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column` or iterator ".
+				"`\\MvcCore\\Ext\\Controllers\\DataGrids\\Iterators\\Columns`."
 			);
 		}
 		return $this;
@@ -166,10 +171,24 @@ trait ConfigGettersSetters {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->configColumns === NULL) {
 			$model = $this->GetModel(TRUE);
-			if ($model instanceof \MvcCore\Ext\Controllers\DataGrids\Models\IGridColumns)
-			// check if model implements any config loading
-
-			$this->configColumns = [];
+			if ($model instanceof \MvcCore\Ext\Controllers\DataGrids\Models\IGridColumns) {
+				$configColumnsArr = $model->GetConfigColumns();
+				
+			} else {
+				$context = $this;
+				$configColumnsArr = $context::ParseConfigColumns($this->model);
+			}
+			if (is_array($configColumnsArr) && $configColumnsArr > 0) {
+				$this->configColumns = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns(
+					$configColumnsArr
+				);
+			} else {
+				throw new \InvalidArgumentException(
+					"There was not possible to complete datagrid columns from given model. ".
+					"Please decorate model properties with class ".
+					"`\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column`."
+				);
+			}
 		}
 		return $this->configColumns;
 	}

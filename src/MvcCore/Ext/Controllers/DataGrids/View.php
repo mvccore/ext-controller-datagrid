@@ -15,6 +15,6 @@ class View extends \MvcCore\View {
 	 * @return void
 	 */
 	protected static function initViewScriptsFullPathBase () {
-		static::$viewScriptsFullPathBase = str_replace('\\', '/', __DIR__);
+		static::$viewScriptsFullPathBase = str_replace('\\', '/', __DIR__) . '/Views';
 	}
 }

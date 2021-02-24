@@ -19,7 +19,7 @@ class Columns extends \MvcCore\Ext\Controllers\DataGrids\Iterators\AssocArray {
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $value 
 	 * @return void
 	 */
-	public function offsetSet ($offset = NULL, \MvcCore\Ext\Controllers\DataGrids\Configs\Column $value) {
+	public function offsetSet ($offset = NULL, $value = NULL) {
 		if ($offset === NULL) {
 			$this->array[] = $value;
 		} else {

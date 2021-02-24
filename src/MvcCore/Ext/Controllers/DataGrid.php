@@ -8,12 +8,34 @@ implements	\MvcCore\Ext\Controllers\DataGrid\IConstants {
 
 	use \MvcCore\Ext\Controllers\DataGrid\ConfigProps,
 		\MvcCore\Ext\Controllers\DataGrid\ConfigGettersSetters,
-		\MvcCore\Ext\Controllers\DataGrid\internalProps,
-		\MvcCore\Ext\Controllers\DataGrid\internalGettersSetters,
+		\MvcCore\Ext\Controllers\DataGrid\InternalProps,
+		\MvcCore\Ext\Controllers\DataGrid\InternalGettersSetters,
 		\MvcCore\Ext\Controllers\DataGrid\InitMethods,
 		\MvcCore\Ext\Controllers\DataGrid\PreDispatchMethods;
 
-	
+	/**
+	 * 
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model 
+	 * @param  array                                                $propsNamesAndDbColumnNames
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column[]
+	 */
+	public static function ParseConfigColumns (\MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model, $propsNamesAndDbColumnNames = []) {
+		$modelType = new \ReflectionClass($model);
+		$props = $modelType->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PROTECTED | \ReflectionProperty::IS_PUBLIC);
+		$toolClass = \MvcCore\Application::GetInstance()->GetToolClass();
+		$attrsAnotations = $toolClass::GetAttributesAnotations();
+		foreach ($props as $prop) {
+			if ($prop->isStatic()) continue;
+			x($prop);
+			$args = \MvcCore\Tool::GetPropertyAttrsArgs(
+				$model, $prop->name, [
+					\MvcCore\Ext\Controllers\DataGrids\Configs\Column::class
+				], true
+			);
+			x($args);
+		}
+	}
+
 	/**
 	 * @inheritDocs
 	 * @return void
@@ -24,7 +46,7 @@ implements	\MvcCore\Ext\Controllers\DataGrid\IConstants {
 		$this->view = new \MvcCore\Ext\Controllers\DataGrids\View;
 		parent::PreDispatch();
 		
-		$this->GetRenderConfig();
+		$this->GetConfigRendering();
 
 		// TODO: nastavit limit a offset a zpracovat nastavení sloupců, ordering a filtering
 		$this->setUpOffsetLimit();
@@ -65,6 +87,6 @@ implements	\MvcCore\Ext\Controllers\DataGrid\IConstants {
 		if ($this->dispatchState < \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED)
 			$this->PreDispatch();
 		$this->dispatchState = \MvcCore\IController::DISPATCH_STATE_RENDERED;
-		return $this->view->Render('Views', 'grid');
+		return $this->view->Render('Grid', 'content');
 	}
 }

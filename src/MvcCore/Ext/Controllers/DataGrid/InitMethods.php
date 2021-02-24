@@ -49,7 +49,7 @@ trait InitMethods {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->dispatchState > \MvcCore\IController::DISPATCH_STATE_CREATED) return;
 		parent::Init();
-		$this->GetUrlConfig();
+		$this->GetConfigUrlSegments();
 		$this->GetRoute();
 		$this->GetUrlParams();
 		$this->initCheckUrlParams();
