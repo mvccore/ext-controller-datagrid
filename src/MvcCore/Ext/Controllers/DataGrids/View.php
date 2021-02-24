@@ -5,34 +5,77 @@ namespace MvcCore\Ext\Controllers\DataGrids;
 class View extends \MvcCore\View {
 	
 	/**
-	 * @inheritDocs
+	 * 
 	 * @var string|NULL
 	 */
-	protected static $viewScriptsFullPathBase = NULL;
-
+	protected static $localFullPathBase = NULL;
+	
 	/**
-	 * @inheritDocs
-	 * @return void
+	 * 
+	 * @var string|NULL
 	 */
-	protected static function initViewScriptsFullPathBase () {
-		static::$viewScriptsFullPathBase = str_replace('\\', '/', __DIR__) . '/Views';
+	protected static $origFullPathBase = NULL;
+	
+	/**
+	 * 
+	 * @return string
+	 */
+	protected static function getLocalFullPathBase () {
+		if (static::$localFullPathBase === NULL)
+			static::$localFullPathBase = str_replace('\\', '/', __DIR__) . '/Views';
+		return static::$localFullPathBase;
 	}
 	
 	/**
-	 * @inheritDocs
+	 * 
+	 * @return void
+	 */
+	protected static function changeFullPathBaseTolocal () {
+		static::$origFullPathBase = static::$viewScriptsFullPathBase;
+		static::$viewScriptsFullPathBase = static::getLocalFullPathBase();
+	}
+	
+	/**
+	 * 
+	 * @return void
+	 */
+	protected static function changeFullPathBaseToOrig () {
+		static::$viewScriptsFullPathBase = static::$origFullPathBase;
+	}
+	
+	/**
+	 * 
 	 * @param  string $relativePath
 	 * @return string
 	 */
-	public function & RenderControl ($relativePath = '') {
-		//return $this->Render(static::$scriptsDir, $relativePath);
-		return $this->Render('Controls', $relativePath);
+	public function & RenderGridContent ($relativePath = '') {
+		static::changeFullPathBaseTolocal();
+		$result = $this->Render('Grid/Content', $relativePath);
+		static::changeFullPathBaseToOrig();
+		return $result;
 	}
 
-	public function & Render ($typePath = '', $relativePath = '') {
-		if ($relativePath === 'Grid/content') {
-			return parent::Render('Grid', 'content');
-		} else {
-			return parent::Render($typePath, $relativePath);	
-		}
+	/**
+	 * 
+	 * @param  string $relativePath
+	 * @return string
+	 */
+	public function & RenderGridControl ($relativePath = '') {
+		static::changeFullPathBaseTolocal();
+		$result = $this->Render('Grid/Controls', $relativePath);
+		static::changeFullPathBaseToOrig();
+		return $result;
+	}
+
+	/**
+	 * 
+	 * @param  string $relativePath
+	 * @return string
+	 */
+	public function & RenderGridForm ($relativePath = '') {
+		static::changeFullPathBaseTolocal();
+		$result = $this->Render('Grid/Form', $relativePath);
+		static::changeFullPathBaseToOrig();
+		return $result;
 	}
 }

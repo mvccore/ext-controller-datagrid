@@ -17,29 +17,13 @@ trait InitMethods {
 			$controller = \MvcCore\Ext\Form::GetCallerControllerInstance();
 			if ($controller === NULL) 
 				$controller = \MvcCore\Application::GetInstance()->GetController();
-			if ($controller === NULL) $this->throwNewInvalidArgumentException(
-				'There was not possible to determinate caller controller, '
+			if ($controller === NULL) throw new \InvalidArgumentException(
+				'['.get_class($this).'] There was not possible to determinate caller controller, '
 				.'where is datagrid instance created. Provide `$controller` instance explicitly '
 				.'by first `\MvcCore\Ext\Controllers\DataGrid::__construct($controller);` argument.'
 			);
 		}
 		$controller->AddChildController($this, $childControllerIndex);
-	}
-
-	/**
-	 * Throw new `\InvalidArgumentException` with given
-	 * error message and append automatically current class name,
-	 * current form id and form class type.
-	 * @param  string $errorMsg 
-	 * @throws \InvalidArgumentException 
-	 */
-	protected function throwNewInvalidArgumentException ($errorMsg) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$str = '['.get_class().'] ' . $errorMsg . ' ('
-			. 'form id: `'.$this->id . '`, '
-			. 'form type: `'.get_class($this->form).'`'
-		.')';
-		throw new \InvalidArgumentException($str);
 	}
 
 	/**

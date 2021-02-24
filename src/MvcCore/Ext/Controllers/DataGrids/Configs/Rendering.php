@@ -32,26 +32,33 @@ class Rendering {
 	 * 
 	 * @var string
 	 */
-	protected $templatePageControl	= './Controls/page.phtml';
+	protected $templateGridContent	= './grid';
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateOrderControl	= './Controls/order.phtml';
+	protected $templatePageControl	= './page';
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateCountControl	= './Controls/count.phtml';
+	protected $templateOrderControl	= './order';
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateFilterForm	= './Form/filter.phtml';
+	protected $templateCountControl	= './count';
+	
+	/**
+	 * 
+	 * @var string
+	 */
+	protected $templateFilterForm	= './filter';
 
+	
 	/**
 	 * 
 	 * @param  bool $renderPageControl
@@ -118,6 +125,24 @@ class Rendering {
 	 */
 	public function GetRenderFilterForm () {
 		return $this->renderFilterForm;
+	}
+
+	
+	/**
+	 * 
+	 * @param  string $templateGridContent
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetTemplateGridContent ($templateGridContent) {
+		$this->templateGridContent = $templateGridContent;
+		return $this;
+	}
+	/**
+	 * 
+	 * @return string
+	 */
+	public function GetTemplateGridContent () {
+		return $this->templateGridContent;
 	}
 
 	/**

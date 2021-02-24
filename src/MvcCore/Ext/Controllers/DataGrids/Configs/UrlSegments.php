@@ -311,8 +311,8 @@ class UrlSegments {
 			$count	= mb_strlen($this->urlPrefixCount) > 0	? $secDelim . $this->urlPrefixCount	. $prefDelim : $secDelim;
 			$order	= mb_strlen($this->urlPrefixOrder) > 0	? $secDelim . $this->urlPrefixOrder	. $prefDelim : $secDelim;
 			$filter	= mb_strlen($this->urlPrefixFilter) > 0	? $secDelim . $this->urlPrefixFilter. $prefDelim : $secDelim;
-			// `/<page>[/<count>][/order-<order>][/filter-<filter>]`
-			$this->routePattern = "[{$page}<page>][{$count}<count>][{$order}<order>][{$filter}<filter>]";
+			// `/<page>[/<count>][/order-<order>][/filter-<filter>]/`
+			$this->routePattern = "[{$page}<page>][{$count}<count>][{$order}<order>][{$filter}<filter>]/";
 		}
 		return $this->routePattern;
 	}

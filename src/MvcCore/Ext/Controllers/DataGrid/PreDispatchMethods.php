@@ -93,7 +93,7 @@ trait PreDispatchMethods {
 		$this->GetConfigColumns();
 		$this->setUpOrdering();
 		$this->setUpFiltering();
-
+		
 		if ($this->viewEnabled) 
 			$this->view->grid = $this;
 		
@@ -204,7 +204,7 @@ trait PreDispatchMethods {
 			->SetLimit($this->limit)
 			->SetFiltering($this->filtering)
 			->SetOrdering($this->ordering);
-
+		
 		$this->totalCount = $model->GetTotalCount();
 
 		// Check if pages count is larger or at least the same as page number from URL:
