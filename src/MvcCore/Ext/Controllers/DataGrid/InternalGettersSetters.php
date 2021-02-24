@@ -3,9 +3,19 @@
 namespace MvcCore\Ext\Controllers\DataGrid;
 
 trait InternalGettersSetters {
+	
+	/**
+	 * 
+	 * @return int|NULL
+	 */
+	public function GetPage () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		return $this->page;
+	}
 
 	/**
-	 * @return int
+	 * 
+	 * @return int|NULL
 	 */
 	public function GetOffset () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
@@ -13,11 +23,44 @@ trait InternalGettersSetters {
 	}
 
 	/**
-	 * @return int
+	 * 
+	 * @return int|NULL
 	 */
 	public function GetLimit () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->limit;
+	}
+
+	/**
+	 * 
+	 * @return array
+	 */
+	public function GetOrdering () {
+		return $this->ordering;
+	}
+	
+	/**
+	 * 
+	 * @return array
+	 */
+	public function GetFiltering () {
+		return $this->filtering;
+	}
+	
+	/**
+	 * 
+	 * @return int|NULL
+	 */
+	public function GetTotalCount () {
+		return $this->totalCount;
+	}
+	
+	/**
+	 * 
+	 * @return array|\MvcCore\Ext\Models\Db\Readers\Streams\Iterator|NULL
+	 */
+	public function GetPageData () {
+		return $this->pageData;
 	}
 
 	/**

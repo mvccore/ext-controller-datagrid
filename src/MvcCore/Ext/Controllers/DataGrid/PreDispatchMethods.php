@@ -76,6 +76,31 @@ trait PreDispatchMethods {
 	}
 
 	/**
+	 * @inheritDocs
+	 * @return void
+	 */
+	public function PreDispatch () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		if ($this->dispatchState >= \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED) return;
+		
+		$this->view = (new \MvcCore\Ext\Controllers\DataGrids\View)
+			->SetController($this);
+
+		parent::PreDispatch();
+		
+		$this->GetConfigRendering();
+		$this->setUpOffsetLimit();
+		$this->GetConfigColumns();
+		$this->setUpOrdering();
+		$this->setUpFiltering();
+
+		if ($this->viewEnabled) 
+			$this->view->grid = $this;
+		
+		$this->LoadModel();
+	}
+
+	/**
 	 * Set up offset and limit properties for datagrid model instance.
 	 * Offset is always presented, limit could be `NULL` or integer.
 	 * @return void

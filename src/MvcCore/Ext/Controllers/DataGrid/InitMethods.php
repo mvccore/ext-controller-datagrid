@@ -7,9 +7,10 @@ trait InitMethods {
 	/**
 	 * Create \MvcCore\Ext\Controllers\DataGrid instance.
 	 * @param  \MvcCore\Controller|NULL $controller
+	 * @param  string|int|NULL          $childControllerIndex Automatic name for this instance used in view.
 	 * @return void
 	 */
-	public function __construct (\MvcCore\IController $controller = NULL) {
+	public function __construct (\MvcCore\IController $controller = NULL, $childControllerIndex = NULL) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		/** @var $controller \MvcCore\Controller */
 		if ($controller === NULL) {
@@ -22,7 +23,7 @@ trait InitMethods {
 				.'by first `\MvcCore\Ext\Controllers\DataGrid::__construct($controller);` argument.'
 			);
 		}
-		$controller->AddChildController($this);
+		$controller->AddChildController($this, $childControllerIndex);
 	}
 
 	/**
@@ -52,13 +53,13 @@ trait InitMethods {
 		$this->GetConfigUrlSegments();
 		$this->GetRoute();
 		$this->GetUrlParams();
-		$this->initCheckUrlParams();
+		$this->initSetUpUrlParams();
 	}
 
 	/**
 	 * @return void
 	 */
-	protected function initCheckUrlParams () {
+	protected function initSetUpUrlParams () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		/** @var $context \MvcCore\Controller */
 		$context = $this;
@@ -98,9 +99,9 @@ trait InitMethods {
 			}
 		}
 		// check if page is not larger than 1 if count is unlimited:
-		$page = $this->urlParams['page'];
+		$this->page = $this->urlParams['page'];
 		$this->itemsPerPage = $this->urlParams['count'];
-		if ($this->itemsPerPage === 0 && $page > 1) {
+		if ($this->itemsPerPage === 0 && $this->page > 1) {
 			$redirectUrl = $this->GridUrl([
 				'page'	=> 1,
 			]);
