@@ -27,17 +27,12 @@ trait InternalGettersSetters {
 	public function GetGridRequest () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->gridRequest === NULL) {
-			$gridParam = $this->GetParam(static::PARAM_GRID); // get param from application request object
-			if ($gridParam !== NULL) {
-				$gridParam = '/' . ltrim($gridParam, '/');
-			} else {
-				$gridParam = '';
-			}
-			$gridServer = array_merge(
-				[], $this->request->GetGlobalCollection('server'), 
-				['REQUEST_URI' => $gridParam]
-			);
-			$this->gridRequest = \MvcCore\Request::CreateInstance($gridServer);
+			$gridParam = $this->GetParam(static::PARAM_GRID, FALSE); // get param from application request object
+			$gridParam = $gridParam !== NULL
+				? '/' . ltrim($gridParam, '/')
+				: '';
+			$this->gridRequest = \MvcCore\Request::CreateInstance();
+			$this->gridRequest->SetPath($gridParam);
 		}
 		return $this->gridRequest;
 	}

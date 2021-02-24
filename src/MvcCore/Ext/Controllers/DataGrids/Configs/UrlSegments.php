@@ -5,70 +5,79 @@ namespace MvcCore\Ext\Controllers\DataGrids\Configs;
 class UrlSegments {
 
 	/**
-	 * 
+	 * URL prefix to define which URL section is used for page number.
+	 * If empty, there is used first section by default.
 	 * @var string
 	 */
 	protected $urlPrefixPage = '';
 	
 	/**
-	 * 
+	 * URL prefix to define which URL section is used for items per page count.
+	 * If empty, there is used second section by default.
 	 * @var string
 	 */
 	protected $urlPrefixCount = '';
 	
 	/**
-	 * 
+	 * URL prefix to define which URL section is used for ordering.
 	 * @var string
 	 */
 	protected $urlPrefixOrder = 'order';
 	
 	/**
-	 * 
+	 * URL prefix to define which URL section is used for filtering.
 	 * @var string
 	 */
 	protected $urlPrefixFilter = 'filter';
 	
 	/**
-	 * 
+	 * URL suffix to define ascendent order direction.
 	 * @var string
 	 */
 	protected $urlSuffixOrderAsc = 'a';
 	
 	/**
-	 * 
+	 * URL suffix to define descendent order direction.
 	 * @var string
 	 */
 	protected $urlSuffixOrderDesc = 'd';
 	
 	/**
-	 * 
+	 * URL delimiter between sections.
 	 * @var string
 	 */
 	protected $urlDelimiterSections = '/';
 	
 	/**
-	 * 
+	 * URL delimiter for each section where is defined prefix, between prefix and rest of the section.
 	 * @var string
 	 */
 	protected $urlDelimiterPrefix = '-';
 	
 	/**
-	 * 
+	 * URL delimiter for ordering and filtering, between each pair of grid column with value(s).
 	 * @var string
 	 */
-	protected $urlDelimiterSubjects = '-';
+	protected $urlDelimiterSubjects = '~';
 	
 	/**
-	 * 
+	 * URL delimiter for ordering and filtering, between grid column name and (first) value.
 	 * @var string
 	 */
-	protected $urlDelimiterValues = '|';
+	protected $urlDelimiterSubjectValue = '-';
 	
 	/**
-	 * 
+	 * URL delimiter for filtering, between multiple filtering values.
+	 * @var string
+	 */
+	protected $urlDelimiterValues = ',';
+	
+	/**
+	 * URL route pattern, automatically completed from configuration properties above.
 	 * @var string|NULL
 	 */
 	protected $routePattern = NULL;
+
 
 	/**
 	 * 
@@ -239,6 +248,25 @@ class UrlSegments {
 	public function GetUrlDelimiterSubjects () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
 		return $this->urlDelimiterSubjects;
+	}
+	
+	/**
+	 * 
+	 * @param  string $urlDelimiterSubjectValue
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
+	 */
+	public function SetUrlDelimiterSubjectValue ($urlDelimiterSubjectValue) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		$this->urlDelimiterSubjectValue = $urlDelimiterSubjectValue;
+		return $this;
+	}
+	/**
+	 * 
+	 * @return string
+	 */
+	public function GetUrlDelimiterSubjectValue () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		return $this->urlDelimiterSubjectValue;
 	}
 
 	/**

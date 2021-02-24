@@ -13,29 +13,7 @@ implements	\MvcCore\Ext\Controllers\DataGrid\IConstants {
 		\MvcCore\Ext\Controllers\DataGrid\InitMethods,
 		\MvcCore\Ext\Controllers\DataGrid\PreDispatchMethods;
 
-	/**
-	 * 
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model 
-	 * @param  array                                                $propsNamesAndDbColumnNames
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column[]
-	 */
-	public static function ParseConfigColumns (\MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model, $propsNamesAndDbColumnNames = []) {
-		$modelType = new \ReflectionClass($model);
-		$props = $modelType->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PROTECTED | \ReflectionProperty::IS_PUBLIC);
-		$toolClass = \MvcCore\Application::GetInstance()->GetToolClass();
-		$attrsAnotations = $toolClass::GetAttributesAnotations();
-		foreach ($props as $prop) {
-			if ($prop->isStatic()) continue;
-			x($prop);
-			$args = \MvcCore\Tool::GetPropertyAttrsArgs(
-				$model, $prop->name, [
-					\MvcCore\Ext\Controllers\DataGrids\Configs\Column::class
-				], true
-			);
-			x($args);
-		}
-	}
-
+	
 	/**
 	 * @inheritDocs
 	 * @return void
@@ -47,33 +25,17 @@ implements	\MvcCore\Ext\Controllers\DataGrid\IConstants {
 		parent::PreDispatch();
 		
 		$this->GetConfigRendering();
-
-		// TODO: nastavit limit a offset a zpracovat nastavení sloupců, ordering a filtering
 		$this->setUpOffsetLimit();
 		$this->GetConfigColumns();
-		//$this->setUpColumnsConfig();
-		//$this->setUpOrdering();
-		//$this->setUpFiltering();
+		$this->setUpOrdering();
+		$this->setUpFiltering();
 
-		$this->LoadModel();
+		if (!$this->LoadModel()) return;
 
+		// set up view props:
 		$this->view->grid = $this;
-	}
-
-	/**
-	 * @throws \InvalidArgumentException 
-	 * @return \MvcCore\Ext\Controllers\DataGrid
-	 */
-	public function LoadModel () {
-		$model = $this->GetModel(TRUE);
-
-		/*$this->model->SetOffset();
-		$this->model->SetLimit();
-		$this->model->SetFiltering();
-		$this->model->SetOrdering();
-		$this->model->GetTotalCount();
-		$this->model->GetPageData();*/
-		return $this;
+		$this->view->totalCount = $this->totalCount;
+		$this->view->pageData = $this->pageData;
 	}
 
 	/**

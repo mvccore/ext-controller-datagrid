@@ -15,9 +15,11 @@ trait GridColumns {
 		$implementsExtendedModel = $toolClass::CheckClassInterface(
 			get_class($this), 'MvcCore\\Ext\\Models\\Db\\IModel', FALSE, FALSE
 		);
+		$accessModFlags = 0;
 		if ($implementsExtendedModel) {
-			/** @var $this \MvcCore\Ext\Models\Db\Model\MetaData */
-			list($metaData) = static::getMetaData(0);
+			/** @var $context \MvcCore\Ext\Models\Model */
+			$context = $this;
+			list($metaData) = $context::GetMetaData(0);
 			foreach ($metaData as $propData) {
 				$dbColumnName = $propData[4];
 				if ($dbColumnName !== NULL) {
@@ -25,9 +27,11 @@ trait GridColumns {
 					$modelMetaData[$propertyName] = $dbColumnName;
 				}
 			}
+			if (static::$defaultPropsFlags !== 0)
+				$accessModFlags = static::$defaultPropsFlags;
 		}
 		return \MvcCore\Ext\Controllers\DataGrid::ParseConfigColumns(
-			$this, $modelMetaData
+			$this, $modelMetaData, $accessModFlags
 		);
 	}
 }

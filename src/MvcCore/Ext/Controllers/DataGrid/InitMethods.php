@@ -60,6 +60,8 @@ trait InitMethods {
 	 */
 	protected function initCheckUrlParams () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		/** @var $context \MvcCore\Controller */
+		$context = $this;
 		// set up default page if null:
 		if (isset($this->urlParams['page'])) {
 			if ($this->urlParams['page'] === 0) {
@@ -67,7 +69,7 @@ trait InitMethods {
 				$redirectUrl = $this->GridUrl([
 					'page'	=> 1,
 				]);
-				return static::Redirect(
+				return $context::Redirect(
 					$redirectUrl, 
 					\MvcCore\IResponse::SEE_OTHER, 
 					'Grid page is too low.'
@@ -88,7 +90,7 @@ trait InitMethods {
 					'page'	=> $this->urlParams['page'],
 					'count'	=> $lastCountsScale,
 				]);
-				return static::Redirect(
+				return $context::Redirect(
 					$redirectUrl, 
 					\MvcCore\IResponse::SEE_OTHER, 
 					'Grid count is too high.'
@@ -97,12 +99,12 @@ trait InitMethods {
 		}
 		// check if page is not larger than 1 if count is unlimited:
 		$page = $this->urlParams['page'];
-		$count = $this->urlParams['count'];
-		if ($count === 0 && $page > 1) {
+		$this->itemsPerPage = $this->urlParams['count'];
+		if ($this->itemsPerPage === 0 && $page > 1) {
 			$redirectUrl = $this->GridUrl([
 				'page'	=> 1,
 			]);
-			return static::Redirect(
+			return $context::Redirect(
 				$redirectUrl, 
 				\MvcCore\IResponse::SEE_OTHER, 
 				'Grid page is too high with unlimited count.'
