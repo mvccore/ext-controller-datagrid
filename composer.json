@@ -21,8 +21,8 @@
 	}],
 	"require": {
 		"php": ">=5.4.0",
-		"mvccore/mvccore": "^5.0.8",
-		"mvccore/ext-model-db": "^5.0.5",
+		"mvccore/mvccore": "^5.0.9",
+		"mvccore/ext-model-db": "^5.0.6",
 		"mvccore/ext-form": "^5.1.4",
 		"mvccore/ext-form-field-text": "^5.1.2",
 		"mvccore/ext-form-field-button": "^5.1.2"
