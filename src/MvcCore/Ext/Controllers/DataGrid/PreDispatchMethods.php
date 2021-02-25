@@ -12,17 +12,20 @@ trait PreDispatchMethods {
 	 * 
 	 * Second argument is used for automatic columns configuration completion
 	 * by model class implementing `\MvcCore\Ext\Controllers\DataGrids\Models\IGridColumns`.
-	 * Array keys are properties names, array values are database column names.
+	 * Array keys are properties names, array values are arrays with three items:
+	 * - `string`    - database column name 
+	 * - `\string[]` - property type(s)
+	 * - `array`     - format arguments
 	 * 
 	 * Thrd argument is access mod flags to load model instance properties.
 	 * If value is zero, there are used all access mode flags - private, protected and public.
 	 * 
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model 
-	 * @param  array                                                $propsAndDbColumns
+	 * @param  array                                                $modelMetaData
 	 * @param  int                                                  $accesModFlags
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column[]
 	 */
-	public static function ParseConfigColumns (\MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model, $propsAndDbColumns = [], $accesModFlags = 0) {
+	public static function ParseConfigColumns (\MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model, $modelMetaData = [], $accesModFlags = 0) {
 		$modelType = new \ReflectionClass($model);
 		if ($accesModFlags === 0)
 			$accesModFlags = (
@@ -48,28 +51,32 @@ trait PreDispatchMethods {
 					$args = $args[1];
 			}
 			$propName = $prop->name;
-			$urlName = $propName;
-			$humanName = $propName;
+			$urlName = NULL;
+			$humanName = NULL;
 			$dbColumnName = NULL;
-			$modelMetaDataExists = isset($propsAndDbColumns[$propName]);
-			if ($modelMetaDataExists) {
-				$urlName = $propName;
-				$humanName = $propName;
-				$dbColumnName = $propsAndDbColumns[$propName];
-			}
+			$types = NULL;
+			$format = NULL;
+			$modelMetaDataExists = isset($modelMetaData[$propName]);
+			if ($modelMetaDataExists) 
+				list($dbColumnName, $types, $format) = $modelMetaData[$propName];
 			if ($args === NULL && $modelMetaDataExists) {
-				$result[$urlName] = new \MvcCore\Ext\Controllers\DataGrids\Configs\Column(
-					$humanName, $dbColumnName, $urlName
+				$columnConfig = new \MvcCore\Ext\Controllers\DataGrids\Configs\Column(
+					$propName, $dbColumnName, $humanName, $urlName, FALSE, FALSE, $types, $format, NULL
 				);
+				$result[$columnConfig->GetUrlName()] = $columnConfig;
 			} else if ($dbColumnName !== NULL) {
-				if (isset($args['humanName']))		$humanName		= $args['humanName'];
-				if (isset($args['dbColumnName']))	$dbColumnName	= $args['dbColumnName'];
-				if (isset($args['urlName']))		$urlName		= $args['urlName'];
-				$order	= isset($args['order'])		? $args['order']	: NULL;
-				$filter	= isset($args['filter'])	? $args['filter']	: NULL;
-				$result[$urlName] = new \MvcCore\Ext\Controllers\DataGrids\Configs\Column(
-					$humanName, $dbColumnName, $urlName, $order, $filter
+				if			 (isset($args['dbColumnName']))	$dbColumnName			= $args['dbColumnName'];
+				if			 (isset($args['humanName']))	$humanName				= $args['humanName'];
+				if			 (isset($args['urlName']))		$urlName				= $args['urlName'];
+				$order		= isset($args['order'])			? $args['order']		: NULL;
+				$filter		= isset($args['filter'])		? $args['filter']		: NULL;
+				$types		= isset($args['types'])			? $args['types']		: NULL;
+				$format		= isset($args['format'])		? $args['format']		: NULL;
+				$viewHelper	= isset($args['viewHelper'])	? $args['viewHelper']	: NULL;
+				$columnConfig = new \MvcCore\Ext\Controllers\DataGrids\Configs\Column(
+					$propName, $dbColumnName, $humanName, $urlName, $order, $filter, $types, $format, $viewHelper
 				);
+				$result[$columnConfig->GetUrlName()] = $columnConfig;
 			}
 		}
 		return $result;
@@ -83,21 +90,42 @@ trait PreDispatchMethods {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->dispatchState >= \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED) return;
 		
-		$this->view = (new \MvcCore\Ext\Controllers\DataGrids\View)
-			->SetController($this);
+		$this->GetConfigRendering();
+		$this->GetConfigColumns();
+
+		if ($this->viewEnabled) {
+			$this->setUpGridViewInstance();
+			$this->view->grid = $this;
+		}
 
 		parent::PreDispatch();
 		
-		$this->GetConfigRendering();
 		$this->setUpOffsetLimit();
-		$this->GetConfigColumns();
 		$this->setUpOrdering();
 		$this->setUpFiltering();
-		
-		if ($this->viewEnabled) 
-			$this->view->grid = $this;
-		
 		$this->LoadModel();
+	}
+	
+	/**
+	 * 
+	 * @return void
+	 */
+	protected function setUpGridViewInstance () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$viewClass = $this->configRendering->GetViewClass();
+		$view = (new $viewClass)->SetController($this);
+		if ($view instanceof \MvcCore\Ext\Controllers\DataGrids\View) {
+			$view
+				->SetDefaultControlTemplates([
+					\MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTROL_COUNT_DEFAULT,
+					\MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTROL_ORDER_DEFAULT,
+					\MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTROL_PAGE_DEFAULT
+				])
+				->SetDefaultFilterFormTemplates([
+					\MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_FILTER_FORM_DEFAULT
+				]);
+		}
+		$this->view = $view;
 	}
 
 	/**

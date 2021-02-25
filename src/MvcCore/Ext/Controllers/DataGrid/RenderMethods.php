@@ -14,6 +14,7 @@ trait RenderMethods {
 		if (!$this->renderCheckDispatchState()) return '';
 
 		// Set up view store with parent controller view store, do not overwrite existing keys:
+		/** @var $view \MvcCore\Ext\Controllers\DataGrids\View */
 		$view = $this->view;
 		$view->SetUpStore($this->parentController->GetView(), FALSE);
 
@@ -30,12 +31,14 @@ trait RenderMethods {
 
 		// Complete view script path an render it by rendering mode:
 		$viewScriptPath = $this->configRendering->GetTemplateGridContent();
-		if (mb_substr($viewScriptPath, 0, 2) === './') {
-			$viewScriptPath = mb_substr($viewScriptPath, 2);
+		if ($viewScriptPath === \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTENT_DEFAULT) {
 			$result = $view->RenderGridContent($viewScriptPath);
 
 		} else {
-			if (mb_substr($viewScriptPath, 0, 1) !== '/')
+			$firstChar = mb_substr($viewScriptPath, 0, 1);
+			if ($firstChar === '/')
+				$viewScriptPath = ltrim($viewScriptPath, '/');
+			if ($firstChar !== '/' && $firstChar !== '.')
 				$viewScriptPath = $this->GetViewScriptPath(
 					$this->parentController->GetControllerName(), 
 					$viewScriptPath

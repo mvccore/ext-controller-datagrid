@@ -100,6 +100,32 @@ trait GridModel {
 	}
 
 	/**
+	 * 
+	 * @param  mixed                                             $gridRow
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
+	 * @param  \MvcCore\IView                                    $view
+	 * @return string
+	 */
+	public function RenderCell ($row, \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column, \MvcCore\IView $view) {
+		$propName = $column->GetPropName();
+		if (isset($gridRow->{$propName})) {
+			$value = $gridRow->{$propName};
+			$viewHelper = $column->GetViewHelper();
+			if ($viewHelper) {
+				return call_user_func_array(
+					[$view, $viewHelper], 
+					array_merge([$value], $column->GetFormat() ?: [])
+				);
+			} else {
+				return static::convertToScalar(
+					$value, $column->GetFormat()
+				);
+			}
+		}
+		return NULL;
+	}
+
+	/**
 	 * @return void
 	 */
 	protected abstract function load ();

@@ -38,4 +38,13 @@ interface IGridModel {
 	 */
 	public function SetOrdering (array $ordering);
 
+	/**
+	 * 
+	 * @param  mixed                                             $gridRow
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
+	 * @param  \MvcCore\IView                                    $view
+	 * @return string
+	 */
+	public function RenderCell ($row, \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $configColumn, \MvcCore\IView $view);
+
 }

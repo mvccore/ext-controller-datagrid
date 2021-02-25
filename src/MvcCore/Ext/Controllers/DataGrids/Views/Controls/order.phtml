@@ -1,26 +1,13 @@
+order control
+
+<?php /*
 <table id="<?=$this->rawControlId?>">
 	<tbody>
 		<tr>
 			<? foreach ($this->orderOptions as $orderKey => $orderOptions): ?>
 				<? if (!isset($orderOptions['name'])) continue; ?>
 				<td>
-					<?/*
-					<?=$this->grid->getUrl(
-						array(
-							$orderKey => 'ASC'
-						),
-						'order'
-					)?>
-					<br />
-					<?=$this->grid->getUrl(
-						array(
-							$orderKey => 'DESC'
-						),
-						'order'
-					)?>
-					<br /><br /></tr><tr>
-					*/?>
-
+					
 					<?=$orderOptions['name']?>
 
 					<a href="<?
@@ -72,3 +59,4 @@
 		</tr>
 	</tbody>
 </table>
+*/ ?>

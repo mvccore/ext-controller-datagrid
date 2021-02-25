@@ -3,7 +3,8 @@
 namespace MvcCore\Ext\Controllers\DataGrids\Configs;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class Column {
+class		Column
+implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 	
 	const PHP_DOCS_TAG_NAME = '@datagrid';
 
@@ -37,22 +38,85 @@ class Column {
 	 * @var bool
 	 */
 	protected $filter = FALSE;
+
+	/**
+	 * Property type(s), necessary for automatic formating.
+	 * @var \string[]|NULL
+	 */
+	protected $types = NULL;
+
+	/**
+	 * Property automatic formating arguments.
+	 * @var array|NULL
+	 */
+	protected $format = NULL;
+
+	/**
+	 * Property automatic formating view helper name.
+	 * @var string|NULL
+	 */
+	protected $viewHelper = NULL;
 	
 
 	/**
-	 * Get human readable name used in grid heading.
+	 * Create datagrid column config item.
+	 * @param string|NULL      $propName     Data grid model property name.
+	 * @param string|NULL      $dbColumnName Database column name. If `NULL`, `$propName` is used.
+	 * @param string|NULL      $humanName    Data grid visible column name. If `NULL`, `$propName` is used.
+	 * @param string|NULL      $urlName      Data grid url column name to define ordering or filtering. 
+	 *                                       If `NULL`, `$propName` is used.
+	 * @param string|bool|NULL $order        Default ordering definition with values `ASC | DESC` 
+	 *                                       or `TRUE | FALSE` to enable/disable ordering.
+	 * @param bool             $filter       Boolean to allow filtering.
+	 * @param \string[]|NULL   $types        Property type(s), necessary for automatic formating.
+	 * @param array|NULL       $format       Property automatic formating arguments.
+	 * @param string|NULL      $viewHelper   Property automatic formating view helper name.
+	 */
+	public function __construct ($propName = NULL, $dbColumnName = NULL, $humanName = NULL, $urlName = NULL, $order = FALSE, $filter = FALSE, $types = NULL, $format = NULL, $viewHelper = NULL) {
+		$propNameHasValue = $propName !== NULL;
+		if ($propNameHasValue) 
+			$this->propName = $propName;
+
+		if ($dbColumnName !== NULL) {
+			$this->dbColumnName = $dbColumnName;
+		} else if ($propNameHasValue) {
+			$this->dbColumnName = $propName;
+		}
+
+		if ($humanName !== NULL) {
+			$this->humanName = $humanName;
+		} else if ($propNameHasValue) {
+			$this->humanName = $propName;
+		}
+
+		if ($urlName !== NULL) {
+			$this->urlName = $urlName;
+		} else if ($propNameHasValue) {
+			$this->urlName = $propName;
+		}
+
+		if ($order !== NULL)		$this->order		= $order;
+		if ($filter !== NULL)		$this->filter		= $filter;
+		if ($types !== NULL)		$this->types		= $types;
+		if ($format !== NULL)		$this->format		= $format;
+		if ($viewHelper !== NULL)	$this->viewHelper	= $viewHelper;
+	}
+
+	
+	/**
+	 * Get data grid model property name.
 	 * @return string|NULL
 	 */
-	public function GetHumanName () {
-		return $this->humanName;
+	public function GetPropName () {
+		return $this->propName;
 	}
 	/**
-	 * Set human readable name used in grid heading.
-	 * @param  string|NULL $humanName
+	 * Set data grid model property name.
+	 * @param  string|NULL $propName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
-	public function SetHumanName ($humanName) {
-		$this->humanName = $humanName;
+	public function SetPropName ($propName) {
+		$this->propName = $propName;
 		return $this;
 	}
 	
@@ -74,6 +138,23 @@ class Column {
 	}
 	
 	/**
+	 * Get human readable name used in grid heading.
+	 * @return string|NULL
+	 */
+	public function GetHumanName () {
+		return $this->humanName;
+	}
+	/**
+	 * Set human readable name used in grid heading.
+	 * @param  string|NULL $humanName
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetHumanName ($humanName) {
+		$this->humanName = $humanName;
+		return $this;
+	}
+	
+	/**
 	 * Get URL column name when ordering or filtering.
 	 * @return string|NULL
 	 */
@@ -89,7 +170,7 @@ class Column {
 		$this->urlName = $urlName;
 		return $this;
 	}
-
+	
 	/**
 	 * Get default ordering definition with values `ASC | DESC` 
 	 * or `TRUE | FALSE` to enable/disable ordering.
@@ -125,22 +206,55 @@ class Column {
 		$this->filter = $filter;
 		return $this;
 	}
-
+	
 	/**
-	 * Create datagrid column config item.
-	 * @param string|NULL      $humanName    Data grid visible column name.
-	 * @param string|NULL      $dbColumnName Database column name.
-	 * @param string|NULL      $urlName      Data grid url column name to define ordering or filtering.
-	 * @param string|bool|NULL $order        Default ordering definition with values `ASC | DESC` 
-	 *                                       or `TRUE | FALSE` to enable/disable ordering.
-	 * @param bool             $filter       Boolean to allow filtering.
+	 * Get property type(s), necessary for automatic formating.
+	 * @return \string[]|NULL
 	 */
-	public function __construct ($humanName = NULL, $dbColumnName = NULL, $urlName = NULL, $order = FALSE, $filter = FALSE) {
-		if ($humanName !== NULL)	$this->humanName	= $humanName;
-		if ($dbColumnName !== NULL)	$this->dbColumnName	= $dbColumnName;
-		if ($urlName !== NULL)		$this->urlName		= $urlName;
-		if ($order !== NULL)		$this->order		= $order;
-		if ($filter !== NULL)		$this->filter		= $filter;
+	public function GetTypes () {
+		return $this->types;
 	}
-
+	/**
+	 * Set property type(s), necessary for automatic formating.
+	 * @param  \string[] $types
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetTypes ($types) {
+		$this->types = $types;
+		return $this;
+	}
+	
+	/**
+	 * Get property automatic formating arguments.
+	 * @return array|NULL
+	 */
+	public function GetFormat () {
+		return $this->format;
+	}
+	/**
+	 * Set property automatic formating arguments.
+	 * @param  array $format
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetFormat ($format) {
+		$this->format = $format;
+		return $this;
+	}
+	
+	/**
+	 * Get property automatic formating view helper name.
+	 * @return array|NULL
+	 */
+	public function GetViewHelper () {
+		return $this->viewHelper;
+	}
+	/**
+	 * Set property automatic formating view helper name.
+	 * @param  array $viewHelper
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetViewHelper ($viewHelper) {
+		$this->viewHelper = $viewHelper;
+		return $this;
+	}
 }

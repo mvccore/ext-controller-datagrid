@@ -128,7 +128,7 @@ trait ConfigGettersSetters {
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $configUrlSegments
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
-	public function SetConfigUrlSegments (\MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $configUrlSegments) {
+	public function SetConfigUrlSegments (\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments $configUrlSegments) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->configUrlSegments = $configUrlSegments;
 		return $this;
@@ -156,18 +156,20 @@ trait ConfigGettersSetters {
 			/** @var $configColumn \MvcCore\Ext\Controllers\DataGrids\Configs\Column */
 			$configColumnsByUrlNames = [];
 			foreach ($configColumns as $index => $configColumn) {
-				if ($configColumn instanceof $configColumn) {
+				if ($configColumn instanceof \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn) {
+					$propName = $configColumn->GetPropName();
+					if ($propName === NULL) throw new \InvalidArgumentException(
+						"Datagrid column configuration item requires `propName` (index: {$index})."
+					);
 					$urlName = $configColumn->GetUrlName();
-					if ($urlName === NULL) throw new \InvalidArgumentException(
-						"Datagrid column configuration item requires `urlName` (index: {$index})."
-					);
+					if ($urlName === NULL) 
+						$configColumn->SetUrlName($propName);
+					if ($dbColumnName === NULL) 
 					$dbColumnName = $configColumn->GetDbColumnName();
-					if ($dbColumnName === NULL) throw new \InvalidArgumentException(
-						"Datagrid column configuration item requires `dbColumnName` (urlName: `{$urlName}`)."
-					);
+						$configColumn->SetDbColumnName($propName);
 					$humanName = $configColumn->GetHumanName();
 					if ($humanName === NULL) 
-						$configColumn->SetHumanName($urlName);
+						$configColumn->SetHumanName($propName);
 					$configColumnsByUrlNames[$urlName] = $configColumn;
 				} else {
 					$throwInvalidTypeError = TRUE;
@@ -222,7 +224,7 @@ trait ConfigGettersSetters {
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
-	public function SetConfigRendering (\MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering) {
+	public function SetConfigRendering (\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering $configRendering) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->configRendering = $configRendering;
 		return $this;

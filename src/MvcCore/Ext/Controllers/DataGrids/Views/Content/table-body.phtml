@@ -1,0 +1,19 @@
+<?php
+	/** @var $this \MvcCore\Ext\Controllers\DataGrids\View */
+	/** @var $grid \MvcCore\Ext\Controllers\DataGrid */
+	/** @var $model \MvcCore\Ext\Controllers\DataGrids\Models\GridModel */
+?><tbody><?php
+	$ordering = $grid->GetOrdering();
+	$model = $grid->GetModel();
+	foreach ($grid->GetPageData() as $item):
+		?><tr><?php
+			foreach ($grid->GetConfigColumns() as $configColumn):
+				?><td><?php
+
+					echo $model->RenderCell($item, $configColumn, $this);
+
+				?></td><?php
+			endforeach;
+		?></tr><?php
+	endforeach;
+?></tbody>

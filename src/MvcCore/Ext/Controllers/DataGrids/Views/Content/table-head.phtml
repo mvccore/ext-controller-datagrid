@@ -1,0 +1,19 @@
+<?php
+	/** @var $this \MvcCore\Ext\Controllers\DataGrids\View */
+	/** @var $grid \MvcCore\Ext\Controllers\DataGrid */
+?><thead><tr><?php
+	$ordering = $grid->GetOrdering();
+	foreach ($grid->GetConfigColumns() as $urlName => $configColumn):
+		?><th><?php
+		if ($configColumn->GetOrder()): 
+			?><a href="<?php
+				echo $grid->GridOrderUrl($configColumn);
+			?>"><?php
+				echo $configColumn->GetHumanName();
+			?></a><?php
+		else:
+			echo $configColumn->GetHumanName();
+		endif;
+		?></th><?php
+	endforeach;
+?></tr></thead>

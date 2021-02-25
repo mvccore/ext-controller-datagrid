@@ -116,4 +116,13 @@ trait InternalGettersSetters {
 		}
 		return $this->Url('self', [static::PARAM_GRID => $gridParam]);
 	}
+
+	/**
+	 * 
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $configColumn 
+	 * @return string
+	 */
+	public function GridOrderUrl (\MvcCore\Ext\Controllers\DataGrids\Configs\Column $configColumn) {
+		return '?order=' . $configColumn->GetUrlName();
+	}
 }

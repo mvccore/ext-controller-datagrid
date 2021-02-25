@@ -1,0 +1,28 @@
+<?php
+	/** @var $this \MvcCore\Ext\Controllers\DataGrids\View */
+	/** @var $grid \MvcCore\Ext\Controllers\DataGrid */
+	/** @var $renderConf \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+	$renderConf = $grid->GetConfigRendering();
+
+	if ($renderConf->GetRenderOrderControl())
+		echo $this->RenderGridControl($renderConf->GetTemplateOrderControl());
+
+	if ($renderConf->GetRenderPageControl()) {
+		$paginatorCode = $this->RenderGridControl($renderConf->GetTemplatePageControl());
+		echo $paginatorCode;
+	}
+
+?><table class="datagrid"><?php
+
+	echo $this->RenderGridContent('./table-head');
+
+	echo $this->RenderGridContent('./table-body');
+
+?></table><?php 
+
+	if ($renderConf->GetRenderCountControl())
+		echo $this->RenderGridControl($renderConf->GetTemplateCountControl());
+
+	if ($renderConf->GetRenderPageControl())
+		echo $paginatorCode;
+?>

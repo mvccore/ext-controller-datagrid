@@ -2,7 +2,8 @@
 
 namespace MvcCore\Ext\Controllers\DataGrids\Configs;
 
-class UrlSegments {
+class		UrlSegments 
+implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 
 	/**
 	 * URL prefix to define which URL section is used for page number.
@@ -80,7 +81,7 @@ class UrlSegments {
 
 
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  string $urlPrefixPage
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
@@ -89,8 +90,9 @@ class UrlSegments {
 		$this->urlPrefixPage = $urlPrefixPage;
 		return $this;
 	}
+
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return string
 	 */
 	public function GetUrlPrefixPage () {
@@ -99,7 +101,7 @@ class UrlSegments {
 	}
 
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  string $urlPrefixCount
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
@@ -108,8 +110,9 @@ class UrlSegments {
 		$this->urlPrefixCount = $urlPrefixCount;
 		return $this;
 	}
+
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return string
 	 */
 	public function GetUrlPrefixCount () {
@@ -118,7 +121,7 @@ class UrlSegments {
 	}
 
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  string $urlPrefixOrder
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
@@ -127,8 +130,9 @@ class UrlSegments {
 		$this->urlPrefixOrder = $urlPrefixOrder;
 		return $this;
 	}
+
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return string
 	 */
 	public function GetUrlPrefixOrder () {
@@ -137,7 +141,7 @@ class UrlSegments {
 	}
 
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  string $urlPrefixFilter
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
@@ -146,8 +150,9 @@ class UrlSegments {
 		$this->urlPrefixFilter = $urlPrefixFilter;
 		return $this;
 	}
+
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return string
 	 */
 	public function GetUrlPrefixFilter () {
@@ -156,7 +161,7 @@ class UrlSegments {
 	}
 
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  string $urlSuffixOrderAsc
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
@@ -165,8 +170,9 @@ class UrlSegments {
 		$this->urlSuffixOrderAsc = $urlSuffixOrderAsc;
 		return $this;
 	}
+
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return string
 	 */
 	public function GetUrlSuffixOrderAsc () {
@@ -175,7 +181,7 @@ class UrlSegments {
 	}
 
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  string $urlSuffixOrderDesc
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
@@ -184,8 +190,9 @@ class UrlSegments {
 		$this->urlSuffixOrderDesc = $urlSuffixOrderDesc;
 		return $this;
 	}
+
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return string
 	 */
 	public function GetUrlSuffixOrderDesc () {
@@ -194,7 +201,7 @@ class UrlSegments {
 	}
 
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  string $urlDelimiterSections
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
@@ -203,8 +210,9 @@ class UrlSegments {
 		$this->urlDelimiterSections = $urlDelimiterSections;
 		return $this;
 	}
+
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return string
 	 */
 	public function GetUrlDelimiterSections () {
@@ -213,7 +221,7 @@ class UrlSegments {
 	}
 
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  string $urlDelimiterPrefix
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
@@ -222,8 +230,9 @@ class UrlSegments {
 		$this->urlDelimiterPrefix = $urlDelimiterPrefix;
 		return $this;
 	}
+
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return string
 	 */
 	public function GetUrlDelimiterPrefix () {
@@ -232,7 +241,7 @@ class UrlSegments {
 	}
 
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  string $urlDelimiterSubjects
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
@@ -241,8 +250,9 @@ class UrlSegments {
 		$this->urlDelimiterSubjects = $urlDelimiterSubjects;
 		return $this;
 	}
+
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return string
 	 */
 	public function GetUrlDelimiterSubjects () {
@@ -251,7 +261,7 @@ class UrlSegments {
 	}
 	
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  string $urlDelimiterSubjectValue
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
@@ -260,8 +270,9 @@ class UrlSegments {
 		$this->urlDelimiterSubjectValue = $urlDelimiterSubjectValue;
 		return $this;
 	}
+
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return string
 	 */
 	public function GetUrlDelimiterSubjectValue () {
@@ -270,7 +281,7 @@ class UrlSegments {
 	}
 
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  string $urlDelimiterValues
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
@@ -279,8 +290,9 @@ class UrlSegments {
 		$this->urlDelimiterValues = $urlDelimiterValues;
 		return $this;
 	}
+
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return string
 	 */
 	public function GetUrlDelimiterValues () {
@@ -289,7 +301,7 @@ class UrlSegments {
 	}
 	
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  string|NULL $routePattern
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
@@ -298,8 +310,10 @@ class UrlSegments {
 		$this->routePattern = $routePattern;
 		return $this;
 	}
+
 	/**
-	 * 
+	 * @inheritDocs
+	 * @internal
 	 * @return string
 	 */
 	public function GetRoutePattern () {
