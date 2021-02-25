@@ -12,9 +12,9 @@ class View extends \MvcCore\View {
 	
 	/**
 	 * 
-	 * @var string|NULL
+	 * @var \string[]
 	 */
-	protected static $origScriptsFullPathBase = NULL;
+	protected $defaultContentTemplates = [];
 	
 	/**
 	 * 
@@ -48,19 +48,13 @@ class View extends \MvcCore\View {
 	
 	/**
 	 * 
-	 * @return void
+	 * @internal
+	 * @param  \string[] $defaultContentTemplates
+	 * @return \MvcCore\Ext\Controllers\DataGrids\View
 	 */
-	protected static function changeScriptsFullPathBaseToGrid () {
-		static::$origScriptsFullPathBase = static::$viewScriptsFullPathBase;
-		static::$viewScriptsFullPathBase = static::GetGridScriptsFullPathBase();
-	}
-	
-	/**
-	 * 
-	 * @return void
-	 */
-	protected static function changeScriptsFullPathBaseToOrig () {
-		static::$viewScriptsFullPathBase = static::$origScriptsFullPathBase;
+	public function SetDefaultContentTemplates ($defaultContentTemplates) {
+		$this->defaultContentTemplates = $defaultContentTemplates;
+		return $this;
 	}
 	
 	/**
@@ -91,9 +85,8 @@ class View extends \MvcCore\View {
 	 * @return string
 	 */
 	public function & RenderGridContent ($relativePath = '') {
-		static::changeScriptsFullPathBaseToGrid();
-		$result = $this->Render('Views/Content', $relativePath);
-		static::changeScriptsFullPathBaseToOrig();
+		$internalTemplate = in_array($relativePath, $this->defaultContentTemplates, TRUE);
+		$result = $this->Render('Views/Content', $relativePath, $internalTemplate);
 		return $result;
 	}
 
@@ -103,10 +96,8 @@ class View extends \MvcCore\View {
 	 * @return string
 	 */
 	public function & RenderGridControl ($relativePath = '') {
-		$defaultTemplate = in_array($relativePath, $this->defaultControlTemplates, TRUE);
-		if ($defaultTemplate) static::changeScriptsFullPathBaseToGrid();
-		$result = $this->Render('Views/Controls', $relativePath);
-		if ($defaultTemplate) static::changeScriptsFullPathBaseToOrig();
+		$internalTemplate = in_array($relativePath, $this->defaultControlTemplates, TRUE);
+		$result = $this->Render('Views/Controls', $relativePath, $internalTemplate);
 		return $result;
 	}
 
@@ -116,10 +107,71 @@ class View extends \MvcCore\View {
 	 * @return string
 	 */
 	public function & RenderGridForm ($relativePath = '') {
-		$defaultTemplate = in_array($relativePath, $this->defaultFilterFormTemplates, TRUE);
-		if ($defaultTemplate) static::changeScriptsFullPathBaseToGrid();
-		$result = $this->Render('Views/Form', $relativePath);
-		if ($defaultTemplate) static::changeScriptsFullPathBaseToOrig();
+		$internalTemplate = in_array($relativePath, $this->defaultFilterFormTemplates, TRUE);
+		$result = $this->Render('Views/Form', $relativePath, $internalTemplate);
 		return $result;
 	}
+
+	/**
+	 * @inheritDocs
+	 * @param  string      $typePath     By default: `"Layouts" | "Scripts"`. It could be `"Forms" | "Forms/Fields"` etc...
+	 * @param  string      $relativePath
+	 * @throws \InvalidArgumentException Template not found in path: `$viewScriptFullPath`.
+	 * @return string
+	 */
+	public function & Render ($typePath = '', $relativePath = '', $internalTemplate = FALSE) {
+		/** @var $this \MvcCore\View */
+		if (!$internalTemplate)
+			$typePath = static::$scriptsDir;
+		$result = '';
+
+		if ($internalTemplate) {
+			$viewScriptFullPath = implode('/', [
+				static::GetGridScriptsFullPathBase(),
+				$typePath,
+				$relativePath . static::$extension
+			]);
+		} else {
+			$relativePath = $this->correctRelativePath(
+				$typePath, $relativePath
+			);
+			$viewScriptFullPath = static::GetViewScriptFullPath($typePath, $relativePath);
+		}
+
+		if (!file_exists($viewScriptFullPath)) {
+			throw new \InvalidArgumentException(
+				"[".get_class()."] Template not found in path: `{$viewScriptFullPath}`."
+			);
+		}
+
+		$renderedFullPaths = & $this->__protected['renderedFullPaths'];
+		$renderedFullPaths[] = $viewScriptFullPath;
+		// get render mode
+		list($renderMode) = $this->__protected['renderArgs'];
+		$renderModeWithOb = ($renderMode & \MvcCore\IView::RENDER_WITH_OB_FROM_ACTION_TO_LAYOUT) != 0;
+
+		// if render mode is default - start output buffering
+		if ($renderModeWithOb)
+			ob_start();
+		// render the template with local variables from the store
+		$result = call_user_func(function ($viewPath, $controller, $helpers) {
+			extract($helpers, EXTR_SKIP);
+			unset($helpers);
+			extract($this->__protected['store'], EXTR_SKIP);
+			include($viewPath);
+		}, $viewScriptFullPath, $this->controller, $this->__protected['helpers']);
+
+		// if render mode is default - get result from output buffer and return the result,
+		// if render mode is continuous - result is sent to client already, so return empty string only.
+		if ($renderModeWithOb) {
+			$result = ob_get_clean();
+			\array_pop($renderedFullPaths); // unset last
+			return $result;
+		} else {
+			$result = '';
+			\array_pop($renderedFullPaths); // unset last
+			return $result;
+		}
+	}
+
 }

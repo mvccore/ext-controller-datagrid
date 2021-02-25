@@ -4,60 +4,102 @@ namespace MvcCore\Ext\Controllers\DataGrids\Configs;
 
 class		Rendering
 implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
+	
+	/**
+	 * 
+	 * @var int
+	 */
+	protected $type							= \MvcCore\Ext\Controllers\DataGrid\IConstants::TYPE_TABLE;
+
+	/**
+	 * 
+	 * @var int
+	 */
+	protected $gridColumnsCount				= 3;
 
 	/**
 	 * 
 	 * @var bool
 	 */
-	protected $renderPageControl	= TRUE;
+	protected $renderTableHeadOrdering		= FALSE;
+
+	/**
+	 * 
+	 * @var bool
+	 */
+	protected $renderControlOrdering		= TRUE;
+
+	/**
+	 * 
+	 * @var bool
+	 */
+	protected $renderControlPaging			= TRUE;
 	
 	/**
 	 * 
 	 * @var bool
 	 */
-	protected $renderOrderControl	= TRUE;
+	protected $renderControlCountScales		= TRUE;
 	
 	/**
 	 * 
 	 * @var bool
 	 */
-	protected $renderCountControl	= TRUE;
-	
-	/**
-	 * 
-	 * @var bool
-	 */
-	protected $renderFilterForm		= FALSE;
+	protected $renderFilterForm				= FALSE;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateGridContent	= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTENT_DEFAULT;
+	protected $templateGridContent			= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTENT_DEFAULT;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templatePageControl	= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTROL_PAGE_DEFAULT;
+	protected $templateTableHead			= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_TABLE_HEAD_DEFAULT;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateOrderControl	= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTROL_ORDER_DEFAULT;
+	protected $templateTableBody			= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_TABLE_BODY_DEFAULT;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateCountControl	= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTROL_COUNT_DEFAULT;
+	protected $templateGridHead				= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_GRID_HEAD_DEFAULT;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateFilterForm	= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_FILTER_FORM_DEFAULT;
+	protected $templateGridBody				= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_GRID_BODY_DEFAULT;
+	
+	/**
+	 * 
+	 * @var string
+	 */
+	protected $templateControlPaging		= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTROL_PAGING_DEFAULT;
+	
+	/**
+	 * 
+	 * @var string
+	 */
+	protected $templateControlOrdering		= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTROL_ORDERING_DEFAULT;
+	
+	/**
+	 * 
+	 * @var string
+	 */
+	protected $templateControlCountScales	= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTROL_COUNT_SCALES_DEFAULT;
+	
+	/**
+	 * 
+	 * @var string
+	 */
+	protected $templateFilterForm			= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_FILTER_FORM_DEFAULT;
 	
 	/**
 	 * 
@@ -68,12 +110,48 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 
 	/**
 	 * @inheritDocs
-	 * @param  bool $renderPageControl
+	 * @param  int $type
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetRenderPageControl ($renderPageControl) {
+	public function SetType ($type = \MvcCore\Ext\Controllers\DataGrid\IConstants::TYPE_TABLE) {
+		$this->type = $type;
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @return int
+	 */
+	public function GetType () {
+		return $this->type;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @param  int $columnsCount
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetGridColumnsCount ($columnsCount) {
+		$this->columnsCount = $columnsCount;
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @return int
+	 */
+	public function GetGridColumnsCount () {
+		return $this->columnsCount;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @param  bool $renderTableHeadOrdering
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetRenderTableHeadOrdering ($renderTableHeadOrdering) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		$this->renderPageControl = $renderPageControl;
+		$this->renderTableHeadOrdering = $renderTableHeadOrdering;
 		return $this;
 	}
 
@@ -81,19 +159,19 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @inheritDocs
 	 * @return bool
 	 */
-	public function GetRenderPageControl () {
+	public function GetRenderTableHeadOrdering () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		return $this->renderPageControl;
+		return $this->renderTableHeadOrdering;
 	}
 
 	/**
 	 * @inheritDocs
-	 * @param  bool $renderOrderControl
+	 * @param  bool $renderControlOrdering
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetRenderOrderControl ($renderOrderControl) {
+	public function SetRenderControlOrdering ($renderControlOrdering) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		$this->renderOrderControl = $renderOrderControl;
+		$this->renderControlOrdering = $renderControlOrdering;
 		return $this;
 	}
 
@@ -101,19 +179,19 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @inheritDocs
 	 * @return bool
 	 */
-	public function GetRenderOrderControl () {
+	public function GetRenderControlOrdering () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		return $this->renderOrderControl;
+		return $this->renderControlOrdering;
 	}
 
 	/**
 	 * @inheritDocs
-	 * @param  bool $renderCountControl
+	 * @param  bool $renderControlPaging
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetRenderCountControl ($renderCountControl) {
+	public function SetRenderControlPaging ($renderControlPaging) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		$this->renderCountControl = $renderCountControl;
+		$this->renderControlPaging = $renderControlPaging;
 		return $this;
 	}
 
@@ -121,9 +199,29 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @inheritDocs
 	 * @return bool
 	 */
-	public function GetRenderCountControl () {
+	public function GetRenderControlPaging () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		return $this->renderCountControl;
+		return $this->renderControlPaging;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param  bool $renderControlCountScales
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetRenderControlCountScales ($renderControlCountScales) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		$this->renderControlCountScales = $renderControlCountScales;
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return bool
+	 */
+	public function GetRenderControlCountScales () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		return $this->renderControlCountScales;
 	}
 
 	/**
@@ -169,12 +267,12 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 
 	/**
 	 * @inheritDocs
-	 * @param  string $templatePageControl
+	 * @param  string $templateTableHead
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetTemplatePageControl ($templatePageControl) {
+	public function SetTemplateTableHead ($templateTableHead) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		$this->templatePageControl = $templatePageControl;
+		$this->templateTableHead = $templateTableHead;
 		return $this;
 	}
 
@@ -182,19 +280,19 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @inheritDocs
 	 * @return string
 	 */
-	public function GetTemplatePageControl () {
+	public function GetTemplateTableHead () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		return $this->templatePageControl;
+		return $this->templateTableHead;
 	}
-
+	
 	/**
 	 * @inheritDocs
-	 * @param  string $templateOrderControl
+	 * @param  string $templateTableBody
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetTemplateOrderControl ($templateOrderControl) {
+	public function SetTemplateTableBody ($templateTableBody) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		$this->templateOrderControl = $templateOrderControl;
+		$this->templateTableBody = $templateTableBody;
 		return $this;
 	}
 
@@ -202,19 +300,19 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @inheritDocs
 	 * @return string
 	 */
-	public function GetTemplateOrderControl () {
+	public function GetTemplateTableBody () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		return $this->templateOrderControl;
+		return $this->templateTableBody;
 	}
-
+	
 	/**
 	 * @inheritDocs
-	 * @param  string $templateCountControl
+	 * @param  string $templateGridHead
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetTemplateCountControl ($templateCountControl) {
+	public function SetTemplateGridHead ($templateGridHead) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		$this->templateCountControl = $templateCountControl;
+		$this->templateGridHead = $templateGridHead;
 		return $this;
 	}
 
@@ -222,9 +320,89 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @inheritDocs
 	 * @return string
 	 */
-	public function GetTemplateCountControl () {
+	public function GetTemplateGridHead () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		return $this->templateCountControl;
+		return $this->templateGridHead;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @param  string $templateGridBody
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetTemplateGridBody ($templateGridBody) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		$this->templateGridBody = $templateGridBody;
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return string
+	 */
+	public function GetTemplateGridBody () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		return $this->templateGridBody;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param  string $templateControlPaging
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetTemplateControlPaging ($templateControlPaging) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		$this->templateControlPaging = $templateControlPaging;
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return string
+	 */
+	public function GetTemplateControlPaging () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		return $this->templateControlPaging;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param  string $templateControlOrdering
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetTemplateControlOrdering ($templateControlOrdering) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		$this->templateControlOrdering = $templateControlOrdering;
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return string
+	 */
+	public function GetTemplateControlOrdering () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		return $this->templateControlOrdering;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param  string $templateControlCountScales
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetTemplateControlCountScales ($templateControlCountScales) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		$this->templateControlCountScales = $templateControlCountScales;
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return string
+	 */
+	public function GetTemplateControlCountScales () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		return $this->templateControlCountScales;
 	}
 
 	/**

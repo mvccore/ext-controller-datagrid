@@ -1,0 +1,57 @@
+<?php
+	/** @var $this \MvcCore\Ext\Controllers\DataGrids\View */
+	/** @var $grid \MvcCore\Ext\Controllers\DataGrid */
+	/** @var $model \MvcCore\Ext\Controllers\DataGrids\Models\GridModel */
+?><tbody><?php
+	
+	$renderConf = $grid->GetConfigRendering();
+	$colsCount = $renderConf->GetGridColumnsCount();
+	
+	$ordering = $grid->GetOrdering();
+	$model = $grid->GetModel();
+	$colIndex = 0;
+
+	?><tr class="grid-row-odd"><?php
+	foreach ($grid->GetPageData() as $index => $item):
+	
+		$colNumber = $colIndex % $colsCount;
+		if ($colIndex > 0 && $colNumber === 0):
+			?></tr><tr class="grid-row-<?php
+				echo ($index % 2 === 0 ? 'odd' : 'even');
+			?>"><?php
+		endif;
+		
+		?><td class="grid-column-<?php echo $colNumber + 1; ?>"><?php
+		
+
+			foreach ($grid->GetConfigColumns() as $configColumn):
+				?><div class="<?php
+					echo 'grid-item-' . $configColumn->GetUrlName();
+				?>"><?php
+					
+				$cellValue = $model->RenderCell($item, $configColumn, $this);
+				if ($configColumn->GetFilter()):
+					?><a class="grid-filter-link" href="<?php
+						echo $grid->GridFilterUrl($configColumn, $cellValue);
+					?>"><?php
+						echo $cellValue;
+					?></a><?php
+				else:
+					echo $cellValue;
+				endif;
+
+				?></div><?php
+			endforeach;
+
+		?></td><?php
+
+		$colIndex++;
+	endforeach;
+
+	for ($i = $colIndex % $colsCount; $i < $colsCount; $i++):
+		?><td class="grid-column-<?php echo $i + 1; ?> grid-cell-empty"></td><?php
+	endfor;
+
+	?></tr><?php
+
+?></tbody>

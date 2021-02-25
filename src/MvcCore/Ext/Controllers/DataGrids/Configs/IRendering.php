@@ -6,42 +6,81 @@ interface IRendering {
 
 	/**
 	 * 
-	 * @param  bool $renderPageControl
+	 * @param  int $type
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetRenderPageControl ($renderPageControl) ;
+	public function SetType ($type = \MvcCore\Ext\Controllers\DataGrid\IConstants::TYPE_TABLE);
+	
+	/**
+	 * 
+	 * @return int
+	 */
+	public function GetType ();
+	
+	/**
+	 * 
+	 * @param  int $columnsCount
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetGridColumnsCount ($columnsCount);
+	
+	/**
+	 * 
+	 * @return int
+	 */
+	public function GetGridColumnsCount ();
+
+	/**
+	 * 
+	 * @param  bool $renderTableHeadOrdering
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetRenderTableHeadOrdering ($renderTableHeadOrdering);
 
 	/**
 	 * 
 	 * @return bool
 	 */
-	public function GetRenderPageControl ();
+	public function GetRenderTableHeadOrdering ();
 
 	/**
 	 * 
-	 * @param  bool $renderOrderControl
+	 * @param  bool $renderControlOrdering
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetRenderOrderControl ($renderOrderControl);
+	public function SetRenderControlOrdering ($renderControlOrdering);
 
 	/**
 	 * 
 	 * @return bool
 	 */
-	public function GetRenderOrderControl ();
+	public function GetRenderControlOrdering ();
 
 	/**
 	 * 
-	 * @param  bool $renderCountControl
+	 * @param  bool $renderControlPaging
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetRenderCountControl ($renderCountControl);
+	public function SetRenderControlPaging ($renderControlPaging) ;
 
 	/**
 	 * 
 	 * @return bool
 	 */
-	public function GetRenderCountControl ();
+	public function GetRenderControlPaging ();
+
+	/**
+	 * 
+	 * @param  bool $renderControlCountScales
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetRenderControlCountScales ($renderControlCountScales);
+
+	/**
+	 * 
+	 * @return bool
+	 */
+	public function GetRenderControlCountScales ();
 
 	/**
 	 * 
@@ -56,7 +95,6 @@ interface IRendering {
 	 */
 	public function GetRenderFilterForm ();
 
-	
 	/**
 	 * 
 	 * @param  string $templateGridContent
@@ -69,45 +107,98 @@ interface IRendering {
 	 * @return string
 	 */
 	public function GetTemplateGridContent ();
-
+	
 	/**
-	 * 
-	 * @param  string $templatePageControl
+	 * Set relative path to your custom template from directory 
+	 * `/App/Views/Scripts`. Do not use any dots at the beginning.
+	 * @param  string $templateTableHead
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetTemplatePageControl ($templatePageControl);
+	public function SetTemplateTableHead ($templateTableHead);
 
 	/**
 	 * 
 	 * @return string
 	 */
-	public function GetTemplatePageControl ();
-
+	public function GetTemplateTableHead ();
+	
 	/**
 	 * 
-	 * @param  string $templateOrderControl
+	 * @param  string $templateTableBody
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetTemplateOrderControl ($templateOrderControl);
+	public function SetTemplateTableBody ($templateTableBody);
 
 	/**
 	 * 
 	 * @return string
 	 */
-	public function GetTemplateOrderControl ();
+	public function GetTemplateTableBody ();
 
 	/**
 	 * 
-	 * @param  string $templateCountControl
+	 * @param  string $templateGridHead
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetTemplateCountControl ($templateCountControl);
+	public function SetTemplateGridHead ($templateGridHead);
 
 	/**
 	 * 
 	 * @return string
 	 */
-	public function GetTemplateCountControl ();
+	public function GetTemplateGridHead ();
+	
+	/**
+	 * 
+	 * @param  string $templateGridBody
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetTemplateGridBody ($templateGridBody);
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function GetTemplateGridBody ();
+
+	/**
+	 * 
+	 * @param  string $templateControlPaging
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetTemplateControlPaging ($templateControlPaging);
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function GetTemplateControlPaging ();
+
+	/**
+	 * 
+	 * @param  string $templateControlOrdering
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetTemplateControlOrdering ($templateControlOrdering);
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function GetTemplateControlOrdering ();
+
+	/**
+	 * 
+	 * @param  string $templateControlCountScales
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetTemplateControlCountScales ($templateControlCountScales);
+
+	/**
+	 * 
+	 * @return string
+	 */
+	public function GetTemplateControlCountScales ();
 
 	/**
 	 * 
