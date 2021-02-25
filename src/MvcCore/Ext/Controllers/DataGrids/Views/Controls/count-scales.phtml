@@ -1,28 +1,33 @@
-count control
+<?php
+	/** @var $this \MvcCore\Ext\Controllers\DataGrids\View */
+	/** @var $grid \MvcCore\Ext\Controllers\DataGrid */
+?><table class="grid-control-counts"><tbody><?php
+	$countScales = $grid->GetCountScales();
+	$itemsPerPage = $grid->GetItemsPerPage();
+	x([$itemsPerPage, $countScales]);
+	foreach ($countScales as $countScale):
+		$current = $countScale === $itemsPerPage;
+		?><td class="grid-count<?php
+			if ($current) echo ' grid-count-current';
+		?>"><?php
 
-<?php /*
-<table id="<?=$this->rawControlId?>">
-	<tbody>
-		<tr>
-			<? foreach ($this->countScale as $countKey => $countValue): ?>
-				<td>
-					<? $textValue = ($countValue == 0) ? $this->translate('all') : $countValue ; ?>
+			$text = ($countScale === 0)
+				? 'All'
+				: (string) $countScale;
 
-					<? if ($countValue == $this->countPerPage): ?>
-						<b><?=$textValue?></b>
-					<? else: ?>
+			if ($current):
+				?><span class="grid-count-current"><?php
+					echo $text;
+				?></span><?php
+			else:
+				?><a class="grid-count-link" href="<?php
+					echo $grid->GridCountUrl($countScale);
+				?>"><?php
+					echo $text;
+				?></a><?php
+			endif;
 
-						<a href="<?
-							echo $this->grid->getUrl(
-								$countValue,
-								'count'
-							);
-						?>"><?=$textValue?></a>
-
-					<? endif; ?>
-				</td>
-			<? endforeach; ?>
-		</tr>
-	</tbody>
-</table>
-*/ ?>
+		?></td><?php
+		
+	endforeach;
+?></tr></table>

@@ -171,6 +171,32 @@ trait InternalGettersSetters {
 	/**
 	 * 
 	 * @internal
+	 * @param  int $offset
+	 * @return string
+	 */
+	public function GridPageUrl ($offset) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$page = intdiv($offset, $this->itemsPerPage) + 1;
+		return $this->GridUrl(['page' => $page]);
+	}
+	
+	/**
+	 * 
+	 * @internal
+	 * @param  int $count
+	 * @return string
+	 */
+	public function GridCountUrl ($count) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		return $this->GridUrl([
+			'page'	=> $this->page,
+			'count'	=> $count,
+		]);
+	}
+
+	/**
+	 * 
+	 * @internal
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
 	 * @return string
 	 */

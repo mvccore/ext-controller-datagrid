@@ -8,7 +8,9 @@
 		echo $this->RenderGridControl($renderConf->GetTemplateControlOrdering());
 
 	if ($renderConf->GetRenderControlPaging()) {
-		$pagingCode = $this->RenderGridControl($renderConf->GetTemplateControlPaging());
+		ob_start();
+		echo $this->RenderGridControl($renderConf->GetTemplateControlPaging());
+		$pagingCode = ob_get_clean();
 		echo $pagingCode;
 	}
 
@@ -30,7 +32,7 @@
 
 	if ($renderConf->GetRenderControlCountScales())
 		echo $this->RenderGridControl($renderConf->GetTemplateControlCountScales());
-
+	
 	if ($renderConf->GetRenderControlPaging())
 		echo $pagingCode;
 ?>

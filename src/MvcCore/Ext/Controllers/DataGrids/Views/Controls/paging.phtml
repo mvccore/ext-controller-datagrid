@@ -1,48 +1,34 @@
-paginator 
-<?php /*
-<table id="<?=$this->rawControlId?>">
-	<tbody>
-		<tr>
+<?php
+	/** @var $this \MvcCore\Ext\Controllers\DataGrids\View */
+	/** @var $grid \MvcCore\Ext\Controllers\DataGrid */
+?><table class="grid-control-pages"><tbody><?php
+	foreach ($grid->GetPaging() as $pagingItem):
+		
+		?><td class="grid-page<?php
+			if ($pagingItem->IsEmpty()):
+				echo ' grid-page-space';
+			elseif ($pagingItem->IsCurrent()):
+				echo ' grid-page-current';
+			else:
+				echo ' grid-page-link';
+			endif;
+		?>"><?php
 
-			<? if ($this->page > 1): ?>
-				<td>
-					<a href="<?
-						echo $this->grid->getUrl(
-							$this->page - 1,
-							'page'
-						);
-					?>"><?=$this->translate('previous')?></a>
-				</td>
-			<? endif; ?>
+		if ($pagingItem->IsEmpty()):
+			?><span>&hellip;</span><?php
+		elseif ($pagingItem->IsCurrent()):
+			?><span><?php
+				echo $pagingItem->GetText();
+			?></span><?php
+		else:
+			?><a href="<?php
+				echo $pagingItem->GetUrl();
+			?>"><span><?php
+				echo $pagingItem->GetText();
+			?></span></a><?php
+		endif;
 
-			<? foreach ($this->steps as $stepKey => $step): ?>
-				<td>
-					<? if ($step == $this->page): ?>
-						<b><?=$step?></b>
-					<? else: ?>
-						<a href="<?
-							echo $this->grid->getUrl(
-								$step,
-								'page'
-							);
-						?>"><?=$step?></a>
-					<? endif; ?>
-					&nbsp;&nbsp;
-				</td>
-			<? endforeach; ?>
-
-			<? if ($this->page < $this->pagesCount): ?>
-				<td>
-					<a href="<?
-						echo $this->grid->getUrl(
-							$this->page + 1,
-							'page'
-						);
-					?>"><?=$this->translate('next')?></a>
-				</td>
-			<? endif; ?>
-
-		</tr>
-	</tbody>
-</table>
-*/ ?>
+		?></td><?php
+		
+	endforeach;
+?></tr></table>

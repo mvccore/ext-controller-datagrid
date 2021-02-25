@@ -106,6 +106,7 @@ trait PreDispatchMethods {
 		$this->LoadModel();
 		
 		$this->setUpPaging();
+		$this->setUpCountScales();
 	}
 	
 	/**
@@ -276,14 +277,75 @@ trait PreDispatchMethods {
 	 */
 	protected function setUpPaging () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$paging = [];
-
 		$renderPaging = $this->configRendering->GetRenderControlPaging();
 		$multiplePages = $this->totalCount > $this->itemsPerPage;
+		$completePaging = $renderPaging && $multiplePages;
+		if (!$completePaging) {
+			if ($renderPaging)
+				$this->configRendering->SetRenderControlPaging(FALSE);
+			return;
+		}
+		
+		$pageMargin = 5;
 
-		x($renderPaging);
-		x($multiplePages);
+		$pagesCount = intval(ceil($this->totalCount / $this->itemsPerPage));
+		$currentPage = intdiv($this->offset, $this->itemsPerPage) + 1;
+		$displayPrev = $this->offset - $this->itemsPerPage > 0;
+		$displayFirst = $this->offset > $pageMargin * $this->itemsPerPage;
+		$displayNext = $this->offset + $this->itemsPerPage < $this->totalCount;
+		$displayLast = $this->offset < ($pagesCount * $this->itemsPerPage) - (($pageMargin + 1) * $this->itemsPerPage);
+		
+		$paging = [];
+		
+		if ($displayPrev) {
+			$paging[] = new MvcCore\Ext\Controllers\DataGrids(
+				$this->GridPageUrl($this->offset - $this->itemsPerPage), 
+				'Previous', FALSE, TRUE
+			);
+			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\PagingItem;
+		}
+		if ($displayFirst) {
+			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\PagingItem(
+				$this->GridPageUrl(0), 1
+			);
+			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\PagingItem;
+		}
+		
+		$beginIndex = max($currentPage - $pageMargin, 1);
+		$endIndex = min($currentPage + $pageMargin + 1, $pagesCount + 1);
+		for ($pageIndex = $beginIndex; $pageIndex < $endIndex; $pageIndex++) {
+			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\PagingItem(
+				$this->GridPageUrl(($pageIndex - 1) * $this->itemsPerPage), 
+				$pageIndex, $pageIndex === $currentPage
+			);
+		}
+
+		if ($displayLast) {
+			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\PagingItem;
+			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\PagingItem(
+				$this->GridPageUrl(($pagesCount - 1) * $this->itemsPerPage), 
+				$pagesCount
+			);
+		}
+		if ($displayNext) {
+			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\PagingItem;
+			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\PagingItem(
+				$this->GridPageUrl($this->offset + $this->itemsPerPage), 
+				'Next', FALSE, FALSE, TRUE
+			);
+		}
 
 		$this->paging = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging($paging);
+	}
+	
+	/**
+	 * @return void
+	 */
+	protected function setUpCountScales () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$renderCountScales = $this->configRendering->GetRenderControlCountScales();
+		$multiplePages = $this->totalCount > $this->itemsPerPage;
+		if ($renderCountScales && !$multiplePages) 
+			$this->configRendering->SetRenderControlCountScales(FALSE);
 	}
 }
