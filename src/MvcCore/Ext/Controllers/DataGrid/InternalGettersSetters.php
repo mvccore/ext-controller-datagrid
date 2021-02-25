@@ -116,13 +116,144 @@ trait InternalGettersSetters {
 		}
 		return $this->Url('self', [static::PARAM_GRID => $gridParam]);
 	}
+	
+	/**
+	 * 
+	 * @internal
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
+	 * @param  mixed                                             $cellValue 
+	 * @return string
+	 */
+	public function GridFilterUrl (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column, $cellValue) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$configUrlSegments = $this->configUrlSegments;
+		$subjValueDelim = $configUrlSegments->GetUrlDelimiterSubjectValue();
+		$valuesDelim = $configUrlSegments->GetUrlDelimiterValues();
+		$subjsDelim = $configUrlSegments->GetUrlDelimiterSubjects();
+		
+		$currentColumnUrlName = $column->GetUrlName();
+		$currentColumnDbName = $column->GetDbColumnName();
+		$currentFilterDbNames = array_merge([], $this->filtering);
+
+		if (isset($currentFilterDbNames[$currentColumnDbName])) {
+			$currentFilterValues = $currentFilterDbNames[$currentColumnDbName];
+			unset($currentFilterDbNames[$currentColumnDbName]);
+			if (!in_array($cellValue, $currentFilterValues, FALSE))
+				$currentFilterValues[] = $cellValue;
+		} else {
+			$currentFilterValues = [$cellValue];
+		}
+		$currentColumnUrlValues = implode($valuesDelim, $currentFilterValues);
+		$filterParams[] = "{$currentColumnUrlName}{$subjValueDelim}{$currentColumnUrlValues}";
+
+		if ($this->multiFiltering) {
+			foreach ($this->configColumns->GetArray() as $columnUrlName => $columnConfig) {
+				$columnDbName = $columnConfig->GetDbColumnName();
+				if (!isset($currentFilterDbNames[$columnDbName])) continue;
+				$filterValues = $currentFilterDbNames[$columnDbName];
+				$filterUrlValues = implode($valuesDelim, $filterValues);
+				$filterParams[] = "{$columnUrlName}{$subjValueDelim}{$filterUrlValues}";
+			}
+		}
+		return $this->GridUrl([
+			'filter'	=> implode($subjsDelim, $filterParams)
+		]);
+	}
 
 	/**
 	 * 
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $configColumn 
+	 * @internal
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
 	 * @return string
 	 */
-	public function GridOrderUrl (\MvcCore\Ext\Controllers\DataGrids\Configs\Column $configColumn) {
-		return '?order=' . $configColumn->GetUrlName();
+	public function GridOrderUrl (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$configUrlSegments = $this->configUrlSegments;
+		$urlDirAsc = $configUrlSegments->GetUrlSuffixOrderAsc();
+		$urlDirDesc = $configUrlSegments->GetUrlSuffixOrderDesc();
+		$subjValueDelim = $configUrlSegments->GetUrlDelimiterSubjectValue();
+		$subjsDelim = $configUrlSegments->GetUrlDelimiterSubjects();
+		$currentColumnUrlDir = $urlDirAsc;
+		$currentColumnUrlName = $column->GetUrlName();
+		$currentColumnDbName = $column->GetDbColumnName();
+		$currentOrderDbNames = array_merge([], $this->ordering);
+		$oppositeDirections = [
+			'ASC'	=> $urlDirDesc,
+			'DESC'	=> '',
+		];
+		if (isset($currentOrderDbNames[$currentColumnDbName])) {
+			$orderDirection = $currentOrderDbNames[$currentColumnDbName];
+			unset($currentOrderDbNames[$currentColumnDbName]);
+			if (isset($oppositeDirections[$orderDirection]))
+				$currentColumnUrlDir = $oppositeDirections[$orderDirection];
+		}
+		$orderParams = [];
+		if ($currentColumnUrlDir)
+			$orderParams[] = "{$currentColumnUrlName}{$subjValueDelim}{$currentColumnUrlDir}";
+		if ($this->multiSorting) {
+			$urlDirections = [
+				'ASC'	=> $urlDirAsc,
+				'DESC'	=> $urlDirDesc,
+			];
+			foreach ($this->configColumns->GetArray() as $columnUrlName => $columnConfig) {
+				$columnDbName = $columnConfig->GetDbColumnName();
+				if (!isset($currentOrderDbNames[$columnDbName])) continue;
+				$orderDirection = $currentOrderDbNames[$columnDbName];
+				$columnUrlDir = $urlDirAsc;
+				if (isset($oppositeDirections[$orderDirection]))
+					$columnUrlDir = $urlDirections[$orderDirection];
+				$orderParams[] = "{$columnUrlName}{$subjValueDelim}{$columnUrlDir}";
+			}
+		}
+		return $this->GridUrl([
+			'order'	=> implode($subjsDelim, $orderParams)
+		]);
+	}
+
+	/**
+	 * 
+	 * @internal
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
+	 * @return bool|NULL
+	 */
+	public function GetColumnOrderDirection (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$columnDbName = $column->GetDbColumnName();
+		if (!isset($this->ordering[$columnDbName])) 
+			return NULL;
+		$orderingDirection = $this->ordering[$columnDbName];
+		static $resultDirections = [
+			'ASC'	=> TRUE,
+			'DESC'	=> FALSE,
+		];
+		if (!isset($resultDirections[$orderingDirection])) 
+			return TRUE;
+		return $resultDirections[$orderingDirection];
+	}
+
+	/**
+	 * @internal
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column 
+	 * @return int|NULL
+	 */
+	public function GetColumnFiltered (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$columnDbName = $column->GetDbColumnName();
+		if (!isset($this->filtering[$columnDbName])) 
+			return NULL;
+		return array_search($columnDbName, array_keys($this->filtering), TRUE);
+	}
+
+	/**
+	 * @internal
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column 
+	 * @return int|NULL
+	 */
+	public function GetColumnOrderIndex (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$columnDbName = $column->GetDbColumnName();
+		if (!isset($this->ordering[$columnDbName])) 
+			return NULL;
+		return array_search($columnDbName, array_keys($this->ordering), TRUE);
 	}
 }

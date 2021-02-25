@@ -23,6 +23,18 @@ trait ConfigProps {
 
 	/**
 	 * 
+	 * @var bool
+	 */
+	protected $multiSorting = FALSE;
+
+	/**
+	 * 
+	 * @var bool
+	 */
+	protected $multiFiltering = FALSE;
+
+	/**
+	 * 
 	 * @var \MvcCore\Route|NULL
 	 */
 	protected $route = NULL;

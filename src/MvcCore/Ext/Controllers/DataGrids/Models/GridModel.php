@@ -101,15 +101,15 @@ trait GridModel {
 
 	/**
 	 * 
-	 * @param  mixed                                             $gridRow
+	 * @param  mixed                                             $row
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
 	 * @param  \MvcCore\IView                                    $view
 	 * @return string
 	 */
 	public function RenderCell ($row, \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column, \MvcCore\IView $view) {
 		$propName = $column->GetPropName();
-		if (isset($gridRow->{$propName})) {
-			$value = $gridRow->{$propName};
+		$value = $row->{'Get' . ucfirst($propName)}();
+		if ($value !== NULL) {
 			$viewHelper = $column->GetViewHelper();
 			if ($viewHelper) {
 				return call_user_func_array(

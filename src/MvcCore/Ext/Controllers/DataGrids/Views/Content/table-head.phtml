@@ -3,17 +3,50 @@
 	/** @var $grid \MvcCore\Ext\Controllers\DataGrid */
 ?><thead><tr><?php
 	$ordering = $grid->GetOrdering();
-	foreach ($grid->GetConfigColumns() as $urlName => $configColumn):
-		?><th><?php
+	$configColumns = $grid->GetConfigColumns();
+	foreach ($configColumns as $urlName => $configColumn):
+		
+		?><th class="<?php
+			echo 'grid-col-' . $configColumn->GetUrlName();
+			if ($grid->GetColumnFiltered($configColumn) !== NULL):
+				echo ' grid-col-filtering';
+			endif;
+		?>"><?php
+
 		if ($configColumn->GetOrder()): 
-			?><a href="<?php
+
+			?><a class="grid-order-link" href="<?php
 				echo $grid->GridOrderUrl($configColumn);
 			?>"><?php
 				echo $configColumn->GetHumanName();
 			?></a><?php
+
+			$dir = $grid->GetColumnOrderDirection($configColumn);
+			if ($dir !== NULL): 
+				?><span class="grid-order-dir grid-order-<?php
+					echo $dir ? 'asc' : 'desc';
+				?>"><?php
+					echo $dir ? '&#9660;' : '&#9650;';
+				?></span><?php
+
+				if ($grid->GetMultiSorting()):
+					$orderIndex = $grid->GetColumnOrderIndex($configColumn);
+					if ($orderIndex !== NULL):
+						?><span class="grid-order-index"><?php
+							echo $orderIndex + 1;
+						?></span><?php
+					endif;
+				endif;
+			endif;
+
 		else:
-			echo $configColumn->GetHumanName();
+
+			?><span class="grid-head-text"><?php
+				echo $configColumn->GetHumanName();
+			?></span><?php
+
 		endif;
 		?></th><?php
+		
 	endforeach;
 ?></tr></thead>

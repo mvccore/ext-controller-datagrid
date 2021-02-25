@@ -33,6 +33,14 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	}
 
 	/**
+	 * Return internal store.
+	 * @return array
+	 */
+	public function & GetArray () {
+		return $this->array;
+	}
+	
+	/**
 	 * Return count of iterator items.
 	 * @return int
 	 */

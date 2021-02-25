@@ -40,7 +40,7 @@ interface IGridModel {
 
 	/**
 	 * 
-	 * @param  mixed                                             $gridRow
+	 * @param  mixed                                             $row
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
 	 * @param  \MvcCore\IView                                    $view
 	 * @return string

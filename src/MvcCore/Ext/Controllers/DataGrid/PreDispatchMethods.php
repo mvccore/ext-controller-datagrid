@@ -179,6 +179,7 @@ trait PreDispatchMethods {
 			if (!isset($this->configColumns[$rawColumnName])) continue;
 			$configColumn = $this->configColumns[$rawColumnName];
 			$ordering[$configColumn->GetDbColumnName()] = $direction;
+			if (!$this->multiSorting) break;
 		}
 		$this->ordering = $ordering;
 	}
@@ -215,6 +216,7 @@ trait PreDispatchMethods {
 			$configColumn = $this->configColumns[$rawColumnName];
 			if (count($values) === 0) continue;
 			$filtering[$configColumn->GetDbColumnName()] = $values;
+			if (!$this->multiFiltering) break;
 		}
 		$this->filtering = $filtering;
 	}

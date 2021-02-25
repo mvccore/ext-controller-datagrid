@@ -60,6 +60,40 @@ trait ConfigGettersSetters {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->countScales;
 	}
+	
+	/**
+	 * @param  bool $multiSorting
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetMultiSorting ($multiSorting) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$this->multiSorting = $multiSorting;
+		return $this;
+	}
+	/**
+	 * @return bool
+	 */
+	public function GetMultiSorting () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		return $this->multiSorting;
+	}
+	
+	/**
+	 * @param  bool $multiFiltering
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetMultiFiltering ($multiFiltering) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$this->multiFiltering = $multiFiltering;
+		return $this;
+	}
+	/**
+	 * @return bool
+	 */
+	public function GetMultiFiltering () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		return $this->multiFiltering;
+	}
 
 	/**
 	 * @param  \MvcCore\Route|NULL $route
@@ -191,7 +225,7 @@ trait ConfigGettersSetters {
 		return $this;
 	}
 	/**
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column[]|NULL
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns|NULL
 	 */
 	public function GetConfigColumns () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */

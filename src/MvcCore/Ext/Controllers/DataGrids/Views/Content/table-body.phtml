@@ -3,17 +3,35 @@
 	/** @var $grid \MvcCore\Ext\Controllers\DataGrid */
 	/** @var $model \MvcCore\Ext\Controllers\DataGrids\Models\GridModel */
 ?><tbody><?php
+
 	$ordering = $grid->GetOrdering();
 	$model = $grid->GetModel();
-	foreach ($grid->GetPageData() as $item):
-		?><tr><?php
-			foreach ($grid->GetConfigColumns() as $configColumn):
-				?><td><?php
+	foreach ($grid->GetPageData() as $index => $item):
 
-					echo $model->RenderCell($item, $configColumn, $this);
+		?><tr class="<?php
+			echo 'grid-row-' . ($index % 2 === 0 ? 'odd' : 'even');
+		?>"><?php
+
+			foreach ($grid->GetConfigColumns() as $configColumn):
+				?><td class="<?php
+					echo 'grid-col-' . $configColumn->GetUrlName();
+				?>"><?php
+					
+				$cellValue = $model->RenderCell($item, $configColumn, $this);
+				if ($configColumn->GetFilter()):
+					?><a class="grid-filter-link" href="<?php
+						echo $grid->GridFilterUrl($configColumn, $cellValue);
+					?>"><?php
+						echo $cellValue;
+					?></a><?php
+				else:
+					echo $cellValue;
+				endif;
 
 				?></td><?php
 			endforeach;
+
 		?></tr><?php
 	endforeach;
+
 ?></tbody>
