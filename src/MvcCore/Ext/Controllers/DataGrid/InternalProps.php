@@ -39,6 +39,13 @@ trait InternalProps {
 	 * @var array
 	 */
 	protected $filtering = [];
+	
+	/**
+	 * Paging items, completed after model total count has been loaded.
+	 * @internal
+	 * @var \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging|NULL
+	 */
+	protected $paging = NULL;
 
 	/**
 	 * Total items count.

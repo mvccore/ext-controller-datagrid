@@ -104,6 +104,8 @@ trait PreDispatchMethods {
 		$this->setUpOrdering();
 		$this->setUpFiltering();
 		$this->LoadModel();
+		
+		$this->setUpPaging();
 	}
 	
 	/**
@@ -269,4 +271,19 @@ trait PreDispatchMethods {
 		return TRUE;
 	}
 
+	/**
+	 * @return void
+	 */
+	protected function setUpPaging () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$paging = [];
+
+		$renderPaging = $this->configRendering->GetRenderControlPaging();
+		$multiplePages = $this->totalCount > $this->itemsPerPage;
+
+		x($renderPaging);
+		x($multiplePages);
+
+		$this->paging = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging($paging);
+	}
 }

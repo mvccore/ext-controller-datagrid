@@ -49,6 +49,14 @@ trait InternalGettersSetters {
 	
 	/**
 	 * 
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging|NULL
+	 */
+	public function GetPaging () {
+		return $this->paging;
+	}
+	
+	/**
+	 * 
 	 * @return int|NULL
 	 */
 	public function GetTotalCount () {
