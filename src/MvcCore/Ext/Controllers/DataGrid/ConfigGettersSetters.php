@@ -6,6 +6,37 @@ trait ConfigGettersSetters {
 	
 	/**
 	 * 
+	 * @param  array $controlsTexts
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetControlsTexts ($controlsTexts) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$this->controlsTexts = $controlsTexts;
+		return $this;
+	}
+	
+	/**
+	 * 
+	 * @return array
+	 */
+	public function GetControlsTexts ($controlsTexts) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		return $this->controlsTexts;
+	}
+	
+	/**
+	 * 
+	 * @return string|NULL
+	 */
+	public function GetControlText ($textKey) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		if (isset($this->controlsTexts[$textKey]))
+			return $this->controlsTexts[$textKey];
+		return NULL;
+	}
+	
+	/**
+	 * 
 	 * @param  string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -36,7 +67,7 @@ trait ConfigGettersSetters {
 	 * 
 	 * @return \string[]
 	 */
-	public function & GetCssClasses () {
+	public function GetCssClasses () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->cssClasses;
 	}
@@ -154,6 +185,42 @@ trait ConfigGettersSetters {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->multiFiltering;
 	}
+	
+	/**
+	 * @param  callable $translator
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetTranslator ($translator) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$this->translator = $translator;
+		return $this;
+	}
+	
+	/**
+	 * @return callable|NULL
+	 */
+	public function GetTranslator ($translator) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$this->translator;
+	}
+	
+	/**
+	 * @param  bool $translateUrlNames
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetTranslateUrlNames ($translateUrlNames) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$this->translateUrlNames = $translateUrlNames;
+		return $this;
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function GetTranslateUrlNames () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$this->translateUrlNames;
+	}
 
 	/**
 	 * @param  \MvcCore\Route|NULL $route
@@ -206,7 +273,8 @@ trait ConfigGettersSetters {
 	public function GetUrlParams () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->urlParams === NULL) {
-			$matches = $this->GetRoute()->Matches($this->GetGridRequest());
+			$gridReq = $this->GetGridRequest();
+			$matches = $this->GetRoute()->Matches($gridReq);
 			if ($matches === NULL) {
 				$this->urlParams = [];
 			} else {

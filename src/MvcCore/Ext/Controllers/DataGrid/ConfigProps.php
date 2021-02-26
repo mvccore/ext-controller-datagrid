@@ -11,6 +11,18 @@ trait ConfigProps {
 	protected $cssClasses = [];
 
 	/**
+	 * Grid controls visible texts.
+	 * @var array
+	 */
+	protected $controlsTexts = [
+		'previous'	=> 'Previous',
+		'next'		=> 'Next',
+		'first'		=> 'First',
+		'last'		=> 'Last ({0})',
+		'all'		=> 'All',
+	];
+
+	/**
 	 * @var \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel
 	 */
 	protected $model = NULL;
@@ -44,6 +56,18 @@ trait ConfigProps {
 	 * @var bool
 	 */
 	protected $multiFiltering = FALSE;
+
+	/**
+	 * 
+	 * @var callable
+	 */
+	protected $translator = NULL;
+
+	/**
+	 * 
+	 * @var bool
+	 */
+	protected $translateUrlNames = FALSE;
 
 	/**
 	 * 

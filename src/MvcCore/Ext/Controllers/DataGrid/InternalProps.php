@@ -48,6 +48,12 @@ trait InternalProps {
 	protected $paging = NULL;
 
 	/**
+	 * Initialized into `TRUE` if any translator callable defined.
+	 * @var bool
+	 */
+	protected $translate = FALSE;
+
+	/**
 	 * Total items count.
 	 * @var int|NULL
 	 */

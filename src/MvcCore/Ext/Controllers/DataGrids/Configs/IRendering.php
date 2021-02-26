@@ -110,6 +110,33 @@ interface IRendering {
 
 	/**
 	 * 
+	 * @param  bool $renderControlPagingPrevAndNext
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetRenderControlPagingPrevAndNext ($renderControlPagingPrevAndNext);
+
+	/**
+	 * 
+	 * @return bool
+	 */
+	public function GetRenderControlPagingPrevAndNext ();
+
+	
+	/**
+	 * 
+	 * @param  bool $renderControlPagingFirstAndLast
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetRenderControlPagingFirstAndLast ($renderControlPagingFirstAndLast);
+
+	/**
+	 * 
+	 * @return bool
+	 */
+	public function GetRenderControlPagingFirstAndLast ();
+
+	/**
+	 * 
 	 * @param  int $renderControlCountScales
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */

@@ -18,7 +18,7 @@
 		?>"><?php
 
 			$text = ($countScale === 0)
-				? 'All'
+				? $grid->GetControlText('all')
 				: (string) $countScale;
 
 			if ($current):

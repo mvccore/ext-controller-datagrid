@@ -38,6 +38,9 @@ trait InitMethods {
 		$this->GetRoute();
 		$this->GetUrlParams();
 		$this->initSetUpUrlParams();
+		$this->translate = is_callable($this->translator) || $this->translator instanceof \Closure;
+		if (!$this->translate)
+			$this->translateUrlNames = FALSE;
 	}
 
 	/**

@@ -57,6 +57,14 @@ trait InternalGettersSetters {
 	
 	/**
 	 * 
+	 * @return bool
+	 */
+	public function GetTranslate () {
+		return $this->translate;
+	}
+	
+	/**
+	 * 
 	 * @return int|NULL
 	 */
 	public function GetTotalCount () {
@@ -151,7 +159,6 @@ trait InternalGettersSetters {
 	
 	/**
 	 * 
-	 * @internal
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
 	 * @param  mixed                                             $cellValue 
 	 * @return string
@@ -194,7 +201,6 @@ trait InternalGettersSetters {
 
 	/**
 	 * 
-	 * @internal
 	 * @param  int $offset
 	 * @return string
 	 */
@@ -212,7 +218,6 @@ trait InternalGettersSetters {
 	
 	/**
 	 * 
-	 * @internal
 	 * @param  int $count
 	 * @return string
 	 */
@@ -226,7 +231,6 @@ trait InternalGettersSetters {
 
 	/**
 	 * 
-	 * @internal
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
 	 * @return string
 	 */
@@ -276,7 +280,6 @@ trait InternalGettersSetters {
 
 	/**
 	 * 
-	 * @internal
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
 	 * @return bool|NULL
 	 */
@@ -296,7 +299,7 @@ trait InternalGettersSetters {
 	}
 
 	/**
-	 * @internal
+	 * 
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column 
 	 * @return int|NULL
 	 */
@@ -309,7 +312,7 @@ trait InternalGettersSetters {
 	}
 
 	/**
-	 * @internal
+	 * 
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column 
 	 * @return int|NULL
 	 */
@@ -319,5 +322,56 @@ trait InternalGettersSetters {
 		if (!isset($this->ordering[$columnDbName])) 
 			return NULL;
 		return array_search($columnDbName, array_keys($this->ordering), TRUE);
+	}
+
+	/**
+	 * 
+	 * @return array
+	 */
+	public function __debugInfo () {
+		$type = new \ReflectionClass($this);
+		$props = $type->getProperties(
+			\ReflectionProperty::IS_PRIVATE |
+			\ReflectionProperty::IS_PROTECTED |
+			\ReflectionProperty::IS_PUBLIC |
+			\ReflectionProperty::IS_STATIC
+		);
+		$result = [];
+		$phpWithTypes = PHP_VERSION_ID >= 70400;
+		foreach ($props as $prop) {
+			$obj = $prop->isStatic() ? $this : NULL;
+			if ($prop->isPrivate()) $prop->setAccessible(TRUE);
+			$value = NULL;
+			if ($phpWithTypes) {
+				if ($prop->isInitialized($obj))
+					$value = $prop->getValue($obj);
+			} else {
+				$value = $prop->getValue($obj);
+			}
+			if ($value instanceof \Closure) 
+				$value = '\\Closure';
+			$result[$prop->name] = $value;
+		}
+		return $result;
+	}
+
+	/**
+	 * 
+	 * @return \string[]
+	 */
+	public function __sleep () {
+		$type = new \ReflectionClass($this);
+		$props = $type->getProperties(
+			\ReflectionProperty::IS_PRIVATE |
+			\ReflectionProperty::IS_PROTECTED |
+			\ReflectionProperty::IS_PUBLIC
+		);
+		$result = [];
+		foreach ($props as $prop) {
+			if ($prop->isStatic()) continue;
+			if ($prop->name === 'translator') continue;
+			$result[] = $prop->name;
+		}
+		return $result;
 	}
 }

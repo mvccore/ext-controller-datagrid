@@ -37,6 +37,18 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	
 	/**
 	 * 
+	 * @var bool
+	 */
+	protected $renderControlPagingPrevAndNext		= TRUE;
+	
+	/**
+	 * 
+	 * @var bool
+	 */
+	protected $renderControlPagingFirstAndLast		= FALSE;
+
+	/**
+	 * 
 	 * @var int
 	 */
 	protected $controlPagingNearbyPagesCount		= 3;
@@ -221,6 +233,47 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	public function GetRenderControlPaging () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
 		return $this->renderControlPaging;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param  bool $renderControlPagingPrevAndNext
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetRenderControlPagingPrevAndNext ($renderControlPagingPrevAndNext) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		$this->renderControlPagingPrevAndNext = $renderControlPagingPrevAndNext;
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return bool
+	 */
+	public function GetRenderControlPagingPrevAndNext () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		return $this->renderControlPagingPrevAndNext;
+	}
+
+	
+	/**
+	 * @inheritDocs
+	 * @param  bool $renderControlPagingFirstAndLast
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetRenderControlPagingFirstAndLast ($renderControlPagingFirstAndLast) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		$this->renderControlPagingFirstAndLast = $renderControlPagingFirstAndLast;
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return bool
+	 */
+	public function GetRenderControlPagingFirstAndLast () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		return $this->renderControlPagingFirstAndLast;
 	}
 
 	/**
