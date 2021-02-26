@@ -6,7 +6,7 @@ class Paging extends \MvcCore\Ext\Controllers\DataGrids\Iterators\SequenceArray 
 
 	/**
 	 * Return current iterator value.
-	 * @return \MvcCore\Ext\Controllers\DataGrids\PagingItem
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Paging\Item
 	 */
 	public function current () {
 		return $this->array[$this->position];
@@ -14,8 +14,8 @@ class Paging extends \MvcCore\Ext\Controllers\DataGrids\Iterators\SequenceArray 
 
 	/**
 	 * Set given `$value` into iterator under `$offset`.
-	 * @param  int                                           $offset 
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\PagingItem $value 
+	 * @param  int                                            $offset 
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Paging\Item $value 
 	 * @return void
 	 */
 	public function offsetSet ($offset = NULL, $value = NULL) {
@@ -30,7 +30,7 @@ class Paging extends \MvcCore\Ext\Controllers\DataGrids\Iterators\SequenceArray 
 	/**
 	 * Get iterator value under given `$offset`.
 	 * @param  int $offset 
-	 * @return \MvcCore\Ext\Controllers\DataGrids\PagingItem
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Paging\Item
 	 */
 	public function offsetGet ($offset) {
 		$offsetInt = intval($offset);

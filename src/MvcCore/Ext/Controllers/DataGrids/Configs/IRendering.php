@@ -58,27 +58,53 @@ interface IRendering {
 
 	/**
 	 * 
-	 * @param  bool $renderControlPaging
+	 * @param  int $nearbyPagesCount
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetControlPagingNearbyPagesCount ($nearbyPagesCount);
+
+	/**
+	 * 
+	 * @return int
+	 */
+	public function GetControlPagingNearbyPagesCount ();
+	
+	/**
+	 * 
+	 * @param  int $outerPagesCount
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetControlPagingOuterPagesCount ($outerPagesCount);
+
+	/**
+	 * 
+	 * @return int
+	 */
+	public function GetControlPagingOuterPagesCount ();
+
+	/**
+	 * 
+	 * @param  int $renderControlPaging
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderControlPaging ($renderControlPaging) ;
 
 	/**
 	 * 
-	 * @return bool
+	 * @return int
 	 */
 	public function GetRenderControlPaging ();
 
 	/**
 	 * 
-	 * @param  bool $renderControlCountScales
+	 * @param  int $renderControlCountScales
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderControlCountScales ($renderControlCountScales);
 
 	/**
 	 * 
-	 * @return bool
+	 * @return int
 	 */
 	public function GetRenderControlCountScales ();
 

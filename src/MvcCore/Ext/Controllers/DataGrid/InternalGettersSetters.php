@@ -82,8 +82,9 @@ trait InternalGettersSetters {
 			$gridParam = $gridParam !== NULL
 				? '/' . ltrim($gridParam, '/')
 				: '';
-			$this->gridRequest = \MvcCore\Request::CreateInstance();
-			$this->gridRequest->SetPath($gridParam);
+			$this->gridRequest = \MvcCore\Request::CreateInstance()
+				->SetBasePath('')
+				->SetPath($gridParam);
 		}
 		return $this->gridRequest;
 	}
@@ -103,16 +104,18 @@ trait InternalGettersSetters {
 		$route = $this->GetRoute();
 		$defaultParams = array_merge([], $this->GetUrlParams());
 		$defaultPage = $defaultParams['page'];
-		$pageDefaultChange = isset($gridParams['count']) && $gridParams['count'] != $defaultParams['count'];
-		if ($pageDefaultChange) {
-			$defaultParams['page'] = NULL;
-			$route->SetDefaults($defaultParams);
-		}
+		$pageDefaultChange = (
+			array_key_exists('count', $gridParams) && 
+			$gridParams['count'] !== $defaultParams['count']
+		);
+		if ($pageDefaultChange) 
+			$route->SetDefaults([]);
 		foreach ($gridParams as $paramName => $paramValue) 
-			if (isset($defaultParams[$paramName]))
+			if (array_key_exists($paramName, $defaultParams))
 				unset($defaultParams[$paramName]);
+		$gridReq = $this->GetGridRequest();
 		list ($gridParam) = $route->Url(
-			$this->GetGridRequest(),
+			$gridReq,
 			$gridParams,
 			$defaultParams,
 			$this->queryStringParamsSepatator,
@@ -176,7 +179,13 @@ trait InternalGettersSetters {
 	 */
 	public function GridPageUrl ($offset) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$page = intdiv($offset, $this->itemsPerPage) + 1;
+		$itemsPerPage = $this->itemsPerPage;
+		if (
+			$this->itemsPerPage === 0 && (
+				$this->configRendering->GetRenderControlPaging() & \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_ALWAYS
+			) != 0
+		) $itemsPerPage = $this->totalCount;
+		$page = intdiv($offset, $itemsPerPage) + 1;
 		return $this->GridUrl(['page' => $page]);
 	}
 	

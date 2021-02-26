@@ -1,21 +1,35 @@
 <?php
 	/** @var $this \MvcCore\Ext\Controllers\DataGrids\View */
 	/** @var $grid \MvcCore\Ext\Controllers\DataGrid */
-	
-	echo $this->RenderGridControlOrdering();
 
-	$pagingCode = $this->RenderGridControlPaging();
-	echo $pagingCode;
+	$renderConf = $grid->GetConfigRendering();
+	$gridType = $renderConf->GetType();
+	$gridTableType = ($gridType & \MvcCore\Ext\Controllers\IDataGrid::TYPE_TABLE) !== 0;
+	$cssClasses = $grid->GetCssClasses();
 
-	?><table class="datagrid"><?php
-	if ($grid->GetConfigRendering()->GetType() === \MvcCore\Ext\Controllers\IDataGrid::TYPE_TABLE): 
-		echo $this->RenderGridHeadTable();
-		echo $this->RenderGridBodyTable();
-	else:
-		echo $this->RenderGridBodyGrid();
+?><div class="grid grid-type-<?php
+	echo ($gridTableType ? 'table' : 'grid');
+	if (count($cssClasses) > 0) echo ' '.implode(' ', $cssClasses);
+?>"><?php
+	if ($renderConf->GetRenderControlPaging() || $renderConf->GetRenderControlOrdering()):
+	?><div class="grid-controls grid-controls-top"><?php
+		$pagingCode = $this->RenderGridControlPaging();
+		echo $pagingCode;
+		echo $this->RenderGridControlOrdering();
+	?></div><?php
 	endif;
-	?></table><?php 
-
-	echo $this->RenderGridControlCountScales();
-	echo $pagingCode;
-?>
+	?><table class="grid-content"><?php
+		if ($gridTableType): 
+			echo $this->RenderGridHeadTable();
+			echo $this->RenderGridBodyTable();
+		else:
+			echo $this->RenderGridBodyGrid();
+		endif;
+	?></table><?php
+	if ($renderConf->GetRenderControlPaging() || $renderConf->GetRenderControlCountScales()):
+	?><div class="grid-controls grid-controls-bottom"><?php 
+		if (isset($pagingCode)) echo $pagingCode;
+		echo $this->RenderGridControlCountScales();
+	?></div><?php
+	endif;
+?></div>

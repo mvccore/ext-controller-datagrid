@@ -9,98 +9,110 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * 
 	 * @var int
 	 */
-	protected $type							= \MvcCore\Ext\Controllers\IDataGrid::TYPE_TABLE;
+	protected $type								= \MvcCore\Ext\Controllers\IDataGrid::TYPE_TABLE;
 
 	/**
 	 * 
 	 * @var int
 	 */
-	protected $gridColumnsCount				= 3;
+	protected $gridColumnsCount					= 3;
 
 	/**
 	 * 
 	 * @var bool
 	 */
-	protected $renderTableHeadOrdering		= FALSE;
+	protected $renderTableHeadOrdering			= TRUE;
 
 	/**
 	 * 
 	 * @var bool
 	 */
-	protected $renderControlOrdering		= TRUE;
+	protected $renderControlOrdering			= FALSE;
 
 	/**
 	 * 
-	 * @var bool
+	 * @var int
 	 */
-	protected $renderControlPaging			= TRUE;
+	protected $renderControlPaging				= \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_IF_NECESSARY;
+	
+	/**
+	 * 
+	 * @var int
+	 */
+	protected $controlPagingNearbyPagesCount	= 4;
+	
+	/**
+	 * 
+	 * @var int
+	 */
+	protected $controlPagingOuterPagesCount		= 3;
+	
+	/**
+	 * 
+	 * @var int
+	 */
+	protected $renderControlCountScales			= \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_ALWAYS;
 	
 	/**
 	 * 
 	 * @var bool
 	 */
-	protected $renderControlCountScales		= TRUE;
-	
-	/**
-	 * 
-	 * @var bool
-	 */
-	protected $renderFilterForm				= FALSE;
+	protected $renderFilterForm					= FALSE;
 	
 
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateGridContent			= NULL;
+	protected $templateGridContent				= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateTableHead			= NULL;
+	protected $templateTableHead				= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateTableBody			= NULL;
+	protected $templateTableBody				= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateGridHead				= NULL;
+	protected $templateGridHead					= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateGridBody				= NULL;
+	protected $templateGridBody					= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateControlPaging		= NULL;
+	protected $templateControlPaging			= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateControlOrdering		= NULL;
+	protected $templateControlOrdering			= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateControlCountScales	= NULL;
+	protected $templateControlCountScales		= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateFilterForm			= NULL;
+	protected $templateFilterForm				= NULL;
 	
 	/**
 	 * 
@@ -187,7 +199,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 
 	/**
 	 * @inheritDocs
-	 * @param  bool $renderControlPaging
+	 * @param  int $renderControlPaging
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderControlPaging ($renderControlPaging) {
@@ -198,7 +210,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 
 	/**
 	 * @inheritDocs
-	 * @return bool
+	 * @return int
 	 */
 	public function GetRenderControlPaging () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
@@ -206,8 +218,48 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	}
 
 	/**
+	 * 
+	 * @param  int $nearbyPagesCount
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetControlPagingNearbyPagesCount ($nearbyPagesCount) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		$this->controlPagingNearbyPagesCount = $nearbyPagesCount;
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @return int
+	 */
+	public function GetControlPagingNearbyPagesCount () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		return $this->controlPagingNearbyPagesCount;
+	}
+	
+	/**
+	 * 
+	 * @param  int $outerPagesCount
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetControlPagingOuterPagesCount ($outerPagesCount) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		$this->controlPagingOuterPagesCount = $outerPagesCount;
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @return int
+	 */
+	public function GetControlPagingOuterPagesCount () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		return $this->controlPagingOuterPagesCount;
+	}
+
+	/**
 	 * @inheritDocs
-	 * @param  bool $renderControlCountScales
+	 * @param  int $renderControlCountScales
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderControlCountScales ($renderControlCountScales) {
@@ -218,7 +270,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 
 	/**
 	 * @inheritDocs
-	 * @return bool
+	 * @return int
 	 */
 	public function GetRenderControlCountScales () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */

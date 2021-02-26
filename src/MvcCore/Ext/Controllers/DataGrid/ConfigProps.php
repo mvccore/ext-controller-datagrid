@@ -5,6 +5,12 @@ namespace MvcCore\Ext\Controllers\DataGrid;
 trait ConfigProps {
 	
 	/**
+	 * Datagrid html wrapper element css class attribute value.
+	 * @var \string[]
+	 */
+	protected $cssClasses = [];
+
+	/**
 	 * @var \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel
 	 */
 	protected $model = NULL;

@@ -48,7 +48,7 @@ trait PreDispatchMethods {
 			} else {
 				$args = $toolClass::GetPhpDocsTagArgs($prop, $tagName);
 				if (is_array($args) && count($args) === 2 && $args[0] === $attrClassName) 
-					$args = $args[1];
+					$args = (array) $args[1];
 			}
 			$propName = $prop->name;
 			$urlName = NULL;
@@ -64,7 +64,7 @@ trait PreDispatchMethods {
 					$propName, $dbColumnName, $humanName, $urlName, FALSE, FALSE, $types, $format, NULL
 				);
 				$result[$columnConfig->GetUrlName()] = $columnConfig;
-			} else if ($dbColumnName !== NULL) {
+			} else if ($dbColumnName !== NULL || isset($args['dbColumnName'])) {
 				if			 (isset($args['dbColumnName']))	$dbColumnName			= $args['dbColumnName'];
 				if			 (isset($args['humanName']))	$humanName				= $args['humanName'];
 				if			 (isset($args['urlName']))		$urlName				= $args['urlName'];
@@ -175,6 +175,16 @@ trait PreDispatchMethods {
 			$ordering[$configColumn->GetDbColumnName()] = $direction;
 			if (!$this->multiSorting) break;
 		}
+		if (count($ordering) === 0) {
+			foreach ($this->configColumns as $configColumn) {
+				$configColumnOrder = $configColumn->GetOrder();
+				if (is_string($configColumnOrder)) {
+					$dbColumnName = $configColumn->GetDbColumnName();
+					$ordering[$dbColumnName] = $configColumnOrder;
+					if (!$this->multiSorting) break;
+				}
+			}
+		}
 		$this->ordering = $ordering;
 	}
 	
@@ -262,62 +272,107 @@ trait PreDispatchMethods {
 	protected function setUpPaging () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$renderPaging = $this->configRendering->GetRenderControlPaging();
-		$multiplePages = $this->totalCount > $this->itemsPerPage;
-		$completePaging = $renderPaging && $multiplePages;
-		if (!$completePaging) {
-			if ($renderPaging)
-				$this->configRendering->SetRenderControlPaging(FALSE);
+		if (!$renderPaging) return;
+
+		$multiplePages = $this->totalCount > $this->itemsPerPage && $this->itemsPerPage !== 0;
+		if (($renderPaging & \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_IF_NECESSARY) != 0 && !$multiplePages) {
+			$this->configRendering->SetRenderControlPaging(\MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_NEVER);
 			return;
 		}
 		
-		$pageMargin = 5;
-
-		$pagesCount = intval(ceil($this->totalCount / $this->itemsPerPage));
-		$currentPage = intdiv($this->offset, $this->itemsPerPage) + 1;
-		$displayPrev = $this->offset - $this->itemsPerPage > 0;
-		$displayFirst = $this->offset > $pageMargin * $this->itemsPerPage;
-		$displayNext = $this->offset + $this->itemsPerPage < $this->totalCount;
-		$displayLast = $this->offset < ($pagesCount * $this->itemsPerPage) - (($pageMargin + 1) * $this->itemsPerPage);
-		
 		$paging = [];
 		
-		if ($displayPrev) {
-			$paging[] = new MvcCore\Ext\Controllers\DataGrids(
-				$this->GridPageUrl($this->offset - $this->itemsPerPage), 
+		$itemsPerPage = $this->itemsPerPage;
+		if (
+			$this->itemsPerPage === 0 && (
+				$renderPaging & \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_ALWAYS
+			) != 0
+		) $itemsPerPage = $this->totalCount;
+
+		$nearbyPages = $this->configRendering->GetControlPagingNearbyPagesCount();
+		$outerPages = $this->configRendering->GetControlPagingOuterPagesCount();
+
+		$pagesCount = intval(ceil($this->totalCount / $itemsPerPage));
+		$currentPage = intdiv($this->offset, $itemsPerPage) + 1;
+
+		$displayPrev = $this->offset - $itemsPerPage >= 0;
+		$displayFirst = $this->offset > $nearbyPages * $itemsPerPage;
+		$displayNext = $this->offset + $itemsPerPage < $this->totalCount;
+		$displayLast = $this->offset < ($pagesCount * $itemsPerPage) - (($nearbyPages + 1) * $itemsPerPage);
+		
+		$outerPagesMinRatio = 2.0;
+		$hiddenStartingPagesCount = $currentPage - $nearbyPages - 2;
+		$displayOuterStartPages = $outerPages && floatval($hiddenStartingPagesCount) / floatval($outerPages) > $outerPagesMinRatio;
+		$hiddenEndingPagesCount = $pagesCount - ($currentPage + $nearbyPages) - 1;
+		$displayOuterEndPages = $outerPages && (floatval($hiddenEndingPagesCount ) / floatval($outerPages)) > $outerPagesMinRatio;
+		
+		// prev, first and `...`:
+		if ($displayPrev) 
+			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
+				$this->GridPageUrl($this->offset - $itemsPerPage), 
 				'Previous', FALSE, TRUE
-			);
-			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\PagingItem;
-		}
-		if ($displayFirst) {
-			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\PagingItem(
-				$this->GridPageUrl(0), 1
-			);
-			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\PagingItem;
+			))->SetIsPrev(TRUE);
+		if ($displayFirst) 
+			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
+				$this->GridPageUrl(0), 
+				'First'
+			))->SetIsFirst(TRUE);
+		if ($displayFirst || $displayPrev)
+			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dots;
+
+		// right outer pages and `...`:
+		if ($displayOuterStartPages) {
+
+			$stepValue = floatval($hiddenStartingPagesCount) / floatval($outerPages);
+			//$stepValue = floor(floatval($hiddenStartingPagesCount) / floatval($outerPages));
+			$stepCounter = 1.0;
+			for ($i = 0; $i < $outerPages; $i++) {
+				$stepCounter = floor($stepCounter + $stepValue);
+				$pageIndex = intval($stepCounter);
+				//$stepCounter += $stepValue;
+				//$pageIndex = intval(floor($stepCounter));
+				$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
+					$this->GridPageUrl(($pageIndex - 1) * $itemsPerPage), 
+					$pageIndex
+				);
+				$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dot;
+			}
+
+			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dots;
 		}
 		
-		$beginIndex = max($currentPage - $pageMargin, 1);
-		$endIndex = min($currentPage + $pageMargin + 1, $pagesCount + 1);
+		// left nearby pages, current page and right nearby pages:
+		$beginIndex = max($currentPage - $nearbyPages, 1);
+		$endIndex = min($currentPage + $nearbyPages + 1, $pagesCount + 1);
 		for ($pageIndex = $beginIndex; $pageIndex < $endIndex; $pageIndex++) {
-			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\PagingItem(
-				$this->GridPageUrl(($pageIndex - 1) * $this->itemsPerPage), 
-				$pageIndex, $pageIndex === $currentPage
+			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Item(
+				$this->GridPageUrl(($pageIndex - 1) * $itemsPerPage), 
+				$pageIndex, 
+				$pageIndex === $currentPage
 			);
+		}
+		
+		// `...` and left outer pages:
+		if ($displayOuterEndPages) {
+
+
+
+			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dots;
 		}
 
-		if ($displayLast) {
-			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\PagingItem;
-			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\PagingItem(
-				$this->GridPageUrl(($pagesCount - 1) * $this->itemsPerPage), 
-				$pagesCount
-			);
-		}
-		if ($displayNext) {
-			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\PagingItem;
-			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\PagingItem(
-				$this->GridPageUrl($this->offset + $this->itemsPerPage), 
-				'Next', FALSE, FALSE, TRUE
-			);
-		}
+		// `...`, last and next:
+		if ($displayNext || $displayLast)
+			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dots;
+		if ($displayLast) 
+			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
+				$this->GridPageUrl(($pagesCount - 1) * $itemsPerPage), 
+				'Last ('.$pagesCount.')'
+			))->SetIsLast(TRUE);
+		if ($displayNext) 
+			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
+				$this->GridPageUrl($this->offset + $itemsPerPage), 
+				'Next'
+			))->SetIsNext(TRUE);
 
 		$this->paging = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging($paging);
 	}
@@ -328,8 +383,10 @@ trait PreDispatchMethods {
 	protected function setUpCountScales () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$renderCountScales = $this->configRendering->GetRenderControlCountScales();
-		$multiplePages = $this->totalCount > $this->itemsPerPage;
-		if ($renderCountScales && !$multiplePages) 
-			$this->configRendering->SetRenderControlCountScales(FALSE);
+		if (!$renderCountScales) return;
+		// TODO: tohle defaultně nastavit na always a jen s auto to schovávat, tohle dycky chceš!
+		$multiplePages = $this->totalCount > $this->itemsPerPage && $this->itemsPerPage !== 0;
+		if (($renderCountScales & \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_IF_NECESSARY) != 0 && !$multiplePages) 
+			$this->configRendering->SetRenderControlCountScales(\MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_NEVER);
 	}
 }

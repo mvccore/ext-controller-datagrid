@@ -4,18 +4,12 @@
 ?><table class="grid-control-pages"><tbody><?php
 	foreach ($grid->GetPaging() as $pagingItem):
 		
-		?><td class="grid-page<?php
-			if ($pagingItem->IsEmpty()):
-				echo ' grid-page-space';
-			elseif ($pagingItem->IsCurrent()):
-				echo ' grid-page-current';
-			else:
-				echo ' grid-page-link';
-			endif;
+		?><td class="grid-page <?php
+			echo $pagingItem->GetCssClass();
 		?>"><?php
 
-		if ($pagingItem->IsEmpty()):
-			?><span>&hellip;</span><?php
+		if ($pagingItem instanceof \MvcCore\Ext\Controllers\DataGrids\Paging\Dot):
+			?><span><?php echo $pagingItem->GetText(); ?></span><?php
 		elseif ($pagingItem->IsCurrent()):
 			?><span><?php
 				echo $pagingItem->GetText();

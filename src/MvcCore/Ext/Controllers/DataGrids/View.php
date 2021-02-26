@@ -55,6 +55,7 @@ class View extends \MvcCore\View {
 	}
 
 	/**
+	 * 
 	 * @return string
 	 */
 	public function RenderGrid () {
@@ -64,6 +65,7 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
+	 * 
 	 * @return string
 	 */
 	public function RenderGridHeadTable () {
@@ -75,6 +77,7 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
+	 * 
 	 * @return string
 	 */
 	public function RenderGridBodyTable () {
@@ -84,6 +87,7 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
+	 * 
 	 * @return string
 	 */
 	public function RenderGridBodyGrid () {
@@ -93,6 +97,7 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
+	 * 
 	 * @return string
 	 */
 	public function RenderGridControlOrdering () {
@@ -106,6 +111,7 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
+	 * 
 	 * @return string
 	 */
 	public function RenderGridControlCountScales () {
@@ -119,6 +125,7 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
+	 * 
 	 * @return string
 	 */
 	public function RenderGridControlPaging () {
@@ -132,6 +139,17 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
+	 * 
+	 * @return string
+	 */
+	public function RenderGridFilterForm () {
+		return $this->renderGridTemplate(
+			$this->configRendering->GetTemplateFilterForm(), 'form', 'filter'
+		);
+	}
+	
+	/**
+	 * 
 	 * @return string
 	 */
 	protected function renderGridTemplate ($configTemplate, $typePath, $defaultTemplate) {

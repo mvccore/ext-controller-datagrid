@@ -3,6 +3,43 @@
 namespace MvcCore\Ext\Controllers\DataGrid;
 
 trait ConfigGettersSetters {
+	
+	/**
+	 * 
+	 * @param  string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function AddCssClasses ($cssClasses) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$cssClassesArr = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		$this->cssClasses = array_merge($this->cssClasses, $cssClassesArr);
+		return $this;
+	}
+	
+	/**
+	 * 
+	 * @param  string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetCssClasses ($cssClasses) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$cssClassesArr = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		$this->cssClasses = $cssClassesArr;
+		return $this;
+	}
+	
+	/**
+	 * 
+	 * @return \string[]
+	 */
+	public function & GetCssClasses () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		return $this->cssClasses;
+	}
 
 	/**
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model 
