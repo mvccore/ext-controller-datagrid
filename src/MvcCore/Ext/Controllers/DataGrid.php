@@ -13,4 +13,12 @@ implements	\MvcCore\Ext\Controllers\IDataGrid {
 		\MvcCore\Ext\Controllers\DataGrid\InitMethods,
 		\MvcCore\Ext\Controllers\DataGrid\PreDispatchMethods,
 		\MvcCore\Ext\Controllers\DataGrid\RenderMethods;
+
+	/**
+	 * MvcCore Extension - Controller - DataGrid - version:
+	 * Comparison by PHP function version_compare();
+	 * @see http://php.net/manual/en/function.version-compare.php
+	 */
+	const VERSION = '5.0.0';
+
 }
