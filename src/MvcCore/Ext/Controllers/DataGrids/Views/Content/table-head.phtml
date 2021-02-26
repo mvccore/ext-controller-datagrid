@@ -8,9 +8,8 @@
 		
 		?><th class="<?php
 			echo 'grid-col-' . $configColumn->GetUrlName();
-			if ($grid->GetColumnFiltered($configColumn) !== NULL):
+			if ($grid->GetColumnFiltered($configColumn) !== NULL)
 				echo ' grid-col-filtering';
-			endif;
 		?>"><?php
 
 		if ($configColumn->GetOrder()): 

@@ -1,38 +1,21 @@
 <?php
 	/** @var $this \MvcCore\Ext\Controllers\DataGrids\View */
 	/** @var $grid \MvcCore\Ext\Controllers\DataGrid */
-	/** @var $renderConf \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-	$renderConf = $grid->GetConfigRendering();
-	xxx($renderConf);
-	if ($renderConf->GetRenderControlOrdering())
-		echo $this->RenderGridControl($renderConf->GetTemplateControlOrdering());
+	
+	echo $this->RenderGridControlOrdering();
 
-	if ($renderConf->GetRenderControlPaging()) {
-		ob_start();
-		echo $this->RenderGridControl($renderConf->GetTemplateControlPaging());
-		$pagingCode = ob_get_clean();
-		echo $pagingCode;
-	}
+	$pagingCode = $this->RenderGridControlPaging();
+	echo $pagingCode;
 
 	?><table class="datagrid"><?php
-	if ($renderConf->GetType() === \MvcCore\Ext\Controllers\IDataGrid::TYPE_TABLE): 
-		
-		if ($renderConf->GetRenderTableHeadOrdering()) 
-			echo $this->RenderGridContent($renderConf->GetTemplateTableHead());
-		echo $this->RenderGridContent($renderConf->GetTemplateTableBody());
-		
+	if ($grid->GetConfigRendering()->GetType() === \MvcCore\Ext\Controllers\IDataGrid::TYPE_TABLE): 
+		echo $this->RenderGridHeadTable();
+		echo $this->RenderGridBodyTable();
 	else:
-
-		if ($renderConf->GetRenderTableHeadOrdering()) 
-			echo $this->RenderGridContent($renderConf->GetTemplateGridHead());
-		echo $this->RenderGridContent($renderConf->GetTemplateGridBody());
-		
+		echo $this->RenderGridBodyGrid();
 	endif;
 	?></table><?php 
 
-	if ($renderConf->GetRenderControlCountScales())
-		echo $this->RenderGridControl($renderConf->GetTemplateControlCountScales());
-	
-	if ($renderConf->GetRenderControlPaging())
-		echo $pagingCode;
+	echo $this->RenderGridControlCountScales();
+	echo $pagingCode;
 ?>

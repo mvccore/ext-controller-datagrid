@@ -4,7 +4,6 @@
 ?><table class="grid-control-counts"><tbody><?php
 	$countScales = $grid->GetCountScales();
 	$itemsPerPage = $grid->GetItemsPerPage();
-	x([$itemsPerPage, $countScales]);
 	foreach ($countScales as $countScale):
 		$current = $countScale === $itemsPerPage;
 		?><td class="grid-count<?php

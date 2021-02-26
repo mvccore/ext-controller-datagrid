@@ -32,7 +32,7 @@ class View extends \MvcCore\View {
 	 */
 	public function GetGridScriptsFullPathBase () {
 		if ($this->gridScriptsFullPathBase === NULL)
-			$this->gridScriptsFullPathBase = str_replace('\\', '/', __DIR__);
+			$this->gridScriptsFullPathBase = str_replace('\\', '/', __DIR__) . '/Views';
 		return $this->gridScriptsFullPathBase;
 	}
 	
@@ -58,20 +58,87 @@ class View extends \MvcCore\View {
 	 * @return string
 	 */
 	public function RenderGrid () {
-		// Complete view script path an render it by rendering mode:
-		$viewScriptPath = $this->configRendering->GetTemplateGridContent();
-		if ($viewScriptPath === NULL) {
-			return $this->Render('Content', 'grid', TRUE);
-		} else {
-			return $this->RenderScript($viewScriptPath);
-		}
+		return $this->renderGridTemplate(
+			$this->configRendering->GetTemplateGridContent(), 'Content', 'grid'
+		);
 	}
-
-
-
-
-
-
+	
+	/**
+	 * @return string
+	 */
+	public function RenderGridHeadTable () {
+		if (!$this->configRendering->GetRenderTableHeadOrdering()) 
+			return '';
+		return $this->renderGridTemplate(
+			$this->configRendering->GetTemplateTableHead(), 'Content', 'table-head'
+		);
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function RenderGridBodyTable () {
+		return $this->renderGridTemplate(
+			$this->configRendering->GetTemplateTableBody(), 'Content', 'table-body'
+		);
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function RenderGridBodyGrid () {
+		return $this->renderGridTemplate(
+			$this->configRendering->GetTemplateGridBody(), 'Content', 'grid-body'
+		);
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function RenderGridControlOrdering () {
+		if (!$this->configRendering->GetRenderControlOrdering()) 
+			return '';
+		ob_start();
+		echo $this->renderGridTemplate(
+			$this->configRendering->GetTemplateControlOrdering(), 'Controls', 'ordering'
+		);
+		return ob_get_clean();
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function RenderGridControlCountScales () {
+		if (!$this->configRendering->GetRenderControlCountScales()) 
+			return '';
+		ob_start();
+		echo $this->renderGridTemplate(
+			$this->configRendering->GetTemplateControlCountScales(), 'Controls', 'count-scales'
+		);
+		return ob_get_clean();
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function RenderGridControlPaging () {
+		if (!$this->configRendering->GetRenderControlPaging()) 
+			return '';
+		ob_start();
+		echo $this->renderGridTemplate(
+			$this->configRendering->GetTemplateControlPaging(), 'Controls', 'paging'
+		);
+		return ob_get_clean();
+	}
+	
+	/**
+	 * @return string
+	 */
+	protected function renderGridTemplate ($configTemplate, $typePath, $defaultTemplate) {
+		return $configTemplate === NULL
+			? $this->Render($typePath, $defaultTemplate, TRUE)
+			: $this->RenderScript($configTemplate);
+	}
 
 	/**
 	 * @inheritDocs
