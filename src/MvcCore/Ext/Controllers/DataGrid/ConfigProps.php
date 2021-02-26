@@ -26,6 +26,12 @@ trait ConfigProps {
 	 * @var \int[]
 	 */
 	protected $countScales = self::COUNTS_SCALE_DEFAULT;
+	
+	/**
+	 * 
+	 * @var bool
+	 */
+	protected $allowedCustomUrlCountScale = FALSE;
 
 	/**
 	 * 

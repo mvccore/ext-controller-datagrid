@@ -84,6 +84,19 @@ interface IRendering {
 
 	/**
 	 * 
+	 * @param  float $outerPagesDisplayRatio
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetControlPagingOuterPagesDisplayRatio ($outerPagesDisplayRatio);
+
+	/**
+	 * 
+	 * @return float
+	 */
+	public function GetControlPagingOuterPagesDisplayRatio ();
+
+	/**
+	 * 
 	 * @param  int $renderControlPaging
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */

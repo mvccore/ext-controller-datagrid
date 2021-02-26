@@ -9,110 +9,116 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * 
 	 * @var int
 	 */
-	protected $type								= \MvcCore\Ext\Controllers\IDataGrid::TYPE_TABLE;
+	protected $type									= \MvcCore\Ext\Controllers\IDataGrid::TYPE_TABLE;
 
 	/**
 	 * 
 	 * @var int
 	 */
-	protected $gridColumnsCount					= 3;
-
-	/**
-	 * 
-	 * @var bool
-	 */
-	protected $renderTableHeadOrdering			= TRUE;
+	protected $gridColumnsCount						= 3;
 
 	/**
 	 * 
 	 * @var bool
 	 */
-	protected $renderControlOrdering			= FALSE;
+	protected $renderTableHeadOrdering				= TRUE;
+
+	/**
+	 * 
+	 * @var bool
+	 */
+	protected $renderControlOrdering				= FALSE;
 
 	/**
 	 * 
 	 * @var int
 	 */
-	protected $renderControlPaging				= \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_IF_NECESSARY;
+	protected $renderControlPaging					= \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_IF_NECESSARY;
 	
 	/**
 	 * 
 	 * @var int
 	 */
-	protected $controlPagingNearbyPagesCount	= 4;
+	protected $controlPagingNearbyPagesCount		= 3;
 	
 	/**
 	 * 
 	 * @var int
 	 */
-	protected $controlPagingOuterPagesCount		= 3;
+	protected $controlPagingOuterPagesCount			= 2;
 	
 	/**
 	 * 
 	 * @var int
 	 */
-	protected $renderControlCountScales			= \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_ALWAYS;
+	protected $controlPagingOuterPagesDisplayRatio	= 3.0;
+	
+	/**
+	 * 
+	 * @var int
+	 */
+	protected $renderControlCountScales				= \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_ALWAYS;
 	
 	/**
 	 * 
 	 * @var bool
 	 */
-	protected $renderFilterForm					= FALSE;
+	protected $renderFilterForm						= FALSE;
 	
 
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateGridContent				= NULL;
+	protected $templateGridContent					= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateTableHead				= NULL;
+	protected $templateTableHead					= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateTableBody				= NULL;
+	protected $templateTableBody					= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateGridHead					= NULL;
+	protected $templateGridHead						= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateGridBody					= NULL;
+	protected $templateGridBody						= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateControlPaging			= NULL;
+	protected $templateControlPaging				= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateControlOrdering			= NULL;
+	protected $templateControlOrdering				= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateControlCountScales		= NULL;
+	protected $templateControlCountScales			= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateFilterForm				= NULL;
+	protected $templateFilterForm					= NULL;
 	
 	/**
 	 * 
@@ -255,6 +261,30 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	public function GetControlPagingOuterPagesCount () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
 		return $this->controlPagingOuterPagesCount;
+	}
+	
+	/**
+	 * 
+	 * @param  float $outerPagesDisplayRatio
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetControlPagingOuterPagesDisplayRatio ($outerPagesDisplayRatio) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		if (floatval($outerPagesDisplayRatio) < 2.0)
+			throw new \InvalidArgumentException(
+				"Outer pages displaying ratio has to be larger than 2.0."
+			);
+		$this->controlPagingOuterPagesDisplayRatio = $outerPagesDisplayRatio;
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @return float
+	 */
+	public function GetControlPagingOuterPagesDisplayRatio () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		return $this->controlPagingOuterPagesDisplayRatio;
 	}
 
 	/**

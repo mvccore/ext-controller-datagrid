@@ -69,7 +69,7 @@ class Item {
 		$isFirst = FALSE, $isLast = FALSE
 	) {
 		$this->url = $url;
-		$this->text = (string) $text;
+		if ($text !== NULL) $this->text = (string) $text;
 		$this->current = $current;
 		$this->prev = $isPrev;
 		$this->next = $isNext;

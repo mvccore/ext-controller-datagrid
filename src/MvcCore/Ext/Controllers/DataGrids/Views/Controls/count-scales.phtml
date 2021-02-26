@@ -4,8 +4,15 @@
 ?><table class="grid-control-counts"><tbody><?php
 	$countScales = $grid->GetCountScales();
 	$itemsPerPage = $grid->GetItemsPerPage();
+	$totalCount = $grid->GetTotalCount();
+	$countScales2Render = [];
 	foreach ($countScales as $countScale):
-		$current = $countScale === $itemsPerPage;
+		if ($countScale !== 0 && $countScale > $totalCount) continue;
+		$countScales2Render[$countScale] = $countScale === $itemsPerPage;
+	endforeach;
+	$firstIsCurrent = count($countScales2Render) === 1;
+	foreach ($countScales2Render as $countScale => $current):
+		$current = $current || $firstIsCurrent;
 		?><td class="grid-count<?php
 			if ($current) echo ' grid-count-current';
 		?>"><?php

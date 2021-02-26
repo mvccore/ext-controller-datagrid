@@ -101,15 +101,35 @@ trait InternalGettersSetters {
 			$method->setAccessible(TRUE);
 			$this->queryStringParamsSepatator = $method->invoke($this->router);
 		}
+
 		$route = $this->GetRoute();
+		$routeDefaults = $route->GetDefaults();
 		$defaultParams = array_merge([], $this->GetUrlParams());
 		$defaultPage = $defaultParams['page'];
-		$pageDefaultChange = (
+		$defaultCount = $defaultParams['count'];
+		$routeDefaultsChange = FALSE;
+
+		if (
 			array_key_exists('count', $gridParams) && 
-			$gridParams['count'] !== $defaultParams['count']
-		);
-		if ($pageDefaultChange) 
+			array_key_exists('count', $routeDefaults) &&
+			$gridParams['count'] !== $routeDefaults['count']
+		) {
+			$routeDefaultsChange = TRUE;
 			$route->SetDefaults([]);
+		}
+		
+		if (
+			array_key_exists('page', $gridParams) && 
+			$gridParams['page'] === 1 &&
+			array_key_exists('count', $defaultParams) && 
+			array_key_exists('count', $routeDefaults) && 
+			$defaultParams['count'] !== $routeDefaults['count']
+		) {
+			$routeDefaultsChange = TRUE;
+			$gridParams['count'] = $defaultParams['count'];
+			$route->SetDefaults([]);
+		}
+
 		foreach ($gridParams as $paramName => $paramValue) 
 			if (array_key_exists($paramName, $defaultParams))
 				unset($defaultParams[$paramName]);
@@ -121,8 +141,9 @@ trait InternalGettersSetters {
 			$this->queryStringParamsSepatator,
 			FALSE
 		);
-		if ($pageDefaultChange) {
+		if ($routeDefaultsChange) {
 			$defaultParams['page'] = $defaultPage;
+			$defaultParams['count'] = $defaultCount;
 			$route->SetDefaults($defaultParams);
 		}
 		return $this->Url('self', [static::PARAM_GRID => $gridParam]);

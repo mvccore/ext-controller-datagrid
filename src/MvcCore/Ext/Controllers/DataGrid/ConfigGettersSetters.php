@@ -51,6 +51,7 @@ trait ConfigGettersSetters {
 		$this->GetModel(TRUE);// validate
 		return $this;
 	}
+
 	/**
 	 * @throws \InvalidArgumentException
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel|NULL
@@ -73,6 +74,7 @@ trait ConfigGettersSetters {
 		$this->itemsPerPage = $itemsPerPage;
 		return $this;
 	}
+
 	/**
 	 * @return int
 	 */
@@ -90,6 +92,7 @@ trait ConfigGettersSetters {
 		$this->countScales = $countScales;
 		return $this;
 	}
+
 	/**
 	 * @return \int[]
 	 */
@@ -99,6 +102,24 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
+	 * @param  bool $allowedCustomUrlCountScale
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetAllowedCustomUrlCountScale ($allowedCustomUrlCountScale) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$this->allowedCustomUrlCountScale = $allowedCustomUrlCountScale;
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function GetAllowedCustomUrlCountScale () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		return $this->allowedCustomUrlCountScale;
+	}
+
+	/**
 	 * @param  bool $multiSorting
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -107,6 +128,7 @@ trait ConfigGettersSetters {
 		$this->multiSorting = $multiSorting;
 		return $this;
 	}
+
 	/**
 	 * @return bool
 	 */
@@ -124,6 +146,7 @@ trait ConfigGettersSetters {
 		$this->multiFiltering = $multiFiltering;
 		return $this;
 	}
+
 	/**
 	 * @return bool
 	 */
@@ -142,6 +165,7 @@ trait ConfigGettersSetters {
 		$this->route = $route;
 		return $this;
 	}
+
 	/**
 	 * @return \MvcCore\Route|NULL
 	 */
@@ -175,6 +199,7 @@ trait ConfigGettersSetters {
 		$this->urlParams = $urlParams;
 		return $this;
 	}
+
 	/**
 	 * @return array
 	 */
@@ -201,9 +226,11 @@ trait ConfigGettersSetters {
 	 */
 	public function SetConfigUrlSegments (\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments $configUrlSegments) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		/** @var $configUrlSegments \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
 		$this->configUrlSegments = $configUrlSegments;
 		return $this;
 	}
+
 	/**
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
@@ -261,6 +288,7 @@ trait ConfigGettersSetters {
 		);
 		return $this;
 	}
+
 	/**
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns|NULL
 	 */
@@ -297,9 +325,11 @@ trait ConfigGettersSetters {
 	 */
 	public function SetConfigRendering (\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering $configRendering) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		/** @var $configRendering \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
 		$this->configRendering = $configRendering;
 		return $this;
 	}
+
 	/**
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */

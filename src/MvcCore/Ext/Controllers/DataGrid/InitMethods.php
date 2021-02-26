@@ -47,6 +47,7 @@ trait InitMethods {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		/** @var $context \MvcCore\Controller */
 		$context = $this;
+
 		// set up default page if null:
 		if (isset($this->urlParams['page'])) {
 			if ($this->urlParams['page'] === 0) {
@@ -63,6 +64,7 @@ trait InitMethods {
 		} else {
 			$this->urlParams['page'] = 1;
 		}
+
 		// set up default count if null or check if count has allowed size:
 		if (!isset($this->urlParams['count'])) {
 			$this->urlParams['count'] = $this->GetItemsPerPage();
@@ -82,9 +84,40 @@ trait InitMethods {
 				);
 			}
 		}
+
+		// check if count scale from url is allowed and change count scale if necessary:
+		$urlItemsPerPage = $this->urlParams['count'];
+		if (
+			$this->allowedCustomUrlCountScale ||
+			in_array($urlItemsPerPage, $this->countScales, TRUE)
+		) {
+			$this->itemsPerPage = $urlItemsPerPage;
+		} else {
+			$differences = [];
+			$lastCountScale = 0;
+			foreach ($this->countScales as $index => $countScale) {
+				if ($countScale === 0) {
+					$differences[$urlItemsPerPage > $lastCountScale ? 0 : $urlItemsPerPage] = $index;
+				} else {
+					$differences[abs($countScale - $urlItemsPerPage)] = $index;
+				}
+				$lastCountScale = $countScale;
+			}
+			$minDifference = min(array_keys($differences));
+			$minDifferenceCountScaleKey = $differences[$minDifference];
+			$minDifferenceCountScale = $this->countScales[$minDifferenceCountScaleKey];
+			$redirectUrl = $this->GridUrl([
+				'count'	=> $minDifferenceCountScale,
+			]);
+			return $context::Redirect(
+				$redirectUrl, 
+				\MvcCore\IResponse::SEE_OTHER, 
+				'Grid custom count scale is not allowed.'
+			);
+		}
+		
 		// check if page is not larger than 1 if count is unlimited:
 		$this->page = $this->urlParams['page'];
-		$this->itemsPerPage = $this->urlParams['count'];
 		if ($this->itemsPerPage === 0 && $this->page > 1) {
 			$redirectUrl = $this->GridUrl([
 				'page'	=> 1,
