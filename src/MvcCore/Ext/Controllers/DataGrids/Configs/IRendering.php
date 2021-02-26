@@ -9,7 +9,7 @@ interface IRendering {
 	 * @param  int $type
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetType ($type = \MvcCore\Ext\Controllers\DataGrid\IConstants::TYPE_TABLE);
+	public function SetType ($type = \MvcCore\Ext\Controllers\IDataGrid::TYPE_TABLE);
 	
 	/**
 	 * 

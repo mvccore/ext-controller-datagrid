@@ -3,7 +3,7 @@
 	/** @var $grid \MvcCore\Ext\Controllers\DataGrid */
 	/** @var $renderConf \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
 	$renderConf = $grid->GetConfigRendering();
-
+	xxx($renderConf);
 	if ($renderConf->GetRenderControlOrdering())
 		echo $this->RenderGridControl($renderConf->GetTemplateControlOrdering());
 
@@ -15,7 +15,7 @@
 	}
 
 	?><table class="datagrid"><?php
-	if ($renderConf->GetType() === \MvcCore\Ext\Controllers\DataGrid\IConstants::TYPE_TABLE): 
+	if ($renderConf->GetType() === \MvcCore\Ext\Controllers\IDataGrid::TYPE_TABLE): 
 		
 		if ($renderConf->GetRenderTableHeadOrdering()) 
 			echo $this->RenderGridContent($renderConf->GetTemplateTableHead());

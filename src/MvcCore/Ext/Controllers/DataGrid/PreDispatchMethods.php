@@ -117,24 +117,8 @@ trait PreDispatchMethods {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$viewClass = $this->configRendering->GetViewClass();
 		$view = (new $viewClass)->SetController($this);
-		if ($view instanceof \MvcCore\Ext\Controllers\DataGrids\View) {
-			$view
-				->SetDefaultContentTemplates([
-					\MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTENT_DEFAULT,
-					\MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_TABLE_HEAD_DEFAULT,
-					\MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_TABLE_BODY_DEFAULT,
-					\MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_GRID_HEAD_DEFAULT,
-					\MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_GRID_BODY_DEFAULT,
-				])
-				->SetDefaultControlTemplates([
-					\MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTROL_COUNT_SCALES_DEFAULT,
-					\MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTROL_ORDERING_DEFAULT,
-					\MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTROL_PAGING_DEFAULT,
-				])
-				->SetDefaultFilterFormTemplates([
-					\MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_FILTER_FORM_DEFAULT,
-				]);
-		}
+		if ($view instanceof \MvcCore\Ext\Controllers\DataGrids\View);
+			$view->SetConfigRendering($this->configRendering);
 		$this->view = $view;
 	}
 

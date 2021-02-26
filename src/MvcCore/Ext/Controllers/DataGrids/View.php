@@ -8,114 +8,76 @@ class View extends \MvcCore\View {
 	 * 
 	 * @var string|NULL
 	 */
-	protected static $gridScriptsFullPathBase = NULL;
+	protected $gridScriptsFullPathBase = NULL;
 	
 	/**
 	 * 
-	 * @var \string[]
+	 * @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering|NULL
 	 */
-	protected $defaultContentTemplates = [];
+	protected $configRendering = NULL;
 	
 	/**
 	 * 
-	 * @var \string[]
-	 */
-	protected $defaultControlTemplates = [];
-	
-	/**
-	 * 
-	 * @var \string[]
-	 */
-	protected $defaultFilterFormTemplates = [];
-	
-	/**
-	 * 
-	 * @return string
-	 */
-	protected static function GetGridScriptsFullPathBase () {
-		if (static::$gridScriptsFullPathBase === NULL)
-			static::$gridScriptsFullPathBase = str_replace('\\', '/', __DIR__);
-		return static::$gridScriptsFullPathBase;
-	}
-	
-	/**
 	 * @param  string $gridScriptsFullPathBase
+	 * @return \MvcCore\Ext\Controllers\DataGrids\View
+	 */
+	public function SetGridScriptsFullPathBase ($gridScriptsFullPathBase) {
+		$this->gridScriptsFullPathBase = $gridScriptsFullPathBase;
+		return $this;
+	}
+	
+	/**
+	 * 
 	 * @return string
 	 */
-	protected static function SetGridScriptsFullPathBase ($gridScriptsFullPathBase) {
-		return static::$gridScriptsFullPathBase = $gridScriptsFullPathBase;
+	public function GetGridScriptsFullPathBase () {
+		if ($this->gridScriptsFullPathBase === NULL)
+			$this->gridScriptsFullPathBase = str_replace('\\', '/', __DIR__);
+		return $this->gridScriptsFullPathBase;
 	}
 	
 	/**
 	 * 
-	 * @internal
-	 * @param  \string[] $defaultContentTemplates
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering 
 	 * @return \MvcCore\Ext\Controllers\DataGrids\View
 	 */
-	public function SetDefaultContentTemplates ($defaultContentTemplates) {
-		$this->defaultContentTemplates = $defaultContentTemplates;
+	public function SetConfigRendering (\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering $configRendering) {
+		$this->configRendering = $configRendering;
 		return $this;
-	}
-	
-	/**
-	 * 
-	 * @internal
-	 * @param  \string[] $defaultControlTemplates
-	 * @return \MvcCore\Ext\Controllers\DataGrids\View
-	 */
-	public function SetDefaultControlTemplates ($defaultControlTemplates) {
-		$this->defaultControlTemplates = $defaultControlTemplates;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @internal
-	 * @param  \string[] $defaultFilterFormTemplates
-	 * @return \MvcCore\Ext\Controllers\DataGrids\View
-	 */
-	public function SetDefaultFilterFormTemplates ($defaultFilterFormTemplates) {
-		$this->defaultFilterFormTemplates = $defaultFilterFormTemplates;
-		return $this;
-	}
-	
-	/**
-	 * 
-	 * @param  string $relativePath
-	 * @return string
-	 */
-	public function & RenderGridContent ($relativePath = '') {
-		$internalTemplate = in_array($relativePath, $this->defaultContentTemplates, TRUE);
-		$result = $this->Render('Views/Content', $relativePath, $internalTemplate);
-		return $result;
 	}
 
 	/**
 	 * 
-	 * @param  string $relativePath
-	 * @return string
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function & RenderGridControl ($relativePath = '') {
-		$internalTemplate = in_array($relativePath, $this->defaultControlTemplates, TRUE);
-		$result = $this->Render('Views/Controls', $relativePath, $internalTemplate);
-		return $result;
+	public function GetConfigRendering () {
+		return $this->configRendering;
 	}
 
 	/**
-	 * 
-	 * @param  string $relativePath
 	 * @return string
 	 */
-	public function & RenderGridForm ($relativePath = '') {
-		$internalTemplate = in_array($relativePath, $this->defaultFilterFormTemplates, TRUE);
-		$result = $this->Render('Views/Form', $relativePath, $internalTemplate);
-		return $result;
+	public function RenderGrid () {
+		// Complete view script path an render it by rendering mode:
+		$viewScriptPath = $this->configRendering->GetTemplateGridContent();
+		if ($viewScriptPath === NULL) {
+			return $this->Render('Content', 'grid', TRUE);
+		} else {
+			return $this->RenderScript($viewScriptPath);
+		}
 	}
+
+
+
+
+
+
 
 	/**
 	 * @inheritDocs
-	 * @param  string      $typePath     By default: `"Layouts" | "Scripts"`. It could be `"Forms" | "Forms/Fields"` etc...
-	 * @param  string      $relativePath
+	 * @param  string $typePath     By default: `"Layouts" | "Scripts"`. It could be `"Forms" | "Forms/Fields"` etc...
+	 * @param  string $relativePath
+	 * @param  bool   $internalTemplate
 	 * @throws \InvalidArgumentException Template not found in path: `$viewScriptFullPath`.
 	 * @return string
 	 */

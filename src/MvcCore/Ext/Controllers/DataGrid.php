@@ -4,7 +4,7 @@ namespace MvcCore\Ext\Controllers;
 
 class		DataGrid 
 extends		\MvcCore\Controller
-implements	\MvcCore\Ext\Controllers\DataGrid\IConstants {
+implements	\MvcCore\Ext\Controllers\IDataGrid {
 
 	use \MvcCore\Ext\Controllers\DataGrid\ConfigProps,
 		\MvcCore\Ext\Controllers\DataGrid\ConfigGettersSetters,

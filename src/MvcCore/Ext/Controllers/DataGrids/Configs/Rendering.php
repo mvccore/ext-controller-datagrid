@@ -9,7 +9,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * 
 	 * @var int
 	 */
-	protected $type							= \MvcCore\Ext\Controllers\DataGrid\IConstants::TYPE_TABLE;
+	protected $type							= \MvcCore\Ext\Controllers\IDataGrid::TYPE_TABLE;
 
 	/**
 	 * 
@@ -47,59 +47,60 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 */
 	protected $renderFilterForm				= FALSE;
 	
+
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateGridContent			= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTENT_DEFAULT;
+	protected $templateGridContent			= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateTableHead			= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_TABLE_HEAD_DEFAULT;
+	protected $templateTableHead			= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateTableBody			= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_TABLE_BODY_DEFAULT;
+	protected $templateTableBody			= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateGridHead				= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_GRID_HEAD_DEFAULT;
+	protected $templateGridHead				= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateGridBody				= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_GRID_BODY_DEFAULT;
+	protected $templateGridBody				= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateControlPaging		= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTROL_PAGING_DEFAULT;
+	protected $templateControlPaging		= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateControlOrdering		= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTROL_ORDERING_DEFAULT;
+	protected $templateControlOrdering		= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateControlCountScales	= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_CONTROL_COUNT_SCALES_DEFAULT;
+	protected $templateControlCountScales	= NULL;
 	
 	/**
 	 * 
 	 * @var string
 	 */
-	protected $templateFilterForm			= \MvcCore\Ext\Controllers\DataGrid\IConstants::TEMPLATE_FILTER_FORM_DEFAULT;
+	protected $templateFilterForm			= NULL;
 	
 	/**
 	 * 
@@ -113,7 +114,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @param  int $type
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetType ($type = \MvcCore\Ext\Controllers\DataGrid\IConstants::TYPE_TABLE) {
+	public function SetType ($type = \MvcCore\Ext\Controllers\IDataGrid::TYPE_TABLE) {
 		$this->type = $type;
 		return $this;
 	}
