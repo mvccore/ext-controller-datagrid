@@ -4,7 +4,7 @@
 
 	$renderConf = $grid->GetConfigRendering();
 	$gridType = $renderConf->GetType();
-	$gridTableType = ($gridType & \MvcCore\Ext\Controllers\IDataGrid::TYPE_TABLE) !== 0;
+	$gridTableType = ($gridType & $grid::TYPE_TABLE) !== 0;
 	$cssClasses = $grid->GetCssClasses();
 
 ?><div class="grid grid-type-<?php
@@ -32,4 +32,11 @@
 		echo $this->RenderGridControlCountScales();
 	?></div><?php
 	endif;
-?></div>
+?></div><?php
+	if ($renderConf->GetRenderTableHeadFiltering()):
+	endif;
+?>
+<form action="?grid-action=filter-table" enctype="application/x-www-form-urlencoded" id="grid-filter-table" style="display:none;">
+
+	<input type="submit" name="filter-table" value="filter" style="display:none;"/>
+</form>

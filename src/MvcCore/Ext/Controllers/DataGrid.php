@@ -10,6 +10,7 @@ implements	\MvcCore\Ext\Controllers\IDataGrid {
 		\MvcCore\Ext\Controllers\DataGrid\ConfigGettersSetters,
 		\MvcCore\Ext\Controllers\DataGrid\InternalProps,
 		\MvcCore\Ext\Controllers\DataGrid\InternalGettersSetters,
+		\MvcCore\Ext\Controllers\DataGrid\ActionMethods,
 		\MvcCore\Ext\Controllers\DataGrid\InitMethods,
 		\MvcCore\Ext\Controllers\DataGrid\PreDispatchMethods,
 		\MvcCore\Ext\Controllers\DataGrid\RenderMethods;

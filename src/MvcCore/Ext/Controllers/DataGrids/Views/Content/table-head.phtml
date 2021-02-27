@@ -4,17 +4,22 @@
 ?><thead><tr><?php
 	$ordering = $grid->GetOrdering();
 	$configColumns = $grid->GetConfigColumns();
+	$headFiltering = $grid->GetConfigRendering()->GetRenderTableHeadFiltering();
 	foreach ($configColumns as $urlName => $configColumn):
 		
 		?><th class="<?php
 			echo 'grid-col-' . $configColumn->GetUrlName();
 			if ($grid->GetColumnFiltered($configColumn) !== NULL)
-				echo ' grid-col-filtering';
+				echo ' grid-col-filtered';
 		?>"><?php
+
+		if ($headFiltering):
+			?><div class="grid-head-order"><?php
+		endif;
 
 		if ($configColumn->GetOrder()): 
 
-			?><a class="grid-order-link" href="<?php
+			?><a class="grid-head-order-link" href="<?php
 				echo $grid->GridOrderUrl($configColumn);
 			?>"><?php
 				echo $configColumn->GetHumanName();
@@ -22,7 +27,7 @@
 
 			$dir = $grid->GetColumnOrderDirection($configColumn);
 			if ($dir !== NULL): 
-				?><span class="grid-order-dir grid-order-<?php
+				?><span class="grid-head-order-dir grid-head-order-<?php
 					echo $dir ? 'asc' : 'desc';
 				?>"><?php
 					echo $dir ? '&#9660;' : '&#9650;';
@@ -31,7 +36,7 @@
 				if ($grid->GetMultiSorting()):
 					$orderIndex = $grid->GetColumnOrderIndex($configColumn);
 					if ($orderIndex !== NULL):
-						?><span class="grid-order-index"><?php
+						?><span class="grid-head-order-index"><?php
 							echo $orderIndex + 1;
 						?></span><?php
 					endif;
@@ -45,6 +50,15 @@
 			?></span><?php
 
 		endif;
+
+		if ($headFiltering):
+			?></div><div class="grid-head-filter"><?php
+				?><input name="<?php
+					echo $configColumn->GetUrlName();
+				?>" form="grid-filter-table" type="text" value="" /><?
+			?></div><?php
+		endif;
+
 		?></th><?php
 		
 	endforeach;

@@ -42,6 +42,19 @@ interface IRendering {
 	 * @return bool
 	 */
 	public function GetRenderTableHeadOrdering ();
+	
+	/**
+	 * 
+	 * @param  bool $renderTableHeadFiltering
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetRenderTableHeadFiltering ($renderTableHeadFiltering);
+
+	/**
+	 * 
+	 * @return bool
+	 */
+	public function GetRenderTableHeadFiltering ();
 
 	/**
 	 * 

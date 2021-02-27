@@ -27,6 +27,12 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * 
 	 * @var bool
 	 */
+	protected $renderTableHeadFiltering				= FALSE;
+
+	/**
+	 * 
+	 * @var bool
+	 */
 	protected $renderControlOrdering				= FALSE;
 
 	/**
@@ -193,6 +199,26 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	public function GetRenderTableHeadOrdering () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
 		return $this->renderTableHeadOrdering;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @param  bool $renderTableHeadFiltering
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetRenderTableHeadFiltering ($renderTableHeadFiltering) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		$this->renderTableHeadFiltering = $renderTableHeadFiltering;
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return bool
+	 */
+	public function GetRenderTableHeadFiltering () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		return $this->renderTableHeadFiltering;
 	}
 
 	/**

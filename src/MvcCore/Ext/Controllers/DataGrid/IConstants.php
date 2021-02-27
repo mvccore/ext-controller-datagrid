@@ -13,6 +13,12 @@ interface IConstants {
 	const PARAM_GRID = 'grid';
 	
 	/**
+	 * Query string param name defining datagrid internal action.
+	 * @var string
+	 */
+	const PARAM_ACTION = 'grid-action';
+	
+	/**
 	 * Default items per page.
 	 * @var int
 	 */

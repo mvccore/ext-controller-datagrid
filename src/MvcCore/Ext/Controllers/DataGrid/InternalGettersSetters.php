@@ -209,7 +209,7 @@ trait InternalGettersSetters {
 		$itemsPerPage = $this->itemsPerPage;
 		if (
 			$this->itemsPerPage === 0 && (
-				$this->configRendering->GetRenderControlPaging() & \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_ALWAYS
+				$this->configRendering->GetRenderControlPaging() & static::CONTROL_DISPLAY_ALWAYS
 			) != 0
 		) $itemsPerPage = $this->totalCount;
 		$page = intdiv($offset, $itemsPerPage) + 1;

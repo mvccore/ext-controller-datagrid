@@ -7,9 +7,9 @@
 	foreach ($configColumns as $urlName => $configColumn):
 		if (!$configColumn->GetOrder()) continue;
 		
-		?><td class="<?php echo 'grid-order-' . $configColumn->GetUrlName(); ?>"><?php
+		?><td class="<?php echo 'grid-control-order-' . $configColumn->GetUrlName(); ?>"><?php
 
-			?><a class="grid-order-link" href="<?php
+			?><a class="grid-control-order-link" href="<?php
 				echo $grid->GridOrderUrl($configColumn);
 			?>"><?php
 				echo $configColumn->GetHumanName();
@@ -17,7 +17,7 @@
 
 			$dir = $grid->GetColumnOrderDirection($configColumn);
 			if ($dir !== NULL): 
-				?><span class="grid-order-dir grid-order-<?php
+				?><span class="grid-control-order-dir grid-control-order-<?php
 					echo $dir ? 'asc' : 'desc';
 				?>"><?php
 					echo $dir ? '&#9660;' : '&#9650;';
@@ -26,7 +26,7 @@
 				if ($grid->GetMultiSorting()):
 					$orderIndex = $grid->GetColumnOrderIndex($configColumn);
 					if ($orderIndex !== NULL):
-						?><span class="grid-order-index"><?php
+						?><span class="grid-control-order-index"><?php
 							echo $orderIndex + 1;
 						?></span><?php
 					endif;

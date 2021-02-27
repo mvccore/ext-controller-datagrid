@@ -90,9 +90,6 @@ trait PreDispatchMethods {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->dispatchState >= \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED) return;
 		
-		$this->GetConfigRendering();
-		$this->GetConfigColumns();
-
 		if ($this->viewEnabled) {
 			$this->setUpGridViewInstance();
 			$this->view->grid = $this;
@@ -100,14 +97,12 @@ trait PreDispatchMethods {
 
 		parent::PreDispatch();
 		
-		$this->setUpOffsetLimit();
-		$this->setUpOrdering();
-		$this->setUpFiltering();
 		$this->LoadModel();
 		
-		$this->setUpPaging();
-		$this->setUpCountScales();
-		$this->setUpTranslations();
+		$this->preDispatchTotalCount();
+		$this->preDispatchPaging();
+		$this->preDispatchCountScales();
+		$this->preDispatchTranslations();
 	}
 	
 	/**
@@ -124,134 +119,27 @@ trait PreDispatchMethods {
 	}
 
 	/**
-	 * Set up offset and limit properties for datagrid model instance.
-	 * Offset is always presented, limit could be `NULL` or integer.
-	 * @return void
-	 */
-	protected function setUpOffsetLimit () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$count = $this->urlParams['count'];
-		$inlimitedCount = $count === 0;
-
-		$this->limit = $inlimitedCount
-			? NULL
-			: $count;
-
-		if ($inlimitedCount) {
-			$this->offset = 0;
-		} else {
-			$page = $this->urlParams['page'];
-			$this->offset = ($page - 1) * $this->limit;
-		}
-	}
-	
-	/**
-	 * Parse ordering from URL as array of databse column names as keys 
-	 * and ordering directions `ASC | DESC` as values.
-	 * @return void
-	 */
-	protected function setUpOrdering () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$rawOrdering = $this->urlParams['order'];
-		$subjsDelim = $this->configUrlSegments->GetUrlDelimiterSubjects();
-		$subjValueDelim = $this->configUrlSegments->GetUrlDelimiterSubjectValue();
-		$ascSuffix = $this->configUrlSegments->GetUrlSuffixOrderAsc();
-		$descSuffix = $this->configUrlSegments->GetUrlSuffixOrderDesc();
-		$orderSuffixes = [$ascSuffix => 'ASC', $descSuffix => 'DESC'];
-		$rawOrderingItems = explode($subjsDelim, $rawOrdering);
-		$ordering = [];
-		foreach ($rawOrderingItems as $rawOrderingItem) {
-			$delimPos = mb_strpos($rawOrderingItem, $subjValueDelim);
-			$direction = 'ASC';
-			if ($delimPos === FALSE) {
-				$rawColumnName = $rawOrderingItem;
-			} else {
-				$rawColumnName = mb_substr($rawOrderingItem, 0, $delimPos);
-				$rawDirection = mb_substr($rawOrderingItem, $delimPos + 1);
-				if (isset($orderSuffixes[$rawDirection])) 
-					$direction = $orderSuffixes[$rawDirection];
-			}
-			if ($this->translateUrlNames)
-				$rawColumnName = call_user_func_array(
-					$this->translator, [$rawColumnName]
-				);
-			if (!isset($this->configColumns[$rawColumnName])) continue;
-			$configColumn = $this->configColumns[$rawColumnName];
-			$ordering[$configColumn->GetDbColumnName()] = $direction;
-			if (!$this->multiSorting) break;
-		}
-		if (count($ordering) === 0) {
-			foreach ($this->configColumns as $configColumn) {
-				$configColumnOrder = $configColumn->GetOrder();
-				if (is_string($configColumnOrder)) {
-					$dbColumnName = $configColumn->GetDbColumnName();
-					$ordering[$dbColumnName] = $configColumnOrder;
-					if (!$this->multiSorting) break;
-				}
-			}
-		}
-		$this->ordering = $ordering;
-	}
-	
-	/**
-	 * Parse filtering from URL as array of databse column names as keys 
-	 * and values as array of raw filtering values.
-	 * @return void
-	 */
-	protected function setUpFiltering () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$rawFiltering = $this->urlParams['filter'];
-		$subjsDelim = $this->configUrlSegments->GetUrlDelimiterSubjects();
-		$subjValueDelim = $this->configUrlSegments->GetUrlDelimiterSubjectValue();
-		$valuesDelim = $this->configUrlSegments->GetUrlDelimiterValues();
-		$rawFilteringItems = explode($subjsDelim, $rawFiltering);
-		$filtering = [];
-		foreach ($rawFilteringItems as $rawFilteringItem) {
-			$delimPos = mb_strpos($rawFilteringItem, $subjValueDelim);
-			$values = [];
-			if ($delimPos === FALSE) {
-				$rawColumnName = $rawFilteringItem;
-				$values = [1];
-			} else {
-				$rawColumnName = mb_substr($rawFilteringItem, 0, $delimPos);
-				$rawValuesStr = mb_substr($rawFilteringItem, $delimPos + 1);
-				$rawValues = explode($valuesDelim, $rawValuesStr);
-				foreach ($rawValues as $rawValue) {
-					$rawValue = trim($rawValue);
-					if ($rawValue !== '') $values[] = $rawValue;
-				}
-			}
-			if ($this->translateUrlNames)
-				$rawColumnName = call_user_func_array(
-					$this->translator, [$rawColumnName]
-				);
-			if (!isset($this->configColumns[$rawColumnName])) continue;
-			$configColumn = $this->configColumns[$rawColumnName];
-			if (count($values) === 0) continue;
-			$filtering[$configColumn->GetDbColumnName()] = $values;
-			if (!$this->multiFiltering) break;
-		}
-		$this->filtering = $filtering;
-	}
-	
-	/**
-	 * 
+	 * Check and set up model and call database for total count at minimal.
 	 * @throws \InvalidArgumentException 
-	 * @return bool
+	 * @return void
 	 */
 	public function LoadModel () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$model = $this->GetModel(TRUE);
-
 		$model
 			->SetOffset($this->offset)
 			->SetLimit($this->limit)
 			->SetFiltering($this->filtering)
 			->SetOrdering($this->ordering);
-		
 		$this->totalCount = $model->GetTotalCount();
-		
-		// Check if pages count is larger or at least the same as page number from URL:
+	}
+
+	/**
+	 * Check if pages count is larger or at least the same as page number from URL.
+	 * @return bool
+	 */
+	protected function preDispatchTotalCount () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$pagesCountByTotalCount = ($this->itemsPerPage > 0) 
 			? intval(ceil(floatval($this->totalCount) / floatval($this->itemsPerPage))) 
 			: 0 ;
@@ -271,7 +159,7 @@ trait PreDispatchMethods {
 			return FALSE;
 		}
 
-		$this->pageData = $model->GetPageData();
+		$this->pageData = $this->model->GetPageData();
 
 		return TRUE;
 	}
@@ -280,23 +168,22 @@ trait PreDispatchMethods {
 	 * 
 	 * @return void
 	 */
-	protected function setUpPaging () {
+	protected function preDispatchPaging () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$renderPaging = $this->configRendering->GetRenderControlPaging();
 		if (!$renderPaging) return;
 
 		$multiplePages = $this->totalCount > $this->itemsPerPage && $this->itemsPerPage !== 0;
 		if (($renderPaging & \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_IF_NECESSARY) != 0 && !$multiplePages) {
-			$this->configRendering->SetRenderControlPaging(\MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_NEVER);
+			$this->configRendering->SetRenderControlPaging(static::CONTROL_DISPLAY_NEVER);
 			return;
 		}
 		
 		$paging = [];
-		
 		$itemsPerPage = $this->itemsPerPage;
 		if (
 			$this->itemsPerPage === 0 && (
-				$renderPaging & \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_ALWAYS
+				$renderPaging & static::CONTROL_DISPLAY_ALWAYS
 			) != 0
 		) $itemsPerPage = $this->totalCount;
 
@@ -319,7 +206,34 @@ trait PreDispatchMethods {
 		$hiddenEndingPagesCount = $pagesCount - ($currentPage + $nearbyPages) - ($firstAndLast ? 1 : 0);
 		$displayOuterEndPages = $outerPages && (floatval($hiddenEndingPagesCount ) / floatval($outerPages)) > $outerPagesMinRatio;
 		
-		// prev, first and `...`:
+		$this->preDispatchPagingPrevAndFirst($paging, [
+			$itemsPerPage, $displayFirst, $displayPrev
+		]);
+		$this->preDispatchPagingLeftOuterPages($paging, [
+			$pagesCount, $itemsPerPage, $displayOuterStartPages, $firstAndLast, $outerPages, $hiddenStartingPagesCount
+		]);
+		$this->preDispatchPagingNearbyAndCurrent($paging, [
+			$pagesCount, $itemsPerPage, $currentPage, $nearbyPages
+		]);
+		$this->preDispatchPagingRightOuterPages($paging, [
+			$pagesCount, $itemsPerPage, $displayOuterEndPages, $firstAndLast, $outerPages, $hiddenEndingPagesCount
+		]);
+		$this->preDispatchPagingLastAndNext($paging, [
+			$pagesCount, $itemsPerPage, $displayLast, $displayNext
+		]);
+
+		$this->paging = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging($paging);
+	}
+	
+	/**
+	 * Complete paging control items prev, first and `...`.
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Paging\Item[] $paging 
+	 * @param  array                                            $params
+	 * @return void
+	 */
+	protected function preDispatchPagingPrevAndFirst (& $paging, $params) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		list ($itemsPerPage, $displayFirst, $displayPrev) = $params;
 		if ($displayPrev) 
 			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
 				$this->GridPageUrl($this->offset - $itemsPerPage), 
@@ -332,8 +246,17 @@ trait PreDispatchMethods {
 			))->SetIsFirst(TRUE);
 		if ($displayFirst || $displayPrev)
 			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dots;
-
-		// right outer pages and `...`:
+	}
+	
+	/**
+	 * Complete paging control items right outer pages and `...`.
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Paging\Item[] $paging 
+	 * @param  array                                            $params
+	 * @return void
+	 */
+	protected function preDispatchPagingLeftOuterPages (& $paging, $params) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		list($pagesCount, $itemsPerPage, $displayOuterStartPages, $firstAndLast, $outerPages, $hiddenStartingPagesCount) = $params;
 		if ($displayOuterStartPages) {
 			$stepValue = floatval($hiddenStartingPagesCount) / floatval($outerPages + 1);
 			$stepCounter = $firstAndLast ? 1.0 : 0.0;
@@ -349,8 +272,17 @@ trait PreDispatchMethods {
 			}
 			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dots;
 		}
-		
-		// left nearby pages, current page and right nearby pages:
+	}
+
+	/**
+	 * Complete paging control items left nearby pages, current page and right nearby pages.
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Paging\Item[] $paging 
+	 * @param  array                                            $params
+	 * @return void
+	 */
+	protected function preDispatchPagingNearbyAndCurrent (& $paging, $params) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		list($pagesCount, $itemsPerPage, $currentPage, $nearbyPages) = $params;
 		$beginIndex = max($currentPage - $nearbyPages, 1);
 		$endIndex = min($currentPage + $nearbyPages + 1, $pagesCount + 1);
 
@@ -369,8 +301,17 @@ trait PreDispatchMethods {
 				$pageIndex === $currentPage
 			);
 		}
-		
-		// `...` and left outer pages:
+	}
+
+	/**
+	 * Complete paging control items `...` and right outer pages.
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Paging\Item[] $paging 
+	 * @param  array                                            $params
+	 * @return void
+	 */
+	protected function preDispatchPagingRightOuterPages (& $paging, $params) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		list($pagesCount, $itemsPerPage, $displayOuterEndPages, $firstAndLast, $outerPages, $hiddenEndingPagesCount) = $params;
 		if ($displayOuterEndPages) {
 			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dots;
 			$stepValue = floatval($hiddenEndingPagesCount) / floatval($outerPages + 1);
@@ -386,8 +327,17 @@ trait PreDispatchMethods {
 				);
 			}
 		}
+	}
 
-		// `...`, last and next:
+	/**
+	 * Complete paging control items `...`, last and next.
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Paging\Item[] $paging 
+	 * @param  array                                            $params
+	 * @return void
+	 */
+	protected function preDispatchPagingLastAndNext (& $paging, $params) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		list ($pagesCount, $itemsPerPage, $displayLast, $displayNext) = $params;
 		if ($displayNext || $displayLast)
 			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dots;
 		if ($displayLast) 
@@ -400,28 +350,26 @@ trait PreDispatchMethods {
 				$this->GridPageUrl($this->offset + $itemsPerPage), 
 				$this->GetControlText('next')
 			))->SetIsNext(TRUE);
-
-		$this->paging = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging($paging);
 	}
 	
 	/**
 	 * 
 	 * @return void
 	 */
-	protected function setUpCountScales () {
+	protected function preDispatchCountScales () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$renderCountScales = $this->configRendering->GetRenderControlCountScales();
 		if (!$renderCountScales) return;
 		$multiplePages = $this->totalCount > $this->itemsPerPage && $this->itemsPerPage !== 0;
-		if (($renderCountScales & \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_IF_NECESSARY) != 0 && !$multiplePages) 
-			$this->configRendering->SetRenderControlCountScales(\MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_NEVER);
+		if (($renderCountScales & static::CONTROL_DISPLAY_IF_NECESSARY) != 0 && !$multiplePages) 
+			$this->configRendering->SetRenderControlCountScales(static::CONTROL_DISPLAY_NEVER);
 	}
 	
 	/**
 	 * 
 	 * @return void
 	 */
-	protected function setUpTranslations () {
+	protected function preDispatchTranslations () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if (!$this->translate) return;
 		foreach ($this->controlsTexts as $key => $controlText)

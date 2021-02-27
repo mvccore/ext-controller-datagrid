@@ -5,6 +5,17 @@ namespace MvcCore\Ext\Controllers\DataGrid;
 trait InternalProps {
 	
 	/**
+	 * Internal datagrid actions.
+	 * Keys are url values, values are local method names.
+	 * @var array
+	 */
+	protected static $gridActions = [
+		'filter-table'	=> 'actionTableFilterSubmit',
+		'filter-form'	=> 'actionFormFilterSubmit',
+		'default'		=> 'actionIndex',
+	];
+
+	/**
 	 * Datagrid page, always initialized into integer value.
 	 * @internal
 	 * @var int|NULL
