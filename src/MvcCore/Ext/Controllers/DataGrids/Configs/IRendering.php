@@ -100,7 +100,7 @@ interface IRendering {
 	 * @param  int $renderControlPaging
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetRenderControlPaging ($renderControlPaging) ;
+	public function SetRenderControlPaging ($renderControlPaging = \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_IF_NECESSARY);
 
 	/**
 	 * 
@@ -140,7 +140,7 @@ interface IRendering {
 	 * @param  int $renderControlCountScales
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetRenderControlCountScales ($renderControlCountScales);
+	public function SetRenderControlCountScales ($renderControlCountScales = \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_ALWAYS);
 
 	/**
 	 * 
