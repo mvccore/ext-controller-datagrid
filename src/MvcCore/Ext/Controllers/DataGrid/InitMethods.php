@@ -190,6 +190,8 @@ trait InitMethods {
 				if (isset($orderSuffixes[$rawDirection])) 
 					$direction = $orderSuffixes[$rawDirection];
 			}
+			$rawColumnName = $this->removeUnsafeChars($rawColumnName);
+			if ($rawColumnName === NULL) continue;
 			if ($this->translateUrlNames)
 				$rawColumnName = call_user_func_array(
 					$this->translator, [$rawColumnName]
@@ -234,12 +236,16 @@ trait InitMethods {
 			} else {
 				$rawColumnName = mb_substr($rawFilteringItem, 0, $delimPos);
 				$rawValuesStr = mb_substr($rawFilteringItem, $delimPos + 1);
+				$rawValuesStr = $this->removeUnsafeChars($rawValuesStr);
+				if ($rawValuesStr === NULL) continue;
 				$rawValues = explode($valuesDelim, $rawValuesStr);
 				foreach ($rawValues as $rawValue) {
 					$rawValue = trim($rawValue);
 					if ($rawValue !== '') $values[] = $rawValue;
 				}
 			}
+			$rawColumnName = $this->removeUnsafeChars($rawColumnName);
+			if ($rawColumnName === NULL) continue;
 			if ($this->translateUrlNames)
 				$rawColumnName = call_user_func_array(
 					$this->translator, [$rawColumnName]
@@ -254,6 +260,7 @@ trait InitMethods {
 	}
 	
 	/**
+	 * Initialize datagrid internal action method name and translation booleans.
 	 * @return void
 	 */
 	protected function initLocalProps () {
@@ -266,5 +273,30 @@ trait InitMethods {
 		$this->translate = is_callable($this->translator) || $this->translator instanceof \Closure;
 		if (!$this->translate)
 			$this->translateUrlNames = FALSE;
+	}
+
+	/**
+	 * Remove general unsafe chars. Be carefull, 
+	 * this method doesn't prevent SQL inject atacks.
+	 * @param string|int $rawValue 
+	 * @return string|null
+	 */
+	protected function removeUnsafeChars ($rawValue) {
+		// remove white spaces from both sides: `SPACE \t \n \r \0 \x0B`:
+		$rawValue = trim((string) $rawValue);
+		
+		// Remove base ASCII characters from 0 to 31 included:
+		$cleanedValue = strtr($rawValue, static::$baseAsciiChars);
+
+		// Replace characters to entities: & " ' < > to &amp; &quot; &#039; &lt; &gt;
+		// http://php.net/manual/en/function.htmlspecialchars.php
+		$cleanedValue = htmlspecialchars($cleanedValue, ENT_QUOTES);
+		
+		// Replace characters to entities: | = \ %
+		$cleanedValue = strtr($cleanedValue, static::$specialMeaningChars);
+
+		if (mb_strlen($cleanedValue) === 0) return NULL;
+		
+		return $cleanedValue;
 	}
 }

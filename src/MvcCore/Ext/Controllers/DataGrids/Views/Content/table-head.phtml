@@ -55,11 +55,13 @@
 		if ($headFiltering):
 			?></div><?php
 			if ($configColumn->GetFilter()):
+				$valueField = $headForm->GetField(implode($headForm::HTML_IDS_DELIMITER, ['value', $urlName]));
 				$filterField = $headForm->GetField(implode($headForm::HTML_IDS_DELIMITER, ['filter', $urlName]));
-				$submitField = $headForm->GetField(implode($headForm::HTML_IDS_DELIMITER, ['submit', $urlName]));
+				$clearField = $headForm->GetField(implode($headForm::HTML_IDS_DELIMITER, ['clear', $urlName]));
 				?><div class="grid-head-filter"><?php
+					echo $valueField->RenderControl();
 					echo $filterField->RenderControl();
-					echo $submitField->RenderControl();
+					echo $clearField->RenderControl();
 				?></div><?php
 			endif;
 		endif;

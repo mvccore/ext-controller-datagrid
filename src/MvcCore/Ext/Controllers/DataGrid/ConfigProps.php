@@ -27,6 +27,7 @@ trait ConfigProps {
 		'last'		=> 'Last ({0})',
 		'all'		=> 'All',
 		'filter'	=> 'Filter',
+		'clear'		=> 'Clear',
 	];
 
 	/**

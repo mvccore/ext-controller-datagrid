@@ -154,7 +154,12 @@ trait InternalGettersSetters {
 			$defaultParams['count'] = $defaultCount;
 			$route->SetDefaults($defaultParams);
 		}
-		return $this->Url('self', [static::URL_PARAM_GRID => $gridParam]);
+
+		$selfParams = [static::URL_PARAM_GRID => $gridParam];
+		if (array_key_exists(static::URL_PARAM_ACTION, $gridParams) && $gridParams[static::URL_PARAM_ACTION] === NULL)
+			$selfParams[static::URL_PARAM_ACTION] = NULL;
+
+		return $this->Url('self', $selfParams);
 	}
 	
 	/**

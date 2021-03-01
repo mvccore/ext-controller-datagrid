@@ -26,6 +26,47 @@ trait InternalProps {
 	];
 
 	/**
+	 * Base ASCII chars to remove from filtering or ordering.
+	 * @var array
+	 */
+	protected static $baseAsciiChars = [
+		"\x00" => '', "\x08" => '', "\x10" => '', "\x18" => '',
+		"\x01" => '', "\x09" => '', "\x11" => '', "\x19" => '',
+		"\x02" => '', "\x0A" => '', "\x12" => '', "\x1A" => '',
+		"\x03" => '', "\x0B" => '', "\x13" => '', "\x1B" => '',
+		"\x04" => '', "\x0C" => '', "\x14" => '', "\x1C" => '',
+		"\x05" => '', "\x0D" => '', "\x15" => '', "\x1D" => '',
+		"\x06" => '', "\x0E" => '', "\x16" => '', "\x1E" => '',
+		"\x07" => '', "\x0F" => '', "\x17" => '', "\x1F" => '',
+	];
+
+	/**
+	 * Characters to prevent XSS attack and some other special chars
+	 * what could be dangerous user input.
+	 * @see http://php.net/manual/en/function.htmlspecialchars.php
+	 * @var \string[]
+	 */
+	protected static $specialMeaningChars = [
+		// commented characters are cleaned by `htmlspecialchars()`
+		//'&'	=> "&amp;",
+		//'"'	=> "&quot;",
+		//"'"	=> "&apos;",
+		//'<'	=> "&lt;",
+		//'>'	=> "&gt;",
+		'|'	=> "&#124;",
+		'='	=> "&#61;",
+		'\\'=> "&#92;",
+		'%'	=> "&#37;",
+	];
+
+	/**
+	 * Custom form result state base value for grid 
+	 * with table type with heading filter form.
+	 * @var int
+	 */
+	protected static $tableHeadingFilterFormClearResultBase = 10;
+
+	/**
 	 * Datagrid page, always initialized into integer value.
 	 * @internal
 	 * @var int|NULL
