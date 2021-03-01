@@ -86,7 +86,7 @@ trait InternalGettersSetters {
 	public function GetGridRequest () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->gridRequest === NULL) {
-			$gridParam = $this->GetParam(static::PARAM_GRID, FALSE); // get param from application request object
+			$gridParam = $this->GetParam(static::URL_PARAM_GRID, FALSE); // get param from application request object
 			$gridParam = $gridParam !== NULL
 				? '/' . ltrim($gridParam, '/')
 				: '';
@@ -154,7 +154,7 @@ trait InternalGettersSetters {
 			$defaultParams['count'] = $defaultCount;
 			$route->SetDefaults($defaultParams);
 		}
-		return $this->Url('self', [static::PARAM_GRID => $gridParam]);
+		return $this->Url('self', [static::URL_PARAM_GRID => $gridParam]);
 	}
 	
 	/**
@@ -339,14 +339,18 @@ trait InternalGettersSetters {
 		$result = [];
 		$phpWithTypes = PHP_VERSION_ID >= 70400;
 		foreach ($props as $prop) {
-			$obj = $prop->isStatic() ? $this : NULL;
-			if ($prop->isPrivate()) $prop->setAccessible(TRUE);
+			if (!$prop->isPublic()) $prop->setAccessible(TRUE);
 			$value = NULL;
 			if ($phpWithTypes) {
-				if ($prop->isInitialized($obj))
-					$value = $prop->getValue($obj);
+				if ($prop->isStatic() && $prop->isInitialized()) {
+					$value = $prop->getValue();
+				} else if ($prop->isInitialized($this)) {
+					$value = $prop->getValue($this);
+				}
 			} else {
-				$value = $prop->getValue($obj);
+				$value = $prop->isStatic()
+					? $prop->getValue()
+					: $prop->getValue($this);
 			}
 			if ($value instanceof \Closure) 
 				$value = '\\Closure';

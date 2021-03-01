@@ -5,6 +5,7 @@
 	$ordering = $grid->GetOrdering();
 	$configColumns = $grid->GetConfigColumns();
 	$headFiltering = $grid->GetConfigRendering()->GetRenderTableHeadFiltering();
+	$headForm = $headFiltering ? $grid->GetTableHeadFilterForm() : NULL;
 	foreach ($configColumns as $urlName => $configColumn):
 		
 		?><th class="<?php
@@ -52,11 +53,15 @@
 		endif;
 
 		if ($headFiltering):
-			?></div><div class="grid-head-filter"><?php
-				?><input name="<?php
-					echo $configColumn->GetUrlName();
-				?>" form="grid-filter-table" type="text" value="" /><?
 			?></div><?php
+			if ($configColumn->GetFilter()):
+				$filterField = $headForm->GetField(implode($headForm::HTML_IDS_DELIMITER, ['filter', $urlName]));
+				$submitField = $headForm->GetField(implode($headForm::HTML_IDS_DELIMITER, ['submit', $urlName]));
+				?><div class="grid-head-filter"><?php
+					echo $filterField->RenderControl();
+					echo $submitField->RenderControl();
+				?></div><?php
+			endif;
 		endif;
 
 		?></th><?php

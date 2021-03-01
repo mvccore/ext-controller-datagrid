@@ -6,6 +6,7 @@
 	$gridType = $renderConf->GetType();
 	$gridTableType = ($gridType & $grid::TYPE_TABLE) !== 0;
 	$cssClasses = $grid->GetCssClasses();
+	$headFiltering = $grid->GetConfigRendering()->GetRenderTableHeadFiltering();
 
 ?><div class="grid grid-type-<?php
 	echo ($gridTableType ? 'table' : 'grid');
@@ -18,6 +19,10 @@
 		echo $this->RenderGridControlOrdering();
 	?></div><?php
 	endif;
+	if ($headFiltering):
+		$headForm = $grid->GetTableHeadFilterForm();
+		echo $headForm->RenderBegin();
+	endif;
 	?><table class="grid-content"><?php
 		if ($gridTableType): 
 			echo $this->RenderGridHeadTable();
@@ -26,17 +31,13 @@
 			echo $this->RenderGridBodyGrid();
 		endif;
 	?></table><?php
+	if ($headFiltering):
+		echo $headForm->RenderEnd();
+	endif;
 	if ($renderConf->GetRenderControlPaging() || $renderConf->GetRenderControlCountScales()):
 	?><div class="grid-controls grid-controls-bottom"><?php 
 		if (isset($pagingCode)) echo $pagingCode;
 		echo $this->RenderGridControlCountScales();
 	?></div><?php
 	endif;
-?></div><?php
-	if ($renderConf->GetRenderTableHeadFiltering()):
-	endif;
-?>
-<form action="?grid-action=filter-table" enctype="application/x-www-form-urlencoded" id="grid-filter-table" style="display:none;">
-
-	<input type="submit" name="filter-table" value="filter" style="display:none;"/>
-</form>
+?></div>

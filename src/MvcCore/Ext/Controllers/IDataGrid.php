@@ -15,13 +15,27 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * 
 	 * @return array
 	 */
-	public function GetControlsTexts ($controlsTexts);
+	public function GetControlsTexts ();
 	
 	/**
 	 * 
 	 * @return string|NULL
 	 */
 	public function GetControlText ($textKey);
+	
+	
+	/**
+	 * 
+	 * @param  \MvcCore\Ext\Form $tableHeadFilterForm
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetTableHeadFilterForm ($tableHeadFilterForm);
+	
+	/**
+	 * 
+	 * @return \MvcCore\Ext\Form
+	 */
+	public function GetTableHeadFilterForm ();
 	
 	/**
 	 * 

@@ -10,13 +10,13 @@ interface IConstants {
 	 * `/any/path[/<grid>]` or `/any/path?grid=...`
 	 * @var string
 	 */
-	const PARAM_GRID = 'grid';
+	const URL_PARAM_GRID = 'grid';
 	
 	/**
 	 * Query string param name defining datagrid internal action.
 	 * @var string
 	 */
-	const PARAM_ACTION = 'grid-action';
+	const URL_PARAM_ACTION = 'grid-action';
 	
 	/**
 	 * Default items per page.

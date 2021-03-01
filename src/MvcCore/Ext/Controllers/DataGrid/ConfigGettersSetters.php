@@ -19,7 +19,7 @@ trait ConfigGettersSetters {
 	 * 
 	 * @return array
 	 */
-	public function GetControlsTexts ($controlsTexts) {
+	public function GetControlsTexts () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->controlsTexts;
 	}
@@ -33,6 +33,28 @@ trait ConfigGettersSetters {
 		if (isset($this->controlsTexts[$textKey]))
 			return $this->controlsTexts[$textKey];
 		return NULL;
+	}
+	
+	/**
+	 * 
+	 * @param  \MvcCore\Ext\Form $tableHeadFilterForm
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetTableHeadFilterForm ($tableHeadFilterForm) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$this->tableHeadFilterForm = $tableHeadFilterForm;
+		return $this;
+	}
+	
+	/**
+	 * 
+	 * @return \MvcCore\Ext\Form
+	 */
+	public function GetTableHeadFilterForm () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		if ($this->tableHeadFilterForm === NULL) 
+			$this->createTableHeadFilterForm(FALSE);
+		return $this->tableHeadFilterForm;
 	}
 	
 	/**

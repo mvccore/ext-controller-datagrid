@@ -48,6 +48,8 @@ trait InitMethods {
 		$this->initFiltering();
 
 		$this->initLocalProps();
+
+		call_user_func([$this, $this->gridAction]);
 	}
 
 	/**
@@ -251,11 +253,16 @@ trait InitMethods {
 		$this->filtering = $filtering;
 	}
 	
+	/**
+	 * @return void
+	 */
 	protected function initLocalProps () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$gridActionParam = $this->request->GetParam(static::PARAM_ACTION);
-		xxx($gridActionParam);
-
+		$defaultActionKey = 'default';
+		$gridActionParam = $this->request->GetParam(static::URL_PARAM_ACTION, '-_a-zA-Z', $defaultActionKey, 'string');
+		if (!isset(static::$gridActions[$gridActionParam])) $gridActionParam = $defaultActionKey;
+		$this->gridAction = static::$gridActions[$gridActionParam];
+		
 		$this->translate = is_callable($this->translator) || $this->translator instanceof \Closure;
 		if (!$this->translate)
 			$this->translateUrlNames = FALSE;

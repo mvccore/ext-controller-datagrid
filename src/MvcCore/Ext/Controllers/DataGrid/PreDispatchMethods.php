@@ -91,7 +91,7 @@ trait PreDispatchMethods {
 		if ($this->dispatchState >= \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED) return;
 		
 		if ($this->viewEnabled) {
-			$this->setUpGridViewInstance();
+			$this->preDispatchViewInstance();
 			$this->view->grid = $this;
 		}
 
@@ -103,21 +103,11 @@ trait PreDispatchMethods {
 		$this->preDispatchPaging();
 		$this->preDispatchCountScales();
 		$this->preDispatchTranslations();
+		
+		if ($this->configRendering->GetRenderTableHeadFiltering()) 
+			$this->tableHeadFilterForm->PreDispatch(FALSE);
 	}
 	
-	/**
-	 * 
-	 * @return void
-	 */
-	protected function setUpGridViewInstance () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$viewClass = $this->configRendering->GetViewClass();
-		$view = (new $viewClass)->SetController($this);
-		if ($view instanceof \MvcCore\Ext\Controllers\DataGrids\View);
-			$view->SetConfigRendering($this->configRendering);
-		$this->view = $view;
-	}
-
 	/**
 	 * Check and set up model and call database for total count at minimal.
 	 * @throws \InvalidArgumentException 
@@ -132,6 +122,19 @@ trait PreDispatchMethods {
 			->SetFiltering($this->filtering)
 			->SetOrdering($this->ordering);
 		$this->totalCount = $model->GetTotalCount();
+	}
+
+	/**
+	 * 
+	 * @return void
+	 */
+	protected function preDispatchViewInstance () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$viewClass = $this->configRendering->GetViewClass();
+		$view = (new $viewClass)->SetController($this);
+		if ($view instanceof \MvcCore\Ext\Controllers\DataGrids\View);
+			$view->SetConfigRendering($this->configRendering);
+		$this->view = $view;
 	}
 
 	/**

@@ -9,7 +9,13 @@ trait ConfigProps {
 	 * @var \string[]
 	 */
 	protected $cssClasses = [];
-
+	
+	/**
+	 * Grid table type, table heading filter form instance.
+	 * @var \MvcCore\Ext\Form|NULL
+	 */
+	protected $tableHeadFilterForm = NULL;
+	
 	/**
 	 * Grid controls visible texts.
 	 * @var array
@@ -20,6 +26,7 @@ trait ConfigProps {
 		'first'		=> 'First',
 		'last'		=> 'Last ({0})',
 		'all'		=> 'All',
+		'filter'	=> 'Filter',
 	];
 
 	/**

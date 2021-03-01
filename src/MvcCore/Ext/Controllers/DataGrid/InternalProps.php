@@ -12,7 +12,17 @@ trait InternalProps {
 	protected static $gridActions = [
 		'filter-table'	=> 'actionTableFilterSubmit',
 		'filter-form'	=> 'actionFormFilterSubmit',
-		'default'		=> 'actionIndex',
+		'default'		=> 'actionDefault',
+	];
+	
+	/**
+	 * Form extensions names and used class full names.
+	 * @var array
+	 */
+	protected static $formExtensionsClasses = [
+		'mvccore/ext-form'				=> 'MvcCore\\Ext\\Form',
+		'mvccore/ext-form-field-text'	=> 'MvcCore\\Ext\\Forms\Fields\\Text',
+		'mvccore/ext-form-field-button'	=> 'MvcCore\\Ext\\Forms\Fields\\SubmitButton',
 	];
 
 	/**
@@ -75,6 +85,13 @@ trait InternalProps {
 	 * @var array|\MvcCore\Ext\Models\Db\Readers\Streams\Iterator|NULL
 	 */
 	protected $pageData = NULL;
+
+	/**
+	 * Internal grid action method name.
+	 * @internal
+	 * @var string|NULL
+	 */
+	protected $gridAction = NULL;
 	
 	/**
 	 * Empty request instance only with `path` value, 
@@ -92,5 +109,5 @@ trait InternalProps {
 	 * @var string|NULL
 	 */
 	protected $queryStringParamsSepatator = NULL;
-	
+
 }
