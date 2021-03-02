@@ -41,13 +41,14 @@ trait InitMethods {
 
 		$this->GetRoute();
 		$this->GetUrlParams();
-
+		
 		$this->initUrlParams();
 		$this->initOffsetLimit();
-		$this->initOrdering();
-		$this->initFiltering();
 
 		$this->initLocalProps();
+		
+		$this->initSorting();
+		$this->initFiltering();
 
 		call_user_func([$this, $this->gridAction]);
 	}
@@ -165,30 +166,66 @@ trait InitMethods {
 	}
 	
 	/**
-	 * Parse ordering from URL as array of databse column names as keys 
-	 * and ordering directions `ASC | DESC` as values.
+	 * Initialize datagrid internal action method name and translation booleans.
 	 * @return void
 	 */
-	protected function initOrdering () {
+	protected function initLocalProps () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$rawOrdering = $this->urlParams['order'];
+		// remove all default values from route to build urls with `$this->urlParams` only:
+		$this->GetRoute()->SetDefaults([]);
+		
+		// complete internal action method name:
+		$defaultActionKey = 'default';
+		$gridActionParam = $this->request->GetParam(static::URL_PARAM_ACTION, '-_a-zA-Z', $defaultActionKey, 'string');
+		if (!isset(static::$gridActions[$gridActionParam])) $gridActionParam = $defaultActionKey;
+		$this->gridAction = static::$gridActions[$gridActionParam];
+		
+		// complete transaction booleans and translate filter url segments if necessary:
+		$this->translate = is_callable($this->translator) || $this->translator instanceof \Closure;
+		if (!$this->translate) 
+			$this->translateUrlNames = FALSE;
+		if ($this->translateUrlNames) {
+			$translatedUrlFilterOperators = [];
+			foreach ($this->configUrlSegments->GetUrlFilterOperators() as $operator => $urlSegment) {
+				$translatedUrlFilterOperators[$operator] = call_user_func_array(
+					$this->translator, [$urlSegment]
+				);
+			}
+			$this->configUrlSegments->SetUrlFilterOperators($translatedUrlFilterOperators);
+		}
+		
+		// initialize default allowed operators collection:
+		if (!$this->filteringMode) return;
+		$this->allowedOperators = $this->getAllowedOperators($this->filteringMode);
+	}
+
+	/**
+	 * Parse sorting from URL as array of databse column names as keys 
+	 * and sorting directions `ASC | DESC` as values.
+	 * @return void
+	 */
+	protected function initSorting () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		if (!$this->sortingMode) return;
+		$rawSorting = $this->urlParams['sort'];
 		$subjsDelim = $this->configUrlSegments->GetUrlDelimiterSubjects();
 		$subjValueDelim = $this->configUrlSegments->GetUrlDelimiterSubjectValue();
-		$ascSuffix = $this->configUrlSegments->GetUrlSuffixOrderAsc();
-		$descSuffix = $this->configUrlSegments->GetUrlSuffixOrderDesc();
-		$orderSuffixes = [$ascSuffix => 'ASC', $descSuffix => 'DESC'];
-		$rawOrderingItems = explode($subjsDelim, $rawOrdering);
-		$ordering = [];
-		foreach ($rawOrderingItems as $rawOrderingItem) {
-			$delimPos = mb_strpos($rawOrderingItem, $subjValueDelim);
+		$ascSuffix = $this->configUrlSegments->GetUrlSuffixSortAsc();
+		$descSuffix = $this->configUrlSegments->GetUrlSuffixSortDesc();
+		$sortSuffixes = [$ascSuffix => 'ASC', $descSuffix => 'DESC'];
+		$rawSortingItems = explode($subjsDelim, $rawSorting);
+		$multiSorting = ($this->sortingMode & static::SORT_MULTIPLE_COLUMNS) != 0;
+		$sorting = [];
+		foreach ($rawSortingItems as $rawSortingItem) {
+			$delimPos = mb_strpos($rawSortingItem, $subjValueDelim);
 			$direction = 'ASC';
 			if ($delimPos === FALSE) {
-				$rawColumnName = $rawOrderingItem;
+				$rawColumnName = $rawSortingItem;
 			} else {
-				$rawColumnName = mb_substr($rawOrderingItem, 0, $delimPos);
-				$rawDirection = mb_substr($rawOrderingItem, $delimPos + 1);
-				if (isset($orderSuffixes[$rawDirection])) 
-					$direction = $orderSuffixes[$rawDirection];
+				$rawColumnName = mb_substr($rawSortingItem, 0, $delimPos);
+				$rawDirection = mb_substr($rawSortingItem, $delimPos + 1);
+				if (isset($sortSuffixes[$rawDirection])) 
+					$direction = $sortSuffixes[$rawDirection];
 			}
 			$rawColumnName = $this->removeUnsafeChars($rawColumnName);
 			if ($rawColumnName === NULL) continue;
@@ -198,20 +235,22 @@ trait InitMethods {
 				);
 			if (!isset($this->configColumns[$rawColumnName])) continue;
 			$configColumn = $this->configColumns[$rawColumnName];
-			$ordering[$configColumn->GetDbColumnName()] = $direction;
-			if (!$this->multiSorting) break;
+			$columnSortCfg = $configColumn->GetSort();
+			if ($columnSortCfg === FALSE || $columnSortCfg === NULL) continue;
+			$sorting[$configColumn->GetDbColumnName()] = $direction;
+			if (!$multiSorting) break;
 		}
-		if (count($ordering) === 0) {
+		if (count($sorting) === 0) {
 			foreach ($this->configColumns as $configColumn) {
-				$configColumnOrder = $configColumn->GetOrder();
-				if (is_string($configColumnOrder)) {
+				$configColumnSort = $configColumn->GetSort();
+				if (is_string($configColumnSort)) {
 					$dbColumnName = $configColumn->GetDbColumnName();
-					$ordering[$dbColumnName] = $configColumnOrder;
-					if (!$this->multiSorting) break;
+					$sorting[$dbColumnName] = $configColumnSort;
+					if (!$multiSorting) break;
 				}
 			}
 		}
-		$this->ordering = $ordering;
+		$this->sorting = $sorting;
 	}
 	
 	/**
@@ -221,28 +260,37 @@ trait InitMethods {
 	 */
 	protected function initFiltering () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		if (!$this->filteringMode) return;
 		$rawFiltering = $this->urlParams['filter'];
 		$subjsDelim = $this->configUrlSegments->GetUrlDelimiterSubjects();
 		$subjValueDelim = $this->configUrlSegments->GetUrlDelimiterSubjectValue();
 		$valuesDelim = $this->configUrlSegments->GetUrlDelimiterValues();
+
 		$rawFilteringItems = explode($subjsDelim, $rawFiltering);
+		$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
 		$filtering = [];
 		foreach ($rawFilteringItems as $rawFilteringItem) {
 			$delimPos = mb_strpos($rawFilteringItem, $subjValueDelim);
-			$values = [];
+			$operator = '=';
+			$multiple = TRUE;
+			$rawOperatorStr = NULL;
+			$values = NULL;
+			$regex = NULL;
 			if ($delimPos === FALSE) {
 				$rawColumnName = $rawFilteringItem;
-				$values = [1];
+				$values = [1]; // boolean 1 as default value if no operator and value defined
 			} else {
 				$rawColumnName = mb_substr($rawFilteringItem, 0, $delimPos);
-				$rawValuesStr = mb_substr($rawFilteringItem, $delimPos + 1);
+				$rawOperatorAndValuesStr = mb_substr($rawFilteringItem, $delimPos + 1);
+				$delimPos = mb_strpos($rawOperatorAndValuesStr, $subjValueDelim);
+				if ($delimPos === FALSE) {
+					$rawValuesStr = $rawOperatorAndValuesStr;
+				} else {
+					$rawOperatorStr = mb_substr($rawOperatorAndValuesStr, 0, $delimPos);
+					$rawValuesStr = mb_substr($rawOperatorAndValuesStr, $delimPos + 1);
+				}
 				$rawValuesStr = $this->removeUnsafeChars($rawValuesStr);
 				if ($rawValuesStr === NULL) continue;
-				$rawValues = explode($valuesDelim, $rawValuesStr);
-				foreach ($rawValues as $rawValue) {
-					$rawValue = trim($rawValue);
-					if ($rawValue !== '') $values[] = $rawValue;
-				}
 			}
 			$rawColumnName = $this->removeUnsafeChars($rawColumnName);
 			if ($rawColumnName === NULL) continue;
@@ -252,29 +300,83 @@ trait InitMethods {
 				);
 			if (!isset($this->configColumns[$rawColumnName])) continue;
 			$configColumn = $this->configColumns[$rawColumnName];
+			$columnFilterCfg = $configColumn->GetFilter();
+			if ($columnFilterCfg === FALSE || $columnFilterCfg === NULL) continue;
+			$allowedOperators = $columnFilterCfg === TRUE || !is_integer($columnFilterCfg)
+				? $this->allowedOperators
+				: $this->getAllowedOperators($columnFilterCfg);
+			if ($values === NULL) {
+				$rawValues = explode($valuesDelim, $rawValuesStr);
+				foreach ($rawValues as $rawValue) {
+					$rawValue = trim($rawValue);
+					if ($rawValue !== '') $values[] = $rawValue;
+				}
+			}
 			if (count($values) === 0) continue;
-			$filtering[$configColumn->GetDbColumnName()] = $values;
-			if (!$this->multiFiltering) break;
+			if (isset($allowedOperators[$rawOperatorStr])) {
+				$operatorCfg = $allowedOperators[$rawOperatorStr];
+				$operator = $operatorCfg->operator;
+				$multiple = $operatorCfg->multiple;
+				$regex = $operatorCfg->regex;
+			}
+			if (!$multiple && count($values) > 1)
+				$values = [$values[0]];
+			if ($regex !== NULL) {
+				$newValues = [];
+				foreach ($values as $value)
+					if (preg_match($regex, $value))
+						$newValues[] = $value;
+				if (count($newValues) === 0) continue;
+				$values = $newValues;
+			}
+			$columnDbName = $configColumn->GetDbColumnName();
+			if (!isset($filtering[$columnDbName]))
+				$filtering[$columnDbName] = [];
+			$filtering[$columnDbName][$operator] = $values;
+			if (!$multiFiltering) break;
 		}
 		$this->filtering = $filtering;
 	}
-	
-	/**
-	 * Initialize datagrid internal action method name and translation booleans.
-	 * @return void
-	 */
-	protected function initLocalProps () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$defaultActionKey = 'default';
-		$gridActionParam = $this->request->GetParam(static::URL_PARAM_ACTION, '-_a-zA-Z', $defaultActionKey, 'string');
-		if (!isset(static::$gridActions[$gridActionParam])) $gridActionParam = $defaultActionKey;
-		$this->gridAction = static::$gridActions[$gridActionParam];
-		
-		$this->translate = is_callable($this->translator) || $this->translator instanceof \Closure;
-		if (!$this->translate)
-			$this->translateUrlNames = FALSE;
-	}
 
+	/**
+	 * Return allowed operators by column configuration.
+	 * @param int $columnFilterFlags 
+	 */
+	protected function getAllowedOperators ($columnFilterFlags) {
+		$urlFilterOperators = $this->configUrlSegments->GetUrlFilterOperators();
+		$allowRanges		= ($columnFilterFlags & static::FILTER_ALLOW_RANGES) != 0;
+		$allowLikeRight		= ($columnFilterFlags & static::FILTER_ALLOW_LIKE_RIGHT_SIDE) != 0;
+		$allowLikeLeft		= ($columnFilterFlags & static::FILTER_ALLOW_LIKE_LEFT_SIDE)  != 0;
+		$allowLikeAnywhere	= ($columnFilterFlags & static::FILTER_ALLOW_LIKE_ANYWHERE) != 0;
+		$operators = ['=', '!=']; // equal and not equal are allowed for filtering by default
+		if ($allowRanges)
+			$operators = array_merge($operators, ['<', '>', '<=', '>=']);
+		if ($allowLikeRight || $allowLikeLeft || $allowLikeAnywhere) 
+			$operators = array_merge($operators, ['LIKE', 'NOT LIKE']);
+		$allowedOperators = [];
+		foreach ($operators as $operator) {
+			$urlSegment = $urlFilterOperators[$operator];
+			$multipleValues = strpos($operator, '<') === FALSE && strpos($operator, '>') === FALSE;
+			$likeOperator = strpos($operator, 'LIKE') !== FALSE;
+			$regex = NULL;
+			if ($likeOperator && !$allowLikeAnywhere) {
+				if ($allowLikeRight && !$allowLikeLeft) {
+					$regex = "#^([^%_]).*$#";
+				} else if ($allowLikeLeft && !$allowLikeRight) {
+					$regex = "#.*([^%_])$#";
+				} else if ($allowLikeLeft && $allowLikeRight) {
+					$regex = "#^.([^%_]+).$#";
+				}
+			}
+			$allowedOperators[$urlSegment] = (object) [
+				'operator'	=> $operator,
+				'multiple'	=> $multipleValues,
+				'regex'		=> $regex,
+			];
+		}
+		return $allowedOperators;
+	}
+	
 	/**
 	 * Remove general unsafe chars. Be carefull, 
 	 * this method doesn't prevent SQL inject atacks.
@@ -290,7 +392,7 @@ trait InitMethods {
 
 		// Replace characters to entities: & " ' < > to &amp; &quot; &#039; &lt; &gt;
 		// http://php.net/manual/en/function.htmlspecialchars.php
-		$cleanedValue = htmlspecialchars($cleanedValue, ENT_QUOTES);
+		$cleanedValue = htmlspecialchars($cleanedValue, ENT_QUOTES); // double and single quotes
 		
 		// Replace characters to entities: | = \ %
 		$cleanedValue = strtr($cleanedValue, static::$specialMeaningChars);

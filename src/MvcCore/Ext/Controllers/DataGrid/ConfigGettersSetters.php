@@ -173,39 +173,62 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @param  bool $multiSorting
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * 
+	 * @param  int $sortingMode 
+	 * @return ConfigGettersSetters
 	 */
-	public function SetMultiSorting ($multiSorting) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$this->multiSorting = $multiSorting;
+	public function SetSortingMode ($sortingMode = \MvcCore\Ext\Controllers\IDataGrid::SORT_MULTIPLE_COLUMNS) {
+		$this->sortingMode = $sortingMode;
 		return $this;
 	}
 
 	/**
-	 * @return bool
+	 * 
+	 * @return int
 	 */
-	public function GetMultiSorting () {
+	public function GetSortingMode () {
+		return $this->sortingMode;
+	}
+	
+
+	/**
+	 * 
+	 * @param  int $filteringMode 
+	 * @return ConfigGettersSetters
+	 */
+	public function SetFilteringMode ($filteringMode = \MvcCore\Ext\Controllers\IDataGrid::FILTER_MULTIPLE_COLUMNS) {
+		$this->filteringMode = $filteringMode;
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @return int
+	 */
+	public function GetFilteringMode () {
+		return $this->filteringMode;
+	}
+
+	/**
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm $translator
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetControlFilterForm (\MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm $filterForm) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		return $this->multiSorting;
+		$this->checkExtendedFormClasses();
+		$formInterface = 'MvcCore\\Ext\\IForm';
+		$toolClass = $this->application->GetToolClass();
+		$toolClass::CheckClassInterface(get_class($filterForm), $formInterface, FALSE, TRUE);
+		$this->controlFilterForm = $filterForm;
+		return $this;
 	}
 	
 	/**
-	 * @param  bool $multiFiltering
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm|NULL
 	 */
-	public function SetMultiFiltering ($multiFiltering) {
+	public function GetControlFilterForm () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$this->multiFiltering = $multiFiltering;
-		return $this;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function GetMultiFiltering () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		return $this->multiFiltering;
+		return $this->controlFilterForm;
 	}
 	
 	/**
@@ -221,9 +244,9 @@ trait ConfigGettersSetters {
 	/**
 	 * @return callable|NULL
 	 */
-	public function GetTranslator ($translator) {
+	public function GetTranslator () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$this->translator;
+		return $this->translator;
 	}
 	
 	/**
@@ -241,7 +264,7 @@ trait ConfigGettersSetters {
 	 */
 	public function GetTranslateUrlNames () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		$this->translateUrlNames;
+		return $this->translateUrlNames;
 	}
 
 	/**
@@ -261,8 +284,11 @@ trait ConfigGettersSetters {
 	public function GetRoute () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->route === NULL) {
+			
 			$this->route = new \MvcCore\Route([
-				'pattern'		=> $this->GetConfigUrlSegments()->GetRoutePattern(),
+				'pattern'		=> $this->GetConfigUrlSegments()->GetRoutePattern(
+					$this->sortingMode, $this->filteringMode
+				),
 				'defaults'		=> [
 					'page'		=> 1,
 					'count'		=> $this->GetItemsPerPage(),
@@ -270,7 +296,7 @@ trait ConfigGettersSetters {
 				'constraints'	=> [
 					'page'		=> '[0-9]+',
 					'count'		=> '[0-9]+',
-					'order'		=> '[^/]+',
+					'sort'		=> '[^/]+',
 					'filter'	=> '[^/]+',
 				]
 			]);
@@ -393,16 +419,18 @@ trait ConfigGettersSetters {
 				$context = $this;
 				$configColumnsArr = $context::ParseConfigColumns($this->model);
 			}
-			if (is_array($configColumnsArr) && $configColumnsArr > 0) {
+			if (is_array($configColumnsArr) && count($configColumnsArr) > 0) {
 				$this->configColumns = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns(
 					$configColumnsArr
 				);
 			} else {
 				throw new \InvalidArgumentException(
-					"There was not possible to complete datagrid columns from given model. ".
-					"Please decorate model properties with class ".
-					"`\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column` ".
-					"or with equivalent PHPDocs tag name."
+					"There was not possible to complete datagrid columns from given model instance. \n".
+					"- 1. You can use datagrid setter method `SetConfigColumns()` to directly configure datagrid columns or \n".
+					"- 2. You can implement interface `\\MvcCore\\Ext\\Controllers\\DataGrids\\Models\\IGridColumns` \n".
+					"  on given model instance and decorate model properties with attribute class \n".
+					"  `\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column` ".
+					"  or with equivalent PHPDocs tag names."
 				);
 			}
 		}

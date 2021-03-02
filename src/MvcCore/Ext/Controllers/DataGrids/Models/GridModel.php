@@ -38,7 +38,7 @@ trait GridModel {
 	 * 
 	 * @var array|NULL
 	 */
-	protected $ordering = NULL;
+	protected $sorting = NULL;
 
 
 	/**
@@ -73,11 +73,11 @@ trait GridModel {
 
 	/**
 	 * 
-	 * @param  array $ordering 
+	 * @param  array $sorting
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridModel
 	 */
-	public function SetOrdering ($ordering) {
-		$this->ordering = $ordering;
+	public function SetSorting ($sorting) {
+		$this->sorting = $sorting;
 		return $this;
 	}
 	
@@ -123,6 +123,90 @@ trait GridModel {
 			}
 		}
 		return NULL;
+	}
+
+	/**
+	 * Complete ORDER BY condition SQL part by `$this->sorting` array given from datagrid.
+	 * @param  bool        $includeOrderBy Include ` WHERE ` keyword.
+	 * @param  string|NULL $columnsAlias   Optional SQL alias for each column.
+	 * @return string
+	 */
+	protected function getSortingSql ($includeOrderBy = TRUE, $columnsAlias = NULL) {
+		$sortSqlItems = [];
+		$alias = $columnsAlias === NULL
+			? ''
+			: '.' . $columnsAlias;
+		foreach ($this->sorting as $columnName => $direction)
+			$sortSqlItems[] = "{$alias}{$columnName} {$direction}";
+		$sortSql = '';
+		if (count($sortSqlItems) > 0) {
+			$sortSql = (
+				($includeOrderBy ? " ORDER BY " : "") . 
+				implode(", ", $sortSqlItems) . " "
+			);
+		}
+		return $sortSql;
+	}
+
+	/**
+	 * Complete WHERE condition SQL part by `$this->filtering` array given from datagrid.
+	 * @param  bool        $includeWhere  Include ` WHERE ` keyword.
+	 * @param  string|NULL $columnsAlias  Optional SQL alias for each column.
+	 * @param  array       $params        Optional query params array, empty or with any initialized value from before.
+	 * @param  string      $paramBaseName Base name for every created param inside this method.
+	 * @return array [string $conditionsSql, array $params]
+	 */
+	protected function getConditionSqlAndParams ($includeWhere = TRUE, $columnsAlias = NULL, $params = [], $paramBaseName = ':p') {
+		static $inOperators = [
+			'='		=> 'IN',
+			'!='	=> 'NOT IN',
+		];
+		$conditionSqlItems = [];
+		$alias = $columnsAlias === NULL
+			? ''
+			: $columnsAlias . '.';
+		$index = 0;
+		foreach ($this->filtering as $columnName => $operatorAndRawValues) {
+			foreach ($operatorAndRawValues as $operator => $rawValues) {
+				$multipleValues = count($rawValues) > 1;
+				if ($multipleValues) {
+					if (isset($inOperators[$operator])) {
+						$inOperator = $inOperators[$operator];
+						$paramsNames = [];
+						foreach ($rawValues as $rawValue) {
+							$paramName = "{$paramBaseName}{$index}";
+							$params[$paramName] = $rawValue;
+							$paramsNames[] = $paramName;
+							$index++;
+						}
+						$paramsNamesStr = implode(", ", $paramsNames);
+						$conditionSqlItems[] = "{$alias}{$columnName} {$inOperator} ({$paramsNamesStr})";
+					} else {
+						$conditionSqlSubItems = [];
+						foreach ($rawValues as $rawValue) {
+							$paramName = "{$paramBaseName}{$index}";
+							$params[$paramName] = $rawValue;
+							$conditionSqlSubItems[] = "{$alias}{$columnName} {$operator} {$paramName}";
+							$index++;
+						}
+						$conditionSqlItems[] = "(" . implode(" OR ", $conditionSqlSubItems) . ")";
+					}
+				} else {
+					$paramName = "{$paramBaseName}{$index}";
+					$params[$paramName] = $rawValues[0];
+					$conditionSqlItems[] = "{$alias}{$columnName} {$operator} {$paramName}";
+					$index++;
+				}
+			}
+		}
+		$conditionsSql = '';
+		if (count($conditionSqlItems) > 0) {
+			$conditionsSql = (
+				($includeWhere ? " WHERE " : "") . 
+				implode(" AND ", $conditionSqlItems) . " "
+			);
+		}
+		return [$conditionsSql, $params];
 	}
 
 	/**

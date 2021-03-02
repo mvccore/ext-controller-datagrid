@@ -69,7 +69,7 @@ class View extends \MvcCore\View {
 	 * @return string
 	 */
 	public function RenderGridHeadTable () {
-		if (!$this->configRendering->GetRenderTableHeadOrdering()) 
+		if (!$this->configRendering->GetRenderTableHeadSorting()) 
 			return '';
 		return $this->renderGridTemplate(
 			$this->configRendering->GetTemplateTableHead(), 'Content', 'table-head'
@@ -100,12 +100,12 @@ class View extends \MvcCore\View {
 	 * 
 	 * @return string
 	 */
-	public function RenderGridControlOrdering () {
-		if (!$this->configRendering->GetRenderControlOrdering()) 
+	public function RenderGridControlSorting () {
+		if (!$this->configRendering->GetRenderControlSorting()) 
 			return '';
 		ob_start();
 		echo $this->renderGridTemplate(
-			$this->configRendering->GetTemplateControlOrdering(), 'Controls', 'ordering'
+			$this->configRendering->GetTemplateControlSorting(), 'Controls', 'sorting'
 		);
 		return ob_get_clean();
 	}

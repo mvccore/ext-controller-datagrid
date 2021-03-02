@@ -33,10 +33,10 @@ interface IGridModel {
 	public function SetFiltering (array $filtering);
 
 	/**
-	 * @param  array $ordering 
+	 * @param  array $sorting
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel
 	 */
-	public function SetOrdering (array $ordering);
+	public function SetSorting (array $sorting);
 
 	/**
 	 * 

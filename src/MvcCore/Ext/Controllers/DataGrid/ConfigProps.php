@@ -55,15 +55,21 @@ trait ConfigProps {
 
 	/**
 	 * 
-	 * @var bool
+	 * @var int
 	 */
-	protected $multiSorting = FALSE;
+	protected $sortingMode = self::SORT_SINGLE_COLUMN;
 
 	/**
 	 * 
-	 * @var bool
+	 * @var int
 	 */
-	protected $multiFiltering = FALSE;
+	protected $filteringMode = self::FILTER_SINGLE_COLUMN;
+
+	/**
+	 * 
+	 * @var \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm|NULL
+	 */
+	protected $controlFilterForm = NULL;
 
 	/**
 	 * 

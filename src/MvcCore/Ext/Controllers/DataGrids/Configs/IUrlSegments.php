@@ -32,16 +32,16 @@ interface IUrlSegments {
 
 	/**
 	 * 
-	 * @param  string $urlPrefixOrder
+	 * @param  string $urlPrefixSort
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
-	public function SetUrlPrefixOrder ($urlPrefixOrder);
+	public function SetUrlPrefixSort ($urlPrefixSort);
 
 	/**
 	 * 
 	 * @return string
 	 */
-	public function GetUrlPrefixOrder ();
+	public function GetUrlPrefixSort ();
 
 	/**
 	 * 
@@ -58,29 +58,29 @@ interface IUrlSegments {
 
 	/**
 	 * 
-	 * @param  string $urlSuffixOrderAsc
+	 * @param  string $urlSuffixSortAsc
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
-	public function SetUrlSuffixOrderAsc ($urlSuffixOrderAsc);
+	public function SetUrlSuffixSortAsc ($urlSuffixSortAsc);
 
 	/**
 	 * 
 	 * @return string
 	 */
-	public function GetUrlSuffixOrderAsc ();
+	public function GetUrlSuffixSortAsc ();
 
 	/**
 	 * 
-	 * @param  string $urlSuffixOrderDesc
+	 * @param  string $urlSuffixSortDesc
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
-	public function SetUrlSuffixOrderDesc ($urlSuffixOrderDesc);
+	public function SetUrlSuffixSortDesc ($urlSuffixSortDesc);
 
 	/**
 	 * 
 	 * @return string
 	 */
-	public function GetUrlSuffixOrderDesc ();
+	public function GetUrlSuffixSortDesc ();
 
 	/**
 	 * 
@@ -149,6 +149,19 @@ interface IUrlSegments {
 	
 	/**
 	 * 
+	 * @param  array $urlFilterOperators
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
+	 */
+	public function SetUrlFilterOperators ($urlFilterOperators);
+
+	/**
+	 * 
+	 * @return array
+	 */
+	public function GetUrlFilterOperators ();
+
+	/**
+	 * 
 	 * @param  string|NULL $routePattern
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
@@ -156,7 +169,9 @@ interface IUrlSegments {
 
 	/**
 	 * 
+	 * @param  int    $sortingMode 
+	 * @param  int    $filteringMode 
 	 * @return string
 	 */
-	public function GetRoutePattern ();
+	public function GetRoutePattern ($sortingMode = \MvcCore\Ext\Controllers\IDataGrid::SORT_DISABLED, $filteringMode = \MvcCore\Ext\Controllers\IDataGrid::FILTER_DISABLED);
 }

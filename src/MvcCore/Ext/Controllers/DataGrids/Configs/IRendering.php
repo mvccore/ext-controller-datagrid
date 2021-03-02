@@ -32,16 +32,16 @@ interface IRendering {
 
 	/**
 	 * 
-	 * @param  bool $renderTableHeadOrdering
+	 * @param  bool $renderTableHeadSorting
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetRenderTableHeadOrdering ($renderTableHeadOrdering);
+	public function SetRenderTableHeadSorting ($renderTableHeadSorting);
 
 	/**
 	 * 
 	 * @return bool
 	 */
-	public function GetRenderTableHeadOrdering ();
+	public function GetRenderTableHeadSorting ();
 	
 	/**
 	 * 
@@ -58,16 +58,16 @@ interface IRendering {
 
 	/**
 	 * 
-	 * @param  bool $renderControlOrdering
+	 * @param  bool $renderControlSorting
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetRenderControlOrdering ($renderControlOrdering);
+	public function SetRenderControlSorting ($renderControlSorting);
 
 	/**
 	 * 
 	 * @return bool
 	 */
-	public function GetRenderControlOrdering ();
+	public function GetRenderControlSorting ();
 
 	/**
 	 * 
@@ -255,16 +255,16 @@ interface IRendering {
 
 	/**
 	 * 
-	 * @param  string $templateControlOrdering
+	 * @param  string $templateControlSorting
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetTemplateControlOrdering ($templateControlOrdering);
+	public function SetTemplateControlSorting ($templateControlSorting);
 
 	/**
 	 * 
 	 * @return string
 	 */
-	public function GetTemplateControlOrdering ();
+	public function GetTemplateControlSorting ();
 
 	/**
 	 * 

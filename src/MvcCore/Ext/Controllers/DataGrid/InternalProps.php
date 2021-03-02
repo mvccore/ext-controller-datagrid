@@ -26,7 +26,8 @@ trait InternalProps {
 	];
 
 	/**
-	 * Base ASCII chars to remove from filtering or ordering.
+	 * Base ASCII chars to remove from filtering or sorting.
+	 * Becarefull, this filtering doesn't prevent SQL injects!
 	 * @var array
 	 */
 	protected static $baseAsciiChars = [
@@ -42,21 +43,22 @@ trait InternalProps {
 
 	/**
 	 * Characters to prevent XSS attack and some other special chars
-	 * what could be dangerous user input.
+	 * what could be dangerous user input. Becarefull, this filtering
+	 * doesn't prevent SQL injects!
 	 * @see http://php.net/manual/en/function.htmlspecialchars.php
 	 * @var \string[]
 	 */
 	protected static $specialMeaningChars = [
-		// commented characters are cleaned by `htmlspecialchars()`
-		//'&'	=> "&amp;",
-		//'"'	=> "&quot;",
-		//"'"	=> "&apos;",
-		//'<'	=> "&lt;",
-		//'>'	=> "&gt;",
-		'|'	=> "&#124;",
+		'<'	=> "&#60;",
 		'='	=> "&#61;",
+		'>'	=> "&#62;",
+		'['	=> "&#91;",
 		'\\'=> "&#92;",
-		'%'	=> "&#37;",
+		']'	=> "&#93;",
+		'`'	=> "&#96;",
+		'{'	=> "&#123;",
+		'|'	=> "&#124;",
+		'}'	=> "&#125;",
 	];
 
 	/**
@@ -89,11 +91,11 @@ trait InternalProps {
 	
 	/**
 	 * Keys are configured database column names 
-	 * and values are ordering direction strings - `ASC | DESC`.
+	 * and values are sorting direction strings - `ASC | DESC`.
 	 * @internal
 	 * @var array
 	 */
-	protected $ordering = [];
+	protected $sorting = [];
 
 	/**
 	 * Keys are configured database column names 
@@ -101,6 +103,16 @@ trait InternalProps {
 	 * @var array
 	 */
 	protected $filtering = [];
+
+	/**
+	 * Allowed SQL operators and url segments by filtering mode configuration.
+	 * Keys are (translated) url segments, values are `\stdClass`es with keys:
+	 * - `operator` - string SQL operator to use
+	 * - `multiple` - boolean if operatoc could have multiple values
+	 * - `regex`    - NULL or string with regular expression applied to match the value(s).
+	 * @var array
+	 */
+	protected $allowedOperators = [];
 	
 	/**
 	 * Paging items, completed after model total count has been loaded.

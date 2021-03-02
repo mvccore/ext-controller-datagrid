@@ -21,21 +21,21 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 	protected $dbColumnName = NULL;
 	
 	/**
-	 * URL column name when ordering or filtering.
+	 * URL column name when sorting or filtering.
 	 * @var string|NULL
 	 */
 	protected $urlName = NULL;
 	
 	/**
-	 * Default ordering definition with values `ASC | DESC` 
-	 * or `TRUE | FALSE` to enable/disable ordering.
+	 * Default sorting definition with values `ASC | DESC` 
+	 * or `TRUE | FALSE` to enable/disable sorting.
 	 * @var string|bool|NULL
 	 */
-	protected $order = FALSE;
+	protected $sort = FALSE;
 
 	/**
 	 * Boolean to allow column filtering.
-	 * @var bool
+	 * @var int|bool
 	 */
 	protected $filter = FALSE;
 
@@ -63,16 +63,17 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 	 * @param string|NULL      $propName     Data grid model property name.
 	 * @param string|NULL      $dbColumnName Database column name. If `NULL`, `$propName` is used.
 	 * @param string|NULL      $humanName    Data grid visible column name. If `NULL`, `$propName` is used.
-	 * @param string|NULL      $urlName      Data grid url column name to define ordering or filtering. 
+	 * @param string|NULL      $urlName      Data grid url column name to define sorting or filtering. 
 	 *                                       If `NULL`, `$propName` is used.
-	 * @param string|bool|NULL $order        Default ordering definition with values `ASC | DESC` 
-	 *                                       or `TRUE | FALSE` to enable/disable ordering.
-	 * @param bool             $filter       Boolean to allow filtering.
+	 * @param string|bool|NULL $sort         Default sorting definition with values `ASC | DESC` 
+	 *                                       or `TRUE | FALSE` to enable/disable sorting.
+	 * @param int|bool         $filter       Filtering mode flags to allow specify operators for each column 
+	 *                                       or boolean to allow filtering only.
 	 * @param \string[]|NULL   $types        Property type(s), necessary for automatic formating.
 	 * @param array|NULL       $format       Property automatic formating arguments.
 	 * @param string|NULL      $viewHelper   Property automatic formating view helper name.
 	 */
-	public function __construct ($propName = NULL, $dbColumnName = NULL, $humanName = NULL, $urlName = NULL, $order = FALSE, $filter = FALSE, $types = NULL, $format = NULL, $viewHelper = NULL) {
+	public function __construct ($propName = NULL, $dbColumnName = NULL, $humanName = NULL, $urlName = NULL, $sort = FALSE, $filter = FALSE, $types = NULL, $format = NULL, $viewHelper = NULL) {
 		$propNameHasValue = $propName !== NULL;
 		if ($propNameHasValue) 
 			$this->propName = $propName;
@@ -95,7 +96,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 			$this->urlName = $propName;
 		}
 
-		if ($order !== NULL)		$this->order		= $order;
+		if ($sort !== NULL)			$this->sort			= $sort;
 		if ($filter !== NULL)		$this->filter		= $filter;
 		if ($types !== NULL)		$this->types		= $types;
 		if ($format !== NULL)		$this->format		= $format;
@@ -155,14 +156,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 	}
 	
 	/**
-	 * Get URL column name when ordering or filtering.
+	 * Get URL column name when sorting or filtering.
 	 * @return string|NULL
 	 */
 	public function GetUrlName () {
 		return $this->urlName;
 	}
 	/**
-	 * Set URL column name when ordering or filtering.
+	 * Set URL column name when sorting or filtering.
 	 * @param  string|NULL $urlName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -172,34 +173,36 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 	}
 	
 	/**
-	 * Get default ordering definition with values `ASC | DESC` 
-	 * or `TRUE | FALSE` to enable/disable ordering.
+	 * Get default sorting definition with values `ASC | DESC` 
+	 * or `TRUE | FALSE` to enable/disable sorting.
 	 * @return string|bool|NULL
 	 */
-	public function GetOrder () {
-		return $this->order;
+	public function GetSort () {
+		return $this->sort;
 	}
 	/**
-	 * Set default ordering definition with values `ASC | DESC` 
-	 * or `TRUE | FALSE` to enable/disable ordering.
-	 * @param  string|bool|NULL $order
+	 * Set default sorting definition with values `ASC | DESC` 
+	 * or `TRUE | FALSE` to enable/disable sorting.
+	 * @param  string|bool|NULL $sort
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
-	public function SetOrder ($order) {
-		$this->order = $order;
+	public function SetSort ($sort) {
+		$this->sort = $sort;
 		return $this;
 	}
 
 	/**
-	 * Get boolean to allow column filtering.
-	 * @return bool
+	 * Get filtering mode flags to allow specify operators 
+	 * for each column or boolean to allow filtering only.
+	 * @return int|bool
 	 */
 	public function GetFilter () {
 		return $this->filter;
 	}
 	/**
-	 * Set boolean to allow column filtering.
-	 * @param  bool $filter
+	 * Set filtering mode flags to allow specify operators 
+	 * for each column or boolean to allow filtering only.
+	 * @param  int|bool $filter
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetFilter ($filter) {

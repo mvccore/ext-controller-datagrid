@@ -44,32 +44,32 @@ interface IColumn {
 	public function SetHumanName ($humanName);
 	
 	/**
-	 * Get URL column name when ordering or filtering.
+	 * Get URL column name when sorting or filtering.
 	 * @return string|NULL
 	 */
 	public function GetUrlName ();
 	
 	/**
-	 * Set URL column name when ordering or filtering.
+	 * Set URL column name when sorting or filtering.
 	 * @param  string|NULL $urlName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetUrlName ($urlName);
 	
 	/**
-	 * Get default ordering definition with values `ASC | DESC` 
-	 * or `TRUE | FALSE` to enable/disable ordering.
+	 * Get default sorting definition with values `ASC | DESC` 
+	 * or `TRUE | FALSE` to enable/disable sorting.
 	 * @return string|bool|NULL
 	 */
-	public function GetOrder ();
+	public function GetSort ();
 	
 	/**
-	 * Set default ordering definition with values `ASC | DESC` 
-	 * or `TRUE | FALSE` to enable/disable ordering.
-	 * @param  string|bool|NULL $order
+	 * Set default sorting definition with values `ASC | DESC` 
+	 * or `TRUE | FALSE` to enable/disable sorting.
+	 * @param  string|bool|NULL $sort
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
-	public function SetOrder ($order);
+	public function SetSort ($sort);
 	
 	/**
 	 * Get boolean to allow column filtering.

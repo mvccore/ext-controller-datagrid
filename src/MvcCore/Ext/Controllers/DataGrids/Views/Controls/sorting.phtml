@@ -1,0 +1,39 @@
+<?php
+	/** @var $this \MvcCore\Ext\Controllers\DataGrids\View */
+	/** @var $grid \MvcCore\Ext\Controllers\DataGrid */
+?><table class="grid-control-sort"><tbody><?php
+	$configColumns = $grid->GetConfigColumns();
+	$miltiSort = ($grid->GetSortingMode() & $grid::SORT_MULTIPLE_COLUMNS) != 0;
+	foreach ($configColumns as $urlName => $configColumn):
+		if (!$configColumn->GetSort()) continue;
+		
+		?><td class="<?php echo 'grid-control-sort-' . $configColumn->GetUrlName(); ?>"><?php
+
+			?><a class="grid-control-sort-link" href="<?php
+				echo $grid->GridSortUrl($configColumn);
+			?>"><?php
+				echo $configColumn->GetHumanName();
+			?></a><?php
+
+			$dir = $grid->GetColumnSortDirection($configColumn);
+			if ($dir !== NULL): 
+				?><span class="grid-control-sort-dir grid-control-sort-<?php
+					echo $dir ? 'asc' : 'desc';
+				?>"><?php
+					echo $dir ? '&#9660;' : '&#9650;';
+				?></span><?php
+
+				if ($miltiSort):
+					$sortIndex = $grid->GetColumnSortIndex($configColumn);
+					if ($sortIndex !== NULL):
+						?><span class="grid-control-sort-index"><?php
+							echo $sortIndex + 1;
+						?></span><?php
+					endif;
+				endif;
+			endif;
+
+		?></td><?php
+		
+	endforeach;
+?></tr></table>

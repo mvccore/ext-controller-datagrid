@@ -2,10 +2,11 @@
 	/** @var $this \MvcCore\Ext\Controllers\DataGrids\View */
 	/** @var $grid \MvcCore\Ext\Controllers\DataGrid */
 ?><thead><tr><?php
-	$ordering = $grid->GetOrdering();
+	
 	$configColumns = $grid->GetConfigColumns();
 	$headFiltering = $grid->GetConfigRendering()->GetRenderTableHeadFiltering();
 	$headForm = $headFiltering ? $grid->GetTableHeadFilterForm() : NULL;
+	$miltiSort = ($grid->GetSortingMode() & $grid::SORT_MULTIPLE_COLUMNS) != 0;
 	foreach ($configColumns as $urlName => $configColumn):
 		
 		?><th class="<?php
@@ -15,30 +16,29 @@
 		?>"><?php
 
 		if ($headFiltering):
-			?><div class="grid-head-order"><?php
+			?><div class="grid-head-sort"><?php
 		endif;
 
-		if ($configColumn->GetOrder()): 
-
-			?><a class="grid-head-order-link" href="<?php
-				echo $grid->GridOrderUrl($configColumn);
+		if ($configColumn->GetSort()): 
+			?><a class="grid-head-sort-link" href="<?php
+				echo $grid->GridSortUrl($configColumn);
 			?>"><?php
 				echo $configColumn->GetHumanName();
 			?></a><?php
 
-			$dir = $grid->GetColumnOrderDirection($configColumn);
+			$dir = $grid->GetColumnSortDirection($configColumn);
 			if ($dir !== NULL): 
-				?><span class="grid-head-order-dir grid-head-order-<?php
+				?><span class="grid-head-sort-dir grid-head-sort-<?php
 					echo $dir ? 'asc' : 'desc';
 				?>"><?php
 					echo $dir ? '&#9660;' : '&#9650;';
 				?></span><?php
 
-				if ($grid->GetMultiSorting()):
-					$orderIndex = $grid->GetColumnOrderIndex($configColumn);
-					if ($orderIndex !== NULL):
-						?><span class="grid-head-order-index"><?php
-							echo $orderIndex + 1;
+				if ($miltiSort):
+					$sortIndex = $grid->GetColumnSortIndex($configColumn);
+					if ($sortIndex !== NULL):
+						?><span class="grid-head-sort-index"><?php
+							echo $sortIndex + 1;
 						?></span><?php
 					endif;
 				endif;

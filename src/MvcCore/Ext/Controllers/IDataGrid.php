@@ -112,32 +112,6 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 
 	/**
 	 * 
-	 * @param  bool $multiSorting
-	 * @return \MvcCore\Ext\Controllers\DataGrid
-	 */
-	public function SetMultiSorting ($multiSorting);
-
-	/**
-	 * 
-	 * @return bool
-	 */
-	public function GetMultiSorting ();
-	
-	/**
-	 * 
-	 * @param  bool $multiFiltering
-	 * @return \MvcCore\Ext\Controllers\DataGrid
-	 */
-	public function SetMultiFiltering ($multiFiltering);
-
-	/**
-	 * 
-	 * @return bool
-	 */
-	public function GetMultiFiltering ();
-	
-	/**
-	 * 
 	 * @param  callable $translator
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -147,7 +121,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * 
 	 * @return callable|NULL
 	 */
-	public function GetTranslator ($translator);
+	public function GetTranslator ();
 	
 	/**
 	 * 
@@ -249,7 +223,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * 
 	 * @return array
 	 */
-	public function GetOrdering ();
+	public function GetSorting ();
 	
 	/**
 	 * 
@@ -320,14 +294,14 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
 	 * @return string
 	 */
-	public function GridOrderUrl (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column);
+	public function GridSortUrl (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column);
 
 	/**
 	 * 
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
 	 * @return bool|NULL
 	 */
-	public function GetColumnOrderDirection (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column);
+	public function GetColumnSortDirection (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column);
 
 	/**
 	 * 
@@ -341,6 +315,6 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column 
 	 * @return int|NULL
 	 */
-	public function GetColumnOrderIndex (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column);
+	public function GetColumnSortIndex (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column);
 
 }

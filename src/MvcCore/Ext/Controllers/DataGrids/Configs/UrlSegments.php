@@ -20,10 +20,10 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	protected $urlPrefixCount = '';
 	
 	/**
-	 * URL prefix to define which URL section is used for ordering.
+	 * URL prefix to define which URL section is used for sorting.
 	 * @var string
 	 */
-	protected $urlPrefixOrder = 'order';
+	protected $urlPrefixSort = 'sort';
 	
 	/**
 	 * URL prefix to define which URL section is used for filtering.
@@ -32,16 +32,16 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	protected $urlPrefixFilter = 'filter';
 	
 	/**
-	 * URL suffix to define ascendent order direction.
+	 * URL suffix to define ascendent sort direction.
 	 * @var string
 	 */
-	protected $urlSuffixOrderAsc = 'a';
+	protected $urlSuffixSortAsc = 'a';
 	
 	/**
-	 * URL suffix to define descendent order direction.
+	 * URL suffix to define descendent sort direction.
 	 * @var string
 	 */
-	protected $urlSuffixOrderDesc = 'd';
+	protected $urlSuffixSortDesc = 'd';
 	
 	/**
 	 * URL delimiter between sections.
@@ -56,13 +56,15 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	protected $urlDelimiterPrefix = '-';
 	
 	/**
-	 * URL delimiter for ordering and filtering, between each pair of grid column with value(s).
+	 * URL delimiter for sorting and filtering, between each pair of grid column with value(s).
 	 * @var string
 	 */
 	protected $urlDelimiterSubjects = '~';
 	
 	/**
-	 * URL delimiter for ordering and filtering, between grid column name and (first) value.
+	 * URL delimiter for sorting and filtering.
+	 * In sorting   - between grid column name and sort direction suffix.
+	 * In filtering - between grid column name, operator and (first) value.
 	 * @var string
 	 */
 	protected $urlDelimiterSubjectValue = '-';
@@ -72,6 +74,22 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @var string
 	 */
 	protected $urlDelimiterValues = ',';
+
+	/**
+	 * Allowed URL filter operators.
+	 * Keys are database operators, values are url operator texts.
+	 * @var array
+	 */
+	protected $urlFilterOperators = [
+		'='			=> 'is',
+		'!='		=> 'not',
+		'LIKE'		=> 'as',
+		'NOT LIKE'	=> 'not-as',
+		'<'			=> 'lt',
+		'>'			=> 'gt',
+		'<='		=> 'lte',
+		'>='		=> 'gte',
+	];
 	
 	/**
 	 * URL route pattern, automatically completed from configuration properties above.
@@ -122,12 +140,12 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 
 	/**
 	 * @inheritDocs
-	 * @param  string $urlPrefixOrder
+	 * @param  string $urlPrefixSort
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
-	public function SetUrlPrefixOrder ($urlPrefixOrder) {
+	public function SetUrlPrefixSort ($urlPrefixSort) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
-		$this->urlPrefixOrder = $urlPrefixOrder;
+		$this->urlPrefixSort = $urlPrefixSort;
 		return $this;
 	}
 
@@ -135,9 +153,9 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @inheritDocs
 	 * @return string
 	 */
-	public function GetUrlPrefixOrder () {
+	public function GetUrlPrefixSort () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
-		return $this->urlPrefixOrder;
+		return $this->urlPrefixSort;
 	}
 
 	/**
@@ -162,12 +180,12 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 
 	/**
 	 * @inheritDocs
-	 * @param  string $urlSuffixOrderAsc
+	 * @param  string $urlSuffixSortAsc
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
-	public function SetUrlSuffixOrderAsc ($urlSuffixOrderAsc) {
+	public function SetUrlSuffixSortAsc ($urlSuffixSortAsc) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
-		$this->urlSuffixOrderAsc = $urlSuffixOrderAsc;
+		$this->urlSuffixSortAsc = $urlSuffixSortAsc;
 		return $this;
 	}
 
@@ -175,19 +193,19 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @inheritDocs
 	 * @return string
 	 */
-	public function GetUrlSuffixOrderAsc () {
+	public function GetUrlSuffixSortAsc () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
-		return $this->urlSuffixOrderAsc;
+		return $this->urlSuffixSortAsc;
 	}
 
 	/**
 	 * @inheritDocs
-	 * @param  string $urlSuffixOrderDesc
+	 * @param  string $urlSuffixSortDesc
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
-	public function SetUrlSuffixOrderDesc ($urlSuffixOrderDesc) {
+	public function SetUrlSuffixSortDesc ($urlSuffixSortDesc) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
-		$this->urlSuffixOrderDesc = $urlSuffixOrderDesc;
+		$this->urlSuffixSortDesc = $urlSuffixSortDesc;
 		return $this;
 	}
 
@@ -195,9 +213,9 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @inheritDocs
 	 * @return string
 	 */
-	public function GetUrlSuffixOrderDesc () {
+	public function GetUrlSuffixSortDesc () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
-		return $this->urlSuffixOrderDesc;
+		return $this->urlSuffixSortDesc;
 	}
 
 	/**
@@ -302,6 +320,26 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	
 	/**
 	 * @inheritDocs
+	 * @param  array $urlFilterOperators
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
+	 */
+	public function SetUrlFilterOperators ($urlFilterOperators) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		$this->urlFilterOperators = $urlFilterOperators;
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return array
+	 */
+	public function GetUrlFilterOperators () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		return $this->urlFilterOperators;
+	}
+
+	/**
+	 * @inheritDocs
 	 * @param  string|NULL $routePattern
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
@@ -314,19 +352,24 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	/**
 	 * @inheritDocs
 	 * @internal
+	 * @param  int    $sortingMode 
+	 * @param  int    $filteringMode
 	 * @return string
 	 */
-	public function GetRoutePattern () {
+	public function GetRoutePattern ($sortingMode = \MvcCore\Ext\Controllers\IDataGrid::SORT_DISABLED, $filteringMode = \MvcCore\Ext\Controllers\IDataGrid::FILTER_DISABLED) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
 		if ($this->routePattern === NULL) {
 			$secDelim = $this->urlDelimiterSections;
 			$prefDelim = $this->urlDelimiterPrefix;
 			$page	= mb_strlen($this->urlPrefixPage) > 0	? $secDelim . $this->urlPrefixPage	. $prefDelim : $secDelim;
 			$count	= mb_strlen($this->urlPrefixCount) > 0	? $secDelim . $this->urlPrefixCount	. $prefDelim : $secDelim;
-			$order	= mb_strlen($this->urlPrefixOrder) > 0	? $secDelim . $this->urlPrefixOrder	. $prefDelim : $secDelim;
+			$sort	= mb_strlen($this->urlPrefixSort) > 0	? $secDelim . $this->urlPrefixSort	. $prefDelim : $secDelim;
 			$filter	= mb_strlen($this->urlPrefixFilter) > 0	? $secDelim . $this->urlPrefixFilter. $prefDelim : $secDelim;
-			// `/<page>[/<count>][/order-<order>][/filter-<filter>]/`
-			$this->routePattern = "[{$page}<page>][{$count}<count>][{$order}<order>][{$filter}<filter>]/";
+			// `/<page>[/<count>][/sort-<sort>][/filter-<filter>]/`
+			$this->routePattern = "[{$page}<page>][{$count}<count>]";
+			if ($sortingMode)	$this->routePattern .= "[{$sort}<sort>]";
+			if ($filteringMode)	$this->routePattern .= "[{$filter}<filter>]";
+			$this->routePattern .= "/";
 		}
 		return $this->routePattern;
 	}

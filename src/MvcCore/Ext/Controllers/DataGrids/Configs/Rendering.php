@@ -21,7 +21,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * 
 	 * @var bool
 	 */
-	protected $renderTableHeadOrdering				= TRUE;
+	protected $renderTableHeadSorting				= TRUE;
 
 	/**
 	 * 
@@ -33,7 +33,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * 
 	 * @var bool
 	 */
-	protected $renderControlOrdering				= FALSE;
+	protected $renderControlSorting					= FALSE;
 
 	/**
 	 * 
@@ -124,7 +124,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * 
 	 * @var string
 	 */
-	protected $templateControlOrdering				= NULL;
+	protected $templateControlSorting				= NULL;
 	
 	/**
 	 * 
@@ -183,12 +183,12 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	
 	/**
 	 * @inheritDocs
-	 * @param  bool $renderTableHeadOrdering
+	 * @param  bool $renderTableHeadSorting
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetRenderTableHeadOrdering ($renderTableHeadOrdering) {
+	public function SetRenderTableHeadSorting ($renderTableHeadSorting) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		$this->renderTableHeadOrdering = $renderTableHeadOrdering;
+		$this->renderTableHeadSorting = $renderTableHeadSorting;
 		return $this;
 	}
 
@@ -196,9 +196,9 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @inheritDocs
 	 * @return bool
 	 */
-	public function GetRenderTableHeadOrdering () {
+	public function GetRenderTableHeadSorting () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		return $this->renderTableHeadOrdering;
+		return $this->renderTableHeadSorting;
 	}
 	
 	/**
@@ -223,12 +223,12 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 
 	/**
 	 * @inheritDocs
-	 * @param  bool $renderControlOrdering
+	 * @param  bool $renderControlSorting
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetRenderControlOrdering ($renderControlOrdering) {
+	public function SetRenderControlSorting ($renderControlSorting) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		$this->renderControlOrdering = $renderControlOrdering;
+		$this->renderControlSorting = $renderControlSorting;
 		return $this;
 	}
 
@@ -236,9 +236,9 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @inheritDocs
 	 * @return bool
 	 */
-	public function GetRenderControlOrdering () {
+	public function GetRenderControlSorting () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		return $this->renderControlOrdering;
+		return $this->renderControlSorting;
 	}
 
 	/**
@@ -529,12 +529,12 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 
 	/**
 	 * @inheritDocs
-	 * @param  string $templateControlOrdering
+	 * @param  string $templateControlSorting
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetTemplateControlOrdering ($templateControlOrdering) {
+	public function SetTemplateControlSorting ($templateControlSorting) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		$this->templateControlOrdering = $templateControlOrdering;
+		$this->templateControlSorting = $templateControlSorting;
 		return $this;
 	}
 
@@ -542,9 +542,9 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @inheritDocs
 	 * @return string
 	 */
-	public function GetTemplateControlOrdering () {
+	public function GetTemplateControlSorting () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		return $this->templateControlOrdering;
+		return $this->templateControlSorting;
 	}
 
 	/**

@@ -41,10 +41,14 @@ trait ActionMethods {
 				->SetName(implode($form::HTML_IDS_DELIMITER, ['value', $urlName]))
 				->SetValidators([]);
 			$dbColumnName = $configColumn->GetDbColumnName();
-			if (isset($this->filtering[$dbColumnName]))
-				$valueField->SetValue(implode(
-					$urlDelimiterValues, $this->filtering[$dbColumnName]
-				));
+			if (isset($this->filtering[$dbColumnName])) {
+				$columnFiltering = $this->filtering[$dbColumnName];
+				// head filtering coud have only equal operator values:
+				if (isset($columnFiltering['=']))
+					$valueField->SetValue(implode(
+						$urlDelimiterValues, $columnFiltering['=']
+					));
+			}
 			$filterField = (new \MvcCore\Ext\Forms\Fields\SubmitButton)
 				->SetName(implode($form::HTML_IDS_DELIMITER, ['filter', $urlName]))
 				->SetValue($this->GetControlText('filter'));
@@ -121,7 +125,12 @@ trait ActionMethods {
 	 */
 	protected function actionFormFilterSubmit () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		xxx("actionFormFilterSubmit");
+		if (!$this->configRendering->GetRenderFilterForm()) {
+			$redirectUrl = $this->Url('self', [static::URL_PARAM_ACTION => NULL]);
+			self::Redirect($redirectUrl, \MvcCore\IResponse::SEE_OTHER, 'Grid has not configured custom filter form.');
+		}
+
+		// TODO
 	}
 
 

@@ -12,11 +12,11 @@
 	echo ($gridTableType ? 'table' : 'grid');
 	if (count($cssClasses) > 0) echo ' '.implode(' ', $cssClasses);
 ?>"><?php
-	if ($renderConf->GetRenderControlPaging() || $renderConf->GetRenderControlOrdering()):
+	if ($renderConf->GetRenderControlPaging() || $renderConf->GetRenderControlSorting()):
 	?><div class="grid-controls grid-controls-top"><?php
 		$pagingCode = $this->RenderGridControlPaging();
 		echo $pagingCode;
-		echo $this->RenderGridControlOrdering();
+		echo $this->RenderGridControlSorting();
 	?></div><?php
 	endif;
 	if ($headFiltering):

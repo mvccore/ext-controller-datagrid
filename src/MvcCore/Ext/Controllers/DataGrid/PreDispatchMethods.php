@@ -68,13 +68,13 @@ trait PreDispatchMethods {
 				if			 (isset($args['dbColumnName']))	$dbColumnName			= $args['dbColumnName'];
 				if			 (isset($args['humanName']))	$humanName				= $args['humanName'];
 				if			 (isset($args['urlName']))		$urlName				= $args['urlName'];
-				$order		= isset($args['order'])			? $args['order']		: NULL;
+				$sort		= isset($args['sort'])			? $args['sort']			: NULL;
 				$filter		= isset($args['filter'])		? $args['filter']		: NULL;
 				$types		= isset($args['types'])			? $args['types']		: NULL;
 				$format		= isset($args['format'])		? $args['format']		: NULL;
 				$viewHelper	= isset($args['viewHelper'])	? $args['viewHelper']	: NULL;
 				$columnConfig = new \MvcCore\Ext\Controllers\DataGrids\Configs\Column(
-					$propName, $dbColumnName, $humanName, $urlName, $order, $filter, $types, $format, $viewHelper
+					$propName, $dbColumnName, $humanName, $urlName, $sort, $filter, $types, $format, $viewHelper
 				);
 				$result[$columnConfig->GetUrlName()] = $columnConfig;
 			}
@@ -120,7 +120,7 @@ trait PreDispatchMethods {
 			->SetOffset($this->offset)
 			->SetLimit($this->limit)
 			->SetFiltering($this->filtering)
-			->SetOrdering($this->ordering);
+			->SetSorting($this->sorting);
 		$this->totalCount = $model->GetTotalCount();
 	}
 
