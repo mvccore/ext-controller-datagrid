@@ -6,7 +6,10 @@
 	$gridType = $renderConf->GetType();
 	$gridTableType = ($gridType & $grid::TYPE_TABLE) !== 0;
 	$cssClasses = $grid->GetCssClasses();
-	$headFiltering = $grid->GetConfigRendering()->GetRenderTableHeadFiltering();
+	$controlFilterForm = $renderConf->GetRenderFilterForm();
+	$headFiltering = $renderConf->GetRenderTableHeadFiltering();
+	if ($controlFilterForm) 
+		echo $this->RenderGridFilterForm();
 
 ?><div class="grid grid-type-<?php
 	echo ($gridTableType ? 'table' : 'grid');

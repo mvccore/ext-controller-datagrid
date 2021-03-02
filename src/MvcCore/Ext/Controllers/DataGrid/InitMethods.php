@@ -33,6 +33,19 @@ trait InitMethods {
 	public function Init () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->dispatchState > \MvcCore\IController::DISPATCH_STATE_CREATED) return;
+		
+		if ($this->configRendering->GetRenderFilterForm()) {
+			if ($this->controlFilterForm === NULL)
+				throw new \InvalidArgumentException(
+					"With enabled custom filter form rendering control, ".
+					"you have to set custom form instance by method `SetControlFilterForm()` ".
+					"implementing `\MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm`."
+				);
+			$controlFilterFormChildIndex = array_search($this->controlFilterForm, $this->childControllers, TRUE);
+			if ($controlFilterFormChildIndex !== FALSE)
+				unset($this->childControllers[$controlFilterFormChildIndex]);
+		}
+
 		parent::Init();
 
 		$this->GetConfigUrlSegments();

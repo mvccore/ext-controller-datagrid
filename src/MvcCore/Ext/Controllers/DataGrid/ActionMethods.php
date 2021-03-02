@@ -12,6 +12,15 @@ trait ActionMethods {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->configRendering->GetRenderTableHeadFiltering()) 
 			$this->createTableHeadFilterForm(FALSE);
+		if ($this->configRendering->GetRenderFilterForm()) {
+			$this->controlFilterForm
+				->SetConfigColumns($this->configColumns)
+				->SetFiltering($this->filtering);
+			$this->AddChildController($this->controlFilterForm, 'controlFilterForm');
+			$controlFilterFormState = $this->controlFilterForm->GetDispatchState();
+			if ($controlFilterFormState < \MvcCore\IController::DISPATCH_STATE_INITIALIZED)
+				$this->controlFilterForm->Init(FALSE);
+		}
 	}
 
 	protected function createTableHeadFilterForm ($submit = FALSE) {
@@ -77,30 +86,50 @@ trait ActionMethods {
 		$subjValueDelim = $this->configUrlSegments->GetUrlDelimiterSubjectValue();
 		$valuesDelim = $this->configUrlSegments->GetUrlDelimiterValues();
 		$subjsDelim = $this->configUrlSegments->GetUrlDelimiterSubjects();
+		$urlFilterOperators = $this->configUrlSegments->GetUrlFilterOperators();
 		$currentFilterDbNames = array_merge([], $this->filtering);
 		$redirectReason = 'Grid table heading filter error.';
 		if ($result !== $form::RESULT_ERRORS) {
 			$redirectReason = 'Grid table heading filter success.';
+			$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
 			foreach ($values as $filteringName => $rawValues) {
 				$safeStringValues = $this->removeUnsafeChars($rawValues);
 				if ($safeStringValues === NULL) continue;
 				list($subjectName, $urlName) = explode($form::HTML_IDS_DELIMITER, $filteringName);
 				if ($subjectName !== 'value' || !isset($this->configColumns[$urlName])) continue;
 				$configColumn = $this->configColumns[$urlName];
+				$columnFilterCfg = $configColumn->GetFilter();
+				if ($columnFilterCfg === FALSE || $columnFilterCfg === NULL) continue;
+				$allowedOperators = $columnFilterCfg === TRUE || !is_integer($columnFilterCfg)
+					? $this->allowedOperators
+					: $this->getAllowedOperators($columnFilterCfg);
 				$safeStringValuesArr = explode($valuesDelim, $safeStringValues);
 				$values = [];
 				foreach ($safeStringValuesArr as $safeStringValue) {
 					$safeStringValue = trim($safeStringValue);
-					if ($safeStringValue !== '') $values[] = $safeStringValue;
+					if ($safeStringValue !== '') 
+						$values[] = $safeStringValue;
 				}
-				$currentFilterDbNames[$configColumn->GetDbColumnName()] = $values;
+				if (count($values) === 0) continue;
+				$columnDbName = $configColumn->GetDbColumnName();
+				if (!isset($currentFilterDbNames[$columnDbName]))
+					$currentFilterDbNames[$columnDbName] = [];
+				$currentFilterDbNames[$columnDbName]['='] = $values;
+				if (!$multiFiltering) {
+					$currentFilterDbNames = [
+						$columnDbName => ['=' => $values]
+					];
+					break;
+				}
 			}
 			$configColumnsKeys = array_keys($this->configColumns->GetArray());
 			$clearingResultBase = static::$tableHeadingFilterFormClearResultBase + 1;
 			if ($result >= $clearingResultBase && isset($configColumnsKeys[$result - $clearingResultBase])) {
 				$clearingColumnUrlName = $configColumnsKeys[$result - $clearingResultBase];
 				$clearingColumnConfig = $this->configColumns[$clearingColumnUrlName];
-				unset($currentFilterDbNames[$clearingColumnConfig->GetDbColumnName()]);
+				$dbColumnName = $clearingColumnConfig->GetDbColumnName();
+				if (isset($currentFilterDbNames[$dbColumnName]['=']))
+					unset($currentFilterDbNames[$dbColumnName]['=']);
 			}
 		}
 		$form->ClearSession();
@@ -108,13 +137,18 @@ trait ActionMethods {
 		foreach ($this->configColumns->GetArray() as $columnUrlName => $columnConfig) {
 			$columnDbName = $columnConfig->GetDbColumnName();
 			if (!isset($currentFilterDbNames[$columnDbName])) continue;
-			$filterValues = $currentFilterDbNames[$columnDbName];
-			$filterUrlValues = implode($valuesDelim, $filterValues);
-			$filterParams[] = "{$columnUrlName}{$subjValueDelim}{$filterUrlValues}";
+			$filterOperatorsAndValues = $currentFilterDbNames[$columnDbName];
+			foreach ($filterOperatorsAndValues as $operator => $filterValues) {
+				$filterUrlValues = implode($valuesDelim, $filterValues);
+				$operatorUrlValue = $urlFilterOperators[$operator];
+				$filterParams[] = "{$columnUrlName}{$subjValueDelim}{$operatorUrlValue}{$subjValueDelim}{$filterUrlValues}";
+			}
 		}
 		$redirectUrl = $this->GridUrl([
 			static::URL_PARAM_ACTION	=> NULL,
-			'filter'					=> implode($subjsDelim, $filterParams)
+			'filter'					=> count($filterParams) > 0 
+				? implode($subjsDelim, $filterParams)
+				: NULL
 		]);
 		self::Redirect($redirectUrl, \MvcCore\IResponse::SEE_OTHER, $redirectReason);
 	}
@@ -129,8 +163,86 @@ trait ActionMethods {
 			$redirectUrl = $this->Url('self', [static::URL_PARAM_ACTION => NULL]);
 			self::Redirect($redirectUrl, \MvcCore\IResponse::SEE_OTHER, 'Grid has not configured custom filter form.');
 		}
+		/** @var $this \MvcCore\Ext\Form|\MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm */
+		$form = $this->controlFilterForm;
+		$form
+			->SetConfigColumns($this->configColumns)
+			->SetFiltering($this->filtering);
+		$this->AddChildController($form, 'controlFilterForm');
+		$controlFilterFormState = $form->GetDispatchState();
+		if ($controlFilterFormState < \MvcCore\IController::DISPATCH_STATE_INITIALIZED)
+			$form->Init(TRUE);
 
-		// TODO
+		list($result, $values) = $form->Submit();
+		$subjValueDelim = $this->configUrlSegments->GetUrlDelimiterSubjectValue();
+		$valuesDelim = $this->configUrlSegments->GetUrlDelimiterValues();
+		$subjsDelim = $this->configUrlSegments->GetUrlDelimiterSubjects();
+		$urlFilterOperators = $this->configUrlSegments->GetUrlFilterOperators();
+		$currentFilterDbNames = array_merge([], $this->filtering);
+		$redirectReason = 'Grid control filter form error.';
+		if ($result !== $form::RESULT_ERRORS) {
+			$redirectReason = 'Grid table heading filter success.';
+			$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
+			foreach ($values as $urlName => $operatorAndValues) {
+				if (!isset($this->configColumns[$urlName])) continue;
+				$configColumn = $this->configColumns[$urlName];
+				$columnFilterCfg = $configColumn->GetFilter();
+				if ($columnFilterCfg === FALSE || $columnFilterCfg === NULL) continue;
+				$allowedOperators = $columnFilterCfg === TRUE || !is_integer($columnFilterCfg)
+					? $this->allowedOperators
+					: $this->getAllowedOperators($columnFilterCfg);
+				$columnDbName = $configColumn->GetDbColumnName();
+				if ($operatorAndValues === NULL) {
+					if (isset($currentFilterDbNames[$columnDbName]))
+						unset($currentFilterDbNames[$columnDbName]);
+					continue;
+				}
+				$values = [];
+				foreach ($operatorAndValues as $operator => $values) {
+					if (!isset($currentFilterDbNames[$columnDbName]))
+						$currentFilterDbNames[$columnDbName] = [];
+					if (is_array($values)) {
+						if (count($values) === 0) {
+							if (isset($currentFilterDbNames[$columnDbName][$operator]))
+								unset($currentFilterDbNames[$columnDbName][$operator]);
+							continue;
+						} else {
+							$currentFilterDbNames[$columnDbName][$operator] = $values;
+						}
+					} else if ($values === NULL) {
+						unset($currentFilterDbNames[$columnDbName][$operator]);
+					} else {
+						$currentFilterDbNames[$columnDbName][$operator] = [$values];
+					}
+				}
+				if (!$multiFiltering) {
+					$currentFilterDbNames = [
+						$columnDbName => ['=' => $values]
+					];
+					break;
+				}
+			}
+			
+		}
+		$form->ClearSession();
+		$filterParams = [];
+		foreach ($this->configColumns->GetArray() as $columnUrlName => $columnConfig) {
+			$columnDbName = $columnConfig->GetDbColumnName();
+			if (!isset($currentFilterDbNames[$columnDbName])) continue;
+			$filterOperatorsAndValues = $currentFilterDbNames[$columnDbName];
+			foreach ($filterOperatorsAndValues as $operator => $filterValues) {
+				$filterUrlValues = implode($valuesDelim, $filterValues);
+				$operatorUrlValue = $urlFilterOperators[$operator];
+				$filterParams[] = "{$columnUrlName}{$subjValueDelim}{$operatorUrlValue}{$subjValueDelim}{$filterUrlValues}";
+			}
+		}
+		$redirectUrl = $this->GridUrl([
+			static::URL_PARAM_ACTION	=> NULL,
+			'filter'					=> count($filterParams) > 0 
+				? implode($subjsDelim, $filterParams)
+				: NULL
+		]);
+		self::Redirect($redirectUrl, \MvcCore\IResponse::SEE_OTHER, $redirectReason);
 	}
 
 

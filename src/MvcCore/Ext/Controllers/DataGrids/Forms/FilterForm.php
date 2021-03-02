@@ -4,8 +4,16 @@ namespace MvcCore\Ext\Controllers\DataGrids\Forms;
 
 trait FilterForm {
 	
+	/**
+	 * Form HTTP method.
+	 * @var string
+	 */
 	protected $method = 'POST';
 
+	/**
+	 * Form enctype method.
+	 * @var string
+	 */
 	protected $enctype = 'application/x-www-form-urlencoded';
 
 	/**
@@ -54,9 +62,11 @@ trait FilterForm {
 	 */
 	public function __construct (\MvcCore\Ext\Controllers\IDataGrid $grid) {
 		parent::__construct($grid);
-		$actionUrl = $grid->Url(
-			'self', [$grid::URL_PARAM_ACTION => 'filter-form']
-		);
-		$this->SetAction($actionUrl);
+		if ($this->action === NULL) {
+			$actionUrl = $grid->Url(
+				'self', [$grid::URL_PARAM_ACTION => 'filter-form']
+			);
+			$this->SetAction($actionUrl);
+		}
 	}
 }
