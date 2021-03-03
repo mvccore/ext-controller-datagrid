@@ -4,22 +4,26 @@
 ?><thead><tr><?php
 	
 	$configColumns = $grid->GetConfigColumns();
-	$headFiltering = $grid->GetConfigRendering()->GetRenderTableHeadFiltering();
-	$headForm = $headFiltering ? $grid->GetTableHeadFilterForm() : NULL;
-	$miltiSort = ($grid->GetSortingMode() & $grid::SORT_MULTIPLE_COLUMNS) != 0;
+	$gridSortingMode = $grid->GetSortingMode();
+	$sortAllowed = $gridSortingMode > $grid::SORT_DISABLED;
+	$miltiSort = ($gridSortingMode & $grid::SORT_MULTIPLE_COLUMNS) != 0;
+	$renderConf = $grid->GetConfigRendering();
+	$headSort = $sortAllowed && $renderConf->GetRenderTableHeadSorting();
+	$headFilter = $renderConf->GetRenderTableHeadFiltering();
+	$headForm = $headFilter ? $grid->GetTableHeadFilterForm() : NULL;
 	foreach ($configColumns as $urlName => $configColumn):
 		
 		?><th class="<?php
 			echo 'grid-col-' . $configColumn->GetUrlName();
-			if ($grid->GetColumnFiltered($configColumn) !== NULL)
+			if ($grid->GetColumnFilterIndex($configColumn) !== FALSE)
 				echo ' grid-col-filtered';
 		?>"><?php
 
-		if ($headFiltering):
+		if ($headFilter):
 			?><div class="grid-head-sort"><?php
 		endif;
-
-		if ($configColumn->GetSort()): 
+		
+		if ($headSort && $configColumn->GetSort()): 
 			?><a class="grid-head-sort-link" href="<?php
 				echo $grid->GridSortUrl($configColumn);
 			?>"><?php
@@ -52,7 +56,7 @@
 
 		endif;
 
-		if ($headFiltering):
+		if ($headFilter):
 			?></div><?php
 			if ($configColumn->GetFilter()):
 				$valueField = $headForm->GetField(implode($headForm::HTML_IDS_DELIMITER, ['value', $urlName]));

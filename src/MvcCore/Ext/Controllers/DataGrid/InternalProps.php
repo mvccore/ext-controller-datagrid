@@ -5,8 +5,16 @@ namespace MvcCore\Ext\Controllers\DataGrid;
 trait InternalProps {
 	
 	/**
+	 * Grid internal action default key.
+	 * @internal
+	 * @var string
+	 */
+	protected static $gridActionDefaultKey = 'default';
+
+	/**
 	 * Internal datagrid actions.
 	 * Keys are url values, values are local method names.
+	 * @internal
 	 * @var array
 	 */
 	protected static $gridActions = [
@@ -17,6 +25,7 @@ trait InternalProps {
 	
 	/**
 	 * Form extensions names and used class full names.
+	 * @internal
 	 * @var array
 	 */
 	protected static $formExtensionsClasses = [
@@ -27,7 +36,8 @@ trait InternalProps {
 
 	/**
 	 * Base ASCII chars to remove from filtering or sorting.
-	 * Becarefull, this filtering doesn't prevent SQL injects!
+	 * Be carefull, this filtering doesn't prevent SQL injects!
+	 * @internal
 	 * @var array
 	 */
 	protected static $baseAsciiChars = [
@@ -43,9 +53,9 @@ trait InternalProps {
 
 	/**
 	 * Characters to prevent XSS attack and some other special chars
-	 * what could be dangerous user input. Becarefull, this filtering
+	 * what could be dangerous user input. Be carefull, this filtering
 	 * doesn't prevent SQL injects!
-	 * @see http://php.net/manual/en/function.htmlspecialchars.php
+	 * @internal
 	 * @var \string[]
 	 */
 	protected static $specialMeaningChars = [
@@ -64,42 +74,52 @@ trait InternalProps {
 	/**
 	 * Custom form result state base value for grid 
 	 * with table type with heading filter form.
+	 * @internal
 	 * @var int
 	 */
 	protected static $tableHeadingFilterFormClearResultBase = 10;
 
 	/**
-	 * Datagrid page, always initialized into integer value.
+	 * Originally configured grid value items per page.
+	 * @internal
+	 * @var int|NULL
+	 */
+	protected $itemsPerPageRouteConfig = NULL;
+
+	/**
+	 * Datagrid page, always initialized into integer value by URL.
 	 * @internal
 	 * @var int|NULL
 	 */
 	protected $page = NULL;
 
 	/**
-	 * Database table offset, always initialized into integer value.
+	 * Database table offset, always initialized into integer value by URL.
 	 * @internal
 	 * @var int|NULL
 	 */
 	protected $offset = NULL;
 
 	/**
-	 * Database table select limit, initialized into integer or `NULL` value.
+	 * Database table select limit, initialized into integer or `NULL` value by URL.
 	 * @internal
 	 * @var int|NULL
 	 */
 	protected $limit = NULL;
 	
 	/**
-	 * Keys are configured database column names 
-	 * and values are sorting direction strings - `ASC | DESC`.
+	 * Datagrid table sorting, initialized by URL, keys are configured 
+	 * database column names and values are sorting direction strings - `ASC | DESC`.
 	 * @internal
 	 * @var array
 	 */
 	protected $sorting = [];
 
 	/**
-	 * Keys are configured database column names 
-	 * and values are arrays of raw filtering values.
+	 * Datagrid table filtering, initialized by URL, keys are configured 
+	 * database column names and values are arrays. Each key in value array is
+	 * allowed operator and values are values to filter on defined column.
+	 * @internal
 	 * @var array
 	 */
 	protected $filtering = [];
@@ -110,6 +130,8 @@ trait InternalProps {
 	 * - `operator` - string SQL operator to use
 	 * - `multiple` - boolean if operatoc could have multiple values
 	 * - `regex`    - NULL or string with regular expression applied to match the value(s).
+	 * This collection is initialized internally.
+	 * @internal
 	 * @var array
 	 */
 	protected $allowedOperators = [];
@@ -123,18 +145,23 @@ trait InternalProps {
 
 	/**
 	 * Initialized into `TRUE` if any translator callable defined.
+	 * @internal
 	 * @var bool
 	 */
 	protected $translate = FALSE;
 
 	/**
-	 * Total items count.
+	 * Total items count in databse table, loaded from configured model.
+	 * Value is initialized in `PreDispatch()` method automatically.
+	 * @internal
 	 * @var int|NULL
 	 */
 	protected $totalCount = NULL;
 
 	/**
 	 * Loaded current page data or page iterator.
+	 * Value is initialized in template rendering by first call automatically.
+	 * @internal
 	 * @var array|\MvcCore\Ext\Models\Db\Readers\Streams\Iterator|NULL
 	 */
 	protected $pageData = NULL;
@@ -150,6 +177,7 @@ trait InternalProps {
 	 * Empty request instance only with `path` value, 
 	 * used to route `<grid>` param internally and to build 
 	 * `<grid>` param for `self` url back again.
+	 * Define this object by your own externally only for your own risk.
 	 * @internal
 	 * @var \MvcCore\Request|NULL
 	 */

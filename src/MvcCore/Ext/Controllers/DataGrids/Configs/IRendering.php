@@ -29,7 +29,20 @@ interface IRendering {
 	 * @return int
 	 */
 	public function GetGridColumnsCount ();
+	
+	/**
+	 * 
+	 * @param  bool $renderTableHead
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetRenderTableHead ($renderTableHead);
 
+	/**
+	 * 
+	 * @return bool
+	 */
+	public function GetRenderTableHead ();
+	
 	/**
 	 * 
 	 * @param  bool $renderTableHeadSorting

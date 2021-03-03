@@ -83,6 +83,8 @@ trait PreDispatchMethods {
 	}
 
 	/**
+	 * Process necessary operations for rendering 
+	 * and set up and call model instance total count.
 	 * @inheritDocs
 	 * @return void
 	 */
@@ -103,13 +105,14 @@ trait PreDispatchMethods {
 		$this->preDispatchPaging();
 		$this->preDispatchCountScales();
 		$this->preDispatchTranslations();
+		$this->preDispatchRenderConfig();
 		
 		if ($this->configRendering->GetRenderTableHeadFiltering()) 
 			$this->tableHeadFilterForm->PreDispatch(FALSE);
 	}
 	
 	/**
-	 * Check and set up model and call database for total count at minimal.
+	 * Set up model instance and call database for total count.
 	 * @throws \InvalidArgumentException 
 	 * @return void
 	 */
@@ -125,7 +128,7 @@ trait PreDispatchMethods {
 	}
 
 	/**
-	 * 
+	 * Create customized datagrid view instance.
 	 * @return void
 	 */
 	protected function preDispatchViewInstance () {
@@ -168,7 +171,7 @@ trait PreDispatchMethods {
 	}
 
 	/**
-	 * 
+	 * Initialize paging control render config boolean and paging content.
 	 * @return void
 	 */
 	protected function preDispatchPaging () {
@@ -213,7 +216,7 @@ trait PreDispatchMethods {
 			$itemsPerPage, $displayFirst, $displayPrev
 		]);
 		$this->preDispatchPagingLeftOuterPages($paging, [
-			$pagesCount, $itemsPerPage, $displayOuterStartPages, $firstAndLast, $outerPages, $hiddenStartingPagesCount
+			$itemsPerPage, $displayOuterStartPages, $firstAndLast, $outerPages, $hiddenStartingPagesCount
 		]);
 		$this->preDispatchPagingNearbyAndCurrent($paging, [
 			$pagesCount, $itemsPerPage, $currentPage, $nearbyPages
@@ -259,7 +262,7 @@ trait PreDispatchMethods {
 	 */
 	protected function preDispatchPagingLeftOuterPages (& $paging, $params) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		list($pagesCount, $itemsPerPage, $displayOuterStartPages, $firstAndLast, $outerPages, $hiddenStartingPagesCount) = $params;
+		list($itemsPerPage, $displayOuterStartPages, $firstAndLast, $outerPages, $hiddenStartingPagesCount) = $params;
 		if ($displayOuterStartPages) {
 			$stepValue = floatval($hiddenStartingPagesCount) / floatval($outerPages + 1);
 			$stepCounter = $firstAndLast ? 1.0 : 0.0;
@@ -356,7 +359,10 @@ trait PreDispatchMethods {
 	}
 	
 	/**
-	 * 
+	 * Switch rendering config boolean to render count scales control to 
+	 * never render, if datagrid renders only single page and items per page value
+	 * is greater than zero (items per page value is not set to unlimited value).
+	 * Because than - the count scales control is completely useless.
 	 * @return void
 	 */
 	protected function preDispatchCountScales () {
@@ -364,12 +370,15 @@ trait PreDispatchMethods {
 		$renderCountScales = $this->configRendering->GetRenderControlCountScales();
 		if (!$renderCountScales) return;
 		$multiplePages = $this->totalCount > $this->itemsPerPage && $this->itemsPerPage !== 0;
-		if (($renderCountScales & static::CONTROL_DISPLAY_IF_NECESSARY) != 0 && !$multiplePages) 
+		if (!$multiplePages && ($renderCountScales & static::CONTROL_DISPLAY_IF_NECESSARY) != 0) 
 			$this->configRendering->SetRenderControlCountScales(static::CONTROL_DISPLAY_NEVER);
 	}
 	
 	/**
-	 * 
+	 * Translate if necessary:
+	 * - controls texts
+	 * - columns human names
+	 * - columns url names (if configured)
 	 * @return void
 	 */
 	protected function preDispatchTranslations () {
@@ -392,5 +401,34 @@ trait PreDispatchMethods {
 					)
 				);
 		}
+	}
+
+	/**
+	 * Switch necessary rendering config booleans to `FALSE`
+	 * if sorting or filtering is completely disabled.
+	 * @return void
+	 */
+	protected function preDispatchRenderConfig () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$sortDisabled = $this->sortingMode === static::SORT_DISABLED;
+		$filterDisabled = $this->filteringMode === static::FILTER_DISABLED;
+		$renderConf = $this->configRendering;
+		if ($sortDisabled) {
+			$renderConf->SetRenderControlSorting(FALSE);
+			$renderConf->SetRenderTableHeadSorting(FALSE);
+		}
+		if ($filterDisabled) {
+			$renderConf->SetRenderFilterForm(FALSE);
+			$renderConf->SetRenderTableHeadFiltering(FALSE);
+		}
+		if (!$renderConf->GetRenderTableHead()) {
+			$renderConf->SetRenderTableHeadSorting(FALSE);
+			$renderConf->SetRenderTableHeadFiltering(FALSE);
+		}
+		$gridType = $renderConf->GetType();
+		$gridTableType = ($gridType & static::TYPE_TABLE) !== 0;
+		$this->AddCssClasses([
+			'grid-type-' . ($gridTableType ? 'table' : 'grid')
+		]);
 	}
 }

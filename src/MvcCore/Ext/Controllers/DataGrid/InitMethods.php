@@ -55,10 +55,13 @@ trait InitMethods {
 		$this->GetRoute();
 		$this->GetUrlParams();
 		
-		$this->initUrlParams();
+		$this->initGridAction();
+		if (!$this->initUrlParams()) return; // redirect inside
 		$this->initOffsetLimit();
-
-		$this->initLocalProps();
+		
+		if (!$this->initUrlBuilding()) return; // redirect inside
+		$this->initTranslations();
+		$this->initOperators();
 		
 		$this->initSorting();
 		$this->initFiltering();
@@ -67,12 +70,35 @@ trait InitMethods {
 	}
 
 	/**
+	 * Complete internal action method name.
 	 * @return void
+	 */
+	protected function initGridAction () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$gridActionParam = $this->request->GetParam(static::URL_PARAM_ACTION, '-_a-zA-Z', static::$gridActionDefaultKey, 'string');
+		if (!isset(static::$gridActions[$gridActionParam])) $gridActionParam = static::$gridActionDefaultKey;
+		$this->gridAction = static::$gridActions[$gridActionParam];
+	}
+
+	/**
+	 * Initialize internal property `$this->queryStringParamsSepatator`
+	 * to be able to build internal grid URL strings.
+	 * Check valid values from URL for page and items par page.
+	 * If some value is invalid, redirect to default value.
+	 * @return bool
 	 */
 	protected function initUrlParams () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		/** @var $context \MvcCore\Controller */
 		$context = $this;
+
+		// init `$this->queryStringParamsSepatator` from router to build grid urls:
+		if ($this->queryStringParamsSepatator === NULL) {
+			$routerType = new \ReflectionClass($this->router);
+			$method = $routerType->getMethod('getQueryStringParamsSepatator');
+			$method->setAccessible(TRUE);
+			$this->queryStringParamsSepatator = $method->invoke($this->router);
+		}
 
 		// set up default page if null:
 		if (isset($this->urlParams['page'])) {
@@ -81,11 +107,12 @@ trait InitMethods {
 				$redirectUrl = $this->GridUrl([
 					'page'	=> 1,
 				]);
-				return $context::Redirect(
+				$context::Redirect(
 					$redirectUrl, 
 					\MvcCore\IResponse::SEE_OTHER, 
 					'Grid page is too low.'
 				);
+				return FALSE;
 			}
 		} else {
 			$this->urlParams['page'] = 1;
@@ -103,11 +130,12 @@ trait InitMethods {
 					'page'	=> $this->urlParams['page'],
 					'count'	=> $lastCountsScale,
 				]);
-				return $context::Redirect(
+				$context::Redirect(
 					$redirectUrl, 
 					\MvcCore\IResponse::SEE_OTHER, 
 					'Grid count is too high.'
 				);
+				return FALSE;
 			}
 		}
 
@@ -135,11 +163,12 @@ trait InitMethods {
 			$redirectUrl = $this->GridUrl([
 				'count'	=> $minDifferenceCountScale,
 			]);
-			return $context::Redirect(
+			$context::Redirect(
 				$redirectUrl, 
 				\MvcCore\IResponse::SEE_OTHER, 
 				'Grid custom count scale is not allowed.'
 			);
+			return FALSE;
 		}
 		
 		// check if page is not larger than 1 if count is unlimited:
@@ -148,12 +177,15 @@ trait InitMethods {
 			$redirectUrl = $this->GridUrl([
 				'page'	=> 1,
 			]);
-			return $context::Redirect(
+			$context::Redirect(
 				$redirectUrl, 
 				\MvcCore\IResponse::SEE_OTHER, 
 				'Grid page is too high with unlimited count.'
 			);
+			return FALSE;
 		}
+		
+		return TRUE;
 	}
 	
 	/**
@@ -180,19 +212,67 @@ trait InitMethods {
 	
 	/**
 	 * Initialize datagrid internal action method name and translation booleans.
+	 * @return bool
+	 */
+	protected function initUrlBuilding () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		/** @var $context \MvcCore\Controller */
+		$context = $this;
+		
+		$routeConfig = $this->route->GetAdvancedConfigProperty('defaults');
+		$this->itemsPerPageRouteConfig = $routeConfig['count'];
+		
+		// remove all default values from route to build urls with `$this->urlParams` only:
+		$defaultParams = [];
+		$pageIsDefault = $this->page === 1;
+		$countIsDefault = $this->itemsPerPage === $this->itemsPerPageRouteConfig;
+		if ($pageIsDefault && $countIsDefault) {
+			$defaultParams = ['page' => 1, 'count' => $this->itemsPerPageRouteConfig];
+		} else if ($pageIsDefault && !$countIsDefault) {
+			$defaultParams = ['page' => NULL, 'count' => NULL];
+		} else if (!$pageIsDefault && $countIsDefault) {
+			$defaultParams = ['page' => NULL, 'count' => $this->itemsPerPageRouteConfig];
+		} else {
+			$defaultParams = ['page' => NULL, 'count' => NULL];
+		}
+		$this->route->SetDefaults($defaultParams);
+		
+		// redirect to canonical url if necessary:
+		$defaultAction = $this->gridAction === static::$gridActions[static::$gridActionDefaultKey];
+		if ($defaultAction && $this->router->GetAutoCanonizeRequests()) {
+			list ($gridParam) = $this->route->Url(
+				$this->gridRequest,
+				[],
+				$this->urlParams,
+				$this->queryStringParamsSepatator,
+				FALSE
+			);
+			$gridParam = rtrim($gridParam, '/');
+			$reqPathRaw = $this->gridRequest->GetPath(FALSE);
+			if ($gridParam !== $reqPathRaw) {
+				$redirectUrl = $this->Url('self', [static::URL_PARAM_GRID => rawurldecode($gridParam)]);
+				$context::Redirect(
+					$redirectUrl, 
+					\MvcCore\IResponse::SEE_OTHER, 
+					'Grid canonical URL redirect.'
+				);
+				return FALSE;
+			}
+		}
+
+		// remove all default values from route to build urls with `$this->urlParams` only:
+		$this->route->SetDefaults([]);
+		
+		return TRUE;
+	}
+
+	/**
+	 * Initialize translation booleans and translate url names 
+	 * and URL operators if necessary. Initialize allowed default 
+	 * filter URL operators collection to check filter values.
 	 * @return void
 	 */
-	protected function initLocalProps () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		// remove all default values from route to build urls with `$this->urlParams` only:
-		$this->GetRoute()->SetDefaults([]);
-		
-		// complete internal action method name:
-		$defaultActionKey = 'default';
-		$gridActionParam = $this->request->GetParam(static::URL_PARAM_ACTION, '-_a-zA-Z', $defaultActionKey, 'string');
-		if (!isset(static::$gridActions[$gridActionParam])) $gridActionParam = $defaultActionKey;
-		$this->gridAction = static::$gridActions[$gridActionParam];
-		
+	protected function initTranslations () {
 		// complete transaction booleans and translate filter url segments if necessary:
 		$this->translate = is_callable($this->translator) || $this->translator instanceof \Closure;
 		if (!$this->translate) 
@@ -206,8 +286,14 @@ trait InitMethods {
 			}
 			$this->configUrlSegments->SetUrlFilterOperators($translatedUrlFilterOperators);
 		}
-		
-		// initialize default allowed operators collection:
+	}
+	
+	/**
+	 * Initialize default allowed operators collection.
+	 * @return void
+	 */
+	protected function initOperators () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if (!$this->filteringMode) return;
 		$this->allowedOperators = $this->getAllowedOperators($this->filteringMode);
 	}
@@ -219,8 +305,9 @@ trait InitMethods {
 	 */
 	protected function initSorting () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		if (!$this->sortingMode) return;
-		$rawSorting = $this->urlParams['sort'];
+		if (!$this->sortingMode || !$this->urlParams['sort']) return;
+		$rawSorting = trim($this->urlParams['sort']);
+		if (mb_strlen($rawSorting) === 0) return;
 		$subjsDelim = $this->configUrlSegments->GetUrlDelimiterSubjects();
 		$subjValueDelim = $this->configUrlSegments->GetUrlDelimiterSubjectValue();
 		$ascSuffix = $this->configUrlSegments->GetUrlSuffixSortAsc();
@@ -273,8 +360,9 @@ trait InitMethods {
 	 */
 	protected function initFiltering () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		if (!$this->filteringMode) return;
-		$rawFiltering = $this->urlParams['filter'];
+		if (!$this->filteringMode || !isset($this->urlParams['filter'])) return;
+		$rawFiltering = trim($this->urlParams['filter']);
+		if (mb_strlen($rawFiltering) === 0) return;
 		$subjsDelim = $this->configUrlSegments->GetUrlDelimiterSubjects();
 		$subjValueDelim = $this->configUrlSegments->GetUrlDelimiterSubjectValue();
 		$valuesDelim = $this->configUrlSegments->GetUrlDelimiterValues();

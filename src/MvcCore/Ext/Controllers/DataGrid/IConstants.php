@@ -18,14 +18,15 @@ interface IConstants {
 	 */
 	const URL_PARAM_ACTION				= 'grid-action';
 	
+
 	/**
-	 * Default items per page.
+	 * Default `10` items per page.
 	 * @var int
 	 */
 	const ITEMS_PER_PAGE_DEFAULT		= 10;
 
 	/**
-	 * Default counts control scale. 
+	 * Default count control scales - `[10,100,1000,0]`. 
 	 * Last zero value means unlimited items option.
 	 * @var \int[]
 	 */

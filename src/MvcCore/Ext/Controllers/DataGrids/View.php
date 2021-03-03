@@ -69,7 +69,7 @@ class View extends \MvcCore\View {
 	 * @return string
 	 */
 	public function RenderGridHeadTable () {
-		if (!$this->configRendering->GetRenderTableHeadSorting()) 
+		if (!$this->configRendering->GetRenderTableHead()) 
 			return '';
 		return $this->renderGridTemplate(
 			$this->configRendering->GetTemplateTableHead(), 'Content', 'table-head'

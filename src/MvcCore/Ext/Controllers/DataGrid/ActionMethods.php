@@ -5,6 +5,7 @@ namespace MvcCore\Ext\Controllers\DataGrid;
 trait ActionMethods {
 
 	/**
+	 * Internal default action for datagrid content rendering.
 	 * @template
 	 * @return void
 	 */
@@ -23,6 +24,12 @@ trait ActionMethods {
 		}
 	}
 
+	/**
+	 * Internal factory method to create table head filter form.
+	 * @template
+	 * @param  bool $submit 
+	 * @return void
+	 */
 	protected function createTableHeadFilterForm ($submit = FALSE) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->checkExtendedFormClasses();
@@ -60,25 +67,29 @@ trait ActionMethods {
 			}
 			$filterField = (new \MvcCore\Ext\Forms\Fields\SubmitButton)
 				->SetName(implode($form::HTML_IDS_DELIMITER, ['filter', $urlName]))
-				->SetValue($this->GetControlText('filter'));
+				->SetValue($this->GetControlText('filter'))
+				->AddCssClasses('filter');
 			$clearField = (new \MvcCore\Ext\Forms\Fields\SubmitButton)
 				->SetCustomResultState($clearResultState)
 				->SetName(implode($form::HTML_IDS_DELIMITER, ['clear', $urlName]))
-				->SetValue($this->GetControlText('clear'));
+				->SetValue($this->GetControlText('clear'))
+				->AddCssClasses('clear');
 			$form->AddFields($valueField, $filterField, $clearField);
 		}
 		$this->tableHeadFilterForm = $form;
 	}
 
 	/**
+	 * Internal submit action for table head filter form.
 	 * @template
 	 * @return void
 	 */
 	protected function actionTableFilterSubmit () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$context = $this;
 		if (!$this->configRendering->GetRenderTableHeadFiltering()) {
 			$redirectUrl = $this->Url('self', [static::URL_PARAM_ACTION => NULL]);
-			self::Redirect($redirectUrl, \MvcCore\IResponse::SEE_OTHER, 'Grid has not configured table heading filter.');
+			$context::Redirect($redirectUrl, \MvcCore\IResponse::SEE_OTHER, 'Grid has not configured table heading filter.');
 		}
 		$this->createTableHeadFilterForm(TRUE);
 		$form = $this->tableHeadFilterForm;
@@ -100,9 +111,6 @@ trait ActionMethods {
 				$configColumn = $this->configColumns[$urlName];
 				$columnFilterCfg = $configColumn->GetFilter();
 				if ($columnFilterCfg === FALSE || $columnFilterCfg === NULL) continue;
-				$allowedOperators = $columnFilterCfg === TRUE || !is_integer($columnFilterCfg)
-					? $this->allowedOperators
-					: $this->getAllowedOperators($columnFilterCfg);
 				$safeStringValuesArr = explode($valuesDelim, $safeStringValues);
 				$values = [];
 				foreach ($safeStringValuesArr as $safeStringValue) {
@@ -144,8 +152,16 @@ trait ActionMethods {
 				$filterParams[] = "{$columnUrlName}{$subjValueDelim}{$operatorUrlValue}{$subjValueDelim}{$filterUrlValues}";
 			}
 		}
+		$page = $this->page;
+		$count = $this->itemsPerPage;
+		if ($count === $this->itemsPerPageRouteConfig) {
+			$count = NULL;
+			if ($page === 1) $page = NULL;
+		}
 		$redirectUrl = $this->GridUrl([
 			static::URL_PARAM_ACTION	=> NULL,
+			'page'						=> $page,
+			'count'						=> $count,
 			'filter'					=> count($filterParams) > 0 
 				? implode($subjsDelim, $filterParams)
 				: NULL
@@ -154,6 +170,7 @@ trait ActionMethods {
 	}
 
 	/**
+	 * Internal submit action for custom filtering form.
 	 * @template
 	 * @return void
 	 */
@@ -199,6 +216,9 @@ trait ActionMethods {
 				}
 				$values = [];
 				foreach ($operatorAndValues as $operator => $values) {
+					$operatorUrlSegment = $urlFilterOperators[$operator];
+					if (!isset($allowedOperators[$operatorUrlSegment])) continue;
+					$allowedOperatorCfg = $allowedOperators[$operatorUrlSegment];
 					if (!isset($currentFilterDbNames[$columnDbName]))
 						$currentFilterDbNames[$columnDbName] = [];
 					if (is_array($values)) {
@@ -206,8 +226,10 @@ trait ActionMethods {
 							if (isset($currentFilterDbNames[$columnDbName][$operator]))
 								unset($currentFilterDbNames[$columnDbName][$operator]);
 							continue;
-						} else {
+						} else if ($allowedOperatorCfg->multiple) {
 							$currentFilterDbNames[$columnDbName][$operator] = $values;
+						} else {
+							$currentFilterDbNames[$columnDbName][$operator] = [$values[0]];
 						}
 					} else if ($values === NULL) {
 						unset($currentFilterDbNames[$columnDbName][$operator]);
@@ -236,8 +258,16 @@ trait ActionMethods {
 				$filterParams[] = "{$columnUrlName}{$subjValueDelim}{$operatorUrlValue}{$subjValueDelim}{$filterUrlValues}";
 			}
 		}
+		$page = $this->page;
+		$count = $this->itemsPerPage;
+		if ($count === $this->itemsPerPageRouteConfig) {
+			$count = NULL;
+			if ($page === 1) $page = NULL;
+		}
 		$redirectUrl = $this->GridUrl([
 			static::URL_PARAM_ACTION	=> NULL,
+			'page'						=> $page,
+			'count'						=> $count,
 			'filter'					=> count($filterParams) > 0 
 				? implode($subjsDelim, $filterParams)
 				: NULL
@@ -248,6 +278,8 @@ trait ActionMethods {
 
 	
 	/**
+	 * Check classes in extensions and throw an exception about 
+	 * to install an extension if any of extended class doesn't exist.
 	 * @throws \RuntimeException 
 	 * @return  void
 	 */

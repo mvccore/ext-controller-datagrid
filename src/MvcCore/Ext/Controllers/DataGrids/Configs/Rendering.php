@@ -21,6 +21,12 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * 
 	 * @var bool
 	 */
+	protected $renderTableHead						= TRUE;
+
+	/**
+	 * 
+	 * @var bool
+	 */
 	protected $renderTableHeadSorting				= TRUE;
 
 	/**
@@ -179,6 +185,26 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 */
 	public function GetGridColumnsCount () {
 		return $this->columnsCount;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @param  bool $renderTableHead
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetRenderTableHead ($renderTableHead) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		$this->renderTableHead = $renderTableHead;
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return bool
+	 */
+	public function GetRenderTableHead () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		return $this->renderTableHead;
 	}
 	
 	/**
