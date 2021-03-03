@@ -1,23 +1,35 @@
 <?php
 
+/**
+ * MvcCore
+ *
+ * This source file is subject to the BSD 3 License
+ * For the full copyright and license information, please view
+ * the LICENSE.md file that are distributed with this source code.
+ *
+ * @copyright	Copyright (c) 2016 Tom Flidr (https://github.com/mvccore)
+ * @license		https://mvccore.github.io/docs/mvccore/5.0.0/LICENSE.md
+ */
+
 namespace MvcCore\Ext\Controllers\DataGrids;
 
 class View extends \MvcCore\View {
 	
 	/**
-	 * 
+	 * Internal templates full path base.
 	 * @var string|NULL
 	 */
 	protected $gridScriptsFullPathBase = NULL;
 	
 	/**
-	 * 
+	 * Grid rendering config pointer.
 	 * @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering|NULL
 	 */
 	protected $configRendering = NULL;
 	
 	/**
-	 * 
+	 * Set custom internal templates full path base.
+	 * @internal
 	 * @param  string $gridScriptsFullPathBase
 	 * @return \MvcCore\Ext\Controllers\DataGrids\View
 	 */
@@ -27,7 +39,8 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
-	 * 
+	 * Get custom internal templates full path base.
+	 * @internal
 	 * @return string
 	 */
 	public function GetGridScriptsFullPathBase () {
@@ -37,17 +50,20 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
-	 * 
+	 * Set datagrid rendering config.
+	 * This internal method is always called from datagrid component.
+	 * @internal
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering 
 	 * @return \MvcCore\Ext\Controllers\DataGrids\View
 	 */
 	public function SetConfigRendering (\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering $configRendering) {
+		/** @var $configRendering \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
 		$this->configRendering = $configRendering;
 		return $this;
 	}
 
 	/**
-	 * 
+	 * Get datagrid rendering config.
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function GetConfigRendering () {
@@ -55,7 +71,7 @@ class View extends \MvcCore\View {
 	}
 
 	/**
-	 * 
+	 * Render datagrid base content.
 	 * @return string
 	 */
 	public function RenderGrid () {
@@ -65,7 +81,7 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
-	 * 
+	 * Render datagrid table type table head.
 	 * @return string
 	 */
 	public function RenderGridHeadTable () {
@@ -77,7 +93,7 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
-	 * 
+	 * Render datagrid table type table body.
 	 * @return string
 	 */
 	public function RenderGridBodyTable () {
@@ -87,7 +103,7 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
-	 * 
+	 * Render datagrid grid type table body.
 	 * @return string
 	 */
 	public function RenderGridBodyGrid () {
@@ -97,7 +113,7 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
-	 * 
+	 * Render datagrid separated sort control.
 	 * @return string
 	 */
 	public function RenderGridControlSorting () {
@@ -111,7 +127,7 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
-	 * 
+	 * Render datagrid items per page control.
 	 * @return string
 	 */
 	public function RenderGridControlCountScales () {
@@ -125,7 +141,7 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
-	 * 
+	 * Render datagrid paging control.
 	 * @return string
 	 */
 	public function RenderGridControlPaging () {
@@ -139,7 +155,7 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
-	 * 
+	 * Render datagrid custom filter form control.
 	 * @return string
 	 */
 	public function RenderGridFilterForm () {
@@ -149,7 +165,8 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
-	 * 
+	 * Render internal or custom template.
+	 * @internal
 	 * @return string
 	 */
 	protected function renderGridTemplate ($configTemplate, $typePath, $defaultTemplate) {

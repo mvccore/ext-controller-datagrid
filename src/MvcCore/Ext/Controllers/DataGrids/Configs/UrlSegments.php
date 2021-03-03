@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * MvcCore
+ *
+ * This source file is subject to the BSD 3 License
+ * For the full copyright and license information, please view
+ * the LICENSE.md file that are distributed with this source code.
+ *
+ * @copyright	Copyright (c) 2016 Tom Flidr (https://github.com/mvccore)
+ * @license		https://mvccore.github.io/docs/mvccore/5.0.0/LICENSE.md
+ */
+
 namespace MvcCore\Ext\Controllers\DataGrids\Configs;
 
 class		UrlSegments 
@@ -7,6 +18,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 
 	/**
 	 * URL prefix to define which URL section is used for page number.
+	 * Default value is empty string.
 	 * If empty, there is used first section by default.
 	 * @var string
 	 */
@@ -14,6 +26,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	
 	/**
 	 * URL prefix to define which URL section is used for items per page count.
+	 * Default value is empty string.
 	 * If empty, there is used second section by default.
 	 * @var string
 	 */
@@ -21,42 +34,51 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	
 	/**
 	 * URL prefix to define which URL section is used for sorting.
+	 * Default value is `sort`.
 	 * @var string
 	 */
 	protected $urlPrefixSort = 'sort';
 	
 	/**
 	 * URL prefix to define which URL section is used for filtering.
+	 * Default value is `filter`.
 	 * @var string
 	 */
 	protected $urlPrefixFilter = 'filter';
 	
 	/**
 	 * URL suffix to define ascendent sort direction.
+	 * Default value is `a`.
 	 * @var string
 	 */
 	protected $urlSuffixSortAsc = 'a';
 	
 	/**
 	 * URL suffix to define descendent sort direction.
+	 * Default value is `d`.
 	 * @var string
 	 */
 	protected $urlSuffixSortDesc = 'd';
 	
 	/**
 	 * URL delimiter between sections.
+	 * Default value is `/`.
 	 * @var string
 	 */
 	protected $urlDelimiterSections = '/';
 	
 	/**
-	 * URL delimiter for each section where is defined prefix, between prefix and rest of the section.
+	 * URL delimiter for each section where is defined prefix, 
+	 * between prefix and rest of the section.
+	 * Default value is `-`.
 	 * @var string
 	 */
 	protected $urlDelimiterPrefix = '-';
 	
 	/**
-	 * URL delimiter for sorting and filtering, between each pair of grid column with value(s).
+	 * URL delimiter for sorting and filtering, 
+	 * between each pair of grid column with value(s).
+	 * Default value is `~`.
 	 * @var string
 	 */
 	protected $urlDelimiterSubjects = '~';
@@ -65,12 +87,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * URL delimiter for sorting and filtering.
 	 * In sorting   - between grid column name and sort direction suffix.
 	 * In filtering - between grid column name, operator and (first) value.
+	 * Default value is `-`.
 	 * @var string
 	 */
 	protected $urlDelimiterSubjectValue = '-';
 	
 	/**
 	 * URL delimiter for filtering, between multiple filtering values.
+	 * Default value is `,`.
 	 * @var string
 	 */
 	protected $urlDelimiterValues = ',';
@@ -78,6 +102,16 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	/**
 	 * Allowed URL filter operators.
 	 * Keys are database operators, values are url operator texts.
+	 * ```
+	 *    '='        => 'is',
+	 *    '!='       => 'not',
+	 *    'LIKE'     => 'as',
+	 *    'NOT LIKE' => 'not-as',
+	 *    '<'        => 'lt',
+	 *    '>'        => 'gt',
+	 *    '<='       => 'lte',
+	 *    '>='       => 'gte',
+	 * ```
 	 * @var array
 	 */
 	protected $urlFilterOperators = [
@@ -92,7 +126,8 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	];
 	
 	/**
-	 * URL route pattern, automatically completed from configuration properties above.
+	 * URL route pattern. This is automatically completed 
+	 * from other configuration properties of this object.
 	 * @var string|NULL
 	 */
 	protected $routePattern = NULL;
