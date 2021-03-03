@@ -5,44 +5,52 @@ namespace MvcCore\Ext\Controllers\DataGrids\Models;
 trait GridModel {
 
 	/**
-	 * 
+	 * Database table offset, always initialized into integer.
+	 * This offset is always initialized by datagrid component automatically.
 	 * @var int|NULL
 	 */
 	protected $offset = NULL;
 	
 	/**
-	 * 
+	 * Database table select limit, it could be initialized into integer or `NULL`.
+	 * This limit is always initialized by datagrid component automatically.
 	 * @var int|NULL
 	 */
 	protected $limit = NULL;
 	
 	/**
-	 * 
+	 * Total count of database table rows by initialized fitering.
 	 * @var int|NULL
 	 */
 	protected $totalCount = NULL;
 	
 	/**
-	 * 
+	 * Page data rows or database result iterator.
 	 * @var \MvcCore\Ext\Models\Db\Readers\Streams\Iterator|array|NULL
 	 */
 	protected $pageData = NULL;
 
 	/**
-	 * 
+	 * Database table filtering, keys are database table column names
+	 * and values are arrays. Each key in value array is condition 
+	 * operator and values are raw user input values to use in column condition.
+	 * This filtering is always initialized by datagrid component automatically.
 	 * @var array|NULL
 	 */
 	protected $filtering = NULL;
 	
 	/**
-	 * 
+	 * Database table sorting, keys are database table column names 
+	 * and values are sorting direction strings - `ASC | DESC`.
+	 * This sorting is always initialized by datagrid component automatically.
 	 * @var array|NULL
 	 */
 	protected $sorting = NULL;
 
 
 	/**
-	 * 
+	 * Set database table offset, always initialized into integer.
+	 * This offset is always initialized by datagrid component automatically.
 	 * @param  int|NULL $offset 
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridModel
 	 */
@@ -52,7 +60,8 @@ trait GridModel {
 	}
 
 	/**
-	 * 
+	 * Set database table select limit, it could be initialized into integer or `NULL`.
+	 * This limit is always initialized by datagrid component automatically.
 	 * @param  int|NULL $limit 
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridModel
 	 */
@@ -62,7 +71,10 @@ trait GridModel {
 	}
 
 	/**
-	 * 
+	 * Set database table filtering, keys are database table column names
+	 * and values are arrays. Each key in value array is condition 
+	 * operator and values are raw user input values to use in column condition.
+	 * This filtering is always initialized by datagrid component automatically.
 	 * @param  array $filtering 
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridModel
 	 */
@@ -72,7 +84,9 @@ trait GridModel {
 	}
 
 	/**
-	 * 
+	 * Set database table sorting, keys are database table column names 
+	 * and values are sorting direction strings - `ASC | DESC`.
+	 * This sorting is always initialized by datagrid component automatically.
 	 * @param  array $sorting
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridModel
 	 */
@@ -82,7 +96,8 @@ trait GridModel {
 	}
 	
 	/**
-	 * 
+	 * Get total count of database table rows by initialized fitering.
+	 * You have to implement this method usually by your own.
 	 * @return int
 	 */
 	public function GetTotalCount () {
@@ -91,7 +106,8 @@ trait GridModel {
 	}
 
 	/**
-	 * 
+	 * Get page data rows or database result iterator.
+	 * You have to implement this method usually by your own.
 	 * @return \MvcCore\Ext\Models\Db\Readers\Streams\Iterator|array|NULL
 	 */
 	public function GetPageData () {
@@ -100,7 +116,7 @@ trait GridModel {
 	}
 
 	/**
-	 * 
+	 * Render value in datagrid tabe cell as scalar value (convertable into string).
 	 * @param  mixed                                             $row
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
 	 * @param  \MvcCore\IView                                    $view
@@ -210,6 +226,10 @@ trait GridModel {
 	}
 
 	/**
+	 * You have to implement this method usually by your own.
+	 * This method is called automatically from local getters `GetTotalCount()` 
+	 * and `GetPageData()` for first time. There is necesary to complete 
+	 * local properties `$this->totalCount` and `$this->pageData`.
 	 * @return void
 	 */
 	protected abstract function load ();

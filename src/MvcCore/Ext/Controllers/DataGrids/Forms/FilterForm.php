@@ -61,6 +61,7 @@ trait FilterForm {
 	 * @return void
 	 */
 	public function __construct (\MvcCore\Ext\Controllers\IDataGrid $grid) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Forms\FilterForm|\MvcCore\Ext\Form */
 		parent::__construct($grid);
 		if ($this->action === NULL) {
 			$actionUrl = $grid->Url(
@@ -69,4 +70,15 @@ trait FilterForm {
 			$this->SetAction($actionUrl);
 		}
 	}
+
+	/**
+	 * Returned `$values` array has to be in following filter format:
+	 * - keys has to be database column names,
+	 * - values has to be arrays
+	 *    - keys has to be database condition operators
+	 *    - values has to be validated user input values
+	 * @param  array $rawRequestParams 
+	 * @return array [int $result, array $values, array $errors]
+	 */
+	public abstract function Submit (array & $rawRequestParams = []);
 }

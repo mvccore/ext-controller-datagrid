@@ -6,146 +6,171 @@ class		Rendering
 implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	
 	/**
-	 * 
+	 * Datagrid type - table or grid of items.
+	 * `\MvcCore\Ext\Controllers\IDataGrid::TYPE_TABLE` type by default.
 	 * @var int
 	 */
 	protected $type									= \MvcCore\Ext\Controllers\IDataGrid::TYPE_TABLE;
 
 	/**
-	 * 
+	 * Datagrid grid type columns count.
+	 * Threre are rendered 3 columns by default.
 	 * @var int
 	 */
 	protected $gridColumnsCount						= 3;
 
 	/**
-	 * 
+	 * Render table head in datagrid table type.
+	 * Rendered by default.
 	 * @var bool
 	 */
 	protected $renderTableHead						= TRUE;
 
 	/**
-	 * 
+	 * Render table head sorting links in datagrid table type.
+	 * Rendered by default.
 	 * @var bool
 	 */
 	protected $renderTableHeadSorting				= TRUE;
 
 	/**
-	 * 
+	 * Render table head filtering fields and buttons in datagrid table type.
+	 * Not rendered by default.
 	 * @var bool
 	 */
 	protected $renderTableHeadFiltering				= FALSE;
 
 	/**
-	 * 
+	 * Render separated sort control (all datagrid types).
+	 * Not rendered by default.
 	 * @var bool
 	 */
 	protected $renderControlSorting					= FALSE;
 
 	/**
-	 * 
+	 * Render paging control (all datagrid types).
+	 * Rendered if necessary by default.
 	 * @var int
 	 */
 	protected $renderControlPaging					= \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_IF_NECESSARY;
 	
 	/**
-	 * 
+	 * Render previous and next page links in paging control.
+	 * Rendered by default.
 	 * @var bool
 	 */
 	protected $renderControlPagingPrevAndNext		= TRUE;
 	
 	/**
-	 * 
+	 * Render first and last page links in paging control.
+	 * Rendered by default.
 	 * @var bool
 	 */
 	protected $renderControlPagingFirstAndLast		= FALSE;
 
 	/**
-	 * 
+	 * Rendered nearby pages count in page control.
+	 * This value means how many pages will be rendered 
+	 * around current page to left or to right side.
+	 * There are rendered 3 nearby pages to each side by default.
 	 * @var int
 	 */
 	protected $controlPagingNearbyPagesCount		= 3;
 	
 	/**
-	 * 
+	 * Rendered outer pages count in page control.
+	 * This value is used if there are really many pages in paging control.
+	 * The value means how many pages will be rendered in 
+	 * overview of all not rendered page links in each side.
+	 * There are rendered 2 outer pages to each side by default.
 	 * @var int
 	 */
 	protected $controlPagingOuterPagesCount			= 2;
 	
 	/**
-	 * 
+	 * Outer pages ratio. This value is used to start render outer 
+	 * pages overview in paging control. If not rendered pages count 
+	 * in side, divided by outer pages count, is higher than this value,
+	 * then outer pages are rendered.
 	 * @var int
 	 */
 	protected $controlPagingOuterPagesDisplayRatio	= 3.0;
 	
 	/**
-	 * 
+	 * Render control with items per page (all datagrid types).
+	 * This control is always rendered by default.
 	 * @var int
 	 */
 	protected $renderControlCountScales				= \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_ALWAYS;
 	
 	/**
-	 * 
+	 * Render custom filter form (all datagrid types).
+	 * This is not rendered by default. To render custom 
+	 * filter form, you have to create some form instance 
+	 * and give it into datagrid. Then you can enable this rendering.
 	 * @var bool
 	 */
 	protected $renderFilterForm						= FALSE;
 	
 
 	/**
-	 * 
-	 * @var string
+	 * Custom datagrid base content template.
+	 * Relative from `/App/Views/Scripts` without file extension.
+	 * @var string|NULL
 	 */
 	protected $templateGridContent					= NULL;
 	
 	/**
-	 * 
-	 * @var string
+	 * Custom datagrid (table type) table head template.
+	 * Relative from `/App/Views/Scripts` without file extension.
+	 * @var string|NULL
 	 */
 	protected $templateTableHead					= NULL;
 	
 	/**
-	 * 
-	 * @var string
+	 * Custom datagrid (table type) table body template.
+	 * Relative from `/App/Views/Scripts` without file extension.
+	 * @var string|NULL
 	 */
 	protected $templateTableBody					= NULL;
 	
 	/**
-	 * 
-	 * @var string
-	 */
-	protected $templateGridHead						= NULL;
-	
-	/**
-	 * 
-	 * @var string
+	 * Custom datagrid (grid type) table body template.
+	 * Relative from `/App/Views/Scripts` without file extension.
+	 * @var string|NULL
 	 */
 	protected $templateGridBody						= NULL;
 	
 	/**
-	 * 
-	 * @var string
+	 * Custom datagrid paging control template.
+	 * Relative from `/App/Views/Scripts` without file extension.
+	 * @var string|NULL
 	 */
 	protected $templateControlPaging				= NULL;
 	
 	/**
-	 * 
-	 * @var string
+	 * Custom datagrid sorting control template.
+	 * Relative from `/App/Views/Scripts` without file extension.
+	 * @var string|NULL
 	 */
 	protected $templateControlSorting				= NULL;
 	
 	/**
-	 * 
-	 * @var string
+	 * Custom datagrid items per page control template.
+	 * Relative from `/App/Views/Scripts` without file extension.
+	 * @var string|NULL
 	 */
 	protected $templateControlCountScales			= NULL;
 	
 	/**
-	 * 
-	 * @var string
+	 * Custom datagrid custom filter form control template.
+	 * Relative from `/App/Views/Scripts` without file extension.
+	 * @var string|NULL
 	 */
 	protected $templateFilterForm					= NULL;
 	
 	/**
-	 * 
+	 * Datagrid view full class name.
 	 * @var string|\MvcCore\Ext\Controllers\DataGrids\View|\MvcCore\View
 	 */
 	protected $viewClass = '\\MvcCore\\Ext\\Controllers\\DataGrids\\View';
@@ -329,7 +354,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	}
 
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  int $nearbyPagesCount
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -340,7 +365,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	}
 
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return int
 	 */
 	public function GetControlPagingNearbyPagesCount () {
@@ -349,7 +374,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	}
 	
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  int $outerPagesCount
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -360,7 +385,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	}
 
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return int
 	 */
 	public function GetControlPagingOuterPagesCount () {
@@ -369,7 +394,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	}
 	
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  float $outerPagesDisplayRatio
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -384,7 +409,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	}
 
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return float
 	 */
 	public function GetControlPagingOuterPagesDisplayRatio () {
@@ -491,26 +516,6 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	public function GetTemplateTableBody () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
 		return $this->templateTableBody;
-	}
-	
-	/**
-	 * @inheritDocs
-	 * @param  string $templateGridHead
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
-	 */
-	public function SetTemplateGridHead ($templateGridHead) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		$this->templateGridHead = $templateGridHead;
-		return $this;
-	}
-
-	/**
-	 * @inheritDocs
-	 * @return string
-	 */
-	public function GetTemplateGridHead () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		return $this->templateGridHead;
 	}
 	
 	/**
