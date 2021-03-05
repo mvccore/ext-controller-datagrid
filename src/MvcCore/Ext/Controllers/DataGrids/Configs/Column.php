@@ -18,7 +18,13 @@ class		Column
 implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 	
 	const PHP_DOCS_TAG_NAME = '@datagrid';
-
+	
+	/**
+	 * Model PHP code propery name.
+	 * @var string|NULL
+	 */
+	protected $propName = NULL;
+	
 	/**
 	 * Human readable name used in grid heading.
 	 * @var string|NULL
