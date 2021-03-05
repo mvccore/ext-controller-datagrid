@@ -58,7 +58,7 @@ trait GridModel {
 	 */
 	protected $sorting = NULL;
 
-
+	
 	/**
 	 * Set database table offset, always initialized into integer.
 	 * This offset is always initialized by datagrid component automatically.
@@ -151,20 +151,22 @@ trait GridModel {
 		}
 		return NULL;
 	}
-
+	
 	/**
 	 * Complete ORDER BY condition SQL part by `$this->sorting` array given from datagrid.
 	 * @param  bool        $includeOrderBy Include ` WHERE ` keyword.
 	 * @param  string|NULL $columnsAlias   Optional SQL alias for each column.
+	 * @param  string      $quoteChars     One or two characters to quote column identifiers from left and right.
 	 * @return string
 	 */
-	protected function getSortingSql ($includeOrderBy = TRUE, $columnsAlias = NULL) {
+	protected function getSortingSql ($includeOrderBy = TRUE, $columnsAlias = NULL, $quoteChars = '""') {
 		$sortSqlItems = [];
-		$alias = $columnsAlias === NULL
-			? ''
-			: '.' . $columnsAlias;
-		foreach ($this->sorting as $columnName => $direction)
-			$sortSqlItems[] = "{$alias}{$columnName} {$direction}";
+		$alias = $columnsAlias === NULL ? '' : '.' . $columnsAlias;
+		$quotes = static::prepareQuotes($quoteChars);
+		foreach ($this->sorting as $columnName => $direction) {
+			$columnNameQuoted = static::quoteColumn($columnName, $quotes);
+			$sortSqlItems[] = "{$alias}{$columnNameQuoted} {$direction}";
+		}
 		$sortSql = '';
 		if (count($sortSqlItems) > 0) {
 			$sortSql = (
@@ -181,19 +183,22 @@ trait GridModel {
 	 * @param  string|NULL $columnsAlias  Optional SQL alias for each column.
 	 * @param  array       $params        Optional query params array, empty or with any initialized value from before.
 	 * @param  string      $paramBaseName Base name for every created param inside this method.
+	 * @param  string      $quoteChars    One or two characters to quote column identifiers from left and right.
 	 * @return array [string $conditionsSql, array $params]
 	 */
-	protected function getConditionSqlAndParams ($includeWhere = TRUE, $columnsAlias = NULL, $params = [], $paramBaseName = ':p') {
+	protected function getConditionSqlAndParams ($includeWhere = TRUE, $columnsAlias = NULL, $params = [], $paramBaseName = ':p', $quoteChars = '""') {
 		static $inOperators = [
 			'='		=> 'IN',
 			'!='	=> 'NOT IN',
 		];
 		$conditionSqlItems = [];
-		$alias = $columnsAlias === NULL
-			? ''
-			: $columnsAlias . '.';
+		$alias = $columnsAlias === NULL ? '' : $columnsAlias . '.';
+		if ($params === NULL) $params = [];
+		if ($paramBaseName === NULL) $paramBaseName = ':p';
+		$quotes = static::prepareQuotes($quoteChars);
 		$index = 0;
 		foreach ($this->filtering as $columnName => $operatorAndRawValues) {
+			$columnNameQuoted = static::quoteColumn($columnName, $quotes);
 			foreach ($operatorAndRawValues as $operator => $rawValues) {
 				$multipleValues = count($rawValues) > 1;
 				if ($multipleValues) {
@@ -207,13 +212,13 @@ trait GridModel {
 							$index++;
 						}
 						$paramsNamesStr = implode(", ", $paramsNames);
-						$conditionSqlItems[] = "{$alias}{$columnName} {$inOperator} ({$paramsNamesStr})";
+						$conditionSqlItems[] = "{$alias}{$columnNameQuoted} {$inOperator} ({$paramsNamesStr})";
 					} else {
 						$conditionSqlSubItems = [];
 						foreach ($rawValues as $rawValue) {
 							$paramName = "{$paramBaseName}{$index}";
 							$params[$paramName] = $rawValue;
-							$conditionSqlSubItems[] = "{$alias}{$columnName} {$operator} {$paramName}";
+							$conditionSqlSubItems[] = "{$alias}{$columnNameQuoted} {$operator} {$paramName}";
 							$index++;
 						}
 						$conditionSqlItems[] = "(" . implode(" OR ", $conditionSqlSubItems) . ")";
@@ -221,7 +226,7 @@ trait GridModel {
 				} else {
 					$paramName = "{$paramBaseName}{$index}";
 					$params[$paramName] = $rawValues[0];
-					$conditionSqlItems[] = "{$alias}{$columnName} {$operator} {$paramName}";
+					$conditionSqlItems[] = "{$alias}{$columnNameQuoted} {$operator} {$paramName}";
 					$index++;
 				}
 			}
@@ -235,6 +240,40 @@ trait GridModel {
 		}
 		return [$conditionsSql, $params];
 	}
+
+	
+	/**
+	 * Prepare `string $quoteChars` param usually called from functions 
+	 * `getSortingSql()` and from `getConditionSqlAndParams()`
+	 * into `\string[] $quoteChars` param for function `quoteColumn()`.
+	 * @param  string $quoteChars 
+	 * @return string[]
+	 */
+	protected static function prepareQuotes ($quoteChars) {
+		$quotes = ['',''];
+		if ($quoteChars === NULL) 
+			return $quotes;
+		$quoteCharsLength = mb_strlen($quoteChars);
+		if ($quoteCharsLength === 0) 
+			return $quotes;
+		$firstChar = mb_substr($quoteChars, 0, 1);
+		return $quoteCharsLength === 1
+			? [$firstChar, $firstChar]
+			: [$firstChar, mb_substr($quoteChars, 1, 1)];
+	}
+	
+	/**
+	 * Quote column identifier by given quote chars,
+	 * always caleld from functions `getSortingSql()` 
+	 * and from `getConditionSqlAndParams()`.
+	 * @param  string    $columnName 
+	 * @param  \string[] $quoteChars 
+	 * @return string
+	 */
+	protected static function quoteColumn ($columnName, $quoteChars = ['"', '"']) {
+		return $quoteChars[0].$columnName.$quoteChars[1];
+	}
+
 
 	/**
 	 * You have to implement this method usually by your own.
