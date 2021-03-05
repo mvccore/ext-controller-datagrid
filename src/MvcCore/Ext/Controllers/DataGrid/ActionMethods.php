@@ -257,27 +257,29 @@ trait ActionMethods {
 					unset($newFiltering[$columnDbName]);
 				continue;
 			}
-			$formFiltering = [];
-			foreach ($operatorAndValues as $operator => $formFiltering) {
+			foreach ($operatorAndValues as $operator => $newValues) {
 				$operatorUrlSegment = $urlFilterOperators[$operator];
 				if (!isset($allowedOperators[$operatorUrlSegment])) continue;
 				$allowedOperatorCfg = $allowedOperators[$operatorUrlSegment];
 				if (!isset($newFiltering[$columnDbName]))
 					$newFiltering[$columnDbName] = [];
-				if (is_array($formFiltering)) {
-					if (count($formFiltering) === 0) {
+				if (is_array($newValues)) {
+					if (count($newValues) === 0) {
 						if (isset($newFiltering[$columnDbName][$operator]))
 							unset($newFiltering[$columnDbName][$operator]);
-						continue;
 					} else if ($allowedOperatorCfg->multiple) {
-						$newFiltering[$columnDbName][$operator] = $formFiltering;
+						$newFiltering[$columnDbName][$operator] = $newValues;
 					} else {
-						$newFiltering[$columnDbName][$operator] = [$formFiltering[0]];
+						$newValuesKeys = array_keys($newValues);
+						$newValuesFirstKey = $newValuesKeys[0];
+						$newFiltering[$columnDbName][$operator] = [
+							$newValues[$newValuesFirstKey]
+						];
 					}
-				} else if ($formFiltering === NULL) {
+				} else if ($newValues === NULL) {
 					unset($newFiltering[$columnDbName][$operator]);
 				} else {
-					$newFiltering[$columnDbName][$operator] = [$formFiltering];
+					$newFiltering[$columnDbName][$operator] = [$newValues];
 				}
 			}
 			if (!$multiFiltering) {
