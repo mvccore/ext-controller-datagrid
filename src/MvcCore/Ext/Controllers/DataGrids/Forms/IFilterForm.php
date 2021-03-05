@@ -24,7 +24,7 @@ interface IFilterForm {
 	
 	/**
 	 * Set parsed filtering.
-	 * Keys are database column names, values are arrays 
+	 * Keys are model properties column names, values are arrays 
 	 * with operator as key and raw filtering values as values.
 	 * @param  array $filtering
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm

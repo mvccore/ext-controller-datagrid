@@ -35,6 +35,8 @@ trait FilterForm {
 
 	/**
 	 * Datagrid filtering parsed from URL.
+	 * Keys are model properties column names, values are arrays 
+	 * with operator as key and raw filtering values as values.
 	 * @var array|NULL
 	 */
 	protected $filtering = NULL;
@@ -52,7 +54,7 @@ trait FilterForm {
 	
 	/**
 	 * Set datagrid filtering parsed from URL.
-	 * Keys are database column names, values are arrays 
+	 * Keys are model properties column names, values are arrays 
 	 * with operator as key and raw filtering values as values.
 	 * @param  array $filtering
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Forms\FilterForm
