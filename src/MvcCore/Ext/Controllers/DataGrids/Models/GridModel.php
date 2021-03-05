@@ -201,8 +201,13 @@ trait GridModel {
 			$columnNameQuoted = static::quoteColumn($columnName, $quotes);
 			foreach ($operatorAndRawValues as $operator => $rawValues) {
 				$multipleValues = count($rawValues) > 1;
+				$nullOperator = $operator === '=' ? 'IS' : 'IS NOT';
 				if ($multipleValues) {
-					if (isset($inOperators[$operator])) {
+					$valuesContainsNull = FALSE;
+					foreach ($rawValues as $rawValue) 
+						if ($valuesContainsNull = (mb_strtolower($rawValue) === 'null')) 
+							break;
+					if (isset($inOperators[$operator]) && !$valuesContainsNull) {
 						$inOperator = $inOperators[$operator];
 						$paramsNames = [];
 						foreach ($rawValues as $rawValue) {
@@ -216,18 +221,27 @@ trait GridModel {
 					} else {
 						$conditionSqlSubItems = [];
 						foreach ($rawValues as $rawValue) {
-							$paramName = "{$paramBaseName}{$index}";
-							$params[$paramName] = $rawValue;
-							$conditionSqlSubItems[] = "{$alias}{$columnNameQuoted} {$operator} {$paramName}";
-							$index++;
+							if (mb_strtolower($rawValue) === 'null') {
+								$conditionSqlSubItems[] = "{$alias}{$columnNameQuoted} {$nullOperator} NULL";
+							} else {
+								$paramName = "{$paramBaseName}{$index}";
+								$params[$paramName] = $rawValue;
+								$conditionSqlSubItems[] = "{$alias}{$columnNameQuoted} {$operator} {$paramName}";
+								$index++;
+							}
 						}
 						$conditionSqlItems[] = "(" . implode(" OR ", $conditionSqlSubItems) . ")";
 					}
 				} else {
-					$paramName = "{$paramBaseName}{$index}";
-					$params[$paramName] = $rawValues[0];
-					$conditionSqlItems[] = "{$alias}{$columnNameQuoted} {$operator} {$paramName}";
-					$index++;
+					$rawValue = $rawValues[0];
+					if (mb_strtolower($rawValue) === 'null') {
+						$conditionSqlItems[] = "{$alias}{$columnNameQuoted} {$nullOperator} NULL";
+					} else {
+						$paramName = "{$paramBaseName}{$index}";
+						$params[$paramName] = $rawValues[0];
+						$conditionSqlItems[] = "{$alias}{$columnNameQuoted} {$operator} {$paramName}";
+						$index++;
+					}
 				}
 			}
 		}
