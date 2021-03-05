@@ -68,6 +68,23 @@ trait ConfigProps {
 	 * @var int
 	 */
 	protected $filteringMode = self::FILTER_SINGLE_COLUMN;
+	
+	/**
+	 * Datagrid table sorting, initialized by URL, keys are configured 
+	 * database column names and values are sorting direction strings - `ASC | DESC`.
+	 * @internal
+	 * @var array
+	 */
+	protected $sorting = [];
+
+	/**
+	 * Datagrid table filtering, initialized by URL, keys are configured 
+	 * database column names and values are arrays. Each key in value array is
+	 * allowed operator and values are values to filter on defined column.
+	 * @internal
+	 * @var array
+	 */
+	protected $filtering = [];
 
 	/**
 	 * Custom filter form instance, implementing interfaces:

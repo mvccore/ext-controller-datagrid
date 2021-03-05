@@ -119,23 +119,6 @@ trait InternalProps {
 	protected $limit = NULL;
 	
 	/**
-	 * Datagrid table sorting, initialized by URL, keys are configured 
-	 * database column names and values are sorting direction strings - `ASC | DESC`.
-	 * @internal
-	 * @var array
-	 */
-	protected $sorting = [];
-
-	/**
-	 * Datagrid table filtering, initialized by URL, keys are configured 
-	 * database column names and values are arrays. Each key in value array is
-	 * allowed operator and values are values to filter on defined column.
-	 * @internal
-	 * @var array
-	 */
-	protected $filtering = [];
-
-	/**
 	 * Allowed SQL operators and url segments by filtering mode configuration.
 	 * Keys are (translated) url segments, values are `\stdClass`es with keys:
 	 * - `operator` - string SQL operator to use

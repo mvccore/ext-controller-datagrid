@@ -104,9 +104,10 @@ trait ConfigGettersSetters {
 	/**
 	 * @inheritDocs
 	 * @param  int $sortingMode 
-	 * @return ConfigGettersSetters
+	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetSortingMode ($sortingMode = \MvcCore\Ext\Controllers\IDataGrid::SORT_MULTIPLE_COLUMNS) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->sortingMode = $sortingMode;
 		return $this;
 	}
@@ -116,6 +117,7 @@ trait ConfigGettersSetters {
 	 * @return int
 	 */
 	public function GetSortingMode () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->sortingMode;
 	}
 	
@@ -123,9 +125,10 @@ trait ConfigGettersSetters {
 	/**
 	 * @inheritDocs
 	 * @param  int $filteringMode 
-	 * @return ConfigGettersSetters
+	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetFilteringMode ($filteringMode = \MvcCore\Ext\Controllers\IDataGrid::FILTER_MULTIPLE_COLUMNS) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->filteringMode = $filteringMode;
 		return $this;
 	}
@@ -135,9 +138,50 @@ trait ConfigGettersSetters {
 	 * @return int
 	 */
 	public function GetFilteringMode () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->filteringMode;
 	}
-
+	
+	/**
+	 * @inheritDocs
+	 * @param  array $sorting
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetSorting (array $sorting) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$this->sorting = $sorting;
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @return array
+	 */
+	public function GetSorting () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		return $this->sorting;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @param  array $filtering
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetFiltering (array $filtering) {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		$this->filtering = $filtering;
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @return array
+	 */
+	public function GetFiltering () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
+		return $this->filtering;
+	}
+	
 	/**
 	 * @inheritDocs
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm $translator
@@ -344,8 +388,8 @@ trait ConfigGettersSetters {
 					$urlName = $configColumn->GetUrlName();
 					if ($urlName === NULL) 
 						$configColumn->SetUrlName($propName);
-					if ($dbColumnName === NULL) 
 					$dbColumnName = $configColumn->GetDbColumnName();
+					if ($dbColumnName === NULL) 
 						$configColumn->SetDbColumnName($propName);
 					$humanName = $configColumn->GetHumanName();
 					if ($humanName === NULL) 

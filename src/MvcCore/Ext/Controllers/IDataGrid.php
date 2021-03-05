@@ -132,6 +132,40 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	public function GetFilteringMode ();
 
 	/**
+	 * Set datagrid table sorting, initialized by URL, keys are configured 
+	 * database column names and values are sorting direction strings - `ASC | DESC`.
+	 * Define those values by your own externally only for your own risk.
+	 * @param  array $sorting
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetSorting (array $sorting);
+	
+	/**
+	 * Get datagrid table sorting, initialized by URL, keys are configured 
+	 * database column names and values are sorting direction strings - `ASC | DESC`.
+	 * @return array
+	 */
+	public function GetSorting ();
+	
+	/**
+	 * Set datagrid table filtering, initialized by URL, keys are configured 
+	 * database column names and values are arrays. Each key in value array is
+	 * allowed operator and values are values to filter on defined column.
+	 * Define those values by your own externally only for your own risk.
+	 * @param  array $filtering
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetFiltering (array $filtering);
+	
+	/**
+	 * Get datagrid table filtering, initialized by URL, keys are configured 
+	 * database column names and values are arrays. Each key in value array is
+	 * allowed operator and values are values to filter on defined column.
+	 * @return array
+	 */
+	public function GetFiltering ();
+	
+	/**
 	 * Set custom filter form instance, implementing interfaces:
 	 * - `\MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm`
 	 * - `\MvcCore\Ext\IForm`
@@ -371,21 +405,6 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 */
 	public function GetLimit ();
 
-	/**
-	 * Get datagrid table sorting, initialized by URL, keys are configured 
-	 * database column names and values are sorting direction strings - `ASC | DESC`.
-	 * @return array
-	 */
-	public function GetSorting ();
-	
-	/**
-	 * Get datagrid table filtering, initialized by URL, keys are configured 
-	 * database column names and values are arrays. Each key in value array is
-	 * allowed operator and values are values to filter on defined column.
-	 * @return array
-	 */
-	public function GetFiltering ();
-	
 	/**
 	 * Get paging items, completed after model total count has been loaded.
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging|NULL

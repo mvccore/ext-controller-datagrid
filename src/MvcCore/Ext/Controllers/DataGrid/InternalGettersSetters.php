@@ -44,25 +44,10 @@ trait InternalGettersSetters {
 
 	/**
 	 * @inheritDocs
-	 * @return array
-	 */
-	public function GetSorting () {
-		return $this->sorting;
-	}
-	
-	/**
-	 * @inheritDocs
-	 * @return array
-	 */
-	public function GetFiltering () {
-		return $this->filtering;
-	}
-	
-	/**
-	 * @inheritDocs
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging|NULL
 	 */
 	public function GetPaging () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->paging;
 	}
 	
@@ -71,6 +56,7 @@ trait InternalGettersSetters {
 	 * @return bool
 	 */
 	public function GetTranslate () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->translate;
 	}
 	
@@ -79,6 +65,7 @@ trait InternalGettersSetters {
 	 * @return int|NULL
 	 */
 	public function GetTotalCount () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->totalCount;
 	}
 	
@@ -87,6 +74,7 @@ trait InternalGettersSetters {
 	 * @return array|\MvcCore\Ext\Models\Db\Readers\Streams\Iterator|NULL
 	 */
 	public function GetPageData () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->pageData;
 	}
 
@@ -143,7 +131,7 @@ trait InternalGettersSetters {
 				$this->configRendering->GetRenderControlPaging() & static::CONTROL_DISPLAY_ALWAYS
 			) != 0
 		) $itemsPerPage = $this->totalCount;
-		$page = intdiv($offset, $itemsPerPage) + 1;
+		$page = $this->intdiv($offset, $itemsPerPage) + 1;
 		$params = ['page' => $page];
 		if ($this->itemsPerPage === $this->itemsPerPageRouteConfig) {
 			$params['count'] = NULL;
@@ -363,6 +351,7 @@ trait InternalGettersSetters {
 	 * @return array
 	 */
 	public function __debugInfo () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$type = new \ReflectionClass($this);
 		$props = $type->getProperties(
 			\ReflectionProperty::IS_PRIVATE |
@@ -398,6 +387,7 @@ trait InternalGettersSetters {
 	 * @return \string[]
 	 */
 	public function __sleep () {
+		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$type = new \ReflectionClass($this);
 		$props = $type->getProperties(
 			\ReflectionProperty::IS_PRIVATE |
@@ -410,5 +400,17 @@ trait InternalGettersSetters {
 			$result[] = $prop->name;
 		}
 		return $result;
+	}
+
+	/**
+	 * Function `intdiv()` for older PHP versions.
+	 * @param  int|float $a 
+	 * @param  int|float $b 
+	 * @return int
+	 */
+	protected function intdiv ($a, $b){
+		$aInt = intval(floor($a));
+		$bInt = intval(floor($b));
+		return ($aInt - ($a % $b)) / $bInt;
 	}
 }
