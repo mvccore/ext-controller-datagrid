@@ -59,9 +59,10 @@
 		if ($headFilter):
 			?></div><?php
 			if ($configColumn->GetFilter()):
-				$valueField = $headForm->GetField(implode($headForm::HTML_IDS_DELIMITER, ['value', $urlName]));
-				$filterField = $headForm->GetField(implode($headForm::HTML_IDS_DELIMITER, ['filter', $urlName]));
-				$clearField = $headForm->GetField(implode($headForm::HTML_IDS_DELIMITER, ['clear', $urlName]));
+				$columnPropName = $configColumn->GetPropName();
+				$valueField = $headForm->GetField(implode($headForm::HTML_IDS_DELIMITER, ['value', $columnPropName]));
+				$filterField = $headForm->GetField(implode($headForm::HTML_IDS_DELIMITER, ['filter', $columnPropName]));
+				$clearField = $headForm->GetField(implode($headForm::HTML_IDS_DELIMITER, ['clear', $columnPropName]));
 				?><div class="grid-head-filter"><?php
 					echo $valueField->RenderControl();
 					echo $filterField->RenderControl();

@@ -29,8 +29,8 @@ trait InternalProps {
 	 * @var array
 	 */
 	protected static $gridActions = [
-		'filter-table'	=> 'actionTableFilterSubmit',
-		'filter-form'	=> 'actionFormFilterSubmit',
+		'filter-table'	=> 'actionTableFilter',
+		'filter-form'	=> 'actionFormFilter',
 		'default'		=> 'actionDefault',
 	];
 	
