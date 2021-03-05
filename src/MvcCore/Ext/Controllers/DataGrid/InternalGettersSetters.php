@@ -328,8 +328,6 @@ trait InternalGettersSetters {
 	public function GetColumnSortIndex (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$columnDbName = $column->GetDbColumnName();
-		if (!isset($this->sorting[$columnDbName])) 
-			return NULL;
 		return array_search($columnDbName, array_keys($this->sorting), TRUE);
 	}
 
@@ -341,8 +339,6 @@ trait InternalGettersSetters {
 	public function GetColumnFilterIndex (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$columnDbName = $column->GetDbColumnName();
-		if (!isset($this->filtering[$columnDbName])) 
-			return NULL;
 		return array_search($columnDbName, array_keys($this->filtering), TRUE);
 	}
 
