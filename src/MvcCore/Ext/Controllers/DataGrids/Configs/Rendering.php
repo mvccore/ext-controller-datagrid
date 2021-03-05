@@ -122,6 +122,38 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @var bool
 	 */
 	protected $renderFilterForm						= FALSE;
+
+
+	/**
+	 * Css classes for datagrid main `<table>` element containing data rows.
+	 * @var \string[]
+	 */
+	protected $cssClassesContentTable				= ['grid-content'];
+	
+	/**
+	 * Css classes for datagrid `<div>` elements wrapping top and bottom 
+	 * sorting, paging and count scales controls.
+	 * @var \string[]
+	 */
+	protected $cssClassesControlsWrapper			= ['grid-controls'];
+	
+	/**
+	 * Css classes for datagrid sorting control.
+	 * @var \string[]
+	 */
+	protected $cssClassesControlSorting				= ['grid-control-sorting'];
+	
+	/**
+	 * Css classes for datagrid paging control.
+	 * @var \string[]
+	 */
+	protected $cssClassesControlPaging				= ['grid-control-paging'];
+	
+	/**
+	 * Css classes for datagrid count scales control.
+	 * @var \string[]
+	 */
+	protected $cssClassesControlCountScales			= ['grid-control-count-scales'];
 	
 
 	/**
@@ -129,7 +161,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * Relative from `/App/Views/Scripts` without file extension.
 	 * @var string|NULL
 	 */
-	protected $templateGridContent					= NULL;
+	protected $templateContent						= NULL;
 	
 	/**
 	 * Custom datagrid (table type) table head template.
@@ -207,11 +239,11 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	
 	/**
 	 * @inheritDocs
-	 * @param  int $columnsCount
+	 * @param  int $gridColumnsCount
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetGridColumnsCount ($columnsCount) {
-		$this->columnsCount = $columnsCount;
+	public function SetGridColumnsCount ($gridColumnsCount) {
+		$this->gridColumnsCount = $gridColumnsCount;
 		return $this;
 	}
 	
@@ -220,7 +252,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return int
 	 */
 	public function GetGridColumnsCount () {
-		return $this->columnsCount;
+		return $this->gridColumnsCount;
 	}
 	
 	/**
@@ -468,15 +500,181 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 		return $this->renderFilterForm;
 	}
 
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesContentTable ($cssClasses) {
+		$this->cssClassesContentTable = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesContentTable ($cssClasses) {
+		$cssClassesArr = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		$this->cssClassesContentTable = array_merge($this->cssClassesContentTable, $cssClassesArr);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return \string[]
+	 */
+	public function GetCssClassesContentTable () {
+		return $this->cssClassesContentTable;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlsWrapper ($cssClasses) {
+		$this->cssClassesControlsWrapper = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlsWrapper ($cssClasses) {
+		$cssClassesArr = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		$this->cssClassesControlsWrapper = array_merge($this->cssClassesControlsWrapper, $cssClassesArr);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlsWrapper () {
+		return $this->cssClassesControlsWrapper;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlSorting ($cssClasses) {
+		$this->cssClassesControlSorting = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlSorting ($cssClasses) {
+		$cssClassesArr = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		$this->cssClassesControlSorting = array_merge($this->cssClassesControlSorting, $cssClassesArr);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlSorting () {
+		return $this->cssClassesControlSorting;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlPaging ($cssClasses) {
+		$this->cssClassesControlPaging = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlPaging ($cssClasses) {
+		$cssClassesArr = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		$this->cssClassesControlPaging = array_merge($this->cssClassesControlPaging, $cssClassesArr);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlPaging () {
+		return $this->cssClassesControlPaging;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlCountScales ($cssClasses) {
+		$this->cssClassesControlCountScales = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlCountScales ($cssClasses) {
+		$cssClassesArr = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		$this->cssClassesControlCountScales = array_merge($this->cssClassesControlCountScales, $cssClassesArr);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlCountScales () {
+		return $this->cssClassesControlCountScales;
+	}
+
 	
 	/**
 	 * @inheritDocs
-	 * @param  string $templateGridContent
+	 * @param  string $templateContent
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetTemplateGridContent ($templateGridContent) {
+	public function SetTemplateContent ($templateContent) {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		$this->templateGridContent = $templateGridContent;
+		$this->templateContent = $templateContent;
 		return $this;
 	}
 
@@ -484,9 +682,9 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @inheritDocs
 	 * @return string
 	 */
-	public function GetTemplateGridContent () {
+	public function GetTemplateContent () {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
-		return $this->templateGridContent;
+		return $this->templateContent;
 	}
 
 	/**

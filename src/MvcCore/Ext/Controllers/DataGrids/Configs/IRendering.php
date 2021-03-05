@@ -33,10 +33,10 @@ interface IRendering {
 	/**
 	 * Set datagrid grid type columns count.
 	 * Threre are rendered 3 columns by default.
-	 * @param  int $columnsCount
+	 * @param  int $gridColumnsCount
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetGridColumnsCount ($columnsCount);
+	public function SetGridColumnsCount ($gridColumnsCount);
 	
 	/**
 	 * Get datagrid grid type columns count.
@@ -243,20 +243,130 @@ interface IRendering {
 	 */
 	public function GetRenderFilterForm ();
 
+
+	/**
+	 * Set css classes for datagrid main `<table>` element containing data rows.
+	 * All previously configured css classes will be replaced with given values.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesContentTable ($cssClasses);
+
+	/**
+	 * Add css classes for datagrid main `<table>` element containing data rows.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesContentTable ($cssClasses);
+
+	/**
+	 * Get css classes for datagrid main `<table>` element containing data rows.
+	 * @return \string[]
+	 */
+	public function GetCssClassesContentTable ();
+
+	/**
+	 * Set css classes for datagrid `<div>` elements wrapping top and bottom 
+	 * sorting, paging and count scales controls.
+	 * All previously configured css classes will be replaced with given values.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlsWrapper ($cssClasses);
+
+	/**
+	 * Add css classes for datagrid `<div>` elements wrapping top and bottom 
+	 * sorting, paging and count scales controls.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlsWrapper ($cssClasses);
+
+	/**
+	 * Get css classes for datagrid `<div>` elements wrapping top and bottom 
+	 * sorting, paging and count scales controls.
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlsWrapper ();
+
+	/**
+	 * Set css classes for datagrid sorting control.
+	 * All previously configured css classes will be replaced with given values.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlSorting ($cssClasses);
+
+	/**
+	 * Add css classes for datagrid sorting control.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlSorting ($cssClasses);
+
+	/**
+	 * Get css classes for datagrid sorting control.
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlSorting ();
+
+	/**
+	 * Set css classes for datagrid paging control.
+	 * All previously configured css classes will be replaced with given values.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlPaging ($cssClasses);
+
+	/**
+	 * Add css classes for datagrid paging control.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlPaging ($cssClasses);
+
+	/**
+	 * Get css classes for datagrid paging control.
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlPaging ();
+
+	/**
+	 * Set css classes for datagrid count scales control.
+	 * All previously configured css classes will be replaced with given values.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlCountScales ($cssClasses);
+
+	/**
+	 * Add css classes for datagrid count scales control.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlCountScales ($cssClasses);
+
+	/**
+	 * Get css classes for datagrid count scales control.
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlCountScales ();
+
+
 	/**
 	 * Set custom datagrid base content template.
 	 * Relative from `/App/Views/Scripts` without file extension.
 	 * @param  string $templateGridContent
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
-	public function SetTemplateGridContent ($templateGridContent);
+	public function SetTemplateContent ($templateGridContent);
 
 	/**
 	 * Get custom datagrid base content template.
 	 * Relative from `/App/Views/Scripts` without file extension.
 	 * @return string
 	 */
-	public function GetTemplateGridContent ();
+	public function GetTemplateContent ();
 	
 	/**
 	 * Set custom datagrid (table type) table head template.
