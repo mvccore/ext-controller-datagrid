@@ -1,7 +1,9 @@
 <?php
 	/** @var $this \MvcCore\Ext\Controllers\DataGrids\View */
 	/** @var $grid \MvcCore\Ext\Controllers\DataGrid */
-?><table class="grid-control-counts"><tbody><?php
+
+	$renderConf = $this->GetConfigRendering();
+	$countScalesCssClasses = $renderConf->GetCssClassesControlCountScales();
 	$countScales = $grid->GetCountScales();
 	$itemsPerPage = $grid->GetItemsPerPage();
 	$totalCount = $grid->GetTotalCount();
@@ -10,7 +12,14 @@
 		if ($countScale !== 0 && $countScale > $totalCount) continue;
 		$countScales2Render[$countScale] = $countScale === $itemsPerPage;
 	endforeach;
-	$firstIsCurrent = count($countScales2Render) === 1;
+	$countScales2RenderCount = count($countScales2Render);
+	$firstIsCurrent = $countScales2RenderCount === 1;
+	$countScalesCssClasses[] = 'grid-control-items-count-' . $countScales2RenderCount;
+
+?><table<?php
+	if (count($countScalesCssClasses) > 0)
+		echo ' class="' . implode(' ', $countScalesCssClasses) . '"';
+?>><tbody><?php
 	foreach ($countScales2Render as $countScale => $current):
 		$current = $current || $firstIsCurrent;
 		?><td class="grid-count<?php

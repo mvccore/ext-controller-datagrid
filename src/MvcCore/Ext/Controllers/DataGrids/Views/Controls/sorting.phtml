@@ -1,12 +1,23 @@
 <?php
 	/** @var $this \MvcCore\Ext\Controllers\DataGrids\View */
 	/** @var $grid \MvcCore\Ext\Controllers\DataGrid */
-?><table class="grid-control-sort"><tbody><?php
+
+	$renderConf = $this->GetConfigRendering();
+	$sortingCssClasses = $renderConf->GetCssClassesControlSorting();
 	$configColumns = $grid->GetConfigColumns();
-	$miltiSort = ($grid->GetSortingMode() & $grid::SORT_MULTIPLE_COLUMNS) != 0;
+	$configColumns2Render = [];
 	foreach ($configColumns as $urlName => $configColumn):
-		if (!$configColumn->GetSort()) continue;
-		
+		if ($configColumn->GetSort()) 
+			$configColumns2Render[$urlName] = $configColumn;
+	endforeach;
+	$miltiSort = ($grid->GetSortingMode() & $grid::SORT_MULTIPLE_COLUMNS) != 0;
+	$sortingCssClasses[] = 'grid-control-items-count-' . count($configColumns2Render);
+
+?><table<?php
+	if (count($sortingCssClasses) > 0)
+		echo ' class="' . implode(' ', $sortingCssClasses) . '"';
+?>><tbody><?php
+	foreach ($configColumns2Render as $urlName => $configColumn):
 		?><td class="<?php echo 'grid-control-sort-' . $configColumn->GetUrlName(); ?>"><?php
 
 			?><a class="grid-control-sort-link" href="<?php

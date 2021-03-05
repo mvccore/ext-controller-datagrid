@@ -1,8 +1,17 @@
 <?php
 	/** @var $this \MvcCore\Ext\Controllers\DataGrids\View */
 	/** @var $grid \MvcCore\Ext\Controllers\DataGrid */
-?><table class="grid-control-pages"><tbody><?php
-	foreach ($grid->GetPaging() as $pagingItem):
+
+	$pagingItems = $grid->GetPaging();
+	$renderConf = $this->GetConfigRendering();
+	$pagingCssClasses = $renderConf->GetCssClassesControlPaging();
+	$pagingCssClasses[] = 'grid-control-items-count-' . count($pagingItems);
+
+?><table<?php
+	if (count($pagingCssClasses) > 0)
+		echo ' class="' . implode(' ', $pagingCssClasses) . '"';
+?>><tbody><?php
+	foreach ($pagingItems as $pagingItem):
 		
 		?><td class="grid-page <?php
 			echo $pagingItem->GetCssClass();

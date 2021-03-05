@@ -5,18 +5,23 @@
 	$renderConf = $grid->GetConfigRendering();
 	$gridType = $renderConf->GetType();
 	$gridTableType = ($gridType & $grid::TYPE_TABLE) !== 0;
-	$cssClasses = $grid->GetCssClasses();
+	$gridCssClasses = $grid->GetCssClasses();
+	$contentTableCssClasses = $renderConf->GetCssClassesContentTable();
+	$controlsWrapperCssClasses = $renderConf->GetCssClassesControlsWrapper();
+	$controlsWrapperCssClass = count($controlsWrapperCssClasses) > 0
+		? implode(' ', $controlsWrapperCssClasses)
+		: '';
 	$controlFilterForm = $renderConf->GetRenderFilterForm();
 	$headFiltering = $renderConf->GetRenderTableHeadFiltering();
 	if ($controlFilterForm) 
 		echo $this->RenderGridFilterForm();
 
 ?><div<?php
-	if (count($cssClasses) > 0) 
-		echo ' class="'.implode(' ', $cssClasses) . '"';
+	if (count($gridCssClasses) > 0) 
+		echo ' class="'.implode(' ', $gridCssClasses) . '"';
 ?>><?php
 	if ($renderConf->GetRenderControlPaging() || $renderConf->GetRenderControlSorting()):
-	?><div class="grid-controls grid-controls-top"><?php
+	?><div class="<?php echo $controlsWrapperCssClass; ?> grid-controls-top"><?php
 		$pagingCode = $this->RenderGridControlPaging();
 		echo $pagingCode;
 		echo $this->RenderGridControlSorting();
@@ -26,7 +31,10 @@
 		$headForm = $grid->GetTableHeadFilterForm();
 		echo $headForm->RenderBegin();
 	endif;
-	?><table class="grid-content"><?php
+	?><table<?php
+		if (count($contentTableCssClasses) > 0) 
+			echo ' class="'.implode(' ', $contentTableCssClasses) . '"';
+	?>><?php
 		if ($gridTableType): 
 			echo $this->RenderGridHeadTable();
 			echo $this->RenderGridBodyTable();
@@ -38,7 +46,7 @@
 		echo $headForm->RenderEnd();
 	endif;
 	if ($renderConf->GetRenderControlPaging() || $renderConf->GetRenderControlCountScales()):
-	?><div class="grid-controls grid-controls-bottom"><?php 
+	?><div class="<?php echo $controlsWrapperCssClass; ?> grid-controls-bottom"><?php 
 		if (isset($pagingCode)) echo $pagingCode;
 		echo $this->RenderGridControlCountScales();
 	?></div><?php
