@@ -210,7 +210,7 @@ trait PreDispatchMethods {
 		$firstAndLast = $this->configRendering->GetRenderControlPagingFirstAndLast();
 
 		$pagesCount = intval(ceil($this->totalCount / $itemsPerPage));
-		$currentPage = intdiv($this->offset, $itemsPerPage) + 1;
+		$currentPage = $this->intdiv($this->offset, $itemsPerPage) + 1;
 
 		$displayPrev = $prevAndNext && $this->offset - $itemsPerPage >= 0;
 		$displayFirst = $firstAndLast && $this->offset > $nearbyPages * $itemsPerPage;
