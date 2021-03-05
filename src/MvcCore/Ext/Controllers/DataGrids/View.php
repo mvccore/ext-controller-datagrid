@@ -76,7 +76,7 @@ class View extends \MvcCore\View {
 	 */
 	public function RenderGrid () {
 		return $this->renderGridTemplate(
-			$this->configRendering->GetTemplateGridContent(), 'Content', 'grid'
+			$this->configRendering->GetTemplateContent(), 'Content', 'grid'
 		);
 	}
 	
