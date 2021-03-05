@@ -23,7 +23,7 @@
 		
 			foreach ($grid->GetConfigColumns() as $configColumn):
 				?><div class="<?php
-					echo 'grid-item-' . $configColumn->GetUrlName();
+					echo 'grid-item-' . $configColumn->GetPropName();
 				?>"><?php
 					
 				$cellValue = $model->RenderCell($item, $configColumn, $this);
@@ -44,10 +44,12 @@
 
 		$colIndex++;
 	endforeach;
-
-	for ($i = $colIndex % $colsCount; $i < $colsCount; $i++):
-		?><td class="grid-column-<?php echo $i + 1; ?> grid-cell-empty"></td><?php
-	endfor;
+	
+	if ($colsCount > 1):
+		for ($i = $colIndex % $colsCount; $i < $colsCount; $i++):
+			?><td class="grid-column-<?php echo $i + 1; ?> grid-cell-empty"></td><?php
+		endfor;
+	endif;
 
 	?></tr><?php
 

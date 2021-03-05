@@ -13,7 +13,7 @@
 
 			foreach ($grid->GetConfigColumns() as $configColumn):
 				?><td class="<?php
-					echo 'grid-col-' . $configColumn->GetUrlName();
+					echo 'grid-col-' . $configColumn->GetPropName();
 				?>"><?php
 					
 				$cellValue = $model->RenderCell($item, $configColumn, $this);
