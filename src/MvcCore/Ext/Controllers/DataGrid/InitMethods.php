@@ -129,6 +129,16 @@ trait InitMethods {
 			$this->urlParams['page'] = 1;
 		}
 
+		// set up items per page configured from script into count cales if it is not there:
+		if (!in_array($this->itemsPerPage, $this->countScales, TRUE)) {
+			$this->countScales[] = $this->itemsPerPage;
+			sort($this->countScales);
+			if ($this->countScales[0] === 0) {
+				array_shift($this->countScales);
+				$this->countScales[] = 0;
+			}
+		}
+
 		// set up default count if null or check if count has allowed size:
 		if (!isset($this->urlParams['count'])) {
 			$this->urlParams['count'] = $this->GetItemsPerPage();
