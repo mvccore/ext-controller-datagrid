@@ -183,7 +183,7 @@ class View extends \MvcCore\View {
 	 * @throws \InvalidArgumentException Template not found in path: `$viewScriptFullPath`.
 	 * @return string
 	 */
-	public function & Render ($typePath = '', $relativePath = '', $internalTemplate = FALSE) {
+	public function & Render ($typePath, $relativePath, $internalTemplate = FALSE) {
 		/** @var $this \MvcCore\View */
 		if (!$internalTemplate)
 			$typePath = static::$scriptsDir;
