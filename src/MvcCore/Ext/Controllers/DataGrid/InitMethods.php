@@ -45,6 +45,7 @@ trait InitMethods {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->dispatchState > \MvcCore\IController::DISPATCH_STATE_CREATED) return;
 		
+		$this->GetConfigRendering();
 		if ($this->configRendering->GetRenderFilterForm()) {
 			if ($this->controlFilterForm === NULL)
 				throw new \InvalidArgumentException(
@@ -60,7 +61,6 @@ trait InitMethods {
 		parent::Init();
 
 		$this->GetConfigUrlSegments();
-		$this->GetConfigRendering();
 		$this->GetConfigColumns();
 
 		$this->GetRoute();
