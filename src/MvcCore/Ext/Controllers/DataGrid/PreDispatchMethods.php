@@ -13,6 +13,9 @@
 
 namespace MvcCore\Ext\Controllers\DataGrid;
 
+/**
+ * @mixin \MvcCore\Ext\Controllers\DataGrid
+ */
 trait PreDispatchMethods {
 	
 	/**
@@ -100,7 +103,6 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	public function PreDispatch () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->dispatchState >= \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED) return;
 		
 		if ($this->viewEnabled) {
@@ -128,7 +130,6 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	public function LoadModel () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$model = $this->GetModel(TRUE);
 		$model
 			->SetOffset($this->offset)
@@ -143,7 +144,6 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	protected function preDispatchViewInstance () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$viewClass = $this->configRendering->GetViewClass();
 		$view = (new $viewClass)->SetController($this);
 		if ($view instanceof \MvcCore\Ext\Controllers\DataGrids\View);
@@ -156,14 +156,13 @@ trait PreDispatchMethods {
 	 * @return bool
 	 */
 	protected function preDispatchTotalCount () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$pagesCountByTotalCount = ($this->itemsPerPage > 0) 
 			? intval(ceil(floatval($this->totalCount) / floatval($this->itemsPerPage))) 
 			: 0 ;
 		// If user write to large page number to URL, redirect user to the last page.
 		$page = $this->urlParams['page'];
 		if ($page > $pagesCountByTotalCount && $pagesCountByTotalCount > 0) {
-			/** @var $context \MvcCore\Controller */
+			/** @var \MvcCore\Controller $context */
 			$context = $this;
 			$redirectUrl = $this->GridUrl([
 				'page'	=> $pagesCountByTotalCount,
@@ -186,7 +185,6 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	protected function preDispatchPaging () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$renderPaging = $this->configRendering->GetRenderControlPaging();
 		if (!$renderPaging) return;
 
@@ -249,7 +247,6 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	protected function preDispatchPagingPrevAndFirst (& $paging, $params) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		list ($itemsPerPage, $displayFirst, $displayPrev) = $params;
 		if ($displayPrev) 
 			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
@@ -272,7 +269,6 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	protected function preDispatchPagingLeftOuterPages (& $paging, $params) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		list($itemsPerPage, $displayOuterStartPages, $firstAndLast, $outerPages, $hiddenStartingPagesCount) = $params;
 		if ($displayOuterStartPages) {
 			$stepValue = floatval($hiddenStartingPagesCount) / floatval($outerPages + 1);
@@ -298,7 +294,6 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	protected function preDispatchPagingNearbyAndCurrent (& $paging, $params) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		list($pagesCount, $itemsPerPage, $currentPage, $nearbyPages) = $params;
 		$beginIndex = max($currentPage - $nearbyPages, 1);
 		$endIndex = min($currentPage + $nearbyPages + 1, $pagesCount + 1);
@@ -327,7 +322,6 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	protected function preDispatchPagingRightOuterPages (& $paging, $params) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		list($pagesCount, $itemsPerPage, $displayOuterEndPages, $firstAndLast, $outerPages, $hiddenEndingPagesCount) = $params;
 		if ($displayOuterEndPages) {
 			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dots;
@@ -353,7 +347,6 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	protected function preDispatchPagingLastAndNext (& $paging, $params) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		list ($pagesCount, $itemsPerPage, $displayLast, $displayNext) = $params;
 		if ($displayNext || $displayLast)
 			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dots;
@@ -377,7 +370,6 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	protected function preDispatchCountScales () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$renderCountScales = $this->configRendering->GetRenderControlCountScales();
 		if (!$renderCountScales) return;
 		$multiplePages = $this->totalCount > $this->itemsPerPage && $this->itemsPerPage !== 0;
@@ -393,7 +385,6 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	protected function preDispatchTranslations () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if (!$this->translate) return;
 		foreach ($this->controlsTexts as $key => $controlText)
 			$this->controlsTexts[$key] = call_user_func_array(
@@ -420,7 +411,6 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	protected function preDispatchRenderConfig () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$sortDisabled = $this->sortingMode === static::SORT_DISABLED;
 		$filterDisabled = $this->filteringMode === static::FILTER_DISABLED;
 		$renderConf = $this->configRendering;

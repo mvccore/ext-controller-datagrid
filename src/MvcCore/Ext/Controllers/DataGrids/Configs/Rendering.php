@@ -261,7 +261,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderTableHead ($renderTableHead) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->renderTableHead = $renderTableHead;
 		return $this;
 	}
@@ -271,7 +271,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return bool
 	 */
 	public function GetRenderTableHead () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->renderTableHead;
 	}
 	
@@ -281,7 +281,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderTableHeadSorting ($renderTableHeadSorting) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->renderTableHeadSorting = $renderTableHeadSorting;
 		return $this;
 	}
@@ -291,7 +291,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return bool
 	 */
 	public function GetRenderTableHeadSorting () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->renderTableHeadSorting;
 	}
 	
@@ -301,7 +301,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderTableHeadFiltering ($renderTableHeadFiltering) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->renderTableHeadFiltering = $renderTableHeadFiltering;
 		return $this;
 	}
@@ -311,7 +311,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return bool
 	 */
 	public function GetRenderTableHeadFiltering () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->renderTableHeadFiltering;
 	}
 
@@ -321,7 +321,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderControlSorting ($renderControlSorting) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->renderControlSorting = $renderControlSorting;
 		return $this;
 	}
@@ -331,7 +331,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return bool
 	 */
 	public function GetRenderControlSorting () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->renderControlSorting;
 	}
 
@@ -341,7 +341,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderControlPaging ($renderControlPaging = \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_IF_NECESSARY) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->renderControlPaging = $renderControlPaging;
 		return $this;
 	}
@@ -351,7 +351,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return int
 	 */
 	public function GetRenderControlPaging () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->renderControlPaging;
 	}
 
@@ -361,7 +361,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderControlPagingPrevAndNext ($renderControlPagingPrevAndNext) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->renderControlPagingPrevAndNext = $renderControlPagingPrevAndNext;
 		return $this;
 	}
@@ -371,7 +371,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return bool
 	 */
 	public function GetRenderControlPagingPrevAndNext () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->renderControlPagingPrevAndNext;
 	}
 
@@ -382,7 +382,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderControlPagingFirstAndLast ($renderControlPagingFirstAndLast) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->renderControlPagingFirstAndLast = $renderControlPagingFirstAndLast;
 		return $this;
 	}
@@ -392,7 +392,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return bool
 	 */
 	public function GetRenderControlPagingFirstAndLast () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->renderControlPagingFirstAndLast;
 	}
 
@@ -402,7 +402,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetControlPagingNearbyPagesCount ($nearbyPagesCount) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->controlPagingNearbyPagesCount = $nearbyPagesCount;
 		return $this;
 	}
@@ -412,7 +412,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return int
 	 */
 	public function GetControlPagingNearbyPagesCount () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->controlPagingNearbyPagesCount;
 	}
 	
@@ -422,7 +422,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetControlPagingOuterPagesCount ($outerPagesCount) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->controlPagingOuterPagesCount = $outerPagesCount;
 		return $this;
 	}
@@ -432,7 +432,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return int
 	 */
 	public function GetControlPagingOuterPagesCount () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->controlPagingOuterPagesCount;
 	}
 	
@@ -442,7 +442,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetControlPagingOuterPagesDisplayRatio ($outerPagesDisplayRatio) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		if (floatval($outerPagesDisplayRatio) < 2.0)
 			throw new \InvalidArgumentException(
 				"Outer pages displaying ratio has to be larger than 2.0."
@@ -456,7 +456,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return float
 	 */
 	public function GetControlPagingOuterPagesDisplayRatio () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->controlPagingOuterPagesDisplayRatio;
 	}
 
@@ -466,7 +466,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderControlCountScales ($renderControlCountScales = \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_ALWAYS) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->renderControlCountScales = $renderControlCountScales;
 		return $this;
 	}
@@ -476,7 +476,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return int
 	 */
 	public function GetRenderControlCountScales () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->renderControlCountScales;
 	}
 
@@ -486,7 +486,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetRenderFilterForm ($renderFilterForm) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->renderFilterForm = $renderFilterForm;
 		return $this;
 	}
@@ -496,7 +496,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return bool
 	 */
 	public function GetRenderFilterForm () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->renderFilterForm;
 	}
 
@@ -673,7 +673,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetTemplateContent ($templateContent) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->templateContent = $templateContent;
 		return $this;
 	}
@@ -683,7 +683,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return string
 	 */
 	public function GetTemplateContent () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->templateContent;
 	}
 
@@ -693,7 +693,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetTemplateTableHead ($templateTableHead) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->templateTableHead = $templateTableHead;
 		return $this;
 	}
@@ -703,7 +703,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return string
 	 */
 	public function GetTemplateTableHead () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->templateTableHead;
 	}
 	
@@ -713,7 +713,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetTemplateTableBody ($templateTableBody) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->templateTableBody = $templateTableBody;
 		return $this;
 	}
@@ -723,7 +723,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return string
 	 */
 	public function GetTemplateTableBody () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->templateTableBody;
 	}
 	
@@ -733,7 +733,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetTemplateGridBody ($templateGridBody) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->templateGridBody = $templateGridBody;
 		return $this;
 	}
@@ -743,7 +743,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return string
 	 */
 	public function GetTemplateGridBody () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->templateGridBody;
 	}
 
@@ -753,7 +753,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetTemplateControlPaging ($templateControlPaging) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->templateControlPaging = $templateControlPaging;
 		return $this;
 	}
@@ -763,7 +763,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return string
 	 */
 	public function GetTemplateControlPaging () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->templateControlPaging;
 	}
 
@@ -773,7 +773,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetTemplateControlSorting ($templateControlSorting) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->templateControlSorting = $templateControlSorting;
 		return $this;
 	}
@@ -783,7 +783,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return string
 	 */
 	public function GetTemplateControlSorting () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->templateControlSorting;
 	}
 
@@ -793,7 +793,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetTemplateControlCountScales ($templateControlCountScales) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->templateControlCountScales = $templateControlCountScales;
 		return $this;
 	}
@@ -803,7 +803,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return string
 	 */
 	public function GetTemplateControlCountScales () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->templateControlCountScales;
 	}
 
@@ -813,7 +813,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetTemplateFilterForm ($templateFilterForm) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->templateFilterForm = $templateFilterForm;
 		return $this;
 	}
@@ -823,7 +823,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return string
 	 */
 	public function GetTemplateFilterForm () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->templateFilterForm;
 	}
 	
@@ -833,7 +833,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetViewClass ($viewClass) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		$this->viewClass = $viewClass;
 		return $this;
 	}
@@ -843,7 +843,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @return string|\MvcCore\Ext\Controllers\DataGrids\View|\MvcCore\View
 	 */
 	public function GetViewClass () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->viewClass;
 	}
 }

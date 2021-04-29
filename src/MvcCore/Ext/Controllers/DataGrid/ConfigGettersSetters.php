@@ -13,6 +13,9 @@
 
 namespace MvcCore\Ext\Controllers\DataGrid;
 
+/**
+ * @mixin \MvcCore\Ext\Controllers\DataGrid
+ */
 trait ConfigGettersSetters {
 	
 	/**
@@ -21,7 +24,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetModel (\MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->model = $model;
 		$this->GetModel(TRUE);// validate
 		return $this;
@@ -33,7 +35,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel|NULL
 	 */
 	public function GetModel ($throwExceptionIfNull = FALSE) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if (
 			($this->model === NULL && $throwExceptionIfNull) || 
 			($this->model !== NULL && !($this->model instanceof \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel))
@@ -47,7 +48,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetItemsPerPage ($itemsPerPage) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->itemsPerPage = $itemsPerPage;
 		return $this;
 	}
@@ -57,7 +57,6 @@ trait ConfigGettersSetters {
 	 * @return int
 	 */
 	public function GetItemsPerPage () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->itemsPerPage;
 	}
 
@@ -67,7 +66,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetCountScales (array $countScales) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->countScales = $countScales;
 		return $this;
 	}
@@ -77,7 +75,6 @@ trait ConfigGettersSetters {
 	 * @return \int[]
 	 */
 	public function GetCountScales () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->countScales;
 	}
 	
@@ -87,7 +84,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetAllowedCustomUrlCountScale ($allowedCustomUrlCountScale) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->allowedCustomUrlCountScale = $allowedCustomUrlCountScale;
 		return $this;
 	}
@@ -97,7 +93,6 @@ trait ConfigGettersSetters {
 	 * @return bool
 	 */
 	public function GetAllowedCustomUrlCountScale () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->allowedCustomUrlCountScale;
 	}
 
@@ -107,7 +102,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetSortingMode ($sortingMode = \MvcCore\Ext\Controllers\IDataGrid::SORT_MULTIPLE_COLUMNS) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->sortingMode = $sortingMode;
 		return $this;
 	}
@@ -117,7 +111,6 @@ trait ConfigGettersSetters {
 	 * @return int
 	 */
 	public function GetSortingMode () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->sortingMode;
 	}
 	
@@ -128,7 +121,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetFilteringMode ($filteringMode = \MvcCore\Ext\Controllers\IDataGrid::FILTER_MULTIPLE_COLUMNS) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->filteringMode = $filteringMode;
 		return $this;
 	}
@@ -138,7 +130,6 @@ trait ConfigGettersSetters {
 	 * @return int
 	 */
 	public function GetFilteringMode () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->filteringMode;
 	}
 	
@@ -148,7 +139,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetSorting (array $sorting) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->sorting = $sorting;
 		return $this;
 	}
@@ -158,7 +148,6 @@ trait ConfigGettersSetters {
 	 * @return array
 	 */
 	public function GetSorting () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->sorting;
 	}
 	
@@ -168,7 +157,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetFiltering (array $filtering) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->filtering = $filtering;
 		return $this;
 	}
@@ -178,7 +166,6 @@ trait ConfigGettersSetters {
 	 * @return array
 	 */
 	public function GetFiltering () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->filtering;
 	}
 	
@@ -188,7 +175,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetControlFilterForm (\MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm $filterForm) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->checkExtendedFormClasses();
 		$formInterface = 'MvcCore\\Ext\\IForm';
 		$toolClass = $this->application->GetToolClass();
@@ -202,7 +188,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm|NULL
 	 */
 	public function GetControlFilterForm () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->controlFilterForm;
 	}
 	
@@ -212,7 +197,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetTranslator ($translator) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->translator = $translator;
 		return $this;
 	}
@@ -222,7 +206,6 @@ trait ConfigGettersSetters {
 	 * @return callable|\Closure|NULL
 	 */
 	public function GetTranslator () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->translator;
 	}
 	
@@ -232,7 +215,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetTranslateUrlNames ($translateUrlNames) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->translateUrlNames = $translateUrlNames;
 		return $this;
 	}
@@ -242,7 +224,6 @@ trait ConfigGettersSetters {
 	 * @return bool
 	 */
 	public function GetTranslateUrlNames () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->translateUrlNames;
 	}
 
@@ -252,8 +233,7 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetRoute (\MvcCore\IRoute $route) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		/** @var $route \MvcCore\Route */
+		/** @var \MvcCore\Route $route */
 		$this->route = $route;
 		return $this;
 	}
@@ -263,7 +243,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Route|NULL
 	 */
 	public function GetRoute () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->route === NULL) {
 			
 			$this->route = new \MvcCore\Route([
@@ -292,7 +271,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetUrlParams (array $urlParams) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->urlParams = $urlParams;
 		return $this;
 	}
@@ -302,7 +280,6 @@ trait ConfigGettersSetters {
 	 * @return array
 	 */
 	public function GetUrlParams () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->urlParams === NULL) {
 			$gridReq = $this->GetGridRequest();
 			$route = $this->GetRoute();
@@ -326,8 +303,7 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetConfigUrlSegments (\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments $configUrlSegments) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		/** @var $configUrlSegments \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $configUrlSegments */
 		$this->configUrlSegments = $configUrlSegments;
 		return $this;
 	}
@@ -337,7 +313,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function GetConfigUrlSegments () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->configUrlSegments === NULL)
 			$this->configUrlSegments = new \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments;
 		return $this->configUrlSegments;
@@ -349,8 +324,7 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetConfigRendering (\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering $configRendering) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		/** @var $configRendering \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering */
 		$this->configRendering = $configRendering;
 		return $this;
 	}
@@ -360,7 +334,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function GetConfigRendering () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->configRendering === NULL)
 			$this->configRendering = new \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering;
 		return $this->configRendering;
@@ -372,12 +345,11 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetConfigColumns ($configColumns) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$throwInvalidTypeError = FALSE;
 		if ($configColumns instanceof \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns) {
 			$this->configColumns = $configColumns;	
 		} else if (is_array($configColumns)) {
-			/** @var $configColumn \MvcCore\Ext\Controllers\DataGrids\Configs\Column */
+			/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Column $configColumn */
 			$configColumnsByUrlNames = [];
 			foreach ($configColumns as $index => $configColumn) {
 				if ($configColumn instanceof \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn) {
@@ -420,11 +392,10 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns|NULL
 	 */
 	public function GetConfigColumns () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->configColumns === NULL) {
 			$model = $this->GetModel(TRUE);
 			if ($model instanceof \MvcCore\Ext\Controllers\DataGrids\Models\IGridColumns) {
-				/** @var $model \MvcCore\Ext\Controllers\DataGrids\Models\GridColumns */
+				/** @var \MvcCore\Ext\Controllers\DataGrids\Models\GridColumns $model */
 				$configColumnsArr = $model->GetConfigColumns();
 			} else {
 				$context = $this;
@@ -455,7 +426,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetControlsTexts ($controlsTexts) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->controlsTexts = $controlsTexts;
 		return $this;
 	}
@@ -465,7 +435,6 @@ trait ConfigGettersSetters {
 	 * @return array
 	 */
 	public function GetControlsTexts () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->controlsTexts;
 	}
 	
@@ -474,7 +443,6 @@ trait ConfigGettersSetters {
 	 * @return string|NULL
 	 */
 	public function GetControlText ($textKey) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if (isset($this->controlsTexts[$textKey]))
 			return $this->controlsTexts[$textKey];
 		return NULL;
@@ -486,7 +454,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetTableHeadFilterForm ($tableHeadFilterForm) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->tableHeadFilterForm = $tableHeadFilterForm;
 		return $this;
 	}
@@ -496,7 +463,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Form
 	 */
 	public function GetTableHeadFilterForm () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->tableHeadFilterForm === NULL) 
 			$this->createTableHeadFilterForm(FALSE);
 		return $this->tableHeadFilterForm;
@@ -508,7 +474,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function AddCssClasses ($cssClasses) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$cssClassesArr = is_array($cssClasses)
 			? $cssClasses
 			: explode(' ', (string) $cssClasses);
@@ -522,7 +487,6 @@ trait ConfigGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetCssClasses ($cssClasses) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$cssClassesArr = is_array($cssClasses)
 			? $cssClasses
 			: explode(' ', (string) $cssClasses);
@@ -535,7 +499,6 @@ trait ConfigGettersSetters {
 	 * @return \string[]
 	 */
 	public function GetCssClasses () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->cssClasses;
 	}
 

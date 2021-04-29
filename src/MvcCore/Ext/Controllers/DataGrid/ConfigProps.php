@@ -13,6 +13,9 @@
 
 namespace MvcCore\Ext\Controllers\DataGrid;
 
+/**
+ * @mixin \MvcCore\Ext\Controllers\DataGrid
+ */
 trait ConfigProps {
 	
 	/**

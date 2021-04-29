@@ -13,6 +13,9 @@
 
 namespace MvcCore\Ext\Controllers\DataGrid;
 
+/**
+ * @mixin \MvcCore\Ext\Controllers\DataGrid
+ */
 trait RenderMethods {
 	
 	/**
@@ -22,11 +25,10 @@ trait RenderMethods {
 	 * @return string
 	 */
 	public function Render ($controllerOrActionNameDashed = NULL, $actionNameDashed = NULL) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if (!$this->renderCheckDispatchState()) return '';
 
 		// Set up view store with parent controller view store, do not overwrite existing keys:
-		/** @var $view \MvcCore\Ext\Controllers\DataGrids\View */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\View $view */
 		$view = $this->view;
 		$view->SetUpStore($this->parentController->GetView(), FALSE);
 

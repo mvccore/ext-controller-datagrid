@@ -13,6 +13,9 @@
 
 namespace MvcCore\Ext\Controllers\DataGrids\Forms;
 
+/**
+ * @mixin \MvcCore\Ext\Form
+ */
 trait FilterForm {
 	
 	/**

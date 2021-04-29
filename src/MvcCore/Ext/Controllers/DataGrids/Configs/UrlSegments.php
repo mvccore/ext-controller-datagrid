@@ -139,7 +139,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function SetUrlPrefixPage ($urlPrefixPage) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		$this->urlPrefixPage = $urlPrefixPage;
 		return $this;
 	}
@@ -149,7 +149,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return string
 	 */
 	public function GetUrlPrefixPage () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		return $this->urlPrefixPage;
 	}
 
@@ -159,7 +159,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function SetUrlPrefixCount ($urlPrefixCount) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		$this->urlPrefixCount = $urlPrefixCount;
 		return $this;
 	}
@@ -169,7 +169,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return string
 	 */
 	public function GetUrlPrefixCount () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		return $this->urlPrefixCount;
 	}
 
@@ -179,7 +179,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function SetUrlPrefixSort ($urlPrefixSort) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		$this->urlPrefixSort = $urlPrefixSort;
 		return $this;
 	}
@@ -189,7 +189,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return string
 	 */
 	public function GetUrlPrefixSort () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		return $this->urlPrefixSort;
 	}
 
@@ -199,7 +199,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function SetUrlPrefixFilter ($urlPrefixFilter) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		$this->urlPrefixFilter = $urlPrefixFilter;
 		return $this;
 	}
@@ -209,7 +209,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return string
 	 */
 	public function GetUrlPrefixFilter () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		return $this->urlPrefixFilter;
 	}
 
@@ -219,7 +219,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function SetUrlSuffixSortAsc ($urlSuffixSortAsc) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		$this->urlSuffixSortAsc = $urlSuffixSortAsc;
 		return $this;
 	}
@@ -229,7 +229,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return string
 	 */
 	public function GetUrlSuffixSortAsc () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		return $this->urlSuffixSortAsc;
 	}
 
@@ -239,7 +239,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function SetUrlSuffixSortDesc ($urlSuffixSortDesc) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		$this->urlSuffixSortDesc = $urlSuffixSortDesc;
 		return $this;
 	}
@@ -249,7 +249,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return string
 	 */
 	public function GetUrlSuffixSortDesc () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		return $this->urlSuffixSortDesc;
 	}
 
@@ -259,7 +259,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function SetUrlDelimiterSections ($urlDelimiterSections) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		$this->urlDelimiterSections = $urlDelimiterSections;
 		return $this;
 	}
@@ -269,7 +269,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return string
 	 */
 	public function GetUrlDelimiterSections () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		return $this->urlDelimiterSections;
 	}
 
@@ -279,7 +279,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function SetUrlDelimiterPrefix ($urlDelimiterPrefix) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		$this->urlDelimiterPrefix = $urlDelimiterPrefix;
 		return $this;
 	}
@@ -289,7 +289,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return string
 	 */
 	public function GetUrlDelimiterPrefix () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		return $this->urlDelimiterPrefix;
 	}
 
@@ -299,7 +299,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function SetUrlDelimiterSubjects ($urlDelimiterSubjects) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		$this->urlDelimiterSubjects = $urlDelimiterSubjects;
 		return $this;
 	}
@@ -309,7 +309,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return string
 	 */
 	public function GetUrlDelimiterSubjects () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		return $this->urlDelimiterSubjects;
 	}
 	
@@ -319,7 +319,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function SetUrlDelimiterSubjectValue ($urlDelimiterSubjectValue) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		$this->urlDelimiterSubjectValue = $urlDelimiterSubjectValue;
 		return $this;
 	}
@@ -329,7 +329,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return string
 	 */
 	public function GetUrlDelimiterSubjectValue () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		return $this->urlDelimiterSubjectValue;
 	}
 
@@ -339,7 +339,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function SetUrlDelimiterValues ($urlDelimiterValues) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		$this->urlDelimiterValues = $urlDelimiterValues;
 		return $this;
 	}
@@ -349,7 +349,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return string
 	 */
 	public function GetUrlDelimiterValues () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		return $this->urlDelimiterValues;
 	}
 	
@@ -359,7 +359,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function SetUrlFilterOperators ($urlFilterOperators) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		$this->urlFilterOperators = $urlFilterOperators;
 		return $this;
 	}
@@ -369,7 +369,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return array
 	 */
 	public function GetUrlFilterOperators () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		return $this->urlFilterOperators;
 	}
 
@@ -379,7 +379,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function SetRoutePattern ($routePattern) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		$this->routePattern = $routePattern;
 		return $this;
 	}
@@ -392,7 +392,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * @return string
 	 */
 	public function GetRoutePattern ($sortingMode = \MvcCore\Ext\Controllers\IDataGrid::SORT_DISABLED, $filteringMode = \MvcCore\Ext\Controllers\IDataGrid::FILTER_DISABLED) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */
 		if ($this->routePattern === NULL) {
 			$secDelim = $this->urlDelimiterSections;
 			$prefDelim = $this->urlDelimiterPrefix;

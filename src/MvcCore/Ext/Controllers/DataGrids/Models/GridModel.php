@@ -13,6 +13,9 @@
 
 namespace MvcCore\Ext\Controllers\DataGrids\Models;
 
+/**
+ * @mixin \MvcCore\Model|\MvcCore\Ext\Models\Db\Model
+ */
 trait GridModel {
 
 	/**

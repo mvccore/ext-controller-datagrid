@@ -13,6 +13,9 @@
 
 namespace MvcCore\Ext\Controllers\DataGrid;
 
+/**
+ * @mixin \MvcCore\Ext\Controllers\DataGrid
+ */
 trait InternalGettersSetters {
 	
 	/**
@@ -20,7 +23,6 @@ trait InternalGettersSetters {
 	 * @return int|NULL
 	 */
 	public function GetPage () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->page;
 	}
 
@@ -29,7 +31,6 @@ trait InternalGettersSetters {
 	 * @return int|NULL
 	 */
 	public function GetOffset () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->offset;
 	}
 
@@ -38,7 +39,6 @@ trait InternalGettersSetters {
 	 * @return int|NULL
 	 */
 	public function GetLimit () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->limit;
 	}
 
@@ -47,7 +47,6 @@ trait InternalGettersSetters {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging|NULL
 	 */
 	public function GetPaging () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->paging;
 	}
 	
@@ -56,7 +55,6 @@ trait InternalGettersSetters {
 	 * @return bool
 	 */
 	public function GetTranslate () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->translate;
 	}
 	
@@ -65,7 +63,6 @@ trait InternalGettersSetters {
 	 * @return int|NULL
 	 */
 	public function GetTotalCount () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->totalCount;
 	}
 	
@@ -74,7 +71,6 @@ trait InternalGettersSetters {
 	 * @return array|\MvcCore\Ext\Models\Db\Readers\Streams\Iterator|NULL
 	 */
 	public function GetPageData () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		return $this->pageData;
 	}
 
@@ -83,7 +79,6 @@ trait InternalGettersSetters {
 	 * @return \MvcCore\Request
 	 */
 	public function GetGridRequest () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->gridRequest === NULL) {
 			$gridParam = $this->GetParam(static::URL_PARAM_GRID, FALSE); // get param from application request object
 			$gridParam = $gridParam !== NULL
@@ -101,7 +96,6 @@ trait InternalGettersSetters {
 	 * @return string
 	 */
 	public function GridUrl (array $gridParams = []) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		list ($gridParam) = $this->route->Url(
 			$this->gridRequest,
 			$gridParams,
@@ -124,7 +118,6 @@ trait InternalGettersSetters {
 	 * @return string
 	 */
 	public function GridPageUrl ($offset) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$itemsPerPage = $this->itemsPerPage;
 		if (
 			$this->itemsPerPage === 0 && (
@@ -146,7 +139,6 @@ trait InternalGettersSetters {
 	 * @return string
 	 */
 	public function GridCountUrl ($count) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$page = $this->page;
 		if ($count === 0) {
 			// if count is unlimited - page will be always the first:
@@ -174,7 +166,6 @@ trait InternalGettersSetters {
 	 * @return string
 	 */
 	public function GridSortUrl (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column, $direction = NULL) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$configUrlSegments = $this->configUrlSegments;
 		$urlDirAsc = $configUrlSegments->GetUrlSuffixSortAsc();
 		$urlDirDesc = $configUrlSegments->GetUrlSuffixSortDesc();
@@ -242,7 +233,6 @@ trait InternalGettersSetters {
 	 * @return string
 	 */
 	public function GridFilterUrl (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column, $cellValue, $operator = '=') {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$configUrlSegments = $this->configUrlSegments;
 		$subjValueDelim = $configUrlSegments->GetUrlDelimiterSubjectValue();
 		$valuesDelim = $configUrlSegments->GetUrlDelimiterValues();
@@ -306,7 +296,6 @@ trait InternalGettersSetters {
 	 * @return bool|NULL
 	 */
 	public function GetColumnSortDirection (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$columnDbName = $column->GetDbColumnName();
 		if (!isset($this->sorting[$columnDbName])) 
 			return NULL;
@@ -326,7 +315,6 @@ trait InternalGettersSetters {
 	 * @return int|FALSE
 	 */
 	public function GetColumnSortIndex (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$columnDbName = $column->GetDbColumnName();
 		return array_search($columnDbName, array_keys($this->sorting), TRUE);
 	}
@@ -337,7 +325,6 @@ trait InternalGettersSetters {
 	 * @return int|FALSE
 	 */
 	public function GetColumnFilterIndex (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$columnDbName = $column->GetDbColumnName();
 		return array_search($columnDbName, array_keys($this->filtering), TRUE);
 	}
@@ -347,7 +334,6 @@ trait InternalGettersSetters {
 	 * @return array
 	 */
 	public function __debugInfo () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$type = new \ReflectionClass($this);
 		$props = $type->getProperties(
 			\ReflectionProperty::IS_PRIVATE |
@@ -383,7 +369,6 @@ trait InternalGettersSetters {
 	 * @return \string[]
 	 */
 	public function __sleep () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$type = new \ReflectionClass($this);
 		$props = $type->getProperties(
 			\ReflectionProperty::IS_PRIVATE |

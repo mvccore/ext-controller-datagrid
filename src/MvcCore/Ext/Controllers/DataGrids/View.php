@@ -57,7 +57,7 @@ class View extends \MvcCore\View {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\View
 	 */
 	public function SetConfigRendering (\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering $configRendering) {
-		/** @var $configRendering \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering */
 		$this->configRendering = $configRendering;
 		return $this;
 	}
@@ -184,7 +184,7 @@ class View extends \MvcCore\View {
 	 * @return string
 	 */
 	public function & Render ($typePath, $relativePath, $internalTemplate = FALSE) {
-		/** @var $this \MvcCore\View */
+		/** @var \MvcCore\View $this */
 		if (!$internalTemplate)
 			$typePath = static::$scriptsDir;
 		$result = '';

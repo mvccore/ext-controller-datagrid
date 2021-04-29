@@ -13,6 +13,9 @@
 
 namespace MvcCore\Ext\Controllers\DataGrid;
 
+/**
+ * @mixin \MvcCore\Ext\Controllers\DataGrid
+ */
 trait ActionMethods {
 
 	/**
@@ -21,7 +24,6 @@ trait ActionMethods {
 	 * @return void
 	 */
 	protected function actionDefault () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->configRendering->GetRenderTableHeadFiltering()) 
 			$this->createTableHeadFilterForm(FALSE);
 		if ($this->controlFilterForm !== NULL) {
@@ -47,7 +49,6 @@ trait ActionMethods {
 	 * @return void
 	 */
 	protected function createTableHeadFilterForm ($submit = FALSE) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$this->checkExtendedFormClasses();
 		$formId = 'grid-table-head-filtering-'.sha1(serialize([
 			$this->controllerName, $this->actionName, $this->configColumns
@@ -106,8 +107,6 @@ trait ActionMethods {
 	 * @return void
 	 */
 	protected function actionTableFilter () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if (!$this->actionTableFilterSetUp()) return;
 		list ($submitResult, $newFiltering) = $this->actionTableFilterSubmit();
 		$this->filterFormRedirect($submitResult, $newFiltering);
@@ -119,8 +118,7 @@ trait ActionMethods {
 	 * @return bool
 	 */
 	protected function actionTableFilterSetUp () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		/** @var $context \MvcCore\Controller */
+		/** @var \MvcCore\Controller $context */
 		$context = $this;
 		if (!$this->configRendering->GetRenderTableHeadFiltering()) {
 			$redirectUrl = $this->Url('self', [static::URL_PARAM_ACTION => NULL]);
@@ -139,7 +137,6 @@ trait ActionMethods {
 	 * @return array [boolean $submitResult, array $newFiltering]
 	 */
 	protected function actionTableFilterSubmit () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$form = $this->tableHeadFilterForm;
 		list ($result, $formFiltering) = $form->Submit();
 		if ($result === $form::RESULT_ERRORS) return [FALSE, $this->filtering];
@@ -188,7 +185,6 @@ trait ActionMethods {
 	 * @return void
 	 */
 	protected function actionFormFilter () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if (!$this->actionFormFilterSetUp()) return;
 		list ($submitResult, $newFiltering) = $this->actionFormFilterSubmit();
 		$this->filterFormRedirect($submitResult, $newFiltering);
@@ -200,8 +196,7 @@ trait ActionMethods {
 	 * @return bool
 	 */
 	protected function actionFormFilterSetUp () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		/** @var $context \MvcCore\Controller */
+		/** @var \MvcCore\Controller $context */
 		$context = $this;
 		if ($this->controlFilterForm === NULL) {
 			$redirectUrl = $this->Url('self', [static::URL_PARAM_ACTION => NULL]);
@@ -234,7 +229,6 @@ trait ActionMethods {
 	 * @return array [boolean $submitResult, array $newFiltering]
 	 */
 	protected function actionFormFilterSubmit () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$form = $this->controlFilterForm;
 		list($submitResult, $formFiltering) = $form->Submit();
 		if ($submitResult === $form::RESULT_ERRORS) 
@@ -303,8 +297,7 @@ trait ActionMethods {
 	 * @return void
 	 */
 	protected function filterFormRedirect ($submitResult, $newFiltering, $tableHeadFitlering = FALSE) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		/** @var $context \MvcCore\Controller */
+		/** @var \MvcCore\Controller $context */
 		$context = $this;
 		$filterParams = [];
 		$urlFilterOperators = $this->configUrlSegments->GetUrlFilterOperators();

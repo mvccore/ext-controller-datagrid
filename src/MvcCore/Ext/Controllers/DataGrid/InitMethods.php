@@ -13,6 +13,9 @@
 
 namespace MvcCore\Ext\Controllers\DataGrid;
 
+/**
+ * @mixin \MvcCore\Ext\Controllers\DataGrid
+ */
 trait InitMethods {
 
 	/**
@@ -22,8 +25,7 @@ trait InitMethods {
 	 * @return void
 	 */
 	public function __construct (\MvcCore\IController $controller = NULL, $childControllerIndex = NULL) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		/** @var $controller \MvcCore\Controller */
+		/** @var \MvcCore\Controller $controller */
 		if ($controller === NULL) {
 			$controller = \MvcCore\Ext\Form::GetCallerControllerInstance();
 			if ($controller === NULL) 
@@ -42,7 +44,6 @@ trait InitMethods {
 	 * @return void
 	 */
 	public function Init () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if ($this->dispatchState > \MvcCore\IController::DISPATCH_STATE_CREATED) return;
 		
 		$this->GetConfigRendering();
@@ -85,7 +86,6 @@ trait InitMethods {
 	 * @return void
 	 */
 	protected function initGridAction () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$gridActionParam = $this->request->GetParam(static::URL_PARAM_ACTION, '-_a-zA-Z', static::$gridActionDefaultKey, 'string');
 		if (!isset(static::$gridActions[$gridActionParam])) $gridActionParam = static::$gridActionDefaultKey;
 		$this->gridAction = static::$gridActions[$gridActionParam];
@@ -99,8 +99,7 @@ trait InitMethods {
 	 * @return bool
 	 */
 	protected function initUrlParams () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		/** @var $context \MvcCore\Controller */
+		/** @var \MvcCore\Controller $context */
 		$context = $this;
 
 		// init `$this->queryStringParamsSepatator` from router to build grid urls:
@@ -215,7 +214,6 @@ trait InitMethods {
 	 * @return void
 	 */
 	protected function initOffsetLimit () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		$count = $this->urlParams['count'];
 		$inlimitedCount = $count === 0;
 
@@ -236,8 +234,7 @@ trait InitMethods {
 	 * @return bool
 	 */
 	protected function initUrlBuilding () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
-		/** @var $context \MvcCore\Controller */
+		/** @var \MvcCore\Controller $context */
 		$context = $this;
 		
 		$routeConfig = $this->route->GetAdvancedConfigProperty('defaults');
@@ -314,7 +311,6 @@ trait InitMethods {
 	 * @return void
 	 */
 	protected function initOperators () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if (!$this->filteringMode) return;
 		$this->allowedOperators = $this->getAllowedOperators($this->filteringMode);
 	}
@@ -325,7 +321,6 @@ trait InitMethods {
 	 * @return void
 	 */
 	protected function initSorting () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if (!$this->sortingMode || !$this->urlParams['sort']) return;
 		$rawSorting = trim($this->urlParams['sort']);
 		if (mb_strlen($rawSorting) === 0) return;
@@ -380,7 +375,6 @@ trait InitMethods {
 	 * @return void
 	 */
 	protected function initFiltering () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrid */
 		if (!$this->filteringMode || !isset($this->urlParams['filter'])) return;
 		$rawFiltering = trim($this->urlParams['filter']);
 		if (mb_strlen($rawFiltering) === 0) return;

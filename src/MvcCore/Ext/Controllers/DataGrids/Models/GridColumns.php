@@ -13,6 +13,9 @@
 
 namespace MvcCore\Ext\Controllers\DataGrids\Models;
 
+/**
+ * @mixin \MvcCore\Model|\MvcCore\Ext\Models\Db\Model
+ */
 trait GridColumns {
 
 	/**
@@ -22,7 +25,7 @@ trait GridColumns {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column[]
 	 */
 	public function GetConfigColumns () {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel */
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $this */
 		$modelMetaData = [];
 		$toolClass = \MvcCore\Application::GetInstance()->GetToolClass();
 		$implementsExtendedModel = $toolClass::CheckClassInterface(
@@ -30,7 +33,7 @@ trait GridColumns {
 		);
 		$accessModFlags = 0;
 		if ($implementsExtendedModel) {
-			/** @var $context \MvcCore\Ext\Models\Model */
+			/** @var \MvcCore\Ext\Models\Db\Model $context */
 			$context = $this;
 			list($metaData) = $context::GetMetaData(0);
 			foreach ($metaData as $propData) {
