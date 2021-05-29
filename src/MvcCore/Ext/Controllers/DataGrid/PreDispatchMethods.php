@@ -41,13 +41,14 @@ trait PreDispatchMethods {
 	 */
 	public static function ParseConfigColumns (\MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model, $modelMetaData = [], $accesModFlags = 0) {
 		$modelType = new \ReflectionClass($model);
-		if ($accesModFlags === 0)
-			$accesModFlags = (
-				\ReflectionProperty::IS_PRIVATE | 
-				\ReflectionProperty::IS_PROTECTED | 
-				\ReflectionProperty::IS_PUBLIC
-			);
-		$props = $modelType->getProperties($accesModFlags);
+		// `$accesModFlags` could contain foreing flags from model
+		$localFlags = 0;
+		if (($accesModFlags & \ReflectionProperty::IS_PRIVATE)	!= 0) $localFlags |= \ReflectionProperty::IS_PRIVATE;
+		if (($accesModFlags & \ReflectionProperty::IS_PROTECTED)!= 0) $localFlags |= \ReflectionProperty::IS_PROTECTED;
+		if (($accesModFlags & \ReflectionProperty::IS_PUBLIC)	!= 0) $localFlags |= \ReflectionProperty::IS_PUBLIC;
+		$props = $localFlags === 0
+			? $modelType->getProperties()
+			: $modelType->getProperties($localFlags);
 		$toolClass = \MvcCore\Application::GetInstance()->GetToolClass();
 		$attrsAnotations = $toolClass::GetAttributesAnotations();
 		$attrClassFullName = '\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column';

@@ -92,7 +92,7 @@ trait GridModel {
 	 * @param  array $filtering 
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridModel
 	 */
-	public function SetFiltering ($filtering) {
+	public function SetFiltering (array $filtering) {
 		$this->filtering = $filtering;
 		return $this;
 	}
@@ -104,7 +104,7 @@ trait GridModel {
 	 * @param  array $sorting
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridModel
 	 */
-	public function SetSorting ($sorting) {
+	public function SetSorting (array $sorting) {
 		$this->sorting = $sorting;
 		return $this;
 	}

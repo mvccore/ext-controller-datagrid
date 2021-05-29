@@ -22,13 +22,13 @@ trait FilterForm {
 	 * Form HTTP method.
 	 * @var string
 	 */
-	protected $method = 'POST';
+	#protected $method = 'POST';
 
 	/**
 	 * Form enctype method.
 	 * @var string
 	 */
-	protected $enctype = 'application/x-www-form-urlencoded';
+	#protected $enctype = 'application/x-www-form-urlencoded';
 
 	/**
 	 * Datagrid columns configuration.
