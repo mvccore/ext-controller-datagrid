@@ -265,10 +265,20 @@ trait InitMethods {
 				$this->queryStringParamsSepatator,
 				FALSE
 			);
-			$gridParam = rtrim($gridParam, '/');
-			$reqPathRaw = $this->gridRequest->GetPath(FALSE);
-			if ($gridParam !== $reqPathRaw) {
-				$redirectUrl = $this->Url('self', [static::URL_PARAM_GRID => rawurldecode($gridParam)]);
+			$gridParam = ltrim($gridParam, '/');
+			$reqPathRaw = ltrim($this->gridRequest->GetPath(FALSE), '/');
+
+			$redirectUrl = NULL;
+			if ($gridParam === $reqPathRaw && $gridParam === '' && $this->request->HasParam(static::URL_PARAM_GRID)) {
+				$redirectUrl = $this->Url('self', [
+					static::URL_PARAM_GRID => NULL
+				]);
+			} else if ($gridParam !== $reqPathRaw) {
+				$redirectUrl = $this->Url('self', [
+					static::URL_PARAM_GRID => rawurldecode($gridParam)
+				]);
+			}
+			if ($redirectUrl !== NULL) {
 				$context::Redirect(
 					$redirectUrl, 
 					\MvcCore\IResponse::SEE_OTHER, 
