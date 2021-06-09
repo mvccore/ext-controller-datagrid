@@ -164,7 +164,7 @@ trait GridModel {
 	 */
 	protected function getSortingSql ($includeOrderBy = TRUE, $columnsAlias = NULL, $quoteChars = '""') {
 		$sortSqlItems = [];
-		$alias = $columnsAlias === NULL ? '' : '.' . $columnsAlias;
+		$alias = $columnsAlias === NULL ? '' : $columnsAlias . '.';
 		$quotes = static::prepareQuotes($quoteChars);
 		foreach ($this->sorting as $columnName => $direction) {
 			$columnNameQuoted = static::quoteColumn($columnName, $quotes);
