@@ -31,7 +31,7 @@ trait PreDispatchMethods {
 	 * - `\string[]` - property type(s)
 	 * - `array`     - format arguments
 	 * 
-	 * Thrd argument is access mod flags to load model instance properties.
+	 * Third argument is access mod flags to load model instance properties.
 	 * If value is zero, there are used all access mode flags - private, protected and public.
 	 * 
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model 
@@ -39,61 +39,145 @@ trait PreDispatchMethods {
 	 * @param  int                                                  $accesModFlags
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column[]
 	 */
-	public static function ParseConfigColumns (\MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model, $modelMetaData = [], $accesModFlags = 0) {
+	public static function ParseConfigColumns (
+		\MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model, 
+		$modelMetaData = [], 
+		$accesModFlags = 0
+	) {
+		$props = static::parseConfigColumnsGetProps($model, $accesModFlags);
+		/** @var string|\MvcCore\Tool $toolClass */
+		$toolClass = \MvcCore\Application::GetInstance()->GetToolClass();
+		$columnConfigs = [];
+		$naturalSort = [];
+		$indexSort = [];
+		foreach ($props as $index => $prop) {
+			$columnConfig = static::parseConfigColumn(
+				$prop, $index, $modelMetaData, $toolClass
+			);
+			if ($columnConfig === NULL) continue;
+			$urlName = $columnConfig->GetUrlName();
+			$columnIndex = $columnConfig->GetColumnIndex();
+			$columnConfigs[$urlName] = $columnConfig;
+			if ($columnIndex === NULL) {
+				$naturalSort[] = $urlName;
+			} else {
+				if (!isset($indexSort[$columnIndex]))
+					$indexSort[$columnIndex] = [];
+				$indexSort[$columnIndex][] = $urlName;
+			}
+		}
+		if (count($indexSort) === 0) {
+			return $columnConfigs;
+		} else {
+			return static::parseConfigColumnSort(
+				$columnConfigs, $naturalSort, $indexSort
+			);
+		}
+	}
+
+	/**
+	 * Get model reflection properties by model instance and access mod flags.
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model 
+	 * @param  int                                                  $accesModFlags
+	 * @return \ReflectionProperty[]
+	 */
+	protected static function parseConfigColumnsGetProps ($model, $accesModFlags) {
 		$modelType = new \ReflectionClass($model);
 		// `$accesModFlags` could contain foreing flags from model
 		$localFlags = 0;
 		if (($accesModFlags & \ReflectionProperty::IS_PRIVATE)	!= 0) $localFlags |= \ReflectionProperty::IS_PRIVATE;
 		if (($accesModFlags & \ReflectionProperty::IS_PROTECTED)!= 0) $localFlags |= \ReflectionProperty::IS_PROTECTED;
 		if (($accesModFlags & \ReflectionProperty::IS_PUBLIC)	!= 0) $localFlags |= \ReflectionProperty::IS_PUBLIC;
-		$props = $localFlags === 0
+		return $localFlags === 0
 			? $modelType->getProperties()
 			: $modelType->getProperties($localFlags);
-		$toolClass = \MvcCore\Application::GetInstance()->GetToolClass();
-		$attrsAnotations = $toolClass::GetAttributesAnotations();
+	}
+
+	/**
+	 * Complete datagrid column config instance or `NULL`.
+	 * @param  \ReflectionProperty  $prop
+	 * @param  int                  $index
+	 * @param  array                $modelMetaData
+	 * @param  string|\MvcCore\Tool $toolClass
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column|NULL
+	 */
+	protected static function parseConfigColumn (
+		\ReflectionProperty $prop, $index, $modelMetaData, $toolClass
+	) {
+		if ($prop->isStatic()) NULL;
 		$attrClassFullName = '\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column';
-		$tagName = $attrClassFullName::PHP_DOCS_TAG_NAME;
-		$attrClassNoFirstSlash = ltrim($attrClassFullName, '\\');
-		$attrClassName = basename(str_replace('\\', '/', $attrClassFullName));
-		$result = [];
-		foreach ($props as $prop) {
-			if ($prop->isStatic()) continue;
-			if ($attrsAnotations) {
-				$args = $toolClass::GetAttrCtorArgs($prop, $attrClassNoFirstSlash);
-			} else {
-				$args = $toolClass::GetPhpDocsTagArgs($prop, $tagName);
-				if (is_array($args) && count($args) === 2 && $args[0] === $attrClassName) 
+		if ($toolClass::GetAttributesAnotations()) {
+			$attrClassNoFirstSlash = ltrim($attrClassFullName, '\\');
+			$args = $toolClass::GetAttrCtorArgs($prop, $attrClassNoFirstSlash);
+		} else {
+			$tagName = $attrClassFullName::PHP_DOCS_TAG_NAME;
+			$args = $toolClass::GetPhpDocsTagArgs($prop, $tagName);
+			if (is_array($args) && count($args) === 2) {
+				$attrClassName = basename(str_replace('\\', '/', $attrClassFullName));
+				if ($args[0] === $attrClassName) 
 					$args = (array) $args[1];
 			}
-			$propName = $prop->name;
-			$urlName = NULL;
-			$humanName = NULL;
-			$dbColumnName = NULL;
-			$types = NULL;
-			$format = NULL;
-			$modelMetaDataExists = isset($modelMetaData[$propName]);
-			if ($modelMetaDataExists) 
-				list($dbColumnName, $types, $format) = $modelMetaData[$propName];
-			if ($args === NULL && $modelMetaDataExists) {
-				$columnConfig = new \MvcCore\Ext\Controllers\DataGrids\Configs\Column(
-					$propName, $dbColumnName, $humanName, $urlName, FALSE, FALSE, $types, $format, NULL
-				);
-				$result[$columnConfig->GetUrlName()] = $columnConfig;
-			} else if ($dbColumnName !== NULL || isset($args['dbColumnName'])) {
-				if			 (isset($args['dbColumnName']))	$dbColumnName			= $args['dbColumnName'];
-				if			 (isset($args['humanName']))	$humanName				= $args['humanName'];
-				if			 (isset($args['urlName']))		$urlName				= $args['urlName'];
-				$sort		= isset($args['sort'])			? $args['sort']			: NULL;
-				$filter		= isset($args['filter'])		? $args['filter']		: NULL;
-				$types		= isset($args['types'])			? $args['types']		: NULL;
-				$format		= isset($args['format'])		? $args['format']		: NULL;
-				$viewHelper	= isset($args['viewHelper'])	? $args['viewHelper']	: NULL;
-				$columnConfig = new \MvcCore\Ext\Controllers\DataGrids\Configs\Column(
-					$propName, $dbColumnName, $humanName, $urlName, $sort, $filter, $types, $format, $viewHelper
-				);
-				$result[$columnConfig->GetUrlName()] = $columnConfig;
-			}
 		}
+		$propName = $prop->name;
+		$urlName = NULL;
+		$humanName = NULL;
+		$dbColumnName = NULL;
+		$types = NULL;
+		$format = NULL;
+		$modelMetaDataExists = isset($modelMetaData[$propName]);
+		if ($modelMetaDataExists) 
+			list($dbColumnName, $types, $format) = $modelMetaData[$propName];
+		if ($args === NULL && $modelMetaDataExists) {
+			$columnConfig = new \MvcCore\Ext\Controllers\DataGrids\Configs\Column(
+				$propName, $dbColumnName, $humanName, $urlName, 
+				NULL, FALSE, FALSE, 
+				$types, $format, NULL
+			);
+			return $columnConfig;
+		} else if ($dbColumnName !== NULL || isset($args['dbColumnName'])) {
+			// column could be disabled if forbidden param is presented:
+			if			 (isset($args['disabled']) && $args['disabled'])		return NULL;			
+			if			 (isset($args['dbColumnName']))	$dbColumnName			= $args['dbColumnName'];
+			if			 (isset($args['humanName']))	$humanName				= $args['humanName'];
+			if			 (isset($args['urlName']))		$urlName				= $args['urlName'];
+			$columnIndex= isset($args['columnIndex'])	? $args['columnIndex']	: NULL;
+			$sort		= isset($args['sort'])			? $args['sort']			: NULL;
+			$filter		= isset($args['filter'])		? $args['filter']		: NULL;
+			$viewHelper	= isset($args['viewHelper'])	? $args['viewHelper']	: NULL;
+			$types		= isset($args['types'])
+				? $args['types']
+				: ($modelMetaDataExists
+					? $modelMetaData[$propName][1]
+					: NULL
+				);
+			$format		= isset($args['format'])
+				? $args['format']
+				: ($modelMetaDataExists
+					? $modelMetaData[$propName][2]
+					: NULL
+				);
+			return new \MvcCore\Ext\Controllers\DataGrids\Configs\Column(
+				$propName, $dbColumnName, $humanName, $urlName, 
+				$columnIndex, $sort, $filter, 
+				$types, $format, $viewHelper
+			);
+		}
+	}
+
+	/**
+	 * Sort config colums by optional grid column index.
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column[] $columnConfigs 
+	 * @param  \string[]                                           $naturalSort 
+	 * @param  array                                               $indexSort 
+	 * @return array
+	 */
+	protected static function parseConfigColumnSort (array $columnConfigs, array $naturalSort, array $indexSort) {
+		$result = [];
+		ksort($indexSort);
+		foreach ($indexSort as $columnIndex => $indexedUrlNames) 
+			array_splice($naturalSort, $columnIndex, 0, $indexedUrlNames);
+		foreach ($naturalSort as $urlName) 
+			$result[$urlName] = $columnConfigs[$urlName];
 		return $result;
 	}
 

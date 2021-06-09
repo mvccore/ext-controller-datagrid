@@ -42,6 +42,12 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 	 * @var string|NULL
 	 */
 	protected $urlName = NULL;
+
+	/**
+	 * Datagrid column index, starting with `0`, optional.
+	 * @var int|NULL
+	 */
+	protected $columnIndex = NULL;
 	
 	/**
 	 * Default sorting definition with values `ASC | DESC` 
@@ -74,6 +80,12 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 	 */
 	protected $viewHelper = NULL;
 	
+	/**
+	 * Force column disable.
+	 * @var bool|NULL
+	 */
+	protected $disabled = NULL;
+	
 
 	/**
 	 * Create datagrid column config item.
@@ -82,6 +94,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 	 * @param string|NULL      $humanName    Data grid visible column name. If `NULL`, `$propName` is used.
 	 * @param string|NULL      $urlName      Data grid url column name to define sorting or filtering. 
 	 *                                       If `NULL`, `$propName` is used.
+	 * @param int|NULL         $columnIndex  Datagrid column index, starting with `0`, optional.
 	 * @param string|bool|NULL $sort         Default sorting definition with values `ASC | DESC` 
 	 *                                       or `TRUE | FALSE` to enable/disable sorting.
 	 * @param int|bool         $filter       Filtering mode flags to allow specify operators for each column 
@@ -89,8 +102,21 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 	 * @param \string[]|NULL   $types        Property type(s), necessary for automatic formating.
 	 * @param array|NULL       $format       Property automatic formating arguments.
 	 * @param string|NULL      $viewHelper   Property automatic formating view helper name.
+	 * @param bool|NULL        $disabled     Force column disable.
 	 */
-	public function __construct ($propName = NULL, $dbColumnName = NULL, $humanName = NULL, $urlName = NULL, $sort = FALSE, $filter = FALSE, $types = NULL, $format = NULL, $viewHelper = NULL) {
+	public function __construct (
+		$propName = NULL, 
+		$dbColumnName = NULL, 
+		$humanName = NULL, 
+		$urlName = NULL, 
+		$columnIndex = NULL,
+		$sort = FALSE, 
+		$filter = FALSE, 
+		$types = NULL, 
+		$format = NULL, 
+		$viewHelper = NULL,
+		$disabled = NULL
+	) {
 		$propNameHasValue = $propName !== NULL;
 		if ($propNameHasValue) 
 			$this->propName = $propName;
@@ -112,12 +138,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 		} else if ($propNameHasValue) {
 			$this->urlName = $propName;
 		}
-
+		
+		if ($columnIndex !== NULL)	$this->columnIndex	= $columnIndex;
 		if ($sort !== NULL)			$this->sort			= $sort;
 		if ($filter !== NULL)		$this->filter		= $filter;
 		if ($types !== NULL)		$this->types		= $types;
 		if ($format !== NULL)		$this->format		= $format;
 		if ($viewHelper !== NULL)	$this->viewHelper	= $viewHelper;
+		if ($disabled !== NULL)		$this->disabled		= $disabled;
 	}
 
 	
@@ -188,7 +216,24 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 		$this->urlName = $urlName;
 		return $this;
 	}
-	
+
+	/**
+	 * Get datagrid column index, starting with `0`, optional.
+	 * @return int|NULL
+	 */
+	public function GetColumnIndex () {
+		return $this->columnIndex;
+	}
+	/**
+	 * Set datagrid column index, starting with `0`, optional.
+	 * @param  int|NULL $columnIndex
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetColumnIndex ($columnIndex) {
+		$this->columnIndex = $columnIndex;
+		return $this;
+	}
+
 	/**
 	 * Get default sorting definition with values `ASC | DESC` 
 	 * or `TRUE | FALSE` to enable/disable sorting.
@@ -277,4 +322,22 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 		$this->viewHelper = $viewHelper;
 		return $this;
 	}
+
+	/**
+	 * Get if column is disabled forcely.
+	 * @return bool
+	 */
+	public function GetDisabled () {
+		return $this->disabled;
+	}
+	/**
+	 * Set disabled column forcely.
+	 * @param  bool $disabled
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetDisabled ($disabled) {
+		$this->disabled = $disabled;
+		return $this;
+	}
+	
 }
