@@ -217,6 +217,7 @@ trait PreDispatchMethods {
 	public function LoadModel () {
 		$model = $this->GetModel(TRUE);
 		$model
+			->SetGrid($this)
 			->SetOffset($this->offset)
 			->SetLimit($this->limit)
 			->SetFiltering($this->filtering)

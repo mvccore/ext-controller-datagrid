@@ -16,6 +16,13 @@ namespace MvcCore\Ext\Controllers\DataGrids\Models;
 interface IGridModel {
 
 	/**
+	 * Set datagrid instance, always initialized by datagrid component automatically.
+	 * @param  \MvcCore\Ext\Controllers\IDataGrid|NULL $grid
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel
+	 */
+	public function SetGrid (\MvcCore\Ext\Controllers\IDataGrid $grid);
+
+	/**
 	 * Set database table offset, always initialized into integer.
 	 * This offset is always initialized by datagrid component automatically.
 	 * @param  int $offset 

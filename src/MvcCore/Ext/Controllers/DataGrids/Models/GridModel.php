@@ -19,6 +19,12 @@ namespace MvcCore\Ext\Controllers\DataGrids\Models;
 trait GridModel {
 
 	/**
+	 * Datagrid instance, always initialized by datagrid component automatically.
+	 * @var \MvcCore\Ext\Controllers\DataGrid|NULL
+	 */
+	protected $grid = NULL;
+
+	/**
 	 * Database table offset, always initialized into integer.
 	 * This offset is always initialized by datagrid component automatically.
 	 * @var int|NULL
@@ -62,6 +68,16 @@ trait GridModel {
 	protected $sorting = NULL;
 
 	
+	/**
+	 * Set datagrid instance, always initialized by datagrid component automatically.
+	 * @param  \MvcCore\Ext\Controllers\DataGrid|NULL $grid
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridModel
+	 */
+	public function SetGrid (\MvcCore\Ext\Controllers\IDataGrid $grid) {
+		$this->grid = $grid;
+		return $this;
+	}
+
 	/**
 	 * Set database table offset, always initialized into integer.
 	 * This offset is always initialized by datagrid component automatically.
@@ -233,7 +249,8 @@ trait GridModel {
 								$index++;
 							}
 						}
-						$conditionSqlItems[] = "(" . implode(" OR ", $conditionSqlSubItems) . ")";
+						$implodeOperator = $operator === 'LIKE' || $operator === '=' ? " OR " : " AND ";
+						$conditionSqlItems[] = "(" . implode($implodeOperator, $conditionSqlSubItems) . ")";
 					}
 				} else {
 					$rawValue = $rawValues[0];
