@@ -68,6 +68,7 @@ trait ActionMethods {
 			->Init($submit);
 		$urlDelimiterValues = $this->configUrlSegments->GetUrlDelimiterValues();
 		$clearResultState = static::$tableHeadingFilterFormClearResultBase;
+		$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
 		foreach ($this->configColumns as $configColumn) {
 			$propName = $configColumn->GetPropName();
 			$clearResultState++;
@@ -78,11 +79,16 @@ trait ActionMethods {
 			$dbColumnName = $configColumn->GetDbColumnName();
 			if (isset($this->filtering[$dbColumnName])) {
 				$columnFiltering = $this->filtering[$dbColumnName];
-				// head filtering coud have only equal operator values:
-				if (isset($columnFiltering['=']))
-					$valueField->SetValue(implode(
-						$urlDelimiterValues, $columnFiltering['=']
-					));
+				// head filtering coud have only `=` | `!=` | `LIKE` | `NOT LIKE` operator values:
+				$fieldValue = [];
+				foreach ($columnFiltering as $operator => $values) {
+					$valueOperator = static::$filterFormFieldValueOperatorPrefixes[$operator];
+					$fieldValue[] = $valueOperator . implode(
+						$urlDelimiterValues . $valueOperator, $columnFiltering[$operator]
+					);
+					if (!$multiFiltering) break;
+				}
+				$valueField->SetValue(implode($urlDelimiterValues, $fieldValue));
 			}
 			$filterField = (new \MvcCore\Ext\Forms\Fields\SubmitButton)
 				->SetName(implode($form::HTML_IDS_DELIMITER, ['filter', $propName]))
@@ -138,34 +144,27 @@ trait ActionMethods {
 	 */
 	protected function actionTableFilterSubmit () {
 		$form = $this->tableHeadFilterForm;
-		list ($result, $formFiltering) = $form->Submit();
-		if ($result === $form::RESULT_ERRORS) return [FALSE, $this->filtering];
+		list ($result, $rawFormValues) = $form->Submit();
+
+		if ($result === $form::RESULT_ERRORS) 
+			return [FALSE, $this->filtering];
 		$form->ClearSession();
-		$valuesDelim = $this->configUrlSegments->GetUrlDelimiterValues();
-		$newFiltering = array_merge([], $this->filtering);
+		
 		$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
 		$filteringColumns = $this->getFilteringColumns();
-		foreach ($formFiltering as $propName => $rawValues) {
-			$safeStringValues = $this->removeUnsafeChars($rawValues);
-			if ($safeStringValues === NULL) continue;
+		
+		$formValues = [];
+		foreach ($rawFormValues as $propName => $rawValues) {
+			$rawValues = trim((string) $rawValues);
+			if (mb_strlen($rawValues) === 0) continue;
 			list($subjectName, $propName) = explode($form::HTML_IDS_DELIMITER, $propName);
 			if ($subjectName !== 'value' || !isset($filteringColumns[$propName])) continue;
-			$configColumn = $filteringColumns[$propName];
-			$safeStringValuesArr = explode($valuesDelim, $safeStringValues);
-			$values = [];
-			foreach ($safeStringValuesArr as $safeStringValue) {
-				$safeStringValue = trim($safeStringValue);
-				if ($safeStringValue !== '') $values[] = $safeStringValue;
-			}
-			if (count($values) === 0) continue;
-			$columnDbName = $configColumn->GetDbColumnName();
-			if (!isset($newFiltering[$columnDbName])) $newFiltering[$columnDbName] = [];
-			$newFiltering[$columnDbName]['='] = $values;
-			if (!$multiFiltering) {
-				$newFiltering = [$columnDbName => ['=' => $values]];
-				break;
-			}
+			$formValues[$propName] = $rawValues;
 		}
+
+		$newFiltering = array_merge([], $this->filtering);
+		$newFiltering = $this->GetFilteringFromFilterFormValues($formValues, $newFiltering);
+
 		$configColumnsKeys = array_keys($this->configColumns->GetArray());
 		$clearingResultBase = static::$tableHeadingFilterFormClearResultBase + 1;
 		if ($result >= $clearingResultBase && isset($configColumnsKeys[$result - $clearingResultBase])) {
@@ -175,7 +174,90 @@ trait ActionMethods {
 			if (isset($newFiltering[$dbColumnName]))
 				unset($newFiltering[$dbColumnName]);
 		}
+
 		return [TRUE, $newFiltering];
+	}
+
+	/**
+	 * @inherit
+	 * @param  array $formSubmitValues 
+	 * @param  array $filtering 
+	 * @return array
+	 */
+	public function GetFilteringFromFilterFormValues (array $formSubmitValues, array $filtering = []) {
+		$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
+		$filteringColumns = $this->getFilteringColumns();
+		$urlFilterOperators = $this->configUrlSegments->GetUrlFilterOperators();
+		$urlDelimiterValues = $this->configUrlSegments->GetUrlDelimiterValues();
+
+		foreach ($formSubmitValues as $propName => $rawValues) {
+			$configColumn = $filteringColumns[$propName];
+			$rawValuesArr = explode($urlDelimiterValues, $rawValues);
+			$columnFilterCfg = $configColumn->GetFilter();
+			$allowedOperators = $columnFilterCfg === TRUE || !is_integer($columnFilterCfg)
+				? $this->allowedOperators
+				: $this->getAllowedOperators($columnFilterCfg);
+			$filterValues = [];
+			foreach ($rawValuesArr as $rawValue) {
+				$rawValue = trim($rawValue);
+				if ($rawValue === '') continue;
+				$containsPercentage = $this->checkFilterFormValueForSpecialLikeChar($rawValue, '%');
+				$containsUnderScore = $this->checkFilterFormValueForSpecialLikeChar($rawValue, '_');
+				if ($containsPercentage || $containsUnderScore) {
+					$notLikePrefix = static::$filterFormFieldValueOperatorPrefixes['NOT LIKE'];
+					$firstCharIsExclMark = mb_substr($rawValue, 0, mb_strlen($notLikePrefix)) === $notLikePrefix;
+					if ($firstCharIsExclMark) {
+						$operator = 'NOT LIKE';
+						$rawValue = mb_substr($rawValue, 1);
+					} else {
+						$operator = 'LIKE';
+					}
+				} else {
+					$firstChar = mb_substr($rawValue, 0, 1);
+					$firstTwoChars = mb_substr($rawValue, 0, 2);
+					if ($firstChar === '!=') {
+						$operator = '!=';
+						$rawValue = mb_substr($rawValue, 1);
+					} else if ($firstChar === '<' || $firstChar === '>') {
+						$operator = $firstChar;
+						$rawValue = mb_substr($rawValue, 1);
+					} else if ($firstTwoChars === '<=' || $firstTwoChars === '>=') {
+						$operator = $firstTwoChars;
+						$rawValue = mb_substr($rawValue, 2);
+					} else {
+						$operator = '=';
+					}
+				}
+				$rawOperatorStr = $urlFilterOperators[$operator];
+				if (!isset($allowedOperators[$rawOperatorStr])) continue;
+				$operatorCfg = $allowedOperators[$rawOperatorStr];
+				$multiple = $operatorCfg->multiple;
+				$regex = $operatorCfg->regex;
+				if ($regex !== NULL && !preg_match($regex, $rawValue)) continue;
+				$rawValue = $this->removeUnsafeChars($rawValue);
+				if (isset($filterValues[$operator])) {
+					$filterValues[$operator][] = $rawValue;
+				} else {
+					$filterValues[$operator] = [$rawValue];
+				}
+				if (!$multiple && count($filterValues[$operator]) > 1)
+					$filterValues[$operator] = [$filterValues[$operator][0]];
+			}
+			if (count($filterValues) === 0) continue;
+			$columnDbName = $configColumn->GetDbColumnName();
+			if (!isset($filtering[$columnDbName])) 
+				$filtering[$columnDbName] = [];
+			$filtering[$columnDbName] = $filterValues;
+			if (!$multiFiltering) {
+				$filterValuesKeys = array_keys($filterValues);
+				$filterValueKey = $filterValuesKeys[0];
+				$filtering = [$columnDbName => [
+					$filterValueKey => $filterValues[$filterValueKey]
+				]];
+				break;
+			}
+		}
+		return $filtering;
 	}
 
 
@@ -309,6 +391,8 @@ trait ActionMethods {
 			if (!isset($newFiltering[$columnDbName])) continue;
 			$filterOperatorsAndValues = $newFiltering[$columnDbName];
 			foreach ($filterOperatorsAndValues as $operator => $filterValues) {
+				foreach ($filterValues as $index => $filterValue)
+					$filterValues[$index] = html_entity_decode($filterValue, ENT_NOQUOTES);
 				$filterUrlValues = implode($valuesDelim, $filterValues);
 				$operatorUrlValue = $urlFilterOperators[$operator];
 				$filterParams[] = "{$columnUrlName}{$subjValueDelim}{$operatorUrlValue}{$subjValueDelim}{$filterUrlValues}";
@@ -389,5 +473,30 @@ trait ActionMethods {
 					"Please install extension `{$extensionName}` ".
 					"to create datagrid filtering component."
 				);
+	}
+
+	/**
+	 * Check if given value contains any LIKE/NOT LIKE special 
+	 * character: `%` or `_`, not escaped like this: `[%]` or `[_]`.
+	 * @param  string $rawValue 
+	 * @param  string $specialLikeChar 
+	 * @return bool
+	 */
+	protected function checkFilterFormValueForSpecialLikeChar ($rawValue, $specialLikeChar) {
+		$containsSpecialChar = FALSE;
+		$index = 0;
+		$length = mb_strlen($rawValue);
+		while ($index < $length) {
+			$specialCharPos = mb_strpos($rawValue, $specialLikeChar, $index);
+			if ($specialCharPos === FALSE) break;
+			$escapedSpecialCharPos = mb_strpos($rawValue, '['.$specialLikeChar.']', max(0, $index - 1));
+			if ($escapedSpecialCharPos !== FALSE && $specialCharPos - 1 === $escapedSpecialCharPos) {
+				$index = $specialCharPos + mb_strlen($specialLikeChar) + 1;
+				continue;
+			}
+			$containsSpecialChar = TRUE;
+			break;
+		}
+		return $containsSpecialChar;
 	}
 }

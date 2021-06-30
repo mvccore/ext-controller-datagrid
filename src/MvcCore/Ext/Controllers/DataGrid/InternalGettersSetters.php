@@ -103,12 +103,10 @@ trait InternalGettersSetters {
 			$this->queryStringParamsSepatator,
 			FALSE
 		);
-		$gridParam = rtrim($gridParam, '/');
-
-		$selfParams = [static::URL_PARAM_GRID => rawurldecode($gridParam)];
+		$gridParam = rtrim(rawurldecode($gridParam), '/');
+		$selfParams = [static::URL_PARAM_GRID => $gridParam];
 		if (array_key_exists(static::URL_PARAM_ACTION, $gridParams) && $gridParams[static::URL_PARAM_ACTION] === NULL)
 			$selfParams[static::URL_PARAM_ACTION] = NULL;
-		
 		return $this->Url('self', $selfParams);
 	}
 	

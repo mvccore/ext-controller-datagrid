@@ -515,4 +515,12 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @return int|FALSE
 	 */
 	public function GetColumnFilterIndex (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column);
+
+	/**
+	 * Get new filtering from filter form submit values array.
+	 * @param  array $formSubmitValues 
+	 * @param  array $filtering 
+	 * @return array
+	 */
+	public function GetFilteringFromFilterFormValues (array $formSubmitValues, array $filtering = []);
 }

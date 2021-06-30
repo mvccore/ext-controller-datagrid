@@ -265,17 +265,21 @@ trait InitMethods {
 				$this->queryStringParamsSepatator,
 				FALSE
 			);
-			$gridParam = ltrim($gridParam, '/');
-			$reqPathRaw = ltrim($this->gridRequest->GetPath(FALSE), '/');
+			$gridParam = ltrim(rawurldecode($gridParam), '/');
+			$reqPathRaw = ltrim($this->gridRequest->GetPath(TRUE), '/');
 
 			$redirectUrl = NULL;
-			if ($gridParam === $reqPathRaw && $gridParam === '' && $this->request->HasParam(static::URL_PARAM_GRID)) {
+			if (
+				$gridParam === $reqPathRaw && 
+				$gridParam === '' && 
+				$this->request->HasParam(static::URL_PARAM_GRID)
+			) {
 				$redirectUrl = $this->Url('self', [
 					static::URL_PARAM_GRID => NULL
 				]);
 			} else if ($gridParam !== $reqPathRaw) {
 				$redirectUrl = $this->Url('self', [
-					static::URL_PARAM_GRID => rawurldecode($gridParam)
+					static::URL_PARAM_GRID => $gridParam
 				]);
 			}
 			if ($redirectUrl !== NULL) {

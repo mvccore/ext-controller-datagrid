@@ -85,6 +85,17 @@ trait InternalProps {
 		'}'	=> "&#125;",
 	];
 
+	protected static $filterFormFieldValueOperatorPrefixes = [
+		'='			=> '',
+		'!='		=> '!',
+		'LIKE'		=> '',
+		'NOT LIKE'	=> '!',
+		'>'			=> '>',
+		'>='		=> '>=',
+		'<'			=> '<',
+		'<='		=> '<=',
+	];
+
 	/**
 	 * Custom form result state base value for grid 
 	 * with table type with heading filter form.
