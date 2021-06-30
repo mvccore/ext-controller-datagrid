@@ -33,7 +33,7 @@ trait ConfigProps {
 	/**
 	 * Count control scales, `[10,100,1000,0]` by default. 
 	 * Zero value (usually the last) means unlimited items per page.
-	 * @var \int[]
+	 * @var \int[]|string
 	 */
 	protected $countScales = self::COUNTS_SCALE_DEFAULT;
 	

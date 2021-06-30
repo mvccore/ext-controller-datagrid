@@ -39,9 +39,9 @@ interface IConstants {
 	/**
 	 * Default count control scales - `[10,100,1000,0]`. 
 	 * Last zero value means unlimited items option.
-	 * @var \int[]
+	 * @var string
 	 */
-	const COUNTS_SCALE_DEFAULT			= [10,100,1000,0];
+	const COUNTS_SCALE_DEFAULT			= '10,100,1000,0'; // PHP 5.4 compatible
 
 
 	/**

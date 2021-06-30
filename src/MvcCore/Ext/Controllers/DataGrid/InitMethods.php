@@ -26,6 +26,8 @@ trait InitMethods {
 	 */
 	public function __construct (\MvcCore\IController $controller = NULL, $childControllerIndex = NULL) {
 		/** @var \MvcCore\Controller $controller */
+		if (is_string($this->countScales)) 
+			$this->countScales = array_map('intval', explode(',', (string) $this->countScales));
 		if ($controller === NULL) {
 			$controller = \MvcCore\Ext\Form::GetCallerControllerInstance();
 			if ($controller === NULL) 
