@@ -85,15 +85,22 @@ trait InternalProps {
 		'}'	=> "&#125;",
 	];
 
+	/**
+	 * Filter form field value prefixes to define operator.
+	 * LIKE operators are used automatically only if filter value 
+	 * contains not escaped percentage or underscore.
+	 * @var array
+	 */
 	protected static $filterFormFieldValueOperatorPrefixes = [
-		'='			=> '',
-		'!='		=> '!',
-		'LIKE'		=> '',
 		'NOT LIKE'	=> '!',
+		'!='		=> '!',
 		'>'			=> '>',
-		'>='		=> '>=',
 		'<'			=> '<',
+		'>='		=> '>=',
 		'<='		=> '<=',
+		// empty prefixes has to be last
+		'LIKE'		=> '',
+		'='			=> '',
 	];
 
 	/**

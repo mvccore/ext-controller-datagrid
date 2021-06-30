@@ -189,7 +189,9 @@ trait ActionMethods {
 		$filteringColumns = $this->getFilteringColumns();
 		$urlFilterOperators = $this->configUrlSegments->GetUrlFilterOperators();
 		$urlDelimiterValues = $this->configUrlSegments->GetUrlDelimiterValues();
-
+		$likeOperatorsArrFilter = ['LIKE' => 1, 'NOT LIKE' => 1];
+		$likeOperatorsAndPrefixes = array_intersect_key(static::$filterFormFieldValueOperatorPrefixes, $likeOperatorsArrFilter);
+		$notLikeOperatorsAndPrefixes = array_diff_key(static::$filterFormFieldValueOperatorPrefixes, $likeOperatorsArrFilter);
 		foreach ($formSubmitValues as $propName => $rawValues) {
 			$configColumn = $filteringColumns[$propName];
 			$rawValuesArr = explode($urlDelimiterValues, $rawValues);
@@ -204,28 +206,24 @@ trait ActionMethods {
 				$containsPercentage = $this->checkFilterFormValueForSpecialLikeChar($rawValue, '%');
 				$containsUnderScore = $this->checkFilterFormValueForSpecialLikeChar($rawValue, '_');
 				if ($containsPercentage || $containsUnderScore) {
-					$notLikePrefix = static::$filterFormFieldValueOperatorPrefixes['NOT LIKE'];
-					$firstCharIsExclMark = mb_substr($rawValue, 0, mb_strlen($notLikePrefix)) === $notLikePrefix;
-					if ($firstCharIsExclMark) {
-						$operator = 'NOT LIKE';
-						$rawValue = mb_substr($rawValue, 1);
-					} else {
-						$operator = 'LIKE';
-					}
+					$operatorsAndPrefixes = $likeOperatorsAndPrefixes;
+					if ($containsPercentage === 2) $rawValue = str_replace('[%]', '%', $rawValue);
+					if ($containsUnderScore === 2) $rawValue = str_replace('[_]', '_', $rawValue);
 				} else {
-					$firstChar = mb_substr($rawValue, 0, 1);
-					$firstTwoChars = mb_substr($rawValue, 0, 2);
-					if ($firstChar === '!=') {
-						$operator = '!=';
-						$rawValue = mb_substr($rawValue, 1);
-					} else if ($firstChar === '<' || $firstChar === '>') {
-						$operator = $firstChar;
-						$rawValue = mb_substr($rawValue, 1);
-					} else if ($firstTwoChars === '<=' || $firstTwoChars === '>=') {
-						$operator = $firstTwoChars;
-						$rawValue = mb_substr($rawValue, 2);
+					$operatorsAndPrefixes = $notLikeOperatorsAndPrefixes;
+				}
+				foreach ($operatorsAndPrefixes as $operatorKey => $valuePrefix) {
+					$valuePrefixLen = mb_strlen($valuePrefix);
+					if ($valuePrefixLen > 0) {
+						$valuePrefixChars = mb_substr($rawValue, 0, $valuePrefixLen);
+						if ($valuePrefixChars === $valuePrefix) {
+							$operator = $operatorKey;
+							$rawValue = mb_substr($rawValue, $valuePrefixLen);
+							break;
+						}
 					} else {
-						$operator = '=';
+						$operator = $operatorKey;
+						break;
 					}
 				}
 				$rawOperatorStr = $urlFilterOperators[$operator];
@@ -480,21 +478,23 @@ trait ActionMethods {
 	 * character: `%` or `_`, not escaped like this: `[%]` or `[_]`.
 	 * @param  string $rawValue 
 	 * @param  string $specialLikeChar 
-	 * @return bool
+	 * @return int
 	 */
 	protected function checkFilterFormValueForSpecialLikeChar ($rawValue, $specialLikeChar) {
-		$containsSpecialChar = FALSE;
+		$containsSpecialChar = 0;
 		$index = 0;
 		$length = mb_strlen($rawValue);
+		$matchedEscapedChar = FALSE;
 		while ($index < $length) {
 			$specialCharPos = mb_strpos($rawValue, $specialLikeChar, $index);
 			if ($specialCharPos === FALSE) break;
 			$escapedSpecialCharPos = mb_strpos($rawValue, '['.$specialLikeChar.']', max(0, $index - 1));
 			if ($escapedSpecialCharPos !== FALSE && $specialCharPos - 1 === $escapedSpecialCharPos) {
 				$index = $specialCharPos + mb_strlen($specialLikeChar) + 1;
+				$matchedEscapedChar = TRUE;
 				continue;
 			}
-			$containsSpecialChar = TRUE;
+			$containsSpecialChar = $matchedEscapedChar ? 2 : 1;
 			break;
 		}
 		return $containsSpecialChar;
