@@ -19,7 +19,7 @@
 ?><table<?php
 	if (count($countScalesCssClasses) > 0)
 		echo ' class="' . implode(' ', $countScalesCssClasses) . '"';
-?>><tbody><?php
+?>><tbody><tr><?php
 	foreach ($countScales2Render as $countScale => $current):
 		$current = $current || $firstIsCurrent;
 		?><td class="grid-count<?php
@@ -45,4 +45,4 @@
 		?></td><?php
 		
 	endforeach;
-?></tr></table>
+?></tr></tbody></table>
