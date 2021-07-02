@@ -13,17 +13,25 @@
 	$headForm = $headFilter ? $grid->GetTableHeadFilterForm() : NULL;
 	foreach ($configColumns as $urlName => $configColumn):
 		
+		$columnAllowsSorting = $headSort && $configColumn->GetSort();
+		$sortIndex = $columnAllowsSorting ? $grid->GetColumnSortIndex($configColumn) : FALSE;
+
 		?><th class="<?php
-			echo 'grid-col-' . $configColumn->GetUrlName();
+			echo implode(' ', $configColumn->GetCssClasses());
+			if ($sortIndex !== FALSE)
+				echo ' grid-col-sorted';
 			if ($grid->GetColumnFilterIndex($configColumn) !== FALSE)
 				echo ' grid-col-filtered';
-		?>"><?php
+		?>"<?php
+			$columnWidth = $configColumn->GetWidth();
+			if ($columnWidth !== NULL) echo ' width="' . $columnWidth . '"';
+		?>><?php
 
 		if ($headFilter):
 			?><div class="grid-head-sort"><?php
 		endif;
 		
-		if ($headSort && $configColumn->GetSort()): 
+		if ($columnAllowsSorting): 
 			?><a class="grid-head-sort-link" href="<?php
 				echo $grid->GridSortUrl($configColumn);
 			?>"><?php
