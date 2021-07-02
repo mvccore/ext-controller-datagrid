@@ -22,19 +22,21 @@
 		?><td class="grid-column-<?php echo $colNumber + 1; ?>"><?php
 		
 			foreach ($grid->GetConfigColumns() as $configColumn):
-				?><div class="<?php
-					echo 'grid-item-' . $configColumn->GetPropName();
+				?><div class="grid-cell-content <?php
+					echo implode(' ', $configColumn->GetCssClasses());
 				?>"><?php
 					
-				$cellValue = $model->RenderCell($item, $configColumn, $this);
-				if ($configColumn->GetFilter()):
-					?><a class="grid-filter-link" href="<?php
-						echo $grid->GridFilterUrl($configColumn, $cellValue);
-					?>"><?php
+				$cellValue = trim($model->RenderCell($item, $configColumn, $this));
+				if (mb_strlen($cellValue) > 0):
+					if ($configColumn->GetFilter()):
+						?><a class="grid-filter-link" href="<?php
+							echo $grid->GridFilterUrl($configColumn, $cellValue);
+						?>"><?php
+							echo $cellValue;
+						?></a><?php
+					else:
 						echo $cellValue;
-					?></a><?php
-				else:
-					echo $cellValue;
+					endif;
 				endif;
 
 				?></div><?php

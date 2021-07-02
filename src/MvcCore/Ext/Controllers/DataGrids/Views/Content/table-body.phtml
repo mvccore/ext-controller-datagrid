@@ -13,18 +13,20 @@
 
 			foreach ($grid->GetConfigColumns() as $configColumn):
 				?><td class="<?php
-					echo 'grid-col-' . $configColumn->GetPropName();
+					echo implode(' ', $configColumn->GetCssClasses());
 				?>"><?php
 					
-				$cellValue = $model->RenderCell($item, $configColumn, $this);
-				if ($configColumn->GetFilter()):
-					?><a class="grid-filter-link" href="<?php
-						echo $grid->GridFilterUrl($configColumn, $cellValue);
-					?>"><?php
-						echo $cellValue;
-					?></a><?php
-				else:
-					echo $cellValue;
+				$cellValue = trim($model->RenderCell($item, $configColumn, $this));
+				if (mb_strlen($cellValue) > 0):
+					if ($configColumn->GetFilter()):
+						?><a class="grid-cell-content grid-filter-link" href="<?php
+							echo $grid->GridFilterUrl($configColumn, $cellValue);
+						?>"><?php
+							echo $cellValue;
+						?></a><?php
+					else:
+						?><span class="grid-cell-content"><?php echo $cellValue; ?></span><?php 
+					endif;
 				endif;
 
 				?></td><?php
