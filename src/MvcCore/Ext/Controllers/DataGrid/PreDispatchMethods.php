@@ -120,48 +120,42 @@ trait PreDispatchMethods {
 		}
 		$propName = $prop->name;
 		$urlName = NULL;
+		$columnIndex = NULL;
+		$sort = FALSE;
+		$filter = FALSE;
 		$humanName = NULL;
 		$dbColumnName = NULL;
 		$types = NULL;
 		$format = NULL;
-		$modelMetaDataExists = isset($modelMetaData[$propName]);
-		if ($modelMetaDataExists) 
+		$viewHelper = NULL;
+		$width = NULL;
+		$cssClasses = NULL;
+		$disabled = NULL;
+		if (isset($modelMetaData[$propName])) 
 			list($dbColumnName, $types, $format) = $modelMetaData[$propName];
-		if ($args === NULL && $modelMetaDataExists) {
-			$columnConfig = new \MvcCore\Ext\Controllers\DataGrids\Configs\Column(
-				$propName, $dbColumnName, $humanName, $urlName, 
-				NULL, FALSE, FALSE, 
-				$types, $format, NULL
-			);
-			return $columnConfig;
-		} else if ($dbColumnName !== NULL || isset($args['dbColumnName'])) {
-			// column could be disabled if forbidden param is presented:
-			if			 (isset($args['disabled']) && $args['disabled'])		return NULL;			
-			if			 (isset($args['dbColumnName']))	$dbColumnName			= $args['dbColumnName'];
-			if			 (isset($args['humanName']))	$humanName				= $args['humanName'];
-			if			 (isset($args['urlName']))		$urlName				= $args['urlName'];
-			$columnIndex= isset($args['columnIndex'])	? $args['columnIndex']	: NULL;
-			$sort		= isset($args['sort'])			? $args['sort']			: NULL;
-			$filter		= isset($args['filter'])		? $args['filter']		: NULL;
-			$viewHelper	= isset($args['viewHelper'])	? $args['viewHelper']	: NULL;
-			$types		= isset($args['types'])
-				? $args['types']
-				: ($modelMetaDataExists
-					? $modelMetaData[$propName][1]
-					: NULL
-				);
-			$format		= isset($args['format'])
-				? $args['format']
-				: ($modelMetaDataExists
-					? $modelMetaData[$propName][2]
-					: NULL
-				);
-			return new \MvcCore\Ext\Controllers\DataGrids\Configs\Column(
-				$propName, $dbColumnName, $humanName, $urlName, 
-				$columnIndex, $sort, $filter, 
-				$types, $format, $viewHelper
-			);
-		}
+		if (
+			($args === NULL && $dbColumnName === NULL) || 
+			($args !== NULL && ($dbColumnName === NULL && !isset($args['dbColumnName'])))
+		) return NULL;
+		// column could be disabled if forbidden param is presented:
+		if (isset($args['disabled']) && $args['disabled'])	return NULL;			
+		if (isset($args['dbColumnName']))	$dbColumnName	= $args['dbColumnName'];
+		if (isset($args['types']))			$types			= $args['types'];
+		if (isset($args['format']))			$format			= $args['format'];
+		if (isset($args['humanName']))		$humanName		= $args['humanName'];
+		if (isset($args['urlName']))		$urlName		= $args['urlName'];
+		if (isset($args['columnIndex']))	$columnIndex	= $args['columnIndex'];
+		if (isset($args['sort']))			$sort			= $args['sort'];
+		if (isset($args['filter']))			$filter			= $args['filter'];
+		if (isset($args['width']))			$width			= $args['width'];
+		if (isset($args['cssClasses']))		$cssClasses		= $args['cssClasses'];
+		if (isset($args['viewHelper']))		$viewHelper		= $args['viewHelper'];
+		return new \MvcCore\Ext\Controllers\DataGrids\Configs\Column(
+			$propName, $dbColumnName, $humanName, $urlName, 
+			$columnIndex, $sort, $filter, 
+			$types, $format, $viewHelper,
+			$width, $cssClasses, $disabled
+		);
 	}
 
 	/**
@@ -204,6 +198,7 @@ trait PreDispatchMethods {
 		$this->preDispatchCountScales();
 		$this->preDispatchTranslations();
 		$this->preDispatchRenderConfig();
+		$this->preDispatchColumnsConfigs();
 		
 		if ($this->configRendering->GetRenderTableHeadFiltering()) 
 			$this->tableHeadFilterForm->PreDispatch(FALSE);
@@ -517,5 +512,21 @@ trait PreDispatchMethods {
 		$this->AddCssClasses([
 			'grid-type-' . ($gridTableType ? 'table' : 'grid')
 		]);
+	}
+
+	/**
+	 * Merge all column css classes together before rendering.
+	 * @return void
+	 */
+	protected function preDispatchColumnsConfigs () {
+		$columnCssClassBase = $this->configRendering->GetType() === self::TYPE_TABLE 
+			? 'grid-col-'
+			: 'grid-item-';
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Column $configColumn */
+		foreach ($this->configColumns as $configColumn) {
+			$cssClasses = $configColumn->GetCssClasses();
+			$cssClasses[] = $columnCssClassBase . $configColumn->GetPropName();
+			$configColumn->SetCssClasses([implode(' ', $cssClasses)]);
+		}
 	}
 }

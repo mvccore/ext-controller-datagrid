@@ -79,6 +79,19 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 	 * @var string|NULL
 	 */
 	protected $viewHelper = NULL;
+
+	/**
+	 * Column width attribute for head cell, if value.
+	 * Width is used only for table grid type.
+	 * @var string|int|float|NULL
+	 */
+	protected $width = NULL;
+
+	/**
+	 * Column additional css classes for head cell and body cell.
+	 * @var \string[]
+	 */
+	protected $cssClasses = [];
 	
 	/**
 	 * Force column disable.
@@ -89,20 +102,23 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 
 	/**
 	 * Create datagrid column config item.
-	 * @param string|NULL      $propName     Data grid model property name.
-	 * @param string|NULL      $dbColumnName Database column name. If `NULL`, `$propName` is used.
-	 * @param string|NULL      $humanName    Data grid visible column name. If `NULL`, `$propName` is used.
-	 * @param string|NULL      $urlName      Data grid url column name to define sorting or filtering. 
-	 *                                       If `NULL`, `$propName` is used.
-	 * @param int|NULL         $columnIndex  Datagrid column index, starting with `0`, optional.
-	 * @param string|bool|NULL $sort         Default sorting definition with values `ASC | DESC` 
-	 *                                       or `TRUE | FALSE` to enable/disable sorting.
-	 * @param int|bool         $filter       Filtering mode flags to allow specify operators for each column 
-	 *                                       or boolean to allow filtering only.
-	 * @param \string[]|NULL   $types        Property type(s), necessary for automatic formating.
-	 * @param array|NULL       $format       Property automatic formating arguments.
-	 * @param string|NULL      $viewHelper   Property automatic formating view helper name.
-	 * @param bool|NULL        $disabled     Force column disable.
+	 * @param string|NULL           $propName     Data grid model property name.
+	 * @param string|NULL           $dbColumnName Database column name. If `NULL`, `$propName` is used.
+	 * @param string|NULL           $humanName    Data grid visible column name. If `NULL`, `$propName` is used.
+	 * @param string|NULL           $urlName      Data grid url column name to define sorting or filtering. 
+	 *                                            If `NULL`, `$propName` is used.
+	 * @param int|NULL              $columnIndex  Datagrid column index, starting with `0`, optional.
+	 * @param string|bool|NULL      $sort         Default sorting definition with values `ASC | DESC` 
+	 *                                            or `TRUE | FALSE` to enable/disable sorting.
+	 * @param int|bool              $filter       Filtering mode flags to allow specify operators for each column 
+	 *                                            or boolean to allow filtering only.
+	 * @param \string[]|NULL        $types        Property type(s), necessary for automatic formating.
+	 * @param array|NULL            $format       Property automatic formating arguments.
+	 * @param string|NULL           $viewHelper   Property automatic formating view helper name.
+	 * @param string|int|float|NULL $width        Column width attribute for head cell, if value.
+	 *                                            Width is used only for table grid type.
+	 * @param \string[]             $cssClasses   Column additional css classes for head cell and body cell.
+	 * @param bool|NULL             $disabled     Force column disable.
 	 */
 	public function __construct (
 		$propName = NULL, 
@@ -115,6 +131,8 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 		$types = NULL, 
 		$format = NULL, 
 		$viewHelper = NULL,
+		$width = NULL,
+		$cssClasses = NULL,
 		$disabled = NULL
 	) {
 		$propNameHasValue = $propName !== NULL;
@@ -145,6 +163,8 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 		if ($types !== NULL)		$this->types		= $types;
 		if ($format !== NULL)		$this->format		= $format;
 		if ($viewHelper !== NULL)	$this->viewHelper	= $viewHelper;
+		if ($width !== NULL)		$this->width		= $width;
+		if ($cssClasses !== NULL)	$this->cssClasses	= $cssClasses;
 		if ($disabled !== NULL)		$this->disabled		= $disabled;
 	}
 
@@ -323,6 +343,44 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 		return $this;
 	}
 
+	/**
+	 * Get column width attribute for head cell, if value.
+	 * Width is used only for table grid type.
+	 * @return string|NULL
+	 */
+	public function GetWidth () {
+		if ($this->width === NULL || is_string($this->width)) 
+			return $this->width;
+		return rtrim(rtrim(number_format($this->width, 3, '.', ''), '0'), '.');
+	}
+	/**
+	 * Set column width attribute for head cell, if value.
+	 * Width is used only for table grid type.
+	 * @param  string|int|float|NULL $width
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetWidth ($width) {
+		$this->width = $width;
+		return $this;
+	}
+
+	/**
+	 * Get column additional css classes for head cell and body cell.
+	 * @return \string[]|NULL
+	 */
+	public function GetCssClasses () {
+		return $this->cssClasses;
+	}
+	/**
+	 * Set column additional css classes for head cell and body cell.
+	 * @param  \string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetCssClasses ($cssClasses) {
+		$this->cssClasses = $cssClasses;
+		return $this;
+	}
+	
 	/**
 	 * Get if column is disabled forcely.
 	 * @return bool
