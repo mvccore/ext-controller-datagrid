@@ -402,6 +402,26 @@ trait ConfigGettersSetters {
 				$configColumnsArr = $context::ParseConfigColumns($this->model);
 			}
 			if (is_array($configColumnsArr) && count($configColumnsArr) > 0) {
+				$configColumnsUrlNames = array_keys($configColumnsArr);
+				$configColumnsUrlNamesStr = implode("\n", $configColumnsUrlNames);
+				$notAllowedCharsInUrlNames = [
+					$this->configUrlSegments->GetUrlDelimiterSubjectValue(),
+					$this->configUrlSegments->GetUrlDelimiterSubjects(),
+				];
+				foreach ($notAllowedCharsInUrlNames as $notAllowedCharInUrlNames) {
+					if (mb_strpos($configColumnsUrlNamesStr, $notAllowedCharInUrlNames) !== FALSE) {
+						foreach ($configColumnsUrlNames as $configColumnsUrlName) {
+							if (mb_strpos($configColumnsUrlName, $notAllowedCharInUrlNames) !== FALSE) {
+								throw new \InvalidArgumentException(
+									"Grid column configuration url name `{$configColumnsUrlName}` ".
+									"contains not allowed grid url segment character `{$notAllowedCharInUrlNames}`. ".
+									"Try to configure different grid url segment or different property url name."
+								);
+							}
+						}
+					}
+				}
+				
 				$this->configColumns = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns(
 					$configColumnsArr
 				);
