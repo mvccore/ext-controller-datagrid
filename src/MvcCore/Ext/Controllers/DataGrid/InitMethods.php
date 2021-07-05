@@ -217,13 +217,13 @@ trait InitMethods {
 	 */
 	protected function initOffsetLimit () {
 		$count = $this->urlParams['count'];
-		$inlimitedCount = $count === 0;
+		$unlimitedCount = $count === 0;
 
-		$this->limit = $inlimitedCount
+		$this->limit = $unlimitedCount
 			? NULL
 			: $count;
 
-		if ($inlimitedCount) {
+		if ($unlimitedCount) {
 			$this->offset = 0;
 		} else {
 			$page = $this->urlParams['page'];
