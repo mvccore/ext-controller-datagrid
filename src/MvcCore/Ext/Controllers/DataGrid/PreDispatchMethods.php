@@ -138,7 +138,6 @@ trait PreDispatchMethods {
 			($args !== NULL && ($dbColumnName === NULL && !isset($args['dbColumnName'])))
 		) return NULL;
 		// column could be disabled if forbidden param is presented:
-		if (isset($args['disabled']) && $args['disabled'])	return NULL;			
 		if (isset($args['dbColumnName']))	$dbColumnName	= $args['dbColumnName'];
 		if (isset($args['types']))			$types			= $args['types'];
 		if (isset($args['format']))			$format			= $args['format'];
@@ -150,6 +149,7 @@ trait PreDispatchMethods {
 		if (isset($args['width']))			$width			= $args['width'];
 		if (isset($args['cssClasses']))		$cssClasses		= $args['cssClasses'];
 		if (isset($args['viewHelper']))		$viewHelper		= $args['viewHelper'];
+		if (isset($args['disabled']))		$disabled		= $args['disabled'];
 		return new \MvcCore\Ext\Controllers\DataGrids\Configs\Column(
 			$propName, $dbColumnName, $humanName, $urlName, 
 			$columnIndex, $sort, $filter, 
@@ -182,6 +182,8 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	public function PreDispatch () {
+		if ($this->dispatchState <= \MvcCore\IController::DISPATCH_STATE_INITIALIZED) 
+			$this->Init();
 		if ($this->dispatchState >= \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED) return;
 		
 		if ($this->viewEnabled) {
@@ -200,7 +202,7 @@ trait PreDispatchMethods {
 		$this->preDispatchRenderConfig();
 		$this->preDispatchColumnsConfigs();
 		
-		if ($this->configRendering->GetRenderTableHeadFiltering()) 
+		if ($this->configRendering->GetRenderTableHeadFiltering() && $this->tableHeadFilterForm !== NULL) 
 			$this->tableHeadFilterForm->PreDispatch(FALSE);
 	}
 	
@@ -523,10 +525,14 @@ trait PreDispatchMethods {
 			? 'grid-col-'
 			: 'grid-item-';
 		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Column $configColumn */
-		foreach ($this->configColumns as $configColumn) {
+		$newConfigColumns = [];
+		foreach ($this->configColumns as $urlName => $configColumn) {
+			if ($configColumn->GetDisabled()) continue;
 			$cssClasses = $configColumn->GetCssClasses();
 			$cssClasses[] = $columnCssClassBase . $configColumn->GetPropName();
 			$configColumn->SetCssClasses([implode(' ', $cssClasses)]);
+			$newConfigColumns[$urlName] = $configColumn;
 		}
+		$this->configColumns = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns($newConfigColumns);
 	}
 }

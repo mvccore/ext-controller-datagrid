@@ -65,7 +65,7 @@ trait InitMethods {
 
 		$this->GetConfigUrlSegments();
 		$this->GetConfigColumns();
-
+		
 		$this->GetRoute();
 		$this->GetUrlParams();
 		
@@ -367,6 +367,7 @@ trait InitMethods {
 				);
 			if (!isset($this->configColumns[$rawColumnName])) continue;
 			$configColumn = $this->configColumns[$rawColumnName];
+			if ($configColumn->GetDisabled()) continue;
 			$columnSortCfg = $configColumn->GetSort();
 			if ($columnSortCfg === FALSE || $columnSortCfg === NULL) continue;
 			$sorting[$configColumn->GetDbColumnName()] = $direction;
@@ -432,6 +433,7 @@ trait InitMethods {
 				);
 			if (!isset($this->configColumns[$rawColumnName])) continue;
 			$configColumn = $this->configColumns[$rawColumnName];
+			if ($configColumn->GetDisabled()) continue;
 			$columnFilterCfg = $configColumn->GetFilter();
 			if ($columnFilterCfg === FALSE || $columnFilterCfg === NULL) continue;
 			$allowedOperators = $columnFilterCfg === TRUE || !is_integer($columnFilterCfg)

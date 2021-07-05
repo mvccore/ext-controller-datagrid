@@ -15,7 +15,8 @@ namespace MvcCore\Ext\Controllers\DataGrids\Configs;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class		Column
-implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
+implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
+			\JsonSerializable {
 	
 	const PHP_DOCS_TAG_NAME = '@datagrid';
 	
@@ -168,6 +169,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 		if ($disabled !== NULL)		$this->disabled		= $disabled;
 	}
 
+
+	/**
+	 * Return properties and values to serialize.
+	 * @return mixed
+	 */
+	public function jsonSerialize () {
+		return get_object_vars($this);
+	}
 	
 	/**
 	 * Get data grid model property name.
@@ -383,7 +392,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn{
 	
 	/**
 	 * Get if column is disabled forcely.
-	 * @return bool
+	 * @return bool|NULL
 	 */
 	public function GetDisabled () {
 		return $this->disabled;

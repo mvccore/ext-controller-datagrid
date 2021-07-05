@@ -72,7 +72,7 @@ trait ActionMethods {
 		foreach ($this->configColumns as $configColumn) {
 			$propName = $configColumn->GetPropName();
 			$clearResultState++;
-			if (!$configColumn->GetFilter()) continue;
+			if ($configColumn->GetDisabled() || !$configColumn->GetFilter()) continue;
 			$valueField = (new \MvcCore\Ext\Forms\Fields\Text)
 				->SetName(implode($form::HTML_IDS_DELIMITER, ['value', $propName]))
 				->SetValidators([]);
@@ -150,7 +150,6 @@ trait ActionMethods {
 			return [FALSE, $this->filtering];
 		$form->ClearSession();
 		
-		$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
 		$filteringColumns = $this->getFilteringColumns();
 		
 		$formValues = [];
@@ -193,6 +192,7 @@ trait ActionMethods {
 		$likeOperatorsAndPrefixes = array_intersect_key(static::$filterFormFieldValueOperatorPrefixes, $likeOperatorsArrFilter);
 		$notLikeOperatorsAndPrefixes = array_diff_key(static::$filterFormFieldValueOperatorPrefixes, $likeOperatorsArrFilter);
 		foreach ($formSubmitValues as $propName => $rawValues) {
+			if (!isset($filteringColumns[$propName])) continue;
 			$configColumn = $filteringColumns[$propName];
 			$rawValuesArr = explode($urlDelimiterValues, $rawValues);
 			$columnFilterCfg = $configColumn->GetFilter();
@@ -452,7 +452,11 @@ trait ActionMethods {
 		$configColumns = [];
 		foreach ($this->configColumns->GetArray() as $configColumn) {
 			$columnFilterCfg = $configColumn->GetFilter();
-			if ($columnFilterCfg === FALSE || $columnFilterCfg === NULL) continue;
+			if (
+				$configColumn->GetDisabled() || 
+				$columnFilterCfg === FALSE || 
+				$columnFilterCfg === NULL
+			) continue;
 			$configColumns[$configColumn->GetPropName()] = $configColumn;
 		}
 		return $configColumns;
