@@ -187,7 +187,7 @@ trait PreDispatchMethods {
 		if ($this->dispatchState >= \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED) return;
 		
 		if ($this->viewEnabled) {
-			$this->preDispatchViewInstance();
+			$this->view = $this->createView();
 			$this->view->grid = $this;
 		}
 
@@ -224,14 +224,14 @@ trait PreDispatchMethods {
 
 	/**
 	 * Create customized datagrid view instance.
-	 * @return void
+	 * @return \MvcCore\View
 	 */
-	protected function preDispatchViewInstance () {
+	protected function createView () {
 		$viewClass = $this->configRendering->GetViewClass();
-		$view = (new $viewClass)->SetController($this);
+		$view = $viewClass::CreateInstance()->SetController($this);
 		if ($view instanceof \MvcCore\Ext\Controllers\DataGrids\View);
 			$view->SetConfigRendering($this->configRendering);
-		$this->view = $view;
+		return $view;
 	}
 
 	/**
