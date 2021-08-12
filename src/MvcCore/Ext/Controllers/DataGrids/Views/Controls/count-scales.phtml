@@ -13,7 +13,7 @@
 		$countScales2Render[$countScale] = $countScale === $itemsPerPage;
 	endforeach;
 	$countScales2RenderCount = count($countScales2Render);
-	$firstIsCurrent = $countScales2RenderCount === 1;
+	$firstIsCurrent = $countScales2RenderCount === 1 && $grid->GetPagesCount() === 1;
 	$countScalesCssClasses[] = 'grid-control-items-count-' . $countScales2RenderCount;
 
 ?><table<?php

@@ -44,6 +44,14 @@ trait InternalGettersSetters {
 
 	/**
 	 * @inheritDocs
+	 * @return int|NULL
+	 */
+	public function GetPagesCount () {
+		return $this->pagesCount;
+	}
+
+	/**
+	 * @inheritDocs
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging|NULL
 	 */
 	public function GetPaging () {

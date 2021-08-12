@@ -404,6 +404,12 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @return int|NULL
 	 */
 	public function GetLimit ();
+	
+	/**
+	 * Get calculated pages count by items per page and total count in database.
+	 * @return int|NULL
+	 */
+	public function GetPagesCount ();
 
 	/**
 	 * Get paging items, completed after model total count has been loaded.

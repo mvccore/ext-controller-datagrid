@@ -138,6 +138,13 @@ trait InternalProps {
 	 * @var int|NULL
 	 */
 	protected $limit = NULL;
+
+	/**
+	 * Calculated pages count by items per page and total count in database.
+	 * @internal
+	 * @var int|NULL
+	 */
+	protected $pagesCount = NULL;
 	
 	/**
 	 * Allowed SQL operators and url segments by filtering mode configuration.
