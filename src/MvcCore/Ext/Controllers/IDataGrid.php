@@ -78,7 +78,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * only single column sort or to enable multi columns sort.
 	 * Single column sort enabled by default.
 	 * @param  int $sortingMode 
-	 * @return ConfigGettersSetters
+	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetSortingMode ($sortingMode = \MvcCore\Ext\Controllers\IDataGrid::SORT_MULTIPLE_COLUMNS);
 
@@ -107,7 +107,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_ANYWHERE`
 	 * By default, there is enabled to filter single column only.
 	 * @param  int $filteringMode 
-	 * @return ConfigGettersSetters
+	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetFilteringMode ($filteringMode = \MvcCore\Ext\Controllers\IDataGrid::FILTER_SINGLE_COLUMN);
 
