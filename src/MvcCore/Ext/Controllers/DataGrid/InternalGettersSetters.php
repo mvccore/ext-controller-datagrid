@@ -101,12 +101,12 @@ trait InternalGettersSetters {
 
 	/**
 	 * @inheritDocs
-	 * @param  string $controllerActionOrRouteName Should be `"Controller:Action"` combination or just any route name as custom specific string.
-	 * @param  array  $params                      Optional, array with params, key is param name, value is param value.
-	 * @throws \InvalidArgumentException           Grid doesn't contain given column name, unknown sort direction, unknown filter format...
+	 * @param  string|NULL $controllerActionOrRouteName Should be `"Controller:Action"` combination or just any route name as custom specific string.
+	 * @param  array       $params                      Optional, array with params, key is param name, value is param value.
+	 * @throws \InvalidArgumentException                Grid doesn't contain given column name, unknown sort direction, unknown filter format...
 	 * @return string
 	 */
-	public function Url ($controllerActionOrRouteName = 'Index:Index', array $params = []) {
+	public function Url ($controllerActionOrRouteName = NULL, array $params = []) {
 		if (!$this->appUrlCompletionInit)
 			$this->initAppUrlCompletion();
 		if (isset($params[static::URL_PARAM_GRID])) {
@@ -138,7 +138,12 @@ trait InternalGettersSetters {
 			);
 			$params[static::URL_PARAM_GRID] = rtrim(rawurldecode($gridParam), '/');
 		}
-		return parent::Url($controllerActionOrRouteName, $params);
+		return parent::Url(
+			$controllerActionOrRouteName !== NULL
+				? $controllerActionOrRouteName
+				: $this->appRouteName, // `self` by default
+			$params
+		);
 	}
 
 	/**
@@ -585,7 +590,6 @@ trait InternalGettersSetters {
 				$filterUrlValues = is_array($filterValues)
 					? implode($valuesDelim, $filterValues)
 					: (string) $filterValues;
-				$filterUrlValues = implode($valuesDelim, $filterValues);
 				$operatorUrlValue = $urlFilterOperators[$operator];
 				$filterParams[] = "{$columnUrlName}{$subjValueDelim}{$operatorUrlValue}{$subjValueDelim}{$filterUrlValues}";
 				if (!$multiFiltering) break;
