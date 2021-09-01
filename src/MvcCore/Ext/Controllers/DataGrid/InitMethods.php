@@ -62,10 +62,10 @@ trait InitMethods {
 		}
 
 		parent::Init();
-
-		$this->GetConfigUrlSegments();
-		$this->GetConfigColumns();
 		
+		$this->GetConfigUrlSegments();
+		$this->initTranslations();
+		$this->GetConfigColumns();
 		$this->GetRoute();
 		$this->GetUrlParams();
 		
@@ -73,14 +73,34 @@ trait InitMethods {
 		if (!$this->initUrlParams()) return; // redirect inside
 		$this->initOffsetLimit();
 		
+		$this->initItemsPerPageByRoute();
 		if (!$this->initUrlBuilding()) return; // redirect inside
-		$this->initTranslations();
 		$this->initOperators();
 		
 		$this->initSorting();
 		$this->initFiltering();
 
 		call_user_func([$this, $this->gridAction]);
+	}
+
+	/**
+	 * Initialize necessary properties for application URL building.
+	 * Aplication URL building is always initialized in controllers,
+	 * where grid doesn't exist and where is necessary to create 
+	 * URL to controller containing datagrid with sorting or filtering.
+	 * @return void
+	 */
+	protected function initAppUrlCompletion () {
+		$this->GetConfigUrlSegments();
+		$this->initTranslations();
+		$this->GetConfigColumns();
+		$this->GetGridRequest();
+		$this->GetUrlParams();
+		$this->initItemsPerPageByRoute();
+		$this->initTranslations();
+		$this->initUrlParamsQsParamsSeparator();
+		$this->initOperators();
+		$this->appUrlCompletionInit = TRUE;
 	}
 
 	/**
@@ -104,13 +124,7 @@ trait InitMethods {
 		/** @var \MvcCore\Controller $context */
 		$context = $this;
 
-		// init `$this->queryStringParamsSepatator` from router to build grid urls:
-		if ($this->queryStringParamsSepatator === NULL) {
-			$routerType = new \ReflectionClass($this->router);
-			$method = $routerType->getMethod('getQueryStringParamsSepatator');
-			$method->setAccessible(TRUE);
-			$this->queryStringParamsSepatator = $method->invoke($this->router);
-		}
+		$this->initUrlParamsQsParamsSeparator();
 
 		// set up default page if null:
 		if (isset($this->urlParams['page'])) {
@@ -209,6 +223,19 @@ trait InitMethods {
 		
 		return TRUE;
 	}
+
+	/**
+	 * Init `$this->queryStringParamsSepatator` from router to build grid urls:
+	 * @return void
+	 */
+	protected function initUrlParamsQsParamsSeparator () {
+		if ($this->queryStringParamsSepatator === NULL) {
+			$routerType = new \ReflectionClass($this->router);
+			$method = $routerType->getMethod('getQueryStringParamsSepatator');
+			$method->setAccessible(TRUE);
+			$this->queryStringParamsSepatator = $method->invoke($this->router);
+		}
+	}
 	
 	/**
 	 * Set up offset and limit properties for datagrid model instance.
@@ -238,9 +265,6 @@ trait InitMethods {
 	protected function initUrlBuilding () {
 		/** @var \MvcCore\Controller $context */
 		$context = $this;
-		
-		$routeConfig = $this->route->GetAdvancedConfigProperty('defaults');
-		$this->itemsPerPageRouteConfig = $routeConfig['count'];
 		
 		// remove all default values from route to build urls with `$this->urlParams` only:
 		$defaultParams = [];
@@ -276,11 +300,11 @@ trait InitMethods {
 				$gridParam === '' && 
 				$this->request->HasParam(static::URL_PARAM_GRID)
 			) {
-				$redirectUrl = $this->Url('self', [
+				$redirectUrl = parent::Url($this->appRouteName, [
 					static::URL_PARAM_GRID => NULL
 				]);
 			} else if ($gridParam !== $reqPathRaw) {
-				$redirectUrl = $this->Url('self', [
+				$redirectUrl = parent::Url($this->appRouteName, [
 					static::URL_PARAM_GRID => $gridParam
 				]);
 			}
@@ -299,6 +323,17 @@ trait InitMethods {
 		
 		return TRUE;
 	}
+	
+	/**
+	 * Init items per page by route configuration to build grid urls:
+	 * @return void
+	 */
+	protected function initItemsPerPageByRoute () {
+		if ($this->itemsPerPageRouteConfig === NULL) {
+			$routeConfig = $this->route->GetAdvancedConfigProperty('defaults');
+			$this->itemsPerPageRouteConfig = $routeConfig['count'];
+		}
+	}
 
 	/**
 	 * Initialize translation booleans and translate url names 
@@ -308,6 +343,7 @@ trait InitMethods {
 	 */
 	protected function initTranslations () {
 		// complete transaction booleans and translate filter url segments if necessary:
+		if ($this->translate !== NULL) return;
 		$this->translate = is_callable($this->translator) || $this->translator instanceof \Closure;
 		if (!$this->translate) 
 			$this->translateUrlNames = FALSE;
@@ -328,7 +364,12 @@ trait InitMethods {
 	 */
 	protected function initOperators () {
 		if (!$this->filteringMode) return;
-		$this->allowedOperators = $this->getAllowedOperators($this->filteringMode);
+		foreach ($this->configColumns as $urlName => $columnConfig) {
+			$columnFilterCfg = $columnConfig->GetFilter();
+			if (is_integer($columnFilterCfg) && $columnFilterCfg !== 0) 
+				$this->columnsAllowedOperators[$columnConfig->GetPropName()] = $this->getAllowedOperators($columnFilterCfg);
+		}
+		$this->defaultAllowedOperators = $this->getAllowedOperators($this->filteringMode);
 	}
 
 	/**
@@ -361,10 +402,6 @@ trait InitMethods {
 			}
 			$rawColumnName = $this->removeUnsafeChars($rawColumnName);
 			if ($rawColumnName === NULL) continue;
-			if ($this->translateUrlNames)
-				$rawColumnName = call_user_func_array(
-					$this->translator, [$rawColumnName]
-				);
 			if (!isset($this->configColumns[$rawColumnName])) continue;
 			$configColumn = $this->configColumns[$rawColumnName];
 			if ($configColumn->GetDisabled()) continue;
@@ -398,15 +435,15 @@ trait InitMethods {
 		$subjsDelim = $this->configUrlSegments->GetUrlDelimiterSubjects();
 		$subjValueDelim = $this->configUrlSegments->GetUrlDelimiterSubjectValue();
 		$valuesDelim = $this->configUrlSegments->GetUrlDelimiterValues();
-
+		$urlFilterOperators = $this->configUrlSegments->GetUrlFilterOperators();
+		$filteringColumns = $this->getFilteringColumns();
 		$rawFilteringItems = explode($subjsDelim, $rawFiltering);
 		$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
 		$filtering = [];
 		foreach ($rawFilteringItems as $rawFilteringItem) {
 			$delimPos = mb_strpos($rawFilteringItem, $subjValueDelim);
-			$operator = '=';
 			$multiple = TRUE;
-			$rawOperatorStr = NULL;
+			$rawOperatorStr = $urlFilterOperators['='];
 			$values = NULL;
 			$regex = NULL;
 			if ($delimPos === FALSE) {
@@ -426,19 +463,14 @@ trait InitMethods {
 				if ($rawValuesStr === NULL) continue;
 			}
 			$rawColumnName = $this->removeUnsafeChars($rawColumnName);
-			if ($rawColumnName === NULL) continue;
-			if ($this->translateUrlNames)
-				$rawColumnName = call_user_func_array(
-					$this->translator, [$rawColumnName]
-				);
-			if (!isset($this->configColumns[$rawColumnName])) continue;
+			if ($rawColumnName === NULL || !isset($this->configColumns[$rawColumnName])) continue;
 			$configColumn = $this->configColumns[$rawColumnName];
-			if ($configColumn->GetDisabled()) continue;
+			$columnPropName = $configColumn->GetPropName();
+			if (!isset($filteringColumns[$columnPropName])) continue;
 			$columnFilterCfg = $configColumn->GetFilter();
-			if ($columnFilterCfg === FALSE || $columnFilterCfg === NULL) continue;
-			$allowedOperators = $columnFilterCfg === TRUE || !is_integer($columnFilterCfg)
-				? $this->allowedOperators
-				: $this->getAllowedOperators($columnFilterCfg);
+			$allowedOperators = is_integer($columnFilterCfg)
+				? $this->columnsAllowedOperators[$columnPropName]
+				: $this->defaultAllowedOperators;
 			if ($values === NULL) {
 				$rawValues = explode($valuesDelim, $rawValuesStr);
 				foreach ($rawValues as $rawValue) {
@@ -446,13 +478,11 @@ trait InitMethods {
 					if ($rawValue !== '') $values[] = $rawValue;
 				}
 			}
-			if (count($values) === 0) continue;
-			if (isset($allowedOperators[$rawOperatorStr])) {
-				$operatorCfg = $allowedOperators[$rawOperatorStr];
-				$operator = $operatorCfg->operator;
-				$multiple = $operatorCfg->multiple;
-				$regex = $operatorCfg->regex;
-			}
+			if (count($values) === 0 || !isset($allowedOperators[$rawOperatorStr])) continue;
+			$operatorCfg = $allowedOperators[$rawOperatorStr];
+			$operator = $operatorCfg->operator;
+			$multiple = $operatorCfg->multiple;
+			$regex = $operatorCfg->regex;
 			if (!$multiple && count($values) > 1)
 				$values = [$values[0]];
 			if ($regex !== NULL) {

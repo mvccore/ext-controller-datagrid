@@ -147,7 +147,7 @@ trait InternalProps {
 	protected $pagesCount = NULL;
 	
 	/**
-	 * Allowed SQL operators and url segments by filtering mode configuration.
+	 * All columns default allowed SQL operators and url segments by filtering mode configuration.
 	 * Keys are (translated) url segments, values are `\stdClass`es with keys:
 	 * - `operator` - string SQL operator to use
 	 * - `multiple` - boolean if operatoc could have multiple values
@@ -156,7 +156,20 @@ trait InternalProps {
 	 * @internal
 	 * @var array
 	 */
-	protected $allowedOperators = [];
+	protected $defaultAllowedOperators = [];
+
+	/**
+	 * Eech column allowed SQL operators and url segments by filtering mode configuration.
+	 * Keys are column properties names and values are array with keys 
+	 * as (translated) url segments and values as `\stdClass`es with keys:
+	 * - `operator` - string SQL operator to use
+	 * - `multiple` - boolean if operatoc could have multiple values
+	 * - `regex`    - NULL or string with regular expression applied to match the value(s).
+	 * This collection is initialized internally.
+	 * @internal
+	 * @var array
+	 */
+	protected $columnsAllowedOperators = [];
 	
 	/**
 	 * Paging items, completed after model total count has been loaded.
@@ -168,9 +181,9 @@ trait InternalProps {
 	/**
 	 * Initialized into `TRUE` if any translator callable defined.
 	 * @internal
-	 * @var bool
+	 * @var bool|NULL
 	 */
-	protected $translate = FALSE;
+	protected $translate = NULL;
 
 	/**
 	 * Total items count in databse table, loaded from configured model.
@@ -213,4 +226,9 @@ trait InternalProps {
 	 */
 	protected $queryStringParamsSepatator = NULL;
 
+	/**
+	 * Application URL initialization processed boolean.
+	 * @var bool
+	 */
+	protected $appUrlCompletionInit = FALSE;
 }

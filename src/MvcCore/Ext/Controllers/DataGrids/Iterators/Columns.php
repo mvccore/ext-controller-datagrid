@@ -14,6 +14,63 @@
 namespace MvcCore\Ext\Controllers\DataGrids\Iterators;
 
 class Columns extends \MvcCore\Ext\Controllers\DataGrids\Iterators\AssocArray {
+	
+	/**
+	 * Reverse keys map, keyed by grid columns properties names,
+	 * values are keys into local iterator array store.
+	 * @var array
+	 */
+	protected $propsNamesMap = [];
+
+	/**
+	 * Reverse keys map, keyed by grid columns database columns names,
+	 * values are keys into local iterator array store.
+	 * @var array
+	 */
+	protected $dbColumnsNamesMap = [];
+
+	/**
+	 * Create grid columns iterator instance by given array.
+	 * @param \MvcCore\Ext\Controllers\DataGrids\Configs\Column[] $array 
+	 */
+	public function __construct (array & $array) {
+		parent::__construct($array);
+		foreach ($array as $columnUrlName => $gridColumnConfig) {
+			/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Column $gridColumnConfig */
+			$this->propsNamesMap[$gridColumnConfig->GetPropName()] = $columnUrlName;
+			$this->dbColumnsNamesMap[$gridColumnConfig->GetDbColumnName()] = $columnUrlName;
+		}
+	}
+	
+	/**
+	 * Get grid column config by column config property name.
+	 * @param  string $propName 
+	 * @throws \InvalidArgumentException Grid doesn't contain column config with code property name `{$propName}`.
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function GetByPropName ($propName) {
+		if (!isset($this->propsNamesMap[$propName]))
+			throw new \InvalidArgumentException(
+				"Datagrid doesn't contain column config with code property name `{$propName}`."
+			);
+		$key = $this->propsNamesMap[$propName];
+		return $this->array[$key];
+	}
+	
+	/**
+	 * Get grid column config by column config database column name.
+	 * @param  string $dbColumnName 
+	 * @throws \InvalidArgumentException Grid doesn't contain column config with database column name `{$dbColumnName}`.
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function GetByDbColumnName ($dbColumnName) {
+		if (!isset($this->dbColumnsNamesMap[$dbColumnName]))
+			throw new \InvalidArgumentException(
+				"Datagrid doesn't contain column config with database column name `{$dbColumnName}`."
+			);
+		$key = $this->dbColumnsNamesMap[$dbColumnName];
+		return $this->array[$key];
+	}
 
 	/**
 	 * Return current iterator value.

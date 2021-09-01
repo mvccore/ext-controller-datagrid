@@ -19,7 +19,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * Set model class instance.
 	 * @requires
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model 
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetModel (\MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model);
 
@@ -33,7 +33,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	/**
 	 * Set items per page, `10` by default.
 	 * @param  int $itemsPerPage
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetItemsPerPage ($itemsPerPage);
 
@@ -47,7 +47,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * Set count control scales, `[10,100,1000,0]` by default. 
 	 * Zero value (usually the last) means unlimited items per page.
 	 * @param  \int[] $countScales
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetCountScales (array $countScales);
 
@@ -62,7 +62,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * Set enabled/disabled custom items paer page value 
 	 * defined in URL. Disabled by default.
 	 * @param  bool $allowedCustomUrlCountScale
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetAllowedCustomUrlCountScale ($allowedCustomUrlCountScale);
 
@@ -78,7 +78,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * only single column sort or to enable multi columns sort.
 	 * Single column sort enabled by default.
 	 * @param  int $sortingMode 
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetSortingMode ($sortingMode = \MvcCore\Ext\Controllers\IDataGrid::SORT_MULTIPLE_COLUMNS);
 
@@ -107,7 +107,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_ANYWHERE`
 	 * By default, there is enabled to filter single column only.
 	 * @param  int $filteringMode 
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetFilteringMode ($filteringMode = \MvcCore\Ext\Controllers\IDataGrid::FILTER_SINGLE_COLUMN);
 
@@ -136,7 +136,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * database column names and values are sorting direction strings - `ASC | DESC`.
 	 * Define those values by your own externally only for your own risk.
 	 * @param  array $sorting
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetSorting (array $sorting);
 	
@@ -153,7 +153,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * allowed operator and values are values to filter on defined column.
 	 * Define those values by your own externally only for your own risk.
 	 * @param  array $filtering
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetFiltering (array $filtering);
 	
@@ -173,7 +173,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * method of by `Submit()` method in second position.
 	 * There is no custom filter form by default.
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm $translator
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetControlFilterForm (\MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm $filterForm);
 	
@@ -194,7 +194,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * as string translation key and second argument as array with replacements.
 	 * There is no translator by default.
 	 * @param  callable|\Closure $translator
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetTranslator ($translator);
 	
@@ -211,7 +211,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * `FALSE` by default to not translate those values.
 	 * To translate those values, you have also to provide translator.
 	 * @param  bool $translateUrlNames
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetTranslateUrlNames ($translateUrlNames);
 	
@@ -228,8 +228,8 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * and datagrid internal URL compilation.
 	 * This route is created internally by default.
 	 * Define this route by your own externally only for your own risk.
-	 * @param  \MvcCore\Route|NULL $route
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @param  \MvcCore\IRoute|NULL $route
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetRoute (\MvcCore\IRoute $route);
 
@@ -238,15 +238,30 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * and datagrid internal URL compilation.
 	 * This route is created internally by default.
 	 * Define this route by your own externally only for your own risk.
-	 * @return \MvcCore\Route|NULL
+	 * @return \MvcCore\IRoute|NULL
 	 */
 	public function GetRoute ();
+
+	/**
+	 * Set application route name used to build 
+	 * application url adresses, `self` by default.
+	 * @param  string $appRouteName 
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
+	 */
+	public function SetAppRouteName ($appRouteName);
+	
+	/**
+	 * Get application route name used to build 
+	 * application url adresses, `self` by default.
+	 * @return string
+	 */
+	public function GetAppRouteName ();
 
 	/**
 	 * Set URL params parsed automatically from URL inside datagrid component.
 	 * Define those values by your own externally only for your own risk.
 	 * @param  array $urlParams
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetUrlParams (array $urlParams);
 
@@ -263,7 +278,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * parts by providing this object custom instance.
 	 * This object is created automatically by default if not provided.
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $configUrlSegments
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetConfigUrlSegments (\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments $configUrlSegments);
 
@@ -282,7 +297,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * and controls by providing this object custom instance.
 	 * This object is created automatically by default if not provided.
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetConfigRendering (\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering $configRendering);
 
@@ -301,8 +316,8 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * model class properties decoration. Model has to implementing interface
 	 * `\MvcCore\Ext\Controllers\DataGrids\Models\IGridColumns`
 	 * to create this iterator automatically from decorated properties.
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column[]|\MvcCore\Ext\Controllers\DataGrids\Iterators\Columns $configRendering
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn[]|\MvcCore\Ext\Controllers\DataGrids\Iterators\Columns $configRendering
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetConfigColumns ($configColumns);
 
@@ -321,7 +336,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * There is defined css class `grid` by default and in `PreDispatch()` 
 	 * method, there is automatically added css class `grid-type-(table|grid)`.
 	 * @param  string|\string[] $cssClasses
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function AddCssClasses ($cssClasses);
 	
@@ -330,7 +345,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * There is defined css class `grid` by default and in `PreDispatch()` 
 	 * method, there is automatically added css class `grid-type-(table|grid)`.
 	 * @param  string|\string[] $cssClasses
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetCssClasses ($cssClasses);
 	
@@ -346,8 +361,8 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * Set internal table heading filter form instance in grid table type.
 	 * This object is created automatically by default if not provided.
 	 * Define this form instance by your own externally only for your own risk.
-	 * @param  \MvcCore\Ext\Form $tableHeadFilterForm
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @param  \MvcCore\Ext\IForm $tableHeadFilterForm
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetTableHeadFilterForm ($tableHeadFilterForm);
 	
@@ -355,7 +370,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * Get internal table heading filter form instance in grid table type.
 	 * This object is created automatically by default if not provided.
 	 * Define this form instance by your own externally only for your own risk.
-	 * @return \MvcCore\Ext\Form
+	 * @return \MvcCore\Ext\IForm
 	 */
 	public function GetTableHeadFilterForm ();
 	
@@ -365,7 +380,7 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * into any text values. This array is translated 
 	 * automatically by provided translator.
 	 * @param  array $controlsTexts
-	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetControlsTexts ($controlsTexts);
 	
@@ -442,9 +457,38 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * used to route `<grid>` param internally and to build 
 	 * `<grid>` param for `self` url back again.
 	 * Define this object by your own externally only for your own risk.
-	 * @return \MvcCore\Request
+	 * @return \MvcCore\IRequest
 	 */
 	public function GetGridRequest ();
+
+	/**
+	 * Generates url inside datagrid on target route.
+	 * Params argument could contain `grid` key with array to define grid options
+	 * and there could be key `page`, `count`, `sort` and `filter`.
+	 * Page and count grid options are always integers.
+	 * Sort option is array with keys as grid column properties names and with values as `ASC` or `DESC`.
+	 * Filter option is array with keys as grid column properties names and with values as array
+	 * with keys as allowed operator(s) and values as column filtering values.
+	 * Page and count params are not checked for max. values in this URL completion.
+	 * - By `"Controller:Action"` name and params array
+	 *   (for routes configuration when routes array has keys with `"Controller:Action"` strings
+	 *   and routes has not controller name and action name defined inside).
+	 * - By route name and params array
+	 *   (route name is key in routes configuration array, should be any string
+	 *   but routes must have information about controller name and action name inside).
+	 * Result address (url string) should have two forms:
+	 * - Nice rewritten URL by routes configuration
+	 *   (for apps with URL rewrite support (Apache `.htaccess` or IIS URL rewrite module)
+	 *   and when first param is key in routes configuration array).
+	 * - For all other cases is URL form like: `"index.php?controller=ctrlName&amp;action=actionName"`
+	 *   (when first param is not founded in routes configuration array).
+	 * 
+	 * @param  string $controllerActionOrRouteName Should be `"Controller:Action"` combination or just any route name as custom specific string.
+	 * @param  array  $params                      Optional, array with params, key is param name, value is param value.
+	 * @throws \InvalidArgumentException           Grid doesn't contain given column name, unknown sort direction, unknown filter format...
+	 * @return string
+	 */
+	// public function Url ($controllerActionOrRouteName = 'Index:Index', array $params = []);
 
 	/**
 	 * Return grid URL. Method uses current controller route
@@ -477,50 +521,51 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	public function GridCountUrl ($count);
 
 	/**
-	 * Complete datagrid URL to sort datagrid by column config and optional direction.
-	 * Direction could be defined as string `ASC` or `dESC`. If no direction is provided 
-	 * (`NULL`), there is used next direction for given column. If there is provided 
-	 * direction as an empty string, there is used no sorting for given column.
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
-	 * @param  string|NULL                                       $direction
+	 * Complete datagrid URL to sort datagrid by column config (or by column config 
+	 * property name) and optional direction. Direction could be defined as string 
+	 * `ASC` or `DESC`. If no direction is provided (`NULL`), there is used next 
+	 * direction for given column. If there is provided direction as an empty string, 
+	 * there is used no sorting for given column.
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn|string $columnConfigOrPropName 
+	 * @param  string|NULL                                               $direction
 	 * @return string
 	 */
-	public function GridSortUrl (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column, $direction = NULL);
+	public function GridSortUrl ($columnConfigOrPropName, $direction = NULL);
 	
 	/**
 	 * Complete datagrid URL to filter datagrid by column config, operator 
 	 * and single or multiple values. If given value is `NULL`, filtering is removed.
 	 * @internal
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
-	 * @param  mixed                                             $cellValue 
-	 * @param  string                                            $operator
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn|string $columnConfigOrPropName 
+	 * @param  mixed                                                     $cellValue 
+	 * @param  string                                                    $operator
 	 * @return string
 	 */
-	public function GridFilterUrl (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column, $cellValue, $operator = '=');
+	public function GridFilterUrl ($columnConfigOrPropName, $cellValue, $operator = '=');
 
 	/**
 	 * Get column current sort direction as boolean. `TRUE` for `ASC` direction,
 	 * `FALSE` for `DESC` direction and `NULL` for not sorted column.
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn|string $columnConfigOrPropName 
 	 * @return bool|NULL
 	 */
-	public function GetColumnSortDirection (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column);
+	public function GetColumnSortDirection ($columnConfigOrPropName);
 
 	/**
 	 * Get column sorting index (in multiple columns sorting).
 	 * If column is not sorted, return `FALSE`.
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column 
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn|string $columnConfigOrPropName  
 	 * @return int|FALSE
 	 */
-	public function GetColumnSortIndex (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column);
+	public function GetColumnSortIndex ($columnConfigOrPropName);
 
 	/**
 	 * Get column filtering index (in multiple columns filtering).
 	 * If column is not filtered, return `FALSE`.
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column 
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn|string $columnConfigOrPropName 
 	 * @return int|FALSE
 	 */
-	public function GetColumnFilterIndex (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column);
+	public function GetColumnFilterIndex ($columnConfigOrPropName);
 
 	/**
 	 * Get new filtering from filter form submit values array.

@@ -53,8 +53,8 @@ trait ActionMethods {
 		$formId = 'grid-table-head-filtering-'.sha1(serialize([
 			$this->controllerName, $this->actionName, $this->configColumns
 		]));
-		$actionUrl = $this->Url(
-			'self', [static::URL_PARAM_ACTION => 'filter-table']
+		$actionUrl = parent::Url(
+			$this->appRouteName, [static::URL_PARAM_ACTION => 'filter-table']
 		);
 		$form = new \MvcCore\Ext\Form($this);
 		$this->tableHeadFilterForm = $form;
@@ -127,7 +127,7 @@ trait ActionMethods {
 		/** @var \MvcCore\Controller $context */
 		$context = $this;
 		if (!$this->configRendering->GetRenderTableHeadFiltering()) {
-			$redirectUrl = $this->Url('self', [static::URL_PARAM_ACTION => NULL]);
+			$redirectUrl = parent::Url($this->appRouteName, [static::URL_PARAM_ACTION => NULL]);
 			$context::Redirect($redirectUrl, \MvcCore\IResponse::SEE_OTHER, 'Grid has not configured table heading filter.');
 		}
 		$this->createTableHeadFilterForm(TRUE);
@@ -196,9 +196,9 @@ trait ActionMethods {
 			$configColumn = $filteringColumns[$propName];
 			$rawValuesArr = explode($urlDelimiterValues, $rawValues);
 			$columnFilterCfg = $configColumn->GetFilter();
-			$allowedOperators = $columnFilterCfg === TRUE || !is_integer($columnFilterCfg)
-				? $this->allowedOperators
-				: $this->getAllowedOperators($columnFilterCfg);
+			$allowedOperators = is_integer($columnFilterCfg)
+				? $this->columnsAllowedOperators[$configColumn->GetPropName()]
+				: $this->defaultAllowedOperators;
 			$filterValues = [];
 			foreach ($rawValuesArr as $rawValue) {
 				$rawValue = trim($rawValue);
@@ -279,7 +279,7 @@ trait ActionMethods {
 		/** @var \MvcCore\Controller $context */
 		$context = $this;
 		if ($this->controlFilterForm === NULL) {
-			$redirectUrl = $this->Url('self', [static::URL_PARAM_ACTION => NULL]);
+			$redirectUrl = parent::Url($this->appRouteName, [static::URL_PARAM_ACTION => NULL]);
 			$context::Redirect($redirectUrl, \MvcCore\IResponse::SEE_OTHER, 'Grid has not configured custom filter form.');
 			return FALSE;
 		}
@@ -322,9 +322,9 @@ trait ActionMethods {
 			if (!isset($filteringColumns[$propName])) continue;
 			$configColumn = $filteringColumns[$propName];
 			$columnFilterCfg = $configColumn->GetFilter();
-			$allowedOperators = $columnFilterCfg === TRUE || !is_integer($columnFilterCfg)
-				? $this->allowedOperators
-				: $this->getAllowedOperators($columnFilterCfg);
+			$allowedOperators = is_integer($columnFilterCfg)
+				? $this->columnsAllowedOperators[$configColumn->GetPropName()]
+				: $this->defaultAllowedOperators;
 			$columnDbName = $configColumn->GetDbColumnName();
 			if ($operatorAndValues === NULL) {
 				if (isset($newFiltering[$columnDbName]))
@@ -384,10 +384,9 @@ trait ActionMethods {
 		$subjValueDelim = $this->configUrlSegments->GetUrlDelimiterSubjectValue();
 		$valuesDelim = $this->configUrlSegments->GetUrlDelimiterValues();
 		$subjsDelim = $this->configUrlSegments->GetUrlDelimiterSubjects();
-		foreach ($this->configColumns->GetArray() as $columnUrlName => $columnConfig) {
-			$columnDbName = $columnConfig->GetDbColumnName();
-			if (!isset($newFiltering[$columnDbName])) continue;
-			$filterOperatorsAndValues = $newFiltering[$columnDbName];
+		foreach ($newFiltering as $columnDbName => $filterOperatorsAndValues) {
+			$columnConfig = $this->configColumns->GetByDbColumnName($columnDbName);
+			$columnUrlName = $columnConfig->GetUrlName();
 			foreach ($filterOperatorsAndValues as $operator => $filterValues) {
 				foreach ($filterValues as $index => $filterValue)
 					$filterValues[$index] = html_entity_decode($filterValue, ENT_NOQUOTES);
@@ -453,11 +452,13 @@ trait ActionMethods {
 		foreach ($this->configColumns->GetArray() as $configColumn) {
 			$columnFilterCfg = $configColumn->GetFilter();
 			if (
-				$configColumn->GetDisabled() || 
-				$columnFilterCfg === FALSE || 
-				$columnFilterCfg === NULL
-			) continue;
-			$configColumns[$configColumn->GetPropName()] = $configColumn;
+				!$configColumn->GetDisabled() && (
+					is_bool($columnFilterCfg) || 
+					(is_int($columnFilterCfg) && $columnFilterCfg !== 0)
+				)
+			) {
+				$configColumns[$configColumn->GetPropName()] = $configColumn;
+			}
 		}
 		return $configColumns;
 	}

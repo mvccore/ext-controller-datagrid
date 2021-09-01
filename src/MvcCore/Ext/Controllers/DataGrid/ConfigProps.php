@@ -126,6 +126,13 @@ trait ConfigProps {
 	protected $route = NULL;
 
 	/**
+	 * Application route name used to build application 
+	 * url adresses, `self` by default.
+	 * @var string
+	 */
+	protected $appRouteName = 'self';
+
+	/**
 	 * URL params parsed automatically from URL inside datagrid component.
 	 * Define those values by your own externally only for your own risk.
 	 * @var array|NULL
@@ -191,5 +198,4 @@ trait ConfigProps {
 		'filter'	=> 'Filter',
 		'clear'		=> 'Clear',
 	];
-
 }

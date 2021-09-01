@@ -80,8 +80,9 @@ trait FilterForm {
 		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Forms\FilterForm|\MvcCore\Ext\Form */
 		parent::__construct($grid);
 		if ($this->action === NULL) {
-			$actionUrl = $grid->Url(
-				'self', [$grid::URL_PARAM_ACTION => 'filter-form']
+			$actionUrl = $grid->GetParentController()->Url(
+				$grid->GetAppRouteName(), 
+				[$grid::URL_PARAM_ACTION => 'filter-form']
 			);
 			$this->SetAction($actionUrl);
 		}

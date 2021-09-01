@@ -111,8 +111,8 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 * @param int|NULL              $columnIndex  Datagrid column index, starting with `0`, optional.
 	 * @param string|bool|NULL      $sort         Default sorting definition with values `ASC | DESC` 
 	 *                                            or `TRUE | FALSE` to enable/disable sorting.
-	 * @param int|bool              $filter       Filtering mode flags to allow specify operators for each column 
-	 *                                            or boolean to allow filtering only.
+	 * @param int|bool              $filter       Filtering mode flags to allow specify operators 
+	 *                                            for each column or boolean to allow filtering only.
 	 * @param \string[]|NULL        $types        Property type(s), necessary for automatic formating.
 	 * @param array|NULL            $format       Property automatic formating arguments.
 	 * @param string|NULL           $viewHelper   Property automatic formating view helper name.
@@ -127,8 +127,8 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		$humanName = NULL, 
 		$urlName = NULL, 
 		$columnIndex = NULL,
-		$sort = FALSE, 
-		$filter = FALSE, 
+		$sort = NULL, 
+		$filter = NULL, 
 		$types = NULL, 
 		$format = NULL, 
 		$viewHelper = NULL,

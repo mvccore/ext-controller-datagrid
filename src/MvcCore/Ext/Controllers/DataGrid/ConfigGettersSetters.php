@@ -38,7 +38,7 @@ trait ConfigGettersSetters {
 		if (
 			($this->model === NULL && $throwExceptionIfNull) || 
 			($this->model !== NULL && !($this->model instanceof \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel))
-		) throw new \InvalidArgumentException("No model defined or model doesn't implement `\\MvcCore\\Ext\\Controllers\\DataGrids\\Models\\IGridModel`.");
+		) throw new \InvalidArgumentException("No datagrid model defined or model doesn't implement `\\MvcCore\\Ext\\Controllers\\DataGrids\\Models\\IGridModel`.");
 		return $this->model;
 	}
 
@@ -266,6 +266,26 @@ trait ConfigGettersSetters {
 	}
 
 	/**
+	 * Set application route name used to build 
+	 * application url adresses, `self` by default.
+	 * @param  string $appRouteName 
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetAppRouteName ($appRouteName) {
+		$this->appRouteName = $appRouteName;
+		return $this;
+	}
+	
+	/**
+	 * Get application route name used to build 
+	 * application url adresses, `self` by default.
+	 * @return string
+	 */
+	public function GetAppRouteName () {
+		return $this->appRouteName;
+	}
+
+	/**
 	 * @inheritDocs
 	 * @param  array $urlParams
 	 * @return \MvcCore\Ext\Controllers\DataGrid
@@ -358,15 +378,18 @@ trait ConfigGettersSetters {
 						"Datagrid column configuration item requires `propName` (index: {$index})."
 					);
 					$urlName = $configColumn->GetUrlName();
-					if ($urlName === NULL) 
-						$configColumn->SetUrlName($propName);
+					if ($urlName === NULL) $urlName = $propName;
+					$urlNameTranslated = $this->translateUrlNames
+						? call_user_func_array($this->translator, [$urlName])
+						: $urlName;
+					$configColumn->SetUrlName($urlNameTranslated);
 					$dbColumnName = $configColumn->GetDbColumnName();
 					if ($dbColumnName === NULL) 
 						$configColumn->SetDbColumnName($propName);
 					$humanName = $configColumn->GetHumanName();
 					if ($humanName === NULL) 
 						$configColumn->SetHumanName($propName);
-					$configColumnsByUrlNames[$urlName] = $configColumn;
+					$configColumnsByUrlNames[$urlNameTranslated] = $configColumn;
 				} else {
 					$throwInvalidTypeError = TRUE;
 					break;
@@ -413,7 +436,7 @@ trait ConfigGettersSetters {
 						foreach ($configColumnsUrlNames as $configColumnsUrlName) {
 							if (mb_strpos($configColumnsUrlName, $notAllowedCharInUrlNames) !== FALSE) {
 								throw new \InvalidArgumentException(
-									"Grid column configuration url name `{$configColumnsUrlName}` ".
+									"Datagrid column configuration url name `{$configColumnsUrlName}` ".
 									"contains not allowed grid url segment character `{$notAllowedCharInUrlNames}`. ".
 									"Try to configure different grid url segment or different property url name."
 								);
@@ -421,7 +444,14 @@ trait ConfigGettersSetters {
 						}
 					}
 				}
-				
+				if ($this->translateUrlNames) {
+					$configColumnsArrTranslated = [];
+					foreach ($configColumnsArr as $urlName => $configColumn) {
+						$urlNameTranslated = call_user_func_array($this->translator, [$urlName]);
+						$configColumnsArrTranslated[$urlNameTranslated] = $configColumn->SetUrlName($urlNameTranslated);;
+					}
+					$configColumnsArr = $configColumnsArrTranslated;
+				}
 				$this->configColumns = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns(
 					$configColumnsArr
 				);

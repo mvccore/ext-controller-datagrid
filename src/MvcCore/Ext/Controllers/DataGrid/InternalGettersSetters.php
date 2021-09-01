@@ -101,6 +101,48 @@ trait InternalGettersSetters {
 
 	/**
 	 * @inheritDocs
+	 * @param  string $controllerActionOrRouteName Should be `"Controller:Action"` combination or just any route name as custom specific string.
+	 * @param  array  $params                      Optional, array with params, key is param name, value is param value.
+	 * @throws \InvalidArgumentException           Grid doesn't contain given column name, unknown sort direction, unknown filter format...
+	 * @return string
+	 */
+	public function Url ($controllerActionOrRouteName = 'Index:Index', array $params = []) {
+		if (!$this->appUrlCompletionInit)
+			$this->initAppUrlCompletion();
+		if (isset($params[static::URL_PARAM_GRID])) {
+			$rawGridParams = $params[static::URL_PARAM_GRID];
+			$page = $this->urlParams['page'];
+			$count = $this->urlParams['count'];
+			if (isset($rawGridParams['page'])) 
+				$page = $rawGridParams['page'];
+			if (isset($rawGridParams['count'])) 
+				$count = $rawGridParams['count'];
+			if ($count === $this->itemsPerPageRouteConfig) {
+				$count = NULL;
+				if ($page === 1) $page = NULL;
+			}
+			$gridParams = [
+				'page'	=> $page,
+				'count'	=> $count,
+			];
+			if (isset($rawGridParams['sort'])) 
+				$gridParams['sort'] = $this->urlCompleteSortParam($rawGridParams['sort']);
+			if (isset($rawGridParams['filter'])) 
+				$gridParams['filter'] = $this->urlCompleteFilterParam($rawGridParams['filter']);
+			list ($gridParam) = $this->route->Url(
+				$this->gridRequest,
+				$gridParams,
+				$this->urlParams,
+				$this->queryStringParamsSepatator,
+				FALSE
+			);
+			$params[static::URL_PARAM_GRID] = rtrim(rawurldecode($gridParam), '/');
+		}
+		return parent::Url($controllerActionOrRouteName, $params);
+	}
+
+	/**
+	 * @inheritDocs
 	 * @return string
 	 */
 	public function GridUrl (array $gridParams = []) {
@@ -112,10 +154,10 @@ trait InternalGettersSetters {
 			FALSE
 		);
 		$gridParam = rtrim(rawurldecode($gridParam), '/');
-		$selfParams = [static::URL_PARAM_GRID => $gridParam];
+		$urlParams = [static::URL_PARAM_GRID => $gridParam];
 		if (array_key_exists(static::URL_PARAM_ACTION, $gridParams) && $gridParams[static::URL_PARAM_ACTION] === NULL)
-			$selfParams[static::URL_PARAM_ACTION] = NULL;
-		return $this->Url('self', $selfParams);
+			$urlParams[static::URL_PARAM_ACTION] = NULL;
+		return parent::Url($this->appRouteName, $urlParams);
 	}
 	
 	/**
@@ -167,11 +209,15 @@ trait InternalGettersSetters {
 
 	/**
 	 * @inheritDocs
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
-	 * @param  string|NULL                                       $direction
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column|string $columnConfigOrPropName 
+	 * @param  string|NULL                                              $direction
 	 * @return string
 	 */
-	public function GridSortUrl (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column, $direction = NULL) {
+	public function GridSortUrl ($columnConfigOrPropName, $direction = NULL) {
+		/** @var \MvcCore\Ext\Controllers\DataGrid $this */
+		$column = $columnConfigOrPropName instanceof \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn
+			? $columnConfigOrPropName
+			: $this->configColumns->GetByPropName($columnConfigOrPropName);
 		$configUrlSegments = $this->configUrlSegments;
 		$urlDirAsc = $configUrlSegments->GetUrlSuffixSortAsc();
 		$urlDirDesc = $configUrlSegments->GetUrlSuffixSortDesc();
@@ -206,13 +252,12 @@ trait InternalGettersSetters {
 			$sortParams[] = "{$currentColumnUrlName}{$subjValueDelim}{$currentColumnUrlDir}";
 		$multiSorting = ($this->sortingMode & static::SORT_MULTIPLE_COLUMNS) != 0;
 		if ($multiSorting) {
-			foreach ($this->configColumns->GetArray() as $columnUrlName => $columnConfig) {
-				$columnDbName = $columnConfig->GetDbColumnName();
-				if (!isset($currentSortDbNames[$columnDbName])) continue;
-				$sortDirection = $currentSortDbNames[$columnDbName];
+			foreach ($currentSortDbNames as $columnDbName => $sortDirection) {
 				$columnUrlDir = $urlDirAsc;
 				if (isset($oppositeDirections[$sortDirection]))
 					$columnUrlDir = $urlDirections[$sortDirection];
+				$columnConfig = $this->configColumns->GetByDbColumnName($columnDbName);
+				$columnUrlName = $columnConfig->GetUrlName();
 				$sortParams[] = "{$columnUrlName}{$subjValueDelim}{$columnUrlDir}";
 			}
 		}
@@ -233,12 +278,16 @@ trait InternalGettersSetters {
 	
 	/**
 	 * @inheritDocs
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
-	 * @param  mixed                                             $cellValue 
-	 * @param  string                                            $operator
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column|string $columnConfigOrPropName 
+	 * @param  mixed                                                    $cellValue 
+	 * @param  string                                                   $operator
 	 * @return string
 	 */
-	public function GridFilterUrl (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column, $cellValue, $operator = '=') {
+	public function GridFilterUrl ($columnConfigOrPropName, $cellValue, $operator = '=') {
+		/** @var \MvcCore\Ext\Controllers\DataGrid $this */
+		$column = $columnConfigOrPropName instanceof \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn
+			? $columnConfigOrPropName
+			: $this->configColumns->GetByPropName($columnConfigOrPropName);
 		$configUrlSegments = $this->configUrlSegments;
 		$subjValueDelim = $configUrlSegments->GetUrlDelimiterSubjectValue();
 		$valuesDelim = $configUrlSegments->GetUrlDelimiterValues();
@@ -269,16 +318,14 @@ trait InternalGettersSetters {
 		
 		$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
 		if ($multiFiltering) {
-			foreach ($this->configColumns->GetArray() as $columnUrlName => $columnConfig) {
-				$columnDbName = $columnConfig->GetDbColumnName();
-				if (!isset($currentFilterDbNames[$columnDbName])) continue;
-				$filterOperatorsAndValues = $currentFilterDbNames[$columnDbName];
+			foreach ($currentFilterDbNames as $columnDbName => $filterOperatorsAndValues) {
+				$columnConfig = $this->configColumns->GetByDbColumnName($columnDbName);
+				$columnUrlName = $columnConfig->GetUrlName();
 				foreach ($filterOperatorsAndValues as $operator => $filterValues) {
 					$filterUrlValues = implode($valuesDelim, $filterValues);
 					$operatorUrlValue = $urlFilterOperators[$operator];
 					$filterParams[] = "{$columnUrlName}{$subjValueDelim}{$operatorUrlValue}{$subjValueDelim}{$filterUrlValues}";
 				}
-				
 			}
 		}
 		$page = $this->page;
@@ -298,10 +345,14 @@ trait InternalGettersSetters {
 
 	/**
 	 * @inheritDocs
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column|string $columnConfigOrPropName 
 	 * @return bool|NULL
 	 */
-	public function GetColumnSortDirection (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column) {
+	public function GetColumnSortDirection ($columnConfigOrPropName) {
+		/** @var \MvcCore\Ext\Controllers\DataGrid $this */
+		$column = $columnConfigOrPropName instanceof \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn
+			? $columnConfigOrPropName
+			: $this->configColumns->GetByPropName($columnConfigOrPropName);
 		$columnDbName = $column->GetDbColumnName();
 		if (!isset($this->sorting[$columnDbName])) 
 			return NULL;
@@ -317,20 +368,28 @@ trait InternalGettersSetters {
 	
 	/**
 	 * @inheritDocs
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column 
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column|string $columnConfigOrPropName 
 	 * @return int|FALSE
 	 */
-	public function GetColumnSortIndex (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column) {
+	public function GetColumnSortIndex ($columnConfigOrPropName) {
+		/** @var \MvcCore\Ext\Controllers\DataGrid $this */
+		$column = $columnConfigOrPropName instanceof \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn
+			? $columnConfigOrPropName
+			: $this->configColumns->GetByPropName($columnConfigOrPropName);
 		$columnDbName = $column->GetDbColumnName();
 		return array_search($columnDbName, array_keys($this->sorting), TRUE);
 	}
 
 	/**
 	 * @inheritDocs
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column 
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column|string $columnConfigOrPropName 
 	 * @return int|FALSE
 	 */
-	public function GetColumnFilterIndex (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column) {
+	public function GetColumnFilterIndex ($columnConfigOrPropName) {
+		/** @var \MvcCore\Ext\Controllers\DataGrid $this */
+		$column = $columnConfigOrPropName instanceof \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn
+			? $columnConfigOrPropName
+			: $this->configColumns->GetByPropName($columnConfigOrPropName);
 		$columnDbName = $column->GetDbColumnName();
 		return array_search($columnDbName, array_keys($this->filtering), TRUE);
 	}
@@ -399,5 +458,140 @@ trait InternalGettersSetters {
 		$aInt = intval(floor($a));
 		$bInt = intval(floor($b));
 		return ($aInt - ($a % $b)) / $bInt;
+	}
+
+	/**
+	 * Complete grid `sort` URL param for standard application `Url()` method.
+	 * @param  array $sortGridParams 
+	 * @return string
+	 */
+	protected function urlCompleteSortParam ($sortGridParams) {
+		$invalidSortParamMsg = implode("\n", [
+			"Datagrid unknown `sort` URL param. ".
+			"Sort param has to be array with keys as column config properties names ".
+			"and with values to be strings `ASC` or `DESC`."
+		]);
+		if (!is_array($sortGridParams)) 
+			throw new \InvalidArgumentException($invalidSortParamMsg);
+		$configUrlSegments = $this->configUrlSegments;
+		$urlDirAsc = $configUrlSegments->GetUrlSuffixSortAsc();
+		$urlDirDesc = $configUrlSegments->GetUrlSuffixSortDesc();
+		$subjValueDelim = $configUrlSegments->GetUrlDelimiterSubjectValue();
+		$subjsDelim = $configUrlSegments->GetUrlDelimiterSubjects();
+		$urlDirections = [
+			'ASC'	=> $urlDirAsc,
+			'DESC'	=> $urlDirDesc,
+		];
+		$multiSorting = ($this->sortingMode & static::SORT_MULTIPLE_COLUMNS) != 0;
+		$sortParams = [];
+		if ($multiSorting) {
+			// accept initial grid sorting
+			$currentSortDbNames = array_merge([], $this->sorting);
+			foreach ($currentSortDbNames as $columnDbName => $sortDirection) {
+				$columnConfig = $this->configColumns->GetByDbColumnName($columnDbName);
+				$columnPropName = $columnConfig->GetPropName();
+				if (isset($sortGridParams[$columnPropName])) continue;
+				$columnUrlName = $columnConfig->GetUrlName();
+				$columnUrlDir = $urlDirections[$sortDirection];
+				$sortParams[] = "{$columnUrlName}{$subjValueDelim}{$columnUrlDir}";
+			}
+		}
+		// complete sort param by given sorting array
+		foreach ($sortGridParams as $columnPropName => $sortDirection) {
+			$columnConfig = $this->configColumns->GetByPropName($columnPropName);
+			$sortDirection = strtoupper($sortDirection);
+			if (!isset($urlDirections[$sortDirection]))
+				throw new \InvalidArgumentException($invalidSortParamMsg);
+			$columnUrlName = $columnConfig->GetUrlName();
+			$columnUrlDir = $urlDirections[$sortDirection];
+			$sortParams[] = "{$columnUrlName}{$subjValueDelim}{$columnUrlDir}";
+			if (!$multiSorting) break;
+		}
+		return implode($subjsDelim, $sortParams);
+	}
+
+	/**
+	 * Complete grid `filter` URL param for standard application `Url()` method.
+	 * @param  array $filterGridParams 
+	 * @return string
+	 */
+	protected function urlCompleteFilterParam ($filterGridParams) {
+		$invalidFilterParamMsg = implode("\n", [
+			"Datagrid unknown `filter` URL param. ".
+			"Filter param has to be array with keys as column config properties names ".
+			"and with values to be array with keys as allowed operator(s) ".
+			"and values as column filtered values."
+		]);
+		if (!is_array($filterGridParams)) 
+			throw new \InvalidArgumentException($invalidFilterParamMsg);
+		$configUrlSegments = $this->configUrlSegments;
+		$subjValueDelim = $configUrlSegments->GetUrlDelimiterSubjectValue();
+		$valuesDelim = $configUrlSegments->GetUrlDelimiterValues();
+		$subjsDelim = $configUrlSegments->GetUrlDelimiterSubjects();
+		$urlFilterOperators = $configUrlSegments->GetUrlFilterOperators();
+		$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
+		$filterParams = [];
+		if ($multiFiltering) {
+			// accept initial grid filtering
+			$currentFilterDbNames = array_merge([], $this->filtering);
+			foreach ($currentFilterDbNames as $columnDbName => $filterOperatorsAndValues) {
+				$columnConfig = $this->configColumns->GetByDbColumnName($columnDbName);
+				$columnPropName = $columnConfig->GetPropName();
+				if (isset($filterGridParams[$columnPropName])) continue;
+				$columnUrlName = $columnConfig->GetUrlName();
+				foreach ($filterOperatorsAndValues as $operator => $filterValues) {
+					$filterUrlValues = implode($valuesDelim, $filterValues);
+					$operatorUrlValue = $urlFilterOperators[$operator];
+					$filterParams[] = "{$columnUrlName}{$subjValueDelim}{$operatorUrlValue}{$subjValueDelim}{$filterUrlValues}";
+				}
+			}
+		}
+		// complete filter param by given filtering array
+		foreach ($filterGridParams as $columnPropName => $filterOperatorsAndValues) {
+			if (!is_array($filterOperatorsAndValues)) 
+				throw new \InvalidArgumentException($invalidFilterParamMsg);
+			$columnConfig = $this->configColumns->GetByPropName($columnPropName);
+			// check if filtering is allowed for this column
+			$columnFilterCfg = $columnConfig->GetFilter();
+			$columnHasAllowedFiltering = (!$columnConfig->GetDisabled() && (
+				is_bool($columnFilterCfg) || 
+				(is_int($columnFilterCfg) && $columnFilterCfg !== 0)
+			));
+			if (!$columnHasAllowedFiltering) 
+				throw new \InvalidArgumentException("Datagrid doesn't allow to filter by column `$columnPropName`.");
+			$allowedOperators = is_integer($columnFilterCfg)
+				? $this->columnsAllowedOperators[$columnConfig->GetPropName()]
+				: $this->defaultAllowedOperators;
+			// complete filter URL segment for this column
+			$columnUrlName = $columnConfig->GetUrlName();
+			foreach ($filterOperatorsAndValues as $operator => $filterValues) {
+				$operatorUrlValue = $urlFilterOperators[$operator];
+				if (!isset($allowedOperators[$operatorUrlValue])) 
+					throw new \InvalidArgumentException("Datagrid doesn't allow to filter by operator `{$operator}`, column `$columnPropName`.");
+				$operatorCfg = $allowedOperators[$operatorUrlValue];
+				$multiple = $operatorCfg->multiple;
+				$regex = $operatorCfg->regex;
+				if (!$multiple && count($filterValues) > 1)
+					throw new \InvalidArgumentException("Datagrid doesn't allow to filter by multiple values in column `$columnPropName`.");
+				if ($regex !== NULL) {
+					$newValues = [];
+					foreach ($filterValues as $value)
+						if (preg_match($regex, $value))
+							$newValues[] = $value;
+					if (count($newValues) === 0) 
+						throw new \InvalidArgumentException("Datagrid doesn't allow given filter value in column `$columnPropName`.");
+					$filterValues = $newValues;
+				}
+				$filterUrlValues = is_array($filterValues)
+					? implode($valuesDelim, $filterValues)
+					: (string) $filterValues;
+				$filterUrlValues = implode($valuesDelim, $filterValues);
+				$operatorUrlValue = $urlFilterOperators[$operator];
+				$filterParams[] = "{$columnUrlName}{$subjValueDelim}{$operatorUrlValue}{$subjValueDelim}{$filterUrlValues}";
+				if (!$multiFiltering) break;
+			}
+			if (!$multiFiltering) break;
+		}
+		return implode($subjsDelim, $filterParams);
 	}
 }

@@ -479,12 +479,6 @@ trait PreDispatchMethods {
 					$this->translator, [$configColumn->GetHumanName()]
 				)
 			);
-			if ($this->translateUrlNames)
-				$configColumn->SetUrlName(
-					call_user_func_array(
-						$this->translator, [$configColumn->GetUrlName()]
-					)
-				);
 		}
 	}
 
