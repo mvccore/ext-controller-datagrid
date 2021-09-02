@@ -94,10 +94,10 @@ trait InternalProps {
 	protected static $filterFormFieldValueOperatorPrefixes = [
 		'NOT LIKE'	=> '!',
 		'!='		=> '!',
-		'>'			=> '>',
-		'<'			=> '<',
 		'>='		=> '>=',
 		'<='		=> '<=',
+		'>'			=> '>',
+		'<'			=> '<',
 		// empty prefixes has to be last
 		'LIKE'		=> '',
 		'='			=> '',

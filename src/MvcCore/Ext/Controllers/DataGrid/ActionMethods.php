@@ -64,8 +64,7 @@ trait ActionMethods {
 			->SetEnctype($form::ENCTYPE_URLENCODED)
 			->SetAction($actionUrl)
 			->SetFormRenderMode($form::FORM_RENDER_MODE_NO_STRUCTURE)
-			->SetFieldsRenderModeDefault($form::FIELD_RENDER_MODE_NO_LABEL)
-			->Init($submit);
+			->SetFieldsRenderModeDefault($form::FIELD_RENDER_MODE_NO_LABEL);
 		$urlDelimiterValues = $this->configUrlSegments->GetUrlDelimiterValues();
 		$clearResultState = static::$tableHeadingFilterFormClearResultBase;
 		$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
@@ -101,9 +100,9 @@ trait ActionMethods {
 				->AddCssClasses('clear');
 			$form->AddFields($valueField, $filterField, $clearField);
 		}
-		$headFilterFormState = $form->GetDispatchState();
-		if ($headFilterFormState < \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED)
-			$form->PreDispatch($submit);
+		$controlFilterFormState = $form->GetDispatchState();
+		if ($controlFilterFormState < \MvcCore\IController::DISPATCH_STATE_INITIALIZED)
+			$form->Init($submit);
 	}
 
 
@@ -114,6 +113,9 @@ trait ActionMethods {
 	 */
 	protected function actionTableFilter () {
 		if (!$this->actionTableFilterSetUp()) return;
+		$headFilterFormState = $this->tableHeadFilterForm->GetDispatchState();
+		if ($headFilterFormState < \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED)
+			$this->tableHeadFilterForm->PreDispatch(TRUE);
 		list ($submitResult, $newFiltering) = $this->actionTableFilterSubmit();
 		$this->filterFormRedirect($submitResult, $newFiltering);
 	}
