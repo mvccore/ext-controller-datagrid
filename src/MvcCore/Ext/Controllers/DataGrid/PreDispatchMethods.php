@@ -230,7 +230,9 @@ trait PreDispatchMethods {
 	 */
 	protected function createView () {
 		$viewClass = $this->configRendering->GetViewClass();
-		$view = $viewClass::CreateInstance()->SetController($this);
+		$view = $viewClass::CreateInstance()
+			->SetController($this)
+			->SetEncoding($this->response->GetEncoding());
 		if ($view instanceof \MvcCore\Ext\Controllers\DataGrids\View);
 			$view->SetConfigRendering($this->configRendering);
 		return $view;
