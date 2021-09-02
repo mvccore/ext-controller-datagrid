@@ -27,10 +27,16 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	protected $propName = NULL;
 	
 	/**
-	 * Human readable name used in grid heading.
+	 * Grid heading human readable text.
 	 * @var string|NULL
 	 */
-	protected $humanName = NULL;
+	protected $headingName = NULL;
+	
+	/**
+	 * Grid heading title attribute, displayed on heading mouse over.
+	 * @var string|NULL
+	 */
+	protected $title = NULL;
 	
 	/**
 	 * Database column name.
@@ -105,7 +111,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 * Create datagrid column config item.
 	 * @param string|NULL           $propName     Data grid model property name.
 	 * @param string|NULL           $dbColumnName Database column name. If `NULL`, `$propName` is used.
-	 * @param string|NULL           $humanName    Data grid visible column name. If `NULL`, `$propName` is used.
+	 * @param string|NULL           $headingName  Data grid visible column name. If `NULL`, `$propName` is used.
 	 * @param string|NULL           $urlName      Data grid url column name to define sorting or filtering. 
 	 *                                            If `NULL`, `$propName` is used.
 	 * @param int|NULL              $columnIndex  Datagrid column index, starting with `0`, optional.
@@ -124,7 +130,8 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	public function __construct (
 		$propName = NULL, 
 		$dbColumnName = NULL, 
-		$humanName = NULL, 
+		$headingName = NULL, 
+		$title = NULL, 
 		$urlName = NULL, 
 		$columnIndex = NULL,
 		$sort = NULL, 
@@ -146,10 +153,10 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 			$this->dbColumnName = $propName;
 		}
 
-		if ($humanName !== NULL) {
-			$this->humanName = $humanName;
+		if ($headingName !== NULL) {
+			$this->headingName = $headingName;
 		} else if ($propNameHasValue) {
-			$this->humanName = $propName;
+			$this->headingName = $propName;
 		}
 
 		if ($urlName !== NULL) {
@@ -158,6 +165,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 			$this->urlName = $propName;
 		}
 		
+		if ($title !== NULL)		$this->title		= $title;
 		if ($columnIndex !== NULL)	$this->columnIndex	= $columnIndex;
 		if ($sort !== NULL)			$this->sort			= $sort;
 		if ($filter !== NULL)		$this->filter		= $filter;
@@ -171,7 +179,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 
 	/**
-	 * Return properties and values to serialize.
+	 * @inheritDocs
 	 * @return mixed
 	 */
 	public function jsonSerialize () {
@@ -179,14 +187,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * Get data grid model property name.
+	 * @inheritDocs
 	 * @return string|NULL
 	 */
 	public function GetPropName () {
 		return $this->propName;
 	}
 	/**
-	 * Set data grid model property name.
+	 * @inheritDocs
 	 * @param  string|NULL $propName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -196,14 +204,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * Get database column name.
+	 * @inheritDocs
 	 * @return string|NULL
 	 */
 	public function GetDbColumnName () {
 		return $this->dbColumnName;
 	}
 	/**
-	 * Set database column name.
+	 * @inheritDocs
 	 * @param  string|NULL $dbColumnName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -213,31 +221,49 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * Get human readable name used in grid heading.
+	 * @inheritDocs
 	 * @return string|NULL
 	 */
-	public function GetHumanName () {
-		return $this->humanName;
+	public function GetHeadingName () {
+		return $this->headingName;
 	}
 	/**
-	 * Set human readable name used in grid heading.
-	 * @param  string|NULL $humanName
+	 * @inheritDocs
+	 * @param  string|NULL $headingName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
-	public function SetHumanName ($humanName) {
-		$this->humanName = $humanName;
+	public function SetHeadingName ($headingName) {
+		$this->headingName = $headingName;
 		return $this;
 	}
 	
 	/**
-	 * Get URL column name when sorting or filtering.
+	 * @inheritDocs
+	 * @return string|NULL
+	 */
+	public function GetTitle () {
+		return $this->title;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @param  string|NULL $title
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetTitle ($title) {
+		$this->title = $title;
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
 	 * @return string|NULL
 	 */
 	public function GetUrlName () {
 		return $this->urlName;
 	}
 	/**
-	 * Set URL column name when sorting or filtering.
+	 * @inheritDocs
 	 * @param  string|NULL $urlName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -247,14 +273,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * Get datagrid column index, starting with `0`, optional.
+	 * @inheritDocs
 	 * @return int|NULL
 	 */
 	public function GetColumnIndex () {
 		return $this->columnIndex;
 	}
 	/**
-	 * Set datagrid column index, starting with `0`, optional.
+	 * @inheritDocs
 	 * @param  int|NULL $columnIndex
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -264,16 +290,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * Get default sorting definition with values `ASC | DESC` 
-	 * or `TRUE | FALSE` to enable/disable sorting.
+	 * @inheritDocs
 	 * @return string|bool|NULL
 	 */
 	public function GetSort () {
 		return $this->sort;
 	}
 	/**
-	 * Set default sorting definition with values `ASC | DESC` 
-	 * or `TRUE | FALSE` to enable/disable sorting.
+	 * @inheritDocs
 	 * @param  string|bool|NULL $sort
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -283,16 +307,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * Get filtering mode flags to allow specify operators 
-	 * for each column or boolean to allow filtering only.
+	 * @inheritDocs
 	 * @return int|bool
 	 */
 	public function GetFilter () {
 		return $this->filter;
 	}
 	/**
-	 * Set filtering mode flags to allow specify operators 
-	 * for each column or boolean to allow filtering only.
+	 * @inheritDocs
 	 * @param  int|bool $filter
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -302,14 +324,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * Get property type(s), necessary for automatic formating.
+	 * @inheritDocs
 	 * @return \string[]|NULL
 	 */
 	public function GetTypes () {
 		return $this->types;
 	}
 	/**
-	 * Set property type(s), necessary for automatic formating.
+	 * @inheritDocs
 	 * @param  \string[] $types
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -319,14 +341,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * Get property automatic formating arguments.
+	 * @inheritDocs
 	 * @return array|NULL
 	 */
 	public function GetFormat () {
 		return $this->format;
 	}
 	/**
-	 * Set property automatic formating arguments.
+	 * @inheritDocs
 	 * @param  array $format
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -336,14 +358,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * Get property automatic formating view helper name.
+	 * @inheritDocs
 	 * @return array|NULL
 	 */
 	public function GetViewHelper () {
 		return $this->viewHelper;
 	}
 	/**
-	 * Set property automatic formating view helper name.
+	 * @inheritDocs
 	 * @param  array $viewHelper
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -353,8 +375,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * Get column width attribute for head cell, if value.
-	 * Width is used only for table grid type.
+	 * @inheritDocs
 	 * @return string|NULL
 	 */
 	public function GetWidth () {
@@ -363,8 +384,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		return rtrim(rtrim(number_format($this->width, 3, '.', ''), '0'), '.');
 	}
 	/**
-	 * Set column width attribute for head cell, if value.
-	 * Width is used only for table grid type.
+	 * @inheritDocs
 	 * @param  string|int|float|NULL $width
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -374,14 +394,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * Get column additional css classes for head cell and body cell.
+	 * @inheritDocs
 	 * @return \string[]|NULL
 	 */
 	public function GetCssClasses () {
 		return $this->cssClasses;
 	}
 	/**
-	 * Set column additional css classes for head cell and body cell.
+	 * @inheritDocs
 	 * @param  \string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -391,14 +411,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * Get if column is disabled forcely.
+	 * @inheritDocs
 	 * @return bool|NULL
 	 */
 	public function GetDisabled () {
 		return $this->disabled;
 	}
 	/**
-	 * Set disabled column forcely.
+	 * @inheritDocs
 	 * @param  bool $disabled
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */

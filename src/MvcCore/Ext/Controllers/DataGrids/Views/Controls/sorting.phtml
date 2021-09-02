@@ -18,12 +18,17 @@
 		echo ' class="' . implode(' ', $sortingCssClasses) . '"';
 ?>><tbody><?php
 	foreach ($configColumns2Render as $urlName => $configColumn):
-		?><td class="<?php echo 'grid-control-sort-' . $configColumn->GetUrlName(); ?>"><?php
+		?><td class="<?php
+			echo 'grid-control-sort-' . $configColumn->GetUrlName();
+		?>"<?php
+			if ($columnTitle = $configColumn->GetTitle())
+				echo ' title="' . $this->EscapeAttr($columnTitle) . '"';
+		?>><?php
 
 			?><a class="grid-control-sort-link" href="<?php
 				echo $grid->GridSortUrl($configColumn);
 			?>"><?php
-				echo $configColumn->GetHumanName();
+				echo $this->EscapeHtml($configColumn->GetHeadingName());
 			?></a><?php
 
 			$dir = $grid->GetColumnSortDirection($configColumn);

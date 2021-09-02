@@ -19,16 +19,16 @@
 		?>"><?php
 
 		if ($pagingItem instanceof \MvcCore\Ext\Controllers\DataGrids\Paging\Dot):
-			?><span><?php echo $pagingItem->GetText(); ?></span><?php
+			?><span><?php echo $this->EscapeHtml($pagingItem->GetText()); ?></span><?php
 		elseif ($pagingItem->IsCurrent()):
 			?><span><?php
-				echo $pagingItem->GetText();
+				echo $this->EscapeHtml($pagingItem->GetText());
 			?></span><?php
 		else:
 			?><a href="<?php
 				echo $pagingItem->GetUrl();
 			?>"><span><?php
-				echo $pagingItem->GetText();
+				echo $this->EscapeHtml($pagingItem->GetText());
 			?></span></a><?php
 		endif;
 

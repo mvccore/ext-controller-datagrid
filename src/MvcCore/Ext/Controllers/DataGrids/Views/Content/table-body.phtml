@@ -22,10 +22,10 @@
 						?><a class="grid-cell-content grid-filter-link" href="<?php
 							echo $grid->GridFilterUrl($configColumn, $cellValue);
 						?>"><?php
-							echo $cellValue;
+							echo $this->EscapeHtml($cellValue);
 						?></a><?php
 					else:
-						?><span class="grid-cell-content"><?php echo $cellValue; ?></span><?php 
+						?><span class="grid-cell-content"><?php echo $this->EscapeHtml($cellValue); ?></span><?php 
 					endif;
 				endif;
 

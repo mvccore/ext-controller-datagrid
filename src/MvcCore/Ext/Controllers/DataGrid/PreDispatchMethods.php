@@ -105,7 +105,7 @@ trait PreDispatchMethods {
 		\ReflectionProperty $prop, $index, $modelMetaData, $toolClass
 	) {
 		if ($prop->isStatic()) NULL;
-		$attrClassFullName = '\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column';
+		$attrClassFullName = static::$attrClassFullName;
 		if ($toolClass::GetAttributesAnotations()) {
 			$attrClassNoFirstSlash = ltrim($attrClassFullName, '\\');
 			$args = $toolClass::GetAttrCtorArgs($prop, $attrClassNoFirstSlash);
@@ -123,7 +123,8 @@ trait PreDispatchMethods {
 		$columnIndex = NULL;
 		$sort = FALSE;
 		$filter = FALSE;
-		$humanName = NULL;
+		$headingName = NULL;
+		$title = NULL;
 		$dbColumnName = NULL;
 		$types = NULL;
 		$format = NULL;
@@ -141,7 +142,8 @@ trait PreDispatchMethods {
 		if (isset($args['dbColumnName']))	$dbColumnName	= $args['dbColumnName'];
 		if (isset($args['types']))			$types			= $args['types'];
 		if (isset($args['format']))			$format			= $args['format'];
-		if (isset($args['humanName']))		$humanName		= $args['humanName'];
+		if (isset($args['headingName']))	$headingName	= $args['headingName'];
+		if (isset($args['title']))			$title			= $args['title'];
 		if (isset($args['urlName']))		$urlName		= $args['urlName'];
 		if (isset($args['columnIndex']))	$columnIndex	= $args['columnIndex'];
 		if (isset($args['sort']))			$sort			= $args['sort'];
@@ -151,7 +153,7 @@ trait PreDispatchMethods {
 		if (isset($args['viewHelper']))		$viewHelper		= $args['viewHelper'];
 		if (isset($args['disabled']))		$disabled		= $args['disabled'];
 		return new \MvcCore\Ext\Controllers\DataGrids\Configs\Column(
-			$propName, $dbColumnName, $humanName, $urlName, 
+			$propName, $dbColumnName, $headingName, $title, $urlName, 
 			$columnIndex, $sort, $filter, 
 			$types, $format, $viewHelper,
 			$width, $cssClasses, $disabled
@@ -474,9 +476,9 @@ trait PreDispatchMethods {
 				$this->translator, [$controlText, ['{0}']]
 			);
 		foreach ($this->configColumns as $configColumn) {
-			$configColumn->SetHumanName(
+			$configColumn->SetHeadingName(
 				call_user_func_array(
-					$this->translator, [$configColumn->GetHumanName()]
+					$this->translator, [$configColumn->GetHeadingName()]
 				)
 			);
 		}

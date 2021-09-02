@@ -32,10 +32,10 @@
 						?><a class="grid-filter-link" href="<?php
 							echo $grid->GridFilterUrl($configColumn, $cellValue);
 						?>"><?php
-							echo $cellValue;
+							echo $this->EscapeHtml($cellValue);
 						?></a><?php
 					else:
-						echo $cellValue;
+						echo $this->EscapeHtml($cellValue);
 					endif;
 				endif;
 

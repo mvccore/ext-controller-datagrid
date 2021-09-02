@@ -27,7 +27,7 @@
 		?>"><?php
 
 			$text = ($countScale === 0)
-				? $grid->GetControlText('all')
+				? $this->EscapeHtml($grid->GetControlText('all'))
 				: (string) $countScale;
 
 			if ($current):

@@ -23,8 +23,10 @@
 			if ($grid->GetColumnFilterIndex($configColumn) !== FALSE)
 				echo ' grid-col-filtered';
 		?>"<?php
-			$columnWidth = $configColumn->GetWidth();
-			if ($columnWidth !== NULL) echo ' width="' . $columnWidth . '"';
+			if ($columnWidth = $configColumn->GetWidth()) 
+				echo ' width="' . $columnWidth . '"';
+			if ($columnTitle = $configColumn->GetTitle())
+				echo ' title="' . $this->EscapeAttr($columnTitle) . '"';
 		?>><?php
 
 		if ($headFilter):
@@ -35,7 +37,7 @@
 			?><a class="grid-head-sort-link" href="<?php
 				echo $grid->GridSortUrl($configColumn);
 			?>"><?php
-				echo $configColumn->GetHumanName();
+				echo $this->EscapeHtml($configColumn->GetHeadingName());
 			?></a><?php
 
 			$dir = $grid->GetColumnSortDirection($configColumn);
@@ -59,7 +61,7 @@
 		else:
 
 			?><span class="grid-head-text"><?php
-				echo $configColumn->GetHumanName();
+				echo $configColumn->GetHeadingName();
 			?></span><?php
 
 		endif;

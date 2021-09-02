@@ -110,6 +110,12 @@ trait InternalProps {
 	 * @var int
 	 */
 	protected static $tableHeadingFilterFormClearResultBase = 10;
+	
+	/**
+	 * Datagrid model property attribute full class name.
+	 * @var string|\MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	protected static $attrClassFullName = '\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column';
 
 	/**
 	 * Originally configured grid value items per page.

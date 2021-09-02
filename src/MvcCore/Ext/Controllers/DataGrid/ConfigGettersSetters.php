@@ -386,9 +386,9 @@ trait ConfigGettersSetters {
 					$dbColumnName = $configColumn->GetDbColumnName();
 					if ($dbColumnName === NULL) 
 						$configColumn->SetDbColumnName($propName);
-					$humanName = $configColumn->GetHumanName();
-					if ($humanName === NULL) 
-						$configColumn->SetHumanName($propName);
+					$headingName = $configColumn->GetHeadingName();
+					if ($headingName === NULL) 
+						$configColumn->SetHeadingName($propName);
 					$configColumnsByUrlNames[$urlNameTranslated] = $configColumn;
 				} else {
 					$throwInvalidTypeError = TRUE;

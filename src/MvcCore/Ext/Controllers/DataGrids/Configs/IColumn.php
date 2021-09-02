@@ -42,17 +42,30 @@ interface IColumn {
 	public function SetDbColumnName ($dbColumnName);
 	
 	/**
-	 * Get human readable name used in grid heading.
+	 * Get grid heading human readable text.
 	 * @return string|NULL
 	 */
-	public function GetHumanName ();
+	public function GetHeadingName ();
 	
 	/**
-	 * Set human readable name used in grid heading.
-	 * @param  string|NULL $humanName
+	 * Set grid heading human readable text.
+	 * @param  string|NULL $headingName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
-	public function SetHumanName ($humanName);
+	public function SetHeadingName ($headingName);
+	
+	/**
+	 * Get grid heading title attribute, displayed on heading mouse over.
+	 * @return string|NULL
+	 */
+	public function GetTitle ();
+	
+	/**
+	 * Set grid heading title attribute, displayed on heading mouse over.
+	 * @param  string|NULL $title
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetTitle ($title);
 	
 	/**
 	 * Get URL column name when sorting or filtering.
