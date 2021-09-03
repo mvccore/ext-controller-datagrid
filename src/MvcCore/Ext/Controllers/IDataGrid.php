@@ -373,6 +373,21 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @return \MvcCore\Ext\IForm
 	 */
 	public function GetTableHeadFilterForm ();
+
+	/**
+	 * Get filter Form input delimiter between multiple values.
+	 * Default value is `;`.
+	 * @return string
+	 */
+	public function GetFilterFormValuesDelimiter ();
+	
+	/**
+	 * Set filter Form input delimiter between multiple values.
+	 * Default value is `;`.
+	 * @param  string $filterFormValuesDelimiter
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetFilterFormValuesDelimiter ($filterFormValuesDelimiter);
 	
 	/**
 	 * Set grid controls visible texts.

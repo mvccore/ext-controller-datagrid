@@ -234,7 +234,18 @@ trait InternalProps {
 
 	/**
 	 * Application URL initialization processed boolean.
+	 * @internal
 	 * @var bool
 	 */
 	protected $appUrlCompletionInit = FALSE;
+
+	/**
+	 * Internal cache for view helpers to format 
+	 * filter values from or into filter form fields.
+	 * Keys are view helper names, values are view helper 
+	 * instances or `\Closure` functions.
+	 * @internal
+	 * @var array
+	 */
+	protected $filteringViewHelpersCache = [];
 }

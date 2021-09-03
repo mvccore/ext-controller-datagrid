@@ -471,7 +471,7 @@ trait ConfigGettersSetters {
 
 	
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  array $controlsTexts
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -481,7 +481,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return array
 	 */
 	public function GetControlsTexts () {
@@ -489,7 +489,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return string|NULL
 	 */
 	public function GetControlText ($textKey) {
@@ -499,7 +499,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  \MvcCore\Ext\Form $tableHeadFilterForm
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -509,7 +509,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return \MvcCore\Ext\Form
 	 */
 	public function GetTableHeadFilterForm () {
@@ -517,9 +517,27 @@ trait ConfigGettersSetters {
 			$this->createTableHeadFilterForm(FALSE);
 		return $this->tableHeadFilterForm;
 	}
+
+	/**
+	 * @inheritDocs
+	 * @return string
+	 */
+	public function GetFilterFormValuesDelimiter () {
+		return $this->filterFormValuesDelimiter;
+	}
 	
 	/**
-	 * 
+	 * @inheritDocs
+	 * @param  string $filterFormValuesDelimiter
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetFilterFormValuesDelimiter ($filterFormValuesDelimiter) {
+		$this->filterFormValuesDelimiter = $filterFormValuesDelimiter;
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
 	 * @param  string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -532,7 +550,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * 
+	 * @inheritDocs
 	 * @param  string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -545,7 +563,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * 
+	 * @inheritDocs
 	 * @return \string[]
 	 */
 	public function GetCssClasses () {

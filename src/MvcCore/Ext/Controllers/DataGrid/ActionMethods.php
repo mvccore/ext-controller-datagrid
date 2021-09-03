@@ -65,44 +65,73 @@ trait ActionMethods {
 			->SetAction($actionUrl)
 			->SetFormRenderMode($form::FORM_RENDER_MODE_NO_STRUCTURE)
 			->SetFieldsRenderModeDefault($form::FIELD_RENDER_MODE_NO_LABEL);
-		$urlDelimiterValues = $this->configUrlSegments->GetUrlDelimiterValues();
-		$clearResultState = static::$tableHeadingFilterFormClearResultBase;
+		$clearBtnResultState = static::$tableHeadingFilterFormClearResultBase;
 		$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
+		$this->view = $this->createView();
 		foreach ($this->configColumns as $configColumn) {
-			$propName = $configColumn->GetPropName();
-			$clearResultState++;
+			$clearBtnResultState++;
 			if ($configColumn->GetDisabled() || !$configColumn->GetFilter()) continue;
-			$valueField = (new \MvcCore\Ext\Forms\Fields\Text)
-				->SetName(implode($form::HTML_IDS_DELIMITER, ['value', $propName]))
-				->SetValidators([]);
-			$dbColumnName = $configColumn->GetDbColumnName();
-			if (isset($this->filtering[$dbColumnName])) {
-				$columnFiltering = $this->filtering[$dbColumnName];
-				// head filtering coud have only `=` | `!=` | `LIKE` | `NOT LIKE` operator values:
-				$fieldValue = [];
-				foreach ($columnFiltering as $operator => $values) {
-					$valueOperator = static::$filterFormFieldValueOperatorPrefixes[$operator];
-					$fieldValue[] = $valueOperator . implode(
-						$urlDelimiterValues . $valueOperator, $columnFiltering[$operator]
-					);
-					if (!$multiFiltering) break;
-				}
-				$valueField->SetValue(implode($urlDelimiterValues, $fieldValue));
-			}
-			$filterField = (new \MvcCore\Ext\Forms\Fields\SubmitButton)
-				->SetName(implode($form::HTML_IDS_DELIMITER, ['filter', $propName]))
-				->SetValue($this->GetControlText('filter'))
-				->AddCssClasses('filter');
-			$clearField = (new \MvcCore\Ext\Forms\Fields\SubmitButton)
-				->SetCustomResultState($clearResultState)
-				->SetName(implode($form::HTML_IDS_DELIMITER, ['clear', $propName]))
-				->SetValue($this->GetControlText('clear'))
-				->AddCssClasses('clear');
-			$form->AddFields($valueField, $filterField, $clearField);
+			$fields = $this->createTableHeadFilterFormColumnFields(
+				$configColumn, $clearBtnResultState, $multiFiltering
+			);
+			$form->AddFields($fields);
 		}
+		$this->view = NULL;
 		$controlFilterFormState = $form->GetDispatchState();
 		if ($controlFilterFormState < \MvcCore\IController::DISPATCH_STATE_INITIALIZED)
 			$form->Init($submit);
+	}
+
+	/**
+	 * Internal factory method to create table head filter form column fields.
+	 * @template
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $configColumn
+	 * @param  int                                                $clearBtnResultState
+	 * @param  bool                                               $multiFiltering
+	 * @return array
+	 */
+	protected function createTableHeadFilterFormColumnFields (
+		\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $configColumn, 
+		$clearBtnResultState,
+		$multiFiltering
+	) {
+		$form = $this->tableHeadFilterForm;
+		$propName = $configColumn->GetPropName();
+		$valueField = (new \MvcCore\Ext\Forms\Fields\Text)
+			->SetName(implode($form::HTML_IDS_DELIMITER, ['value', $propName]))
+			->SetValidators([]);
+		$dbColumnName = $configColumn->GetDbColumnName();
+		$viewHelperName = $configColumn->GetViewHelper();
+		list ($useViewHelper, $viewHelper) = $this->getFilteringViewHelper($viewHelperName);
+		if (isset($this->filtering[$dbColumnName])) {
+			$columnFiltering = $this->filtering[$dbColumnName];
+			// head filtering coud have only `=` | `!=` | `LIKE` | `NOT LIKE` operator values:
+			$fieldValue = [];
+			foreach ($columnFiltering as $operator => $values) {
+				$valueOperator = static::$filterFormFieldValueOperatorPrefixes[$operator];
+				if (!$multiFiltering) 
+					$values = [$values[0]];
+				if ($useViewHelper) 
+					foreach ($values as $index => $value) 
+						$values[$index] = call_user_func([$viewHelper, $viewHelperName], $value);
+				$fieldValue[] = $valueOperator . implode(
+					$this->filterFormValuesDelimiter . $valueOperator, $values
+				);
+				if (!$multiFiltering) 
+					break;
+			}
+			$valueField->SetValue(implode($this->filterFormValuesDelimiter, $fieldValue));
+		}
+		$filterField = (new \MvcCore\Ext\Forms\Fields\SubmitButton)
+			->SetName(implode($form::HTML_IDS_DELIMITER, ['filter', $propName]))
+			->SetValue($this->GetControlText('filter'))
+			->AddCssClasses('filter');
+		$clearField = (new \MvcCore\Ext\Forms\Fields\SubmitButton)
+			->SetCustomResultState($clearBtnResultState)
+			->SetName(implode($form::HTML_IDS_DELIMITER, ['clear', $propName]))
+			->SetValue($this->GetControlText('clear'))
+			->AddCssClasses('clear');
+		return [$valueField, $filterField, $clearField];
 	}
 
 
@@ -189,14 +218,17 @@ trait ActionMethods {
 		$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
 		$filteringColumns = $this->getFilteringColumns();
 		$urlFilterOperators = $this->configUrlSegments->GetUrlFilterOperators();
-		$urlDelimiterValues = $this->configUrlSegments->GetUrlDelimiterValues();
 		$likeOperatorsArrFilter = ['LIKE' => 1, 'NOT LIKE' => 1];
 		$likeOperatorsAndPrefixes = array_intersect_key(static::$filterFormFieldValueOperatorPrefixes, $likeOperatorsArrFilter);
 		$notLikeOperatorsAndPrefixes = array_diff_key(static::$filterFormFieldValueOperatorPrefixes, $likeOperatorsArrFilter);
+		$this->view = $this->createView();
 		foreach ($formSubmitValues as $propName => $rawValues) {
 			if (!isset($filteringColumns[$propName])) continue;
 			$configColumn = $filteringColumns[$propName];
-			$rawValuesArr = explode($urlDelimiterValues, $rawValues);
+			$viewHelperName = $configColumn->GetViewHelper();
+			list ($useViewHelper, $viewHelper) = $this->getFilteringViewHelper($viewHelperName);
+			if ($useViewHelper) $rawValues = $viewHelper->Unformat($rawValues);
+			$rawValuesArr = explode($this->filterFormValuesDelimiter, $rawValues);
 			$columnFilterCfg = $configColumn->GetFilter();
 			$allowedOperators = is_integer($columnFilterCfg)
 				? $this->columnsAllowedOperators[$configColumn->GetPropName()]
@@ -257,6 +289,7 @@ trait ActionMethods {
 				break;
 			}
 		}
+		$this->view = NULL;
 		return $filtering;
 	}
 
@@ -505,5 +538,28 @@ trait ActionMethods {
 			break;
 		}
 		return $containsSpecialChar;
+	}
+
+	/**
+	 * Get cached filtering view helper instance by name.
+	 * @param  string $viewHelperName 
+	 * @return array  [bool, \MvcCore\Ext\Controllers\DataGrids\Views\IReverseHelper]
+	 */
+	protected function getFilteringViewHelper ($viewHelperName) {
+		if (array_key_exists($viewHelperName, $this->filteringViewHelpersCache)) {
+			$viewHelper = $this->filteringViewHelpersCache[$viewHelperName];
+			return [$viewHelper !== NULL, $viewHelper];
+		}
+		$viewHelper = $viewHelperName !== NULL 
+			? $this->view->GetHelper($viewHelperName) 
+			: NULL;
+		$useViewHelper = $viewHelper instanceof \MvcCore\Ext\Controllers\DataGrids\Views\IReverseHelper;
+		if ($useViewHelper) {
+			$viewHelper->SetGrid($this);
+		} else {
+			$viewHelper = NULL;
+		}
+		$this->filteringViewHelpersCache[$viewHelperName] = $viewHelper;
+		return [$useViewHelper, $viewHelper];
 	}
 }

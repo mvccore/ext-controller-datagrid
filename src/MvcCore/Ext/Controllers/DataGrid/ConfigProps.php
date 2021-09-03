@@ -183,6 +183,13 @@ trait ConfigProps {
 	protected $tableHeadFilterForm = NULL;
 	
 	/**
+	 * Filter Form input delimiter between multiple values.
+	 * Default value is `;`.
+	 * @var string
+	 */
+	protected $filterFormValuesDelimiter = ';';
+	
+	/**
 	 * Grid controls visible texts.
 	 * Keys are used as pointers, values could be configured 
 	 * into any text values. This array is translated 
