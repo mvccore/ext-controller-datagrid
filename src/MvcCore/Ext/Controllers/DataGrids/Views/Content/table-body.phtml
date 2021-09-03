@@ -2,11 +2,11 @@
 	/** @var \MvcCore\Ext\Controllers\DataGrids\View $this */
 	/** @var \MvcCore\Ext\Controllers\DataGrid $grid */
 	/** @var \MvcCore\Ext\Controllers\DataGrids\Models\GridModel $model */
+	$model = $grid->GetModel();
+
 ?><tbody><?php
 
-	$model = $grid->GetModel();
 	foreach ($grid->GetPageData() as $index => $item):
-
 		?><tr class="<?php
 			echo 'grid-row-' . ($index % 2 === 0 ? 'odd' : 'even');
 		?>"><?php
@@ -15,20 +15,32 @@
 				?><td class="<?php
 					echo implode(' ', $configColumn->GetCssClasses());
 				?>"><?php
-					
-				$cellValue = trim($model->RenderCell($item, $configColumn, $this));
-				if (mb_strlen($cellValue) > 0):
-					if ($configColumn->GetFilter()):
-						?><a class="grid-cell-content grid-filter-link" href="<?php
-							echo $grid->GridFilterUrl($configColumn, $cellValue);
-						?>"><?php
-							echo $this->EscapeHtml($cellValue);
-						?></a><?php
-					else:
-						?><span class="grid-cell-content"><?php echo $this->EscapeHtml($cellValue); ?></span><?php 
-					endif;
-				endif;
+					$renderedCell = trim($model->RenderCell($item, $configColumn, $this));
+					if (mb_strlen($renderedCell) > 0):
+						$columnUrlHelper = $configColumn->GetUrlHelper();
+						
+						if (is_string($columnUrlHelper) && strlen($columnUrlHelper) > 0):
+							?><a class="grid-cell-content grid-custom-link" href="<?php
+								echo $item->{$columnUrlHelper}();
+							?>"><?php
+								echo $this->EscapeHtml($renderedCell);
+							?></a><?php
+						elseif ($columnUrlHelper && $configColumn->GetFilter()):
+							?><a class="grid-cell-content grid-filter-link" href="<?php
+								echo $grid->GridFilterUrl(
+									$configColumn,
+									$model->GetFilterUrlValue($item, $configColumn)
+								);
+							?>"><?php
+								echo $this->EscapeHtml($renderedCell);
+							?></a><?php
+						else:
+							?><span class="grid-cell-content"><?php
+								echo $this->EscapeHtml($renderedCell);
+							?></span><?php 
+						endif;
 
+					endif;
 				?></td><?php
 			endforeach;
 

@@ -2,57 +2,69 @@
 	/** @var \MvcCore\Ext\Controllers\DataGrids\View $this */
 	/** @var \MvcCore\Ext\Controllers\DataGrid $grid */
 	/** @var \MvcCore\Ext\Controllers\DataGrids\Models\GridModel $model */
-?><tbody><?php
-	
+
 	$renderConf = $grid->GetConfigRendering();
 	$colsCount = $renderConf->GetGridColumnsCount();
 	$model = $grid->GetModel();
 	$colIndex = 0;
 
-	?><tr class="grid-row-odd"><?php
-	foreach ($grid->GetPageData() as $index => $item):
-	
-		$colNumber = $colIndex % $colsCount;
-		if ($colIndex > 0 && $colNumber === 0):
-			?></tr><tr class="grid-row-<?php
-				echo ($index % 2 === 0 ? 'odd' : 'even');
-			?>"><?php
-		endif;
-		
-		?><td class="grid-column-<?php echo $colNumber + 1; ?>"><?php
-		
-			foreach ($grid->GetConfigColumns() as $configColumn):
-				?><div class="grid-cell-content <?php
-					echo implode(' ', $configColumn->GetCssClasses());
+?><tbody>
+	<tr class="grid-row-odd"><?php
+
+		foreach ($grid->GetPageData() as $index => $item):
+			$colNumber = $colIndex % $colsCount;
+
+			if ($colIndex > 0 && $colNumber === 0):
+				?></tr><tr class="grid-row-<?php
+					echo ($index % 2 === 0 ? 'odd' : 'even');
 				?>"><?php
+			endif;
+
+			?><td class="grid-column-<?php echo $colNumber + 1; ?>"><?php
+		
+				foreach ($grid->GetConfigColumns() as $configColumn):
+					?><div class="grid-cell-content <?php
+						echo implode(' ', $configColumn->GetCssClasses());
+					?>"><?php
 					
-				$cellValue = trim($model->RenderCell($item, $configColumn, $this));
-				if (mb_strlen($cellValue) > 0):
-					if ($configColumn->GetFilter()):
-						?><a class="grid-filter-link" href="<?php
-							echo $grid->GridFilterUrl($configColumn, $cellValue);
-						?>"><?php
-							echo $this->EscapeHtml($cellValue);
-						?></a><?php
-					else:
-						echo $this->EscapeHtml($cellValue);
+					$renderedCell = trim($model->RenderCell($item, $configColumn, $this));
+					if (mb_strlen($renderedCell) > 0):
+						$columnUrlHelper = $configColumn->GetUrlHelper();
+
+						if (is_string($columnUrlHelper) && strlen($columnUrlHelper) > 0):
+							?><a class="grid-custom-link" href="<?php
+								echo $item->{$columnUrlHelper}();
+							?>"><?php
+								echo $this->EscapeHtml($renderedCell);
+							?></a><?php
+						elseif ($columnUrlHelper && $configColumn->GetFilter()):
+							?><a class="grid-filter-link" href="<?php
+								echo $grid->GridFilterUrl(
+									$configColumn,
+									$model->GetFilterUrlValue($item, $configColumn)
+								);
+							?>"><?php
+								echo $this->EscapeHtml($renderedCell);
+							?></a><?php
+						else:
+							echo $this->EscapeHtml($renderedCell);
+						endif;
+
 					endif;
-				endif;
 
-				?></div><?php
-			endforeach;
+					?></div><?php
+				endforeach;
 
-		?></td><?php
+			?></td><?php
+			$colIndex++;
 
-		$colIndex++;
-	endforeach;
+		endforeach;
 	
-	if ($colsCount > 1):
-		for ($i = $colIndex % $colsCount; $i < $colsCount; $i++):
-			?><td class="grid-column-<?php echo $i + 1; ?> grid-cell-empty"></td><?php
-		endfor;
-	endif;
+		if ($colsCount > 1):
+			for ($i = $colIndex % $colsCount; $i < $colsCount; $i++):
+				?><td class="grid-column-<?php echo $i + 1; ?> grid-cell-empty"></td><?php
+			endfor;
+		endif;
 
-	?></tr><?php
-
-?></tbody>
+	?></tr>
+</tbody>

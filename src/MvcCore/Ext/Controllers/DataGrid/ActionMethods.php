@@ -67,6 +67,7 @@ trait ActionMethods {
 			->SetFieldsRenderModeDefault($form::FIELD_RENDER_MODE_NO_LABEL);
 		$clearBtnResultState = static::$tableHeadingFilterFormClearResultBase;
 		$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
+		$viewExists = $this->view !== NULL;
 		$this->view = $this->createView();
 		foreach ($this->configColumns as $configColumn) {
 			$clearBtnResultState++;
@@ -76,7 +77,7 @@ trait ActionMethods {
 			);
 			$form->AddFields($fields);
 		}
-		$this->view = NULL;
+		if (!$viewExists) $this->view = NULL;
 		$controlFilterFormState = $form->GetDispatchState();
 		if ($controlFilterFormState < \MvcCore\IController::DISPATCH_STATE_INITIALIZED)
 			$form->Init($submit);
@@ -113,7 +114,10 @@ trait ActionMethods {
 					$values = [$values[0]];
 				if ($useViewHelper) 
 					foreach ($values as $index => $value) 
-						$values[$index] = call_user_func([$viewHelper, $viewHelperName], $value);
+						$values[$index] = call_user_func_array(
+							[$viewHelper, $viewHelperName], 
+							array_merge([$value], $configColumn->GetFormat() ?: [])
+						);
 				$fieldValue[] = $valueOperator . implode(
 					$this->filterFormValuesDelimiter . $valueOperator, $values
 				);
@@ -221,13 +225,17 @@ trait ActionMethods {
 		$likeOperatorsArrFilter = ['LIKE' => 1, 'NOT LIKE' => 1];
 		$likeOperatorsAndPrefixes = array_intersect_key(static::$filterFormFieldValueOperatorPrefixes, $likeOperatorsArrFilter);
 		$notLikeOperatorsAndPrefixes = array_diff_key(static::$filterFormFieldValueOperatorPrefixes, $likeOperatorsArrFilter);
+		$viewExists = $this->view !== NULL;
 		$this->view = $this->createView();
 		foreach ($formSubmitValues as $propName => $rawValues) {
 			if (!isset($filteringColumns[$propName])) continue;
 			$configColumn = $filteringColumns[$propName];
 			$viewHelperName = $configColumn->GetViewHelper();
 			list ($useViewHelper, $viewHelper) = $this->getFilteringViewHelper($viewHelperName);
-			if ($useViewHelper) $rawValues = $viewHelper->Unformat($rawValues);
+			if ($useViewHelper) $rawValues = call_user_func_array(
+				[$viewHelper, 'Unformat'],
+				array_merge([$rawValues], $configColumn->GetFormat() ?: [])
+			);
 			$rawValuesArr = explode($this->filterFormValuesDelimiter, $rawValues);
 			$columnFilterCfg = $configColumn->GetFilter();
 			$allowedOperators = is_integer($columnFilterCfg)
@@ -289,7 +297,7 @@ trait ActionMethods {
 				break;
 			}
 		}
-		$this->view = NULL;
+		if (!$viewExists) $this->view = NULL;
 		return $filtering;
 	}
 
@@ -551,7 +559,7 @@ trait ActionMethods {
 			return [$viewHelper !== NULL, $viewHelper];
 		}
 		$viewHelper = $viewHelperName !== NULL 
-			? $this->view->GetHelper($viewHelperName) 
+			? $this->view->GetHelper($viewHelperName, FALSE) 
 			: NULL;
 		$useViewHelper = $viewHelper instanceof \MvcCore\Ext\Controllers\DataGrids\Views\IReverseHelper;
 		if ($useViewHelper) {

@@ -79,6 +79,25 @@ interface IColumn {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetUrlName ($urlName);
+
+	/**
+	 * Get URL helper to generate cell anchor URL.
+	 * Boolean to enable/disable anchor url for filtering
+	 * (`TRUE` by default) or string to declare row instance
+	 * model public method to generate custom URL.
+	 * @return bool|string|NULL
+	 */
+	public function GetUrlHelper ();
+
+	/**
+	 * Set URL helper to generate cell anchor URL.
+	 * Boolean to enable/disable anchor url for filtering
+	 * (`TRUE` by default) or string to declare row instance
+	 * model public method to generate custom URL.
+	 * @param  bool|string|NULL $urlHelper
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetUrlHelper ($urlHelper);
 	
 	/**
 	 * Get default sorting definition with values `ASC | DESC` 

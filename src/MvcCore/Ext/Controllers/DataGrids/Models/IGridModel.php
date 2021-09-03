@@ -72,12 +72,20 @@ interface IGridModel {
 	public function GetPageData ();
 
 	/**
-	 * Render value in datagrid tabe cell as scalar value (convertable into string).
-	 * @param  mixed                                             $row
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
-	 * @param  \MvcCore\IView                                    $view
+	 * Render value with by possible view helper as scalar value 
+	 * into datagrid table cell (convertable into string).
+	 * @param  mixed                                                     $row
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn|string $columnNameOrConfig 
+	 * @param  \MvcCore\IView                                            $view
 	 * @return string
 	 */
-	public function RenderCell ($row, \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $configColumn, \MvcCore\IView $view);
+	public function RenderCell ($row, $columnNameOrConfig, \MvcCore\IView $view);
 
+	/**
+	 * Get scalar value used in URL for filtering (convertable into string).
+	 * @param  mixed                                                     $row
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn|string $columnPropNameOrConfig 
+	 * @return string
+	 */
+	public function GetFilterUrlValue ($row, $columnPropNameOrConfig);
 }

@@ -288,7 +288,7 @@ trait InternalGettersSetters {
 	 * @param  string                                                   $operator
 	 * @return string
 	 */
-	public function GridFilterUrl ($columnConfigOrPropName, $cellValue, $operator = '=') {
+	public function GridFilterUrl ($columnConfigOrPropName, $cellValue, $operator = NULL) {
 		/** @var \MvcCore\Ext\Controllers\DataGrid $this */
 		$column = $columnConfigOrPropName instanceof \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn
 			? $columnConfigOrPropName
@@ -303,6 +303,19 @@ trait InternalGettersSetters {
 		$currentColumnDbName = $column->GetDbColumnName();
 		$currentFilterDbNames = array_merge([], $this->filtering);
 		$filterParams = [];
+
+		// special behaviour for datetimes displayed as dates:
+		$types = $column->GetTypes();
+		if (
+			$operator === NULL &&
+			is_array($types) && count($types) > 1 && 
+			$types[0] === '\DateTime' && $types[1] === '\Date' &&
+			substr($cellValue, strlen($cellValue) - 1, 1) !== '%'
+		) {
+			$cellValue .= '%';
+			$operator = 'LIKE';
+		}
+		if ($operator === NULL) $operator = '=';
 
 		if (isset($currentFilterDbNames[$currentColumnDbName])) {
 			$currentFilterOperatorsAndValues = $currentFilterDbNames[$currentColumnDbName];

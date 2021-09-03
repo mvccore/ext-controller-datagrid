@@ -146,20 +146,27 @@ trait GridModel {
 	}
 
 	/**
-	 * Render value in datagrid tabe cell as scalar value (convertable into string).
-	 * @param  mixed                                             $row
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $column 
-	 * @param  \MvcCore\IView                                    $view
+	 * Render value with by possible view helper as scalar value 
+	 * into datagrid table cell (convertable into string).
+	 * @param  mixed                                                    $row
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column|string $columnNameOrConfig 
+	 * @param  \MvcCore\View                                            $view
 	 * @return string
 	 */
-	public function RenderCell ($row, \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $column, \MvcCore\IView $view) {
-		$propName = $column->GetPropName();
+	public function RenderCell ($row, $columnPropNameOrConfig, \MvcCore\IView $view) {
+		if ($columnPropNameOrConfig instanceof \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn) {
+			$column = $columnPropNameOrConfig;
+			$propName = $column->GetPropName();
+		} else {
+			$column = $this->grid->GetConfigColumns()->GetByPropName($columnPropNameOrConfig);
+			$propName = $columnPropNameOrConfig;
+		}
 		$value = $row->{'Get' . ucfirst($propName)}();
 		if ($value !== NULL) {
-			$viewHelper = $column->GetViewHelper();
-			if ($viewHelper) {
+			$viewHelperName = $column->GetViewHelper();
+			if ($viewHelperName) {
 				return call_user_func_array(
-					[$view, $viewHelper], 
+					[$view, $viewHelperName], 
 					array_merge([$value], $column->GetFormat() ?: [])
 				);
 			} else {
@@ -169,6 +176,28 @@ trait GridModel {
 			}
 		}
 		return NULL;
+	}
+	
+	/**
+	 * Get scalar value used in URL for filtering (convertable into string).
+	 * @param  mixed                                                    $row
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column|string $columnPropNameOrConfig 
+	 * @return string
+	 */
+	public function GetFilterUrlValue ($row, $columnPropNameOrConfig) {
+		if ($columnPropNameOrConfig instanceof \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn) {
+			$column = $columnPropNameOrConfig;
+			$propName = $column->GetPropName();
+		} else {
+			$column = $this->grid->GetConfigColumns()->GetByPropName($columnPropNameOrConfig);
+			$propName = $columnPropNameOrConfig;
+		}
+		$value = $row->{'Get' . ucfirst($propName)}();
+		if ($value === NULL) 
+			return 'null';
+		return static::convertToScalar(
+			$value, $column->GetFormat()
+		);
 	}
 	
 	/**

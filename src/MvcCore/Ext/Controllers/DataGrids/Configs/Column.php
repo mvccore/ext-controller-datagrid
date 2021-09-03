@@ -49,6 +49,15 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 * @var string|NULL
 	 */
 	protected $urlName = NULL;
+	
+	/**
+	 * URL helper to generate cell anchor URL.
+	 * Boolean to enable/disable anchor url for filtering
+	 * (`TRUE` by default) or string to declare row instance
+	 * model public method to generate custom URL.
+	 * @var bool|string|NULL
+	 */
+	protected $urlHelper = TRUE;
 
 	/**
 	 * Datagrid column index, starting with `0`, optional.
@@ -112,8 +121,13 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 * @param string|NULL           $propName     Data grid model property name.
 	 * @param string|NULL           $dbColumnName Database column name. If `NULL`, `$propName` is used.
 	 * @param string|NULL           $headingName  Data grid visible column name. If `NULL`, `$propName` is used.
+	 * @param string|NULL           $title        Grid heading title attribute, displayed on heading mouse over.
 	 * @param string|NULL           $urlName      Data grid url column name to define sorting or filtering. 
 	 *                                            If `NULL`, `$propName` is used.
+	 * @param bool|string|NULL      $urlHelper    URL helper to generate cell anchor URL.
+	 *                                            Boolean to enable/disable anchor url for filtering
+	 *                                            (`TRUE` by default) or string to declare row instance
+	 *                                            model public method to generate custom URL.
 	 * @param int|NULL              $columnIndex  Datagrid column index, starting with `0`, optional.
 	 * @param string|bool|NULL      $sort         Default sorting definition with values `ASC | DESC` 
 	 *                                            or `TRUE | FALSE` to enable/disable sorting.
@@ -133,6 +147,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		$headingName = NULL, 
 		$title = NULL, 
 		$urlName = NULL, 
+		$urlHelper = NULL,
 		$columnIndex = NULL,
 		$sort = NULL, 
 		$filter = NULL, 
@@ -166,6 +181,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		}
 		
 		if ($title !== NULL)		$this->title		= $title;
+		if ($urlHelper !== NULL)	$this->urlHelper	= $urlHelper;
 		if ($columnIndex !== NULL)	$this->columnIndex	= $columnIndex;
 		if ($sort !== NULL)			$this->sort			= $sort;
 		if ($filter !== NULL)		$this->filter		= $filter;
@@ -269,6 +285,24 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 */
 	public function SetUrlName ($urlName) {
 		$this->urlName = $urlName;
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @return bool|string|NULL
+	 */
+	public function GetUrlHelper () {
+		return $this->urlHelper;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param  bool|string|NULL $urlHelper
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetUrlHelper ($urlHelper) {
+		$this->urlHelper = $urlHelper;
 		return $this;
 	}
 

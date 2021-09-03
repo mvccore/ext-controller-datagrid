@@ -118,46 +118,41 @@ trait PreDispatchMethods {
 					$args = (array) $args[1];
 			}
 		}
+
+		if (!is_array($args))
+			$args = [];
+
 		$propName = $prop->name;
-		$urlName = NULL;
-		$columnIndex = NULL;
-		$sort = FALSE;
-		$filter = FALSE;
-		$headingName = NULL;
-		$title = NULL;
-		$dbColumnName = NULL;
-		$types = NULL;
-		$format = NULL;
-		$viewHelper = NULL;
-		$width = NULL;
-		$cssClasses = NULL;
-		$disabled = NULL;
+		$args['propName'] = $propName;
+
 		if (isset($modelMetaData[$propName])) 
-			list($dbColumnName, $types, $format) = $modelMetaData[$propName];
+			list($args['dbColumnName'], $args['types'], $args['format']) = $modelMetaData[$propName];
 		if (
-			($args === NULL && $dbColumnName === NULL) || 
-			($args !== NULL && ($dbColumnName === NULL && !isset($args['dbColumnName'])))
+			$args === NULL || 
+			($args !== NULL && !isset($args['dbColumnName']))
 		) return NULL;
-		// column could be disabled if forbidden param is presented:
-		if (isset($args['dbColumnName']))	$dbColumnName	= $args['dbColumnName'];
-		if (isset($args['types']))			$types			= $args['types'];
-		if (isset($args['format']))			$format			= $args['format'];
-		if (isset($args['headingName']))	$headingName	= $args['headingName'];
-		if (isset($args['title']))			$title			= $args['title'];
-		if (isset($args['urlName']))		$urlName		= $args['urlName'];
-		if (isset($args['columnIndex']))	$columnIndex	= $args['columnIndex'];
-		if (isset($args['sort']))			$sort			= $args['sort'];
-		if (isset($args['filter']))			$filter			= $args['filter'];
-		if (isset($args['width']))			$width			= $args['width'];
-		if (isset($args['cssClasses']))		$cssClasses		= $args['cssClasses'];
-		if (isset($args['viewHelper']))		$viewHelper		= $args['viewHelper'];
-		if (isset($args['disabled']))		$disabled		= $args['disabled'];
-		return new \MvcCore\Ext\Controllers\DataGrids\Configs\Column(
-			$propName, $dbColumnName, $headingName, $title, $urlName, 
-			$columnIndex, $sort, $filter, 
-			$types, $format, $viewHelper,
-			$width, $cssClasses, $disabled
-		);
+		
+		/** @var \ReflectionClass $columnType */
+		/** @var \ReflectionParameter[] $ctorParams */
+		list ($columnType, $ctorParams) = static::getAttrClassReflObjects();
+		$ctorArgs = [];
+		foreach ($ctorParams as $index => $ctorParam) 
+			$ctorArgs[$index] = isset($args[$ctorParam->name])
+				? $args[$ctorParam->name]
+				: NULL;
+		return $columnType->newInstanceArgs($ctorArgs);
+	}
+
+	protected static function getAttrClassReflObjects () {
+		static $__attrClassReflObjects = NULL;
+		if ($__attrClassReflObjects === NULL) {
+			$columnType = new \ReflectionClass(static::$attrClassFullName);
+			$__attrClassReflObjects = [
+				$columnType,
+				$columnType->getConstructor()->getParameters()
+			];
+		}
+		return $__attrClassReflObjects;
 	}
 
 	/**
