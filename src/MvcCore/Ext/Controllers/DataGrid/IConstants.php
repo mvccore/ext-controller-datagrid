@@ -123,6 +123,12 @@ interface IConstants {
 	 * @var int
 	 */
 	const FILTER_ALLOW_NULL				= 64;
+	
+	/**
+	 * Datagrid filtering enabled for all features.
+	 * @var int
+	 */
+	const FILTER_ALLOW_ALL				= 124; // 4|8|16|32|64
 
 
 	/**

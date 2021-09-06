@@ -119,42 +119,36 @@ trait PreDispatchMethods {
 			}
 		}
 
-		if (!is_array($args))
-			$args = [];
-
+		if (!is_array($args)) $args = [];
 		$propName = $prop->name;
 		$args['propName'] = $propName;
-
 		$allowNull = NULL;
+		$types = NULL;
 		if (isset($modelMetaData[$propName])) {
 			list(
-				$args['dbColumnName'], 
-				$allowNull, 
-				$types, 
-				$format
+				$args['dbColumnName'], $allowNull, $types, $format
 			) = $modelMetaData[$propName];
-			if (!isset($args['types']))
-				$args['types'] = $types;
-			if (!isset($args['format']))
-				$args['format'] = $format;
+			if (!isset($args['types']) && $types !== NULL) $args['types'] = $types;
+			if (!isset($args['format']) && $format !== NULL) $args['format'] = $format;
 		}
-		if (
-			$args === NULL || 
-			($args !== NULL && !isset($args['dbColumnName']))
-		) return NULL;
+		if ($args === NULL || ($args !== NULL && !isset($args['dbColumnName']))) return NULL;
+		/** @var \ReflectionClass $columnType */
+		/** @var \ReflectionParameter[] $ctorParams */
+		list ($columnType, $ctorParams, $phpWithTypes, $phpWithUnionTypes) = static::getAttrClassReflObjects();
+		$typesNotSet = !isset($args['types']);
+		if ($allowNull === NULL || $typesNotSet) {
+			list($types, $allowNull) = static::parseConfigColumnTypes($prop, $phpWithTypes, $phpWithUnionTypes);
+			if ($typesNotSet) $args['types'] = $types;
+		}
 		if (isset($args['filter']) && $allowNull) {
 			$filter = $args['filter'];
 			if (is_int($filter)) {
 				$filter |= self::FILTER_ALLOW_NULL;
 			} else if ($filter === TRUE) {
-				$filter = self::FILTER_ALLOW_NULL;
+				$filter = self::FILTER_ALLOW_ALL;
 			}
 			$args['filter'] = $filter;
 		}
-		
-		/** @var \ReflectionClass $columnType */
-		/** @var \ReflectionParameter[] $ctorParams */
-		list ($columnType, $ctorParams) = static::getAttrClassReflObjects();
 		$ctorArgs = [];
 		foreach ($ctorParams as $index => $ctorParam) 
 			$ctorArgs[$index] = isset($args[$ctorParam->name])
@@ -163,13 +157,78 @@ trait PreDispatchMethods {
 		return $columnType->newInstanceArgs($ctorArgs);
 	}
 
+
+	/**
+	 * Get property types array and `TRUE` if property allow `NULL` values.
+	 * @param  \ReflectionProperty $prop 
+	 * @param  bool                $phpWithTypes 
+	 * @param  bool                $phpWithUnionTypes 
+	 * @return array               [\string[], bool]
+	 */
+	protected static function parseConfigColumnTypes (\ReflectionProperty $prop, $phpWithTypes, $phpWithUnionTypes) {
+		$phpWithTypes = PHP_VERSION_ID >= 70400;
+		$phpWithUnionTypes = PHP_VERSION_ID >= 80000;
+		if ($phpWithTypes && $prop->hasType()) {
+			/** @var $reflType \ReflectionUnionType|\ReflectionNamedType */
+			$refType = $prop->getType();
+			if ($refType !== NULL) {
+				if ($phpWithUnionTypes && $refType instanceof \ReflectionUnionType) {
+					$refTypes = $refType->getTypes();
+					/** @var \ReflectionNamedType $refTypesItem */
+					$strIndex = NULL;
+					foreach ($refTypes as $index => $refTypesItem) {
+						$typeName = $refTypesItem->getName();
+						if ($strIndex === NULL && $typeName === 'string')
+							$strIndex = $index;
+						if ($typeName !== 'null')
+							$types[] = $typeName;
+					}
+					if ($strIndex !== NULL) {
+						unset($types[$strIndex]);
+						$types = array_values($types);
+						$types[] = 'string';
+					}
+				} else {
+					$types = [$refType->getName()];
+				}
+				$allowNull = $refType->allowsNull();
+			}
+		} else {
+			preg_match('/@var\s+([^\s]+)/', $prop->getDocComment(), $matches);
+			if ($matches) {
+				$rawTypes = '|'.$matches[1].'|';
+				$nullPos = mb_stripos($rawTypes,'|null|');
+				$qmPos = mb_strpos($rawTypes, '?');
+				$qmMatched = $qmPos !== FALSE;
+				$nullMatched = $nullPos !== FALSE;
+				$allowNull = $qmMatched || $nullMatched;
+				if ($qmMatched) 
+					$rawTypes = str_replace('?', '', $rawTypes);
+				if ($nullMatched)
+					$rawTypes = (
+						mb_substr($rawTypes, 0, $nullPos) . 
+						mb_substr($rawTypes, $nullPos + 5)
+					);
+				$rawTypes = mb_substr($rawTypes, 1, mb_strlen($rawTypes) - 2);
+				$types = explode('|', $rawTypes);
+			}
+		}
+		return [$types, $allowNull];
+	}
+
+	/**
+	 * Return cached reflection class for column config and it's constructor arguments array.
+	 * @return array [\ReflectionClass, \ReflectionParameter[], bool, bool]
+	 */
 	protected static function getAttrClassReflObjects () {
 		static $__attrClassReflObjects = NULL;
 		if ($__attrClassReflObjects === NULL) {
 			$columnType = new \ReflectionClass(static::$attrClassFullName);
 			$__attrClassReflObjects = [
 				$columnType,
-				$columnType->getConstructor()->getParameters()
+				$columnType->getConstructor()->getParameters(),
+				PHP_VERSION_ID >= 70400, // $phpWithTypes
+				PHP_VERSION_ID >= 80000, // $phpWithUnionTypes
 			];
 		}
 		return $__attrClassReflObjects;
