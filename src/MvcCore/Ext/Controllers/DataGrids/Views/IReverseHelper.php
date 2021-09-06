@@ -26,8 +26,8 @@ interface IReverseHelper {
 	 * Unformat value previously formatted by view helper into application value.
 	 * Incoming value could be anything from user filter input,
 	 * multiple values are separated by `;` (semicolon) delimitter by default.
-	 * @param  string $rawUserFormatedValues Raw user filter input.
+	 * @param  string $rawUserFormatedValue Raw user single filter value, always as string, never `NULL`.
 	 * @return string Returns unformated application value(s). Multiple values are separated by `;`.
 	 */
-	public function Unformat ($rawUserFormatedValues);
+	public function Unformat ($rawUserFormatedValue);
 }

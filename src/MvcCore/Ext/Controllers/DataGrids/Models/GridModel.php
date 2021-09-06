@@ -193,8 +193,12 @@ trait GridModel {
 			$propName = $columnPropNameOrConfig;
 		}
 		$value = $row->{'Get' . ucfirst($propName)}();
-		if ($value === NULL) 
-			return 'null';
+		if ($value === NULL) {
+			$columnFilter = $column->GetFilter();
+			if (is_int($columnFilter) && ($columnFilter & \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_NULL) != 0)
+				return 'null';
+			return '';
+		}
 		return static::convertToScalar(
 			$value, $column->GetFormat()
 		);

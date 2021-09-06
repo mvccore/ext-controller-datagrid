@@ -108,16 +108,25 @@ trait ActionMethods {
 			$columnFiltering = $this->filtering[$dbColumnName];
 			// head filtering coud have only `=` | `!=` | `LIKE` | `NOT LIKE` operator values:
 			$fieldValue = [];
+			$columnFilter = $configColumn->GetFilter();
+			$columnAllowNullFilter = is_int($columnFilter) && ($columnFilter & self::FILTER_ALLOW_NULL) != 0;
 			foreach ($columnFiltering as $operator => $values) {
 				$valueOperator = static::$filterFormFieldValueOperatorPrefixes[$operator];
 				if (!$multiFiltering) 
 					$values = [$values[0]];
-				if ($useViewHelper) 
-					foreach ($values as $index => $value) 
+				foreach ($values as $index => $value) {
+					if (strtolower($value) === 'null') {
+						if (!$columnAllowNullFilter) {
+							unset($values[$index]);
+							continue;
+						}
+					} else if ($useViewHelper) {
 						$values[$index] = call_user_func_array(
 							[$viewHelper, $viewHelperName], 
 							array_merge([$value], $configColumn->GetFormat() ?: [])
 						);
+					}
+				}
 				$fieldValue[] = $valueOperator . implode(
 					$this->filterFormValuesDelimiter . $valueOperator, $values
 				);
@@ -180,7 +189,6 @@ trait ActionMethods {
 	protected function actionTableFilterSubmit () {
 		$form = $this->tableHeadFilterForm;
 		list ($result, $rawFormValues) = $form->Submit();
-
 		if ($result === $form::RESULT_ERRORS) 
 			return [FALSE, $this->filtering];
 		$form->ClearSession();
@@ -198,7 +206,7 @@ trait ActionMethods {
 
 		$newFiltering = array_merge([], $this->filtering);
 		$newFiltering = $this->GetFilteringFromFilterFormValues($formValues, $newFiltering);
-
+		
 		$configColumnsKeys = array_keys($this->configColumns->GetArray());
 		$clearingResultBase = static::$tableHeadingFilterFormClearResultBase + 1;
 		if ($result >= $clearingResultBase && isset($configColumnsKeys[$result - $clearingResultBase])) {
@@ -232,28 +240,44 @@ trait ActionMethods {
 			$configColumn = $filteringColumns[$propName];
 			$viewHelperName = $configColumn->GetViewHelper();
 			list ($useViewHelper, $viewHelper) = $this->getFilteringViewHelper($viewHelperName);
-			if ($useViewHelper) $rawValues = call_user_func_array(
-				[$viewHelper, 'Unformat'],
-				array_merge([$rawValues], $configColumn->GetFormat() ?: [])
-			);
 			$rawValuesArr = explode($this->filterFormValuesDelimiter, $rawValues);
 			$columnFilterCfg = $configColumn->GetFilter();
 			$allowedOperators = is_integer($columnFilterCfg)
 				? $this->columnsAllowedOperators[$configColumn->GetPropName()]
 				: $this->defaultAllowedOperators;
+			$columnAllowNullFilter = is_int($columnFilterCfg) && ($columnFilterCfg & self::FILTER_ALLOW_NULL) != 0;
+			$columnTypes = $configColumn->GetTypes();
 			$filterValues = [];
 			foreach ($rawValuesArr as $rawValue) {
-				$rawValue = trim($rawValue);
-				if ($rawValue === '') continue;
+				// remove unknown characters
+				$rawValue = $this->removeUnknownChars($rawValue);
+				if ($rawValue === NULL) continue;
+				$valueIsStringNull = strtolower($rawValue) === 'null';
+				if ($useViewHelper && !$valueIsStringNull) {
+					$rawValue = call_user_func_array(
+						[$viewHelper, 'Unformat'],
+						array_merge([$rawValue], $configColumn->GetFormat() ?: [])
+					);
+					if ($rawValue === NULL) continue;
+				}
+				$rawValueToCheckType = $rawValue;
+				// complete possible operator prefixes from submitted value
 				$containsPercentage = $this->checkFilterFormValueForSpecialLikeChar($rawValue, '%');
 				$containsUnderScore = $this->checkFilterFormValueForSpecialLikeChar($rawValue, '_');
 				if ($containsPercentage || $containsUnderScore) {
-					$operatorsAndPrefixes = $likeOperatorsAndPrefixes;
-					if ($containsPercentage === 2) $rawValue = str_replace('[%]', '%', $rawValue);
-					if ($containsUnderScore === 2) $rawValue = str_replace('[_]', '_', $rawValue);
+					if (($containsPercentage & 1) !== 0 || ($containsUnderScore & 1) !== 0) {
+						$operatorsAndPrefixes = $likeOperatorsAndPrefixes;
+						if ($containsPercentage) $rawValueToCheckType = str_replace('%', '', $rawValueToCheckType);
+						if ($containsUnderScore) $rawValueToCheckType = str_replace('_', '', $rawValueToCheckType);
+					} else {
+						$operatorsAndPrefixes = $notLikeOperatorsAndPrefixes;
+						if (($containsPercentage & 2) !== 0) $rawValue = str_replace('[%]', '%', $rawValue);
+						if (($containsUnderScore & 2) !== 0) $rawValue = str_replace('[_]', '_', $rawValue);
+					}
 				} else {
 					$operatorsAndPrefixes = $notLikeOperatorsAndPrefixes;
 				}
+				// complete operator value from submitted value
 				foreach ($operatorsAndPrefixes as $operatorKey => $valuePrefix) {
 					$valuePrefixLen = mb_strlen($valuePrefix);
 					if ($valuePrefixLen > 0) {
@@ -261,6 +285,7 @@ trait ActionMethods {
 						if ($valuePrefixChars === $valuePrefix) {
 							$operator = $operatorKey;
 							$rawValue = mb_substr($rawValue, $valuePrefixLen);
+							$rawValueToCheckType = mb_substr($rawValueToCheckType, $valuePrefixLen);
 							break;
 						}
 					} else {
@@ -268,13 +293,35 @@ trait ActionMethods {
 						break;
 					}
 				}
+				// check if operator is allowed
 				$rawOperatorStr = $urlFilterOperators[$operator];
 				if (!isset($allowedOperators[$rawOperatorStr])) continue;
+				// check if operator configuration allowes submitted value form
 				$operatorCfg = $allowedOperators[$rawOperatorStr];
 				$multiple = $operatorCfg->multiple;
 				$regex = $operatorCfg->regex;
 				if ($regex !== NULL && !preg_match($regex, $rawValue)) continue;
-				$rawValue = $this->removeUnsafeChars($rawValue);
+				// check value by configured types
+				if ($valueIsStringNull) {
+					if ($columnAllowNullFilter) {
+						$rawValue = 'null';
+					} else {
+						continue;
+					}
+				} else if (is_array($columnTypes) && count($columnTypes) > 0) {
+					$typeValidationSuccess = FALSE;
+					foreach ($columnTypes as $columnType) {
+						$typeValidationSuccessLocal = $this->validateRawFilterValueByType(
+							$rawValueToCheckType, $columnType
+						);
+						if ($typeValidationSuccessLocal) {
+							$typeValidationSuccess = TRUE;
+							break;
+						}
+					}
+					if (!$typeValidationSuccess) continue;
+				}
+				// set up filtering value
 				if (isset($filterValues[$operator])) {
 					$filterValues[$operator][] = $rawValue;
 				} else {
@@ -300,7 +347,6 @@ trait ActionMethods {
 		if (!$viewExists) $this->view = NULL;
 		return $filtering;
 	}
-
 
 	/**
 	 * Internal submit action for custom filtering form.
@@ -409,7 +455,6 @@ trait ActionMethods {
 		return [TRUE, $newFiltering];
 	}
 	
-
 	/**
 	 * Complete redirect URL from new filtering and redirect with given reason message. 
 	 * New filtering has keys as database column names and values as arrays
@@ -463,7 +508,6 @@ trait ActionMethods {
 		}
 		$context::Redirect($redirectUrl, \MvcCore\IResponse::SEE_OTHER, $redirectReason);
 	}
-
 
 	/**
 	 * Prepare filter form filtering, keyed by model properties names 
@@ -523,7 +567,11 @@ trait ActionMethods {
 
 	/**
 	 * Check if given value contains any LIKE/NOT LIKE special 
-	 * character: `%` or `_`, not escaped like this: `[%]` or `[_]`.
+	 * character: `%` or `_` or escaped like this: `[%]` or `[_]`.
+	 * Returns `0` if no special char `%` or `_` matched.
+	 * Returns `1` if special char `%` or `_` matched in raw form only, not escaped.
+	 * Returns `2` if special char `%` or `_` matched in escaped form only.
+	 * Returns `1 | 2` if special char `%` or `_` matched in both forms.
 	 * @param  string $rawValue 
 	 * @param  string $specialLikeChar 
 	 * @return int
@@ -532,20 +580,21 @@ trait ActionMethods {
 		$containsSpecialChar = 0;
 		$index = 0;
 		$length = mb_strlen($rawValue);
-		$matchedEscapedChar = FALSE;
+		$matchedEscapedChar = 0;
 		while ($index < $length) {
 			$specialCharPos = mb_strpos($rawValue, $specialLikeChar, $index);
 			if ($specialCharPos === FALSE) break;
 			$escapedSpecialCharPos = mb_strpos($rawValue, '['.$specialLikeChar.']', max(0, $index - 1));
 			if ($escapedSpecialCharPos !== FALSE && $specialCharPos - 1 === $escapedSpecialCharPos) {
 				$index = $specialCharPos + mb_strlen($specialLikeChar) + 1;
-				$matchedEscapedChar = TRUE;
+				$matchedEscapedChar = 2;
 				continue;
 			}
-			$containsSpecialChar = $matchedEscapedChar ? 2 : 1;
+			$index = $specialCharPos + 1;
+			$containsSpecialChar = 1;
 			break;
 		}
-		return $containsSpecialChar;
+		return $containsSpecialChar | $matchedEscapedChar;
 	}
 
 	/**

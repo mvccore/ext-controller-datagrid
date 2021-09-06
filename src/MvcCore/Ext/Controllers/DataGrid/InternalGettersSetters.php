@@ -480,7 +480,7 @@ trait InternalGettersSetters {
 
 	/**
 	 * Complete grid `sort` URL param for standard application `Url()` method.
-	 * @param  array $sortGridParams 
+	 * @param  array|string $sortGridParams 
 	 * @return string
 	 */
 	protected function urlCompleteSortParam ($sortGridParams) {
@@ -489,6 +489,8 @@ trait InternalGettersSetters {
 			"Sort param has to be array with keys as column config properties names ".
 			"and with values to be strings `ASC` or `DESC`."
 		]);
+		if (is_string($sortGridParams))
+			return $sortGridParams;
 		if (!is_array($sortGridParams)) 
 			throw new \InvalidArgumentException($invalidSortParamMsg);
 		$configUrlSegments = $this->configUrlSegments;
@@ -530,7 +532,7 @@ trait InternalGettersSetters {
 
 	/**
 	 * Complete grid `filter` URL param for standard application `Url()` method.
-	 * @param  array $filterGridParams 
+	 * @param  array|string $filterGridParams 
 	 * @return string
 	 */
 	protected function urlCompleteFilterParam ($filterGridParams) {
@@ -540,6 +542,8 @@ trait InternalGettersSetters {
 			"and with values to be array with keys as allowed operator(s) ".
 			"and values as column filtered values."
 		]);
+		if (is_string($filterGridParams))
+			return $filterGridParams;
 		if (!is_array($filterGridParams)) 
 			throw new \InvalidArgumentException($invalidFilterParamMsg);
 		$configUrlSegments = $this->configUrlSegments;
@@ -583,6 +587,17 @@ trait InternalGettersSetters {
 			// complete filter URL segment for this column
 			$columnUrlName = $columnConfig->GetUrlName();
 			foreach ($filterOperatorsAndValues as $operator => $filterValues) {
+				if (!is_array($filterValues)) {
+					if (is_scalar($filterValues)) {
+						$filterValues = [$filterValues];
+					} else if ($filterValues === NULL) {
+						$filterValues = [$filterValues];
+					} else {
+						$filterValuesType = gettype($filterValues);
+						$filterValuesType = $filterValuesType === 'object' ? get_class($filterValues) : $filterValuesType;
+						throw new \InvalidArgumentException("Datagrid doesn't allow to filter by value type `{$filterValuesType}`, column `$columnPropName`.");
+					}
+				}
 				$operatorUrlValue = $urlFilterOperators[$operator];
 				if (!isset($allowedOperators[$operatorUrlValue])) 
 					throw new \InvalidArgumentException("Datagrid doesn't allow to filter by operator `{$operator}`, column `$columnPropName`.");
@@ -600,6 +615,7 @@ trait InternalGettersSetters {
 						throw new \InvalidArgumentException("Datagrid doesn't allow given filter value in column `$columnPropName`.");
 					$filterValues = $newValues;
 				}
+				// TODO: vyřešit povolení null hodnoty
 				$filterUrlValues = is_array($filterValues)
 					? implode($valuesDelim, $filterValues)
 					: (string) $filterValues;

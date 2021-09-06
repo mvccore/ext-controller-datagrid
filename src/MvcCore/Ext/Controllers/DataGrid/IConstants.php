@@ -117,6 +117,12 @@ interface IConstants {
 	 * @var int
 	 */
 	const FILTER_ALLOW_LIKE_ANYWHERE	= 32;
+	
+	/**
+	 * Datagrid filtering enabled for `null` values.
+	 * @var int
+	 */
+	const FILTER_ALLOW_NULL				= 64;
 
 
 	/**

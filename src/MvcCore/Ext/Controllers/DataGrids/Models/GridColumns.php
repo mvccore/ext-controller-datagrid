@@ -38,11 +38,12 @@ trait GridColumns {
 			list($metaData) = $context::GetMetaData(0);
 			foreach ($metaData as $propData) {
 				$dbColumnName = $propData[4];
+				$allowNulls = $propData[1];
 				$types = $propData[2];
 				$formatArgs = $propData[5];
 				if ($dbColumnName !== NULL) {
 					$propertyName = $propData[3];
-					$modelMetaData[$propertyName] = [$dbColumnName, $types, $formatArgs];
+					$modelMetaData[$propertyName] = [$dbColumnName, $allowNulls, $types, $formatArgs];
 				}
 			}
 			if (static::$defaultPropsFlags !== 0)

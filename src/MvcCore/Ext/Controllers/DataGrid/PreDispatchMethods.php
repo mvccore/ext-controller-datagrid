@@ -125,12 +125,32 @@ trait PreDispatchMethods {
 		$propName = $prop->name;
 		$args['propName'] = $propName;
 
-		if (isset($modelMetaData[$propName])) 
-			list($args['dbColumnName'], $args['types'], $args['format']) = $modelMetaData[$propName];
+		$allowNull = NULL;
+		if (isset($modelMetaData[$propName])) {
+			list(
+				$args['dbColumnName'], 
+				$allowNull, 
+				$types, 
+				$format
+			) = $modelMetaData[$propName];
+			if (!isset($args['types']))
+				$args['types'] = $types;
+			if (!isset($args['format']))
+				$args['format'] = $format;
+		}
 		if (
 			$args === NULL || 
 			($args !== NULL && !isset($args['dbColumnName']))
 		) return NULL;
+		if (isset($args['filter']) && $allowNull) {
+			$filter = $args['filter'];
+			if (is_int($filter)) {
+				$filter |= self::FILTER_ALLOW_NULL;
+			} else if ($filter === TRUE) {
+				$filter = self::FILTER_ALLOW_NULL;
+			}
+			$args['filter'] = $filter;
+		}
 		
 		/** @var \ReflectionClass $columnType */
 		/** @var \ReflectionParameter[] $ctorParams */

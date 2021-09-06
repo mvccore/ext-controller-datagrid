@@ -78,8 +78,8 @@ trait InitMethods {
 		$this->initOperators();
 		
 		$this->initSorting();
-		$this->initFiltering();
-
+		if (!$this->initFiltering()) return; // redirect inside
+		
 		call_user_func([$this, $this->gridAction]);
 	}
 
@@ -291,8 +291,8 @@ trait InitMethods {
 				$this->queryStringParamsSepatator,
 				FALSE
 			);
-			$gridParam = ltrim(rawurldecode($gridParam), '/');
-			$reqPathRaw = ltrim($this->gridRequest->GetPath(TRUE), '/');
+			$gridParam = rtrim(rawurldecode($gridParam), '/');
+			$reqPathRaw = rtrim($this->gridRequest->GetPath(TRUE), '/');
 
 			$redirectUrl = NULL;
 			if (
@@ -400,7 +400,7 @@ trait InitMethods {
 				if (isset($sortSuffixes[$rawDirection])) 
 					$direction = $sortSuffixes[$rawDirection];
 			}
-			$rawColumnName = $this->removeUnsafeChars($rawColumnName);
+			$rawColumnName = $this->removeUnknownChars($rawColumnName);
 			if ($rawColumnName === NULL) continue;
 			if (!isset($this->configColumns[$rawColumnName])) continue;
 			$configColumn = $this->configColumns[$rawColumnName];
@@ -426,12 +426,12 @@ trait InitMethods {
 	/**
 	 * Parse filtering from URL as array of databse column names as keys 
 	 * and values as array of raw filtering values.
-	 * @return void
+	 * @return bool
 	 */
 	protected function initFiltering () {
-		if (!$this->filteringMode || !isset($this->urlParams['filter'])) return;
+		if (!$this->filteringMode || !isset($this->urlParams['filter'])) return TRUE;
 		$rawFiltering = trim($this->urlParams['filter']);
-		if (mb_strlen($rawFiltering) === 0) return;
+		if (mb_strlen($rawFiltering) === 0) return TRUE;
 		$subjsDelim = $this->configUrlSegments->GetUrlDelimiterSubjects();
 		$subjValueDelim = $this->configUrlSegments->GetUrlDelimiterSubjectValue();
 		$valuesDelim = $this->configUrlSegments->GetUrlDelimiterValues();
@@ -440,7 +440,9 @@ trait InitMethods {
 		$rawFilteringItems = explode($subjsDelim, $rawFiltering);
 		$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
 		$filtering = [];
+		$invalidFilterValue = FALSE;
 		foreach ($rawFilteringItems as $rawFilteringItem) {
+			// parse column, operator and values
 			$delimPos = mb_strpos($rawFilteringItem, $subjValueDelim);
 			$multiple = TRUE;
 			$rawOperatorStr = $urlFilterOperators['='];
@@ -448,7 +450,7 @@ trait InitMethods {
 			$regex = NULL;
 			if ($delimPos === FALSE) {
 				$rawColumnName = $rawFilteringItem;
-				$values = [1]; // boolean 1 as default value if no operator and value defined
+				$values = ['1']; // boolean 1 as default value if no operator and value defined
 			} else {
 				$rawColumnName = mb_substr($rawFilteringItem, 0, $delimPos);
 				$rawOperatorAndValuesStr = mb_substr($rawFilteringItem, $delimPos + 1);
@@ -459,47 +461,114 @@ trait InitMethods {
 					$rawOperatorStr = mb_substr($rawOperatorAndValuesStr, 0, $delimPos);
 					$rawValuesStr = mb_substr($rawOperatorAndValuesStr, $delimPos + 1);
 				}
-				$rawValuesStr = $this->removeUnsafeChars($rawValuesStr);
-				if ($rawValuesStr === NULL) continue;
 			}
-			$rawColumnName = $this->removeUnsafeChars($rawColumnName);
+			$rawColumnName = $this->removeUnknownChars($rawColumnName);
+			// check if column exists
 			if ($rawColumnName === NULL || !isset($this->configColumns[$rawColumnName])) continue;
 			$configColumn = $this->configColumns[$rawColumnName];
 			$columnPropName = $configColumn->GetPropName();
+			$columnTypes = $configColumn->GetTypes();
+			// check if column support filtering
 			if (!isset($filteringColumns[$columnPropName])) continue;
 			$columnFilterCfg = $configColumn->GetFilter();
+			// check if column has allowed parsed operator
 			$allowedOperators = is_integer($columnFilterCfg)
 				? $this->columnsAllowedOperators[$columnPropName]
 				: $this->defaultAllowedOperators;
+			if (!isset($allowedOperators[$rawOperatorStr])) continue;
+			// check parsed values
 			if ($values === NULL) {
-				$rawValues = explode($valuesDelim, $rawValuesStr);
-				foreach ($rawValues as $rawValue) {
-					$rawValue = trim($rawValue);
-					if ($rawValue !== '') $values[] = $rawValue;
+				$values = [];
+				$rawValuesArr = explode($valuesDelim, $rawValuesStr);
+				$operatorCfg = $allowedOperators[$rawOperatorStr];
+				$operator = $operatorCfg->operator;
+				$multiple = $operatorCfg->multiple;
+				$regex = $operatorCfg->regex;
+				if (!$multiple && count($rawValuesArr) > 1)
+					$rawValuesArr = [$rawValuesArr[0]];
+				$columnFilter = $configColumn->GetFilter();
+				$columnAllowNullFilter = is_int($columnFilter) && ($columnFilter & self::FILTER_ALLOW_NULL) != 0;
+				foreach ($rawValuesArr as $rawValue) {
+					$rawValue = $this->removeUnknownChars($rawValue);
+					if ($rawValue === NULL) continue;
+					$rawValueToCheckType = $rawValue;
+					// complete possible operator prefixes from submitted value
+					$containsPercentage = $this->checkFilterFormValueForSpecialLikeChar($rawValue, '%');
+					$containsUnderScore = $this->checkFilterFormValueForSpecialLikeChar($rawValue, '_');
+					if (($containsPercentage & 1) !== 0) $rawValueToCheckType = str_replace('%', '', $rawValueToCheckType);
+					if (($containsUnderScore & 1) !== 0) $rawValueToCheckType = str_replace('_', '', $rawValueToCheckType);
+					//  check if operator configuration allowes submitted value form
+					if ($regex !== NULL && !preg_match($regex, $rawValue)) continue;
+					// check value by configured types
+					if (strtolower($rawValue) === 'null') {
+						if ($columnAllowNullFilter) {
+							$values[] = 'null';
+						} else {
+							$invalidFilterValue = TRUE;
+						}
+					} else if (is_array($columnTypes) && count($columnTypes) > 0) {
+						$typeValidationSuccess = FALSE;
+						foreach ($columnTypes as $columnType) {
+							$typeValidationSuccessLocal = $this->validateRawFilterValueByType(
+								$rawValueToCheckType, $columnType
+							);
+							if ($typeValidationSuccessLocal) {
+								$typeValidationSuccess = TRUE;
+								break;
+							}
+						}
+						if (!$typeValidationSuccess) {
+							$invalidFilterValue = TRUE;
+							continue;
+						}
+						$values[] = $rawValue;
+					} else {
+						$values[] = $rawValue;
+					}
 				}
 			}
-			if (count($values) === 0 || !isset($allowedOperators[$rawOperatorStr])) continue;
-			$operatorCfg = $allowedOperators[$rawOperatorStr];
-			$operator = $operatorCfg->operator;
-			$multiple = $operatorCfg->multiple;
-			$regex = $operatorCfg->regex;
-			if (!$multiple && count($values) > 1)
-				$values = [$values[0]];
-			if ($regex !== NULL) {
-				$newValues = [];
-				foreach ($values as $value)
-					if (preg_match($regex, $value))
-						$newValues[] = $value;
-				if (count($newValues) === 0) continue;
-				$values = $newValues;
-			}
+			if (count($values) === 0) continue;
+			// set up filtering value
 			$columnDbName = $configColumn->GetDbColumnName();
 			if (!isset($filtering[$columnDbName]))
 				$filtering[$columnDbName] = [];
 			$filtering[$columnDbName][$operator] = $values;
 			if (!$multiFiltering) break;
 		}
+		// set up new initial filtering:
 		$this->filtering = $filtering;
+		if (!$invalidFilterValue) return TRUE;
+		// check if there were any invalid filter value and redirect grid to proper url:
+		$canonicalFilter = [];
+		foreach ($filtering as $dbColumnName => $operatorAndFilteringValues) {
+			$configColumn = $this->configColumns->GetByDbColumnName($dbColumnName);
+			$canonicalFilter[$configColumn->GetPropName()] = $operatorAndFilteringValues;
+		}
+		$gridParams = array_merge($this->urlParams, ['filter' => $canonicalFilter]);
+		$canonicalUrl = $this->Url(NULL, [
+			static::URL_PARAM_GRID	=> $gridParams,
+		]);
+		$context = $this;
+		$context::Redirect(
+			$canonicalUrl, 
+			\MvcCore\IResponse::SEE_OTHER, 
+			'Grid filter canonical URL redirect.'
+		);
+		return FALSE;
+	}
+
+	/**
+	 * 
+	 * @param  string $rawFilterValueStr 
+	 * @param  string $typeStr 
+	 * @return bool
+	 */
+	protected function validateRawFilterValueByType ($rawFilterValueStr, $typeStr) {
+		$typeValidator = isset(static::$filterValuesTypeValidators[$typeStr])
+			? static::$filterValuesTypeValidators[$typeStr]
+			: NULL;
+		if ($typeValidator === NULL) return FALSE;
+		return (bool) preg_match($typeValidator, $rawFilterValueStr);
 	}
 
 	/**
@@ -547,19 +616,12 @@ trait InitMethods {
 	 * @param string|int $rawValue 
 	 * @return string|null
 	 */
-	protected function removeUnsafeChars ($rawValue) {
+	protected function removeUnknownChars ($rawValue) {
 		// remove white spaces from both sides: `SPACE \t \n \r \0 \x0B`:
 		$rawValue = trim((string) $rawValue);
 		
-		// Remove base ASCII characters from 0 to 31 included:
+		// Remove base ASCII characters from 0 to 31 (included), including new lines and tabs:
 		$cleanedValue = strtr($rawValue, static::$baseAsciiChars);
-
-		// Replace characters to entities: & " ' < > to &amp; &quot; &#039; &lt; &gt;
-		// http://php.net/manual/en/function.htmlspecialchars.php
-		$cleanedValue = htmlspecialchars($cleanedValue, ENT_QUOTES); // double and single quotes
-		
-		// Replace characters to entities: | = \ %
-		$cleanedValue = strtr($cleanedValue, static::$specialMeaningChars);
 
 		if (mb_strlen($cleanedValue) === 0) return NULL;
 		

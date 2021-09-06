@@ -66,26 +66,6 @@ trait InternalProps {
 	];
 
 	/**
-	 * Characters to prevent XSS attack and some other special chars
-	 * what could be dangerous user input. Be carefull, this filtering
-	 * doesn't prevent SQL injects!
-	 * @internal
-	 * @var \string[]
-	 */
-	protected static $specialMeaningChars = [
-		'<'	=> "&#60;",
-		'='	=> "&#61;",
-		'>'	=> "&#62;",
-		'['	=> "&#91;",
-		'\\'=> "&#92;",
-		']'	=> "&#93;",
-		'`'	=> "&#96;",
-		'{'	=> "&#123;",
-		'|'	=> "&#124;",
-		'}'	=> "&#125;",
-	];
-
-	/**
 	 * Filter form field value prefixes to define operator.
 	 * LIKE operators are used automatically only if filter value 
 	 * contains not escaped percentage or underscore.
@@ -101,6 +81,19 @@ trait InternalProps {
 		// empty prefixes has to be last
 		'LIKE'		=> '',
 		'='			=> '',
+	];
+
+	/**
+	 * Regular expressions to validate raw client filter values against configured types.
+	 * @var array
+	 */
+	protected static $filterValuesTypeValidators = [
+		'string'	=> "#.*#",
+		'int'		=> "#^([0-9\-\+]+)$#",
+		'float'		=> "#^([0-9\.\-\+]+)$#",
+		'bool'		=> "#^[01]{1}$#",
+		'\Date'		=> "#^\d{4}\-\d{2}\-\d{2}$#",
+		'\DateTime'	=> "#^\d{4}\-\d{2}\-\d{2} \d{2}\:\d{2}\:\d{2}(\.[\d]{1,6})?$#",
 	];
 
 	/**
