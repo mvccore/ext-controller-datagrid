@@ -19,11 +19,33 @@ class Dots extends \MvcCore\Ext\Controllers\DataGrids\Paging\Dot {
 	 * @inheritDocs
 	 * @var string
 	 */
-	protected $text = '&hellip;';
+	protected $text = ''; // \u{2026}
 	
 	/**
 	 * @inheritDocs
 	 * @var string
 	 */
 	protected $cssClass = 'grid-page-space grid-page-space-dots';
+	
+	/**
+	 * @inheritDocs
+	 * @param string|NULL     $url 
+	 * @param string|int|NULL $text 
+	 * @param bool            $current 
+	 * @param bool            $isPrev 
+	 * @param bool            $isNext 
+	 * @param bool            $isFirst 
+	 * @param bool            $isLast 
+	 */
+	public function __construct (
+		$url = NULL, $text = NULL, 
+		$current = FALSE, 
+		$isPrev = FALSE, $isNext = FALSE,
+		$isFirst = FALSE, $isLast = FALSE
+	) {
+		$this->text = mb_chr(8230); // \u{2026} - PHP 5.4 compatible
+		parent::__construct($url, $text, $current, $isPrev, $isNext, $isFirst, $isLast);
+
+	}
+	
 }
