@@ -179,7 +179,7 @@ interface IUrlSegments {
 
 	/**
 	 * Set URL delimiter for filtering, between multiple filtering values.
-	 * Default value is `,`.
+	 * Default value is `;`.
 	 * @param  string $urlDelimiterValues
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
@@ -187,7 +187,7 @@ interface IUrlSegments {
 
 	/**
 	 * Get URL delimiter for filtering, between multiple filtering values.
-	 * Default value is `,`.
+	 * Default value is `;`.
 	 * @return string
 	 */
 	public function GetUrlDelimiterValues ();

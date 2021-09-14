@@ -94,10 +94,10 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	
 	/**
 	 * URL delimiter for filtering, between multiple filtering values.
-	 * Default value is `,`.
+	 * Default value is `;`.
 	 * @var string
 	 */
-	protected $urlDelimiterValues = ',';
+	protected $urlDelimiterValues = ';';
 
 	/**
 	 * Allowed URL filter operators.
