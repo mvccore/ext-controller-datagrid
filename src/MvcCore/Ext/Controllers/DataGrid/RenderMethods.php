@@ -30,7 +30,9 @@ trait RenderMethods {
 		// Set up view store with parent controller view store, do not overwrite existing keys:
 		/** @var \MvcCore\Ext\Controllers\DataGrids\View $view */
 		$view = $this->view;
-		$view->SetUpStore($this->parentController->GetView(), FALSE);
+		$parentCtrlView = $this->parentController->GetView();
+		$view->SetUpStore($parentCtrlView, FALSE);
+		$view->view = $parentCtrlView;
 
 		// Set up child controllers into view if any of them is named by string index:
 		foreach ($this->childControllers as $ctrlKey => $childCtrl) {
