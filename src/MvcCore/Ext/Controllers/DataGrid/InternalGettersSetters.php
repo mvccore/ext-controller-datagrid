@@ -315,7 +315,26 @@ trait InternalGettersSetters {
 			$cellValue .= '%';
 			$operator = 'LIKE';
 		}
-		if ($operator === NULL) $operator = '=';
+		if ($operator === NULL) {
+			$colCfgFilter = $column->GetFilter();
+			if (is_bool($colCfgFilter)) {
+				$operator = '=';
+			} else if (is_int($colCfgFilter)) {
+				if (($colCfgFilter & \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_EQUALS) != 0) {
+					$operator = '=';
+				} else if (
+					($colCfgFilter & \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_ANYWHERE) != 0 ||
+					($colCfgFilter & \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_RIGHT_SIDE) != 0 ||
+					($colCfgFilter & \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_LEFT_SIDE) != 0
+				) {
+					$operator = 'LIKE';
+				} else {
+					throw new \InvalidArgumentException(
+						"Unknown filter configuration for column `{$currentColumnUrlName}` to automatically create filter link."
+					);
+				}
+			}
+		}
 
 		if (isset($currentFilterDbNames[$currentColumnDbName])) {
 			$currentFilterOperatorsAndValues = $currentFilterDbNames[$currentColumnDbName];

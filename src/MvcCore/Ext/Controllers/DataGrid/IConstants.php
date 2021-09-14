@@ -98,37 +98,43 @@ interface IConstants {
 	 * Datagrid filtering enabled with operators `<`, `>`, `<=`, `>=`.
 	 * @var int
 	 */
-	const FILTER_ALLOW_RANGES			= 4;
+	const FILTER_ALLOW_EQUALS			= 4;
+	
+	/**
+	 * Datagrid filtering enabled with operators `<`, `>`, `<=`, `>=`.
+	 * @var int
+	 */
+	const FILTER_ALLOW_RANGES			= 8;
 	
 	/**
 	 * Datagrid filtering enabled `LIKE` operator with `%` or `_` from right side.
 	 * @var int
 	 */
-	const FILTER_ALLOW_LIKE_RIGHT_SIDE	= 8;
+	const FILTER_ALLOW_LIKE_RIGHT_SIDE	= 16;
 	
 	/**
 	 * Datagrid filtering enabled `LIKE` operator with `%` or `_` from left side.
 	 * @var int
 	 */
-	const FILTER_ALLOW_LIKE_LEFT_SIDE	= 16;
+	const FILTER_ALLOW_LIKE_LEFT_SIDE	= 32;
 	
 	/**
 	 * Datagrid filtering enabled `LIKE` operator with `%` or `_` from any side.
 	 * @var int
 	 */
-	const FILTER_ALLOW_LIKE_ANYWHERE	= 32;
+	const FILTER_ALLOW_LIKE_ANYWHERE	= 64;
 	
 	/**
 	 * Datagrid filtering enabled for `null` values.
 	 * @var int
 	 */
-	const FILTER_ALLOW_NULL				= 64;
+	const FILTER_ALLOW_NULL				= 128;
 	
 	/**
 	 * Datagrid filtering enabled for all features.
 	 * @var int
 	 */
-	const FILTER_ALLOW_ALL				= 124; // 4|8|16|32|64
+	const FILTER_ALLOW_ALL				= 252; // 4|8|16|32|64|128
 
 
 	/**

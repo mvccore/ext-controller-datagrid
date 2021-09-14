@@ -289,7 +289,20 @@ trait ActionMethods {
 							break;
 						}
 					} else {
-						$operator = $operatorKey;
+						// the last equal operator
+						if (($columnFilterCfg & \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_EQUALS) != 0) {
+							$operator = $operatorKey;
+						} else if (
+							($columnFilterCfg & \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_ANYWHERE) != 0 ||
+							($columnFilterCfg & \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_RIGHT_SIDE) != 0 ||
+							($columnFilterCfg & \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_LEFT_SIDE) != 0
+						) {
+							$operator = 'LIKE';
+						} else {
+							throw new \InvalidArgumentException(
+								"Unknown filter configuration for column `{$propName}` to automatically submit column filtering."
+							);
+						}
 						break;
 					}
 				}
