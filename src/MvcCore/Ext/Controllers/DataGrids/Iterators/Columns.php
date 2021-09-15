@@ -64,7 +64,7 @@ class Columns extends \MvcCore\Ext\Controllers\DataGrids\Iterators\AssocArray {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function GetByDbColumnName ($dbColumnName) {
-		if (!isset($this->dbColumnsNamesMap[$dbColumnName]))
+		if (!isset($this->dbColumnsNamesMap[$dbColumnName])) 
 			throw new \InvalidArgumentException(
 				"Datagrid doesn't contain column config with database column name `{$dbColumnName}`."
 			);

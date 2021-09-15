@@ -65,7 +65,7 @@ trait InitMethods {
 		
 		$this->GetConfigUrlSegments();
 		$this->initTranslations();
-		$this->GetConfigColumns();
+		$this->GetConfigColumns(FALSE);
 		$this->GetRoute();
 		$this->GetUrlParams();
 		
@@ -93,7 +93,7 @@ trait InitMethods {
 	protected function initAppUrlCompletion () {
 		$this->GetConfigUrlSegments();
 		$this->initTranslations();
-		$this->GetConfigColumns();
+		$this->GetConfigColumns(FALSE);
 		$this->GetGridRequest();
 		$this->GetUrlParams();
 		$this->initItemsPerPageByRoute();
@@ -127,11 +127,11 @@ trait InitMethods {
 		$this->initUrlParamsQsParamsSeparator();
 
 		// set up default page if null:
-		if (isset($this->urlParams['page'])) {
-			if ($this->urlParams['page'] === 0) {
+		if (isset($this->urlParams[static::URL_PARAM_PAGE])) {
+			if ($this->urlParams[static::URL_PARAM_PAGE] === 0) {
 				// redirect to proper page number:
 				$redirectUrl = $this->GridUrl([
-					'page'	=> 1,
+					static::URL_PARAM_PAGE	=> 1,
 				]);
 				$context::Redirect(
 					$redirectUrl, 
@@ -141,7 +141,7 @@ trait InitMethods {
 				return FALSE;
 			}
 		} else {
-			$this->urlParams['page'] = 1;
+			$this->urlParams[static::URL_PARAM_PAGE] = 1;
 		}
 
 		// set up items per page configured from script into count cales if it is not there:
@@ -155,16 +155,16 @@ trait InitMethods {
 		}
 
 		// set up default count if null or check if count has allowed size:
-		if (!isset($this->urlParams['count'])) {
-			$this->urlParams['count'] = $this->GetItemsPerPage();
+		if (!isset($this->urlParams[static::URL_PARAM_COUNT])) {
+			$this->urlParams[static::URL_PARAM_COUNT] = $this->GetItemsPerPage();
 		} else {
-			$urlCount = $this->urlParams['count'];
+			$urlCount = $this->urlParams[static::URL_PARAM_COUNT];
 			$lastCountsScale = $this->countScales[count($this->countScales) - 1];
 			if ($lastCountsScale !== 0 && ($urlCount === 0 || $urlCount > $lastCountsScale)) {
 				// redirect to allowed max count:
 				$redirectUrl = $this->GridUrl([
-					'page'	=> $this->urlParams['page'],
-					'count'	=> $lastCountsScale,
+					static::URL_PARAM_PAGE	=> $this->urlParams[static::URL_PARAM_PAGE],
+					static::URL_PARAM_COUNT	=> $lastCountsScale,
 				]);
 				$context::Redirect(
 					$redirectUrl, 
@@ -176,7 +176,7 @@ trait InitMethods {
 		}
 
 		// check if count scale from url is allowed and change count scale if necessary:
-		$urlItemsPerPage = $this->urlParams['count'];
+		$urlItemsPerPage = $this->urlParams[static::URL_PARAM_COUNT];
 		if (
 			$this->allowedCustomUrlCountScale ||
 			in_array($urlItemsPerPage, $this->countScales, TRUE)
@@ -197,7 +197,7 @@ trait InitMethods {
 			$minDifferenceCountScaleKey = $differences[$minDifference];
 			$minDifferenceCountScale = $this->countScales[$minDifferenceCountScaleKey];
 			$redirectUrl = $this->GridUrl([
-				'count'	=> $minDifferenceCountScale,
+				static::URL_PARAM_COUNT	=> $minDifferenceCountScale,
 			]);
 			$context::Redirect(
 				$redirectUrl, 
@@ -208,10 +208,10 @@ trait InitMethods {
 		}
 		
 		// check if page is not larger than 1 if count is unlimited:
-		$this->page = $this->urlParams['page'];
+		$this->page = $this->urlParams[static::URL_PARAM_PAGE];
 		if ($this->itemsPerPage === 0 && $this->page > 1) {
 			$redirectUrl = $this->GridUrl([
-				'page'	=> 1,
+				static::URL_PARAM_PAGE	=> 1,
 			]);
 			$context::Redirect(
 				$redirectUrl, 
@@ -243,7 +243,7 @@ trait InitMethods {
 	 * @return void
 	 */
 	protected function initOffsetLimit () {
-		$count = $this->urlParams['count'];
+		$count = $this->urlParams[static::URL_PARAM_COUNT];
 		$unlimitedCount = $count === 0;
 
 		$this->limit = $unlimitedCount
@@ -253,7 +253,7 @@ trait InitMethods {
 		if ($unlimitedCount) {
 			$this->offset = 0;
 		} else {
-			$page = $this->urlParams['page'];
+			$page = $this->urlParams[static::URL_PARAM_PAGE];
 			$this->offset = ($page - 1) * $this->limit;
 		}
 	}
@@ -271,13 +271,13 @@ trait InitMethods {
 		$pageIsDefault = $this->page === 1;
 		$countIsDefault = $this->itemsPerPage === $this->itemsPerPageRouteConfig;
 		if ($pageIsDefault && $countIsDefault) {
-			$defaultParams = ['page' => 1, 'count' => $this->itemsPerPageRouteConfig];
+			$defaultParams = [static::URL_PARAM_PAGE => 1,		static::URL_PARAM_COUNT => $this->itemsPerPageRouteConfig];
 		} else if ($pageIsDefault && !$countIsDefault) {
-			$defaultParams = ['page' => NULL, 'count' => NULL];
+			$defaultParams = [static::URL_PARAM_PAGE => NULL,	static::URL_PARAM_COUNT => NULL];
 		} else if (!$pageIsDefault && $countIsDefault) {
-			$defaultParams = ['page' => NULL, 'count' => $this->itemsPerPageRouteConfig];
+			$defaultParams = [static::URL_PARAM_PAGE => NULL,	static::URL_PARAM_COUNT => $this->itemsPerPageRouteConfig];
 		} else {
-			$defaultParams = ['page' => NULL, 'count' => NULL];
+			$defaultParams = [static::URL_PARAM_PAGE => NULL,	static::URL_PARAM_COUNT => NULL];
 		}
 		$this->route->SetDefaults($defaultParams);
 		
@@ -331,7 +331,7 @@ trait InitMethods {
 	protected function initItemsPerPageByRoute () {
 		if ($this->itemsPerPageRouteConfig === NULL) {
 			$routeConfig = $this->route->GetAdvancedConfigProperty('defaults');
-			$this->itemsPerPageRouteConfig = $routeConfig['count'];
+			$this->itemsPerPageRouteConfig = $routeConfig[static::URL_PARAM_COUNT];
 		}
 	}
 
@@ -378,8 +378,8 @@ trait InitMethods {
 	 * @return void
 	 */
 	protected function initSorting () {
-		if (!$this->sortingMode || !$this->urlParams['sort']) return;
-		$rawSorting = trim($this->urlParams['sort']);
+		if (!$this->sortingMode || !$this->urlParams[static::URL_PARAM_SORT]) return;
+		$rawSorting = trim($this->urlParams[static::URL_PARAM_SORT]);
 		if (mb_strlen($rawSorting) === 0) return;
 		$subjsDelim = $this->configUrlSegments->GetUrlDelimiterSubjects();
 		$subjValueDelim = $this->configUrlSegments->GetUrlDelimiterSubjectValue();
@@ -404,7 +404,7 @@ trait InitMethods {
 			if ($rawColumnName === NULL) continue;
 			if (!isset($this->configColumns[$rawColumnName])) continue;
 			$configColumn = $this->configColumns[$rawColumnName];
-			if ($configColumn->GetDisabled()) continue;
+			if (!$this->ignoreDisabledColumns && $configColumn->GetDisabled()) continue;
 			$columnSortCfg = $configColumn->GetSort();
 			if ($columnSortCfg === FALSE || $columnSortCfg === NULL) continue;
 			$sorting[$configColumn->GetDbColumnName()] = $direction;
@@ -429,8 +429,8 @@ trait InitMethods {
 	 * @return bool
 	 */
 	protected function initFiltering () {
-		if (!$this->filteringMode || !isset($this->urlParams['filter'])) return TRUE;
-		$rawFiltering = trim($this->urlParams['filter']);
+		if (!$this->filteringMode || !isset($this->urlParams[static::URL_PARAM_FILTER])) return TRUE;
+		$rawFiltering = trim($this->urlParams[static::URL_PARAM_FILTER]);
 		if (mb_strlen($rawFiltering) === 0) return TRUE;
 		$subjsDelim = $this->configUrlSegments->GetUrlDelimiterSubjects();
 		$subjValueDelim = $this->configUrlSegments->GetUrlDelimiterSubjectValue();
@@ -544,7 +544,7 @@ trait InitMethods {
 			$configColumn = $this->configColumns->GetByDbColumnName($dbColumnName);
 			$canonicalFilter[$configColumn->GetPropName()] = $operatorAndFilteringValues;
 		}
-		$gridParams = array_merge($this->urlParams, ['filter' => $canonicalFilter]);
+		$gridParams = array_merge($this->urlParams, [static::URL_PARAM_FILTER => $canonicalFilter]);
 		$canonicalUrl = $this->Url(NULL, [
 			static::URL_PARAM_GRID	=> $gridParams,
 		]);

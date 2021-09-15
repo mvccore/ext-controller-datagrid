@@ -111,24 +111,29 @@ trait InternalGettersSetters {
 			$this->initAppUrlCompletion();
 		if (isset($params[static::URL_PARAM_GRID])) {
 			$rawGridParams = $params[static::URL_PARAM_GRID];
-			$page = $this->urlParams['page'];
-			$count = $this->urlParams['count'];
-			if (isset($rawGridParams['page'])) 
-				$page = $rawGridParams['page'];
-			if (isset($rawGridParams['count'])) 
-				$count = $rawGridParams['count'];
+			$page = isset($this->urlParams[static::URL_PARAM_PAGE])
+				? $this->urlParams[static::URL_PARAM_PAGE]
+				: $this->page;
+			$count = isset($this->urlParams[static::URL_PARAM_COUNT])
+				? $this->urlParams[static::URL_PARAM_COUNT]
+				: $this->itemsPerPage;
+			if (isset($rawGridParams[static::URL_PARAM_PAGE])) 
+				$page = $rawGridParams[static::URL_PARAM_PAGE];
+			if (isset($rawGridParams[static::URL_PARAM_COUNT])) 
+				$count = $rawGridParams[static::URL_PARAM_COUNT];
 			if ($count === $this->itemsPerPageRouteConfig) {
 				$count = NULL;
 				if ($page === 1) $page = NULL;
 			}
 			$gridParams = [
-				'page'	=> $page,
-				'count'	=> $count,
+				static::URL_PARAM_PAGE	=> $page,
+				static::URL_PARAM_COUNT	=> $count,
 			];
-			if (isset($rawGridParams['sort'])) 
-				$gridParams['sort'] = $this->urlCompleteSortParam($rawGridParams['sort']);
-			if (isset($rawGridParams['filter'])) 
-				$gridParams['filter'] = $this->urlCompleteFilterParam($rawGridParams['filter']);
+			$clear = isset($rawGridParams[static::URL_PARAM_CLEAR]) && $rawGridParams[static::URL_PARAM_CLEAR];
+			if (isset($rawGridParams[static::URL_PARAM_SORT])) 
+				$gridParams[static::URL_PARAM_SORT] = $this->urlCompleteSortParam($rawGridParams[static::URL_PARAM_SORT], $clear);
+			if (isset($rawGridParams[static::URL_PARAM_FILTER])) 
+				$gridParams[static::URL_PARAM_FILTER] = $this->urlCompleteFilterParam($rawGridParams[static::URL_PARAM_FILTER], $clear);
 			list ($gridParam) = $this->route->Url(
 				$this->gridRequest,
 				$gridParams,
@@ -178,10 +183,10 @@ trait InternalGettersSetters {
 			) != 0
 		) $itemsPerPage = $this->totalCount;
 		$page = $this->intdiv($offset, $itemsPerPage) + 1;
-		$params = ['page' => $page];
+		$params = [static::URL_PARAM_PAGE => $page];
 		if ($this->itemsPerPage === $this->itemsPerPageRouteConfig) {
-			$params['count'] = NULL;
-			if ($page === 1) $params['page'] = NULL;
+			$params[static::URL_PARAM_COUNT] = NULL;
+			if ($page === 1) $params[static::URL_PARAM_PAGE] = NULL;
 		}
 		return $this->GridUrl($params);
 	}
@@ -207,8 +212,8 @@ trait InternalGettersSetters {
 				$page = NULL;
 		}
 		return $this->GridUrl([
-			'page'	=> $page,
-			'count'	=> $count,
+			static::URL_PARAM_PAGE	=> $page,
+			static::URL_PARAM_COUNT	=> $count,
 		]);
 	}
 
@@ -273,9 +278,9 @@ trait InternalGettersSetters {
 			if ($page === 1) $page = NULL;
 		}
 		return $this->GridUrl([
-			'page'	=> $page,
-			'count'	=> $count,
-			'sort'	=> count($sortParams) > 0 
+			static::URL_PARAM_PAGE	=> $page,
+			static::URL_PARAM_COUNT	=> $count,
+			static::URL_PARAM_SORT	=> count($sortParams) > 0 
 				? implode($subjsDelim, $sortParams) 
 				: NULL
 		]);
@@ -372,9 +377,9 @@ trait InternalGettersSetters {
 			if ($page === 1) $page = NULL;
 		}
 		return $this->GridUrl([
-			'page'		=> $page,
-			'count'		=> $count,
-			'filter'	=> count($filterParams) > 0
+			static::URL_PARAM_PAGE		=> $page,
+			static::URL_PARAM_COUNT		=> $count,
+			static::URL_PARAM_FILTER	=> count($filterParams) > 0
 				? implode($subjsDelim, $filterParams)
 				: NULL
 		]);
@@ -500,9 +505,10 @@ trait InternalGettersSetters {
 	/**
 	 * Complete grid `sort` URL param for standard application `Url()` method.
 	 * @param  array|string $sortGridParams 
-	 * @return string
+	 * @param  bool         $clear
+	 * @return string|NULL
 	 */
-	protected function urlCompleteSortParam ($sortGridParams) {
+	protected function urlCompleteSortParam ($sortGridParams, $clear = FALSE) {
 		$invalidSortParamMsg = implode("\n", [
 			"Datagrid unknown `sort` URL param. ".
 			"Sort param has to be array with keys as column config properties names ".
@@ -523,7 +529,7 @@ trait InternalGettersSetters {
 		];
 		$multiSorting = ($this->sortingMode & static::SORT_MULTIPLE_COLUMNS) != 0;
 		$sortParams = [];
-		if ($multiSorting) {
+		if ($multiSorting && !$clear) {
 			// accept initial grid sorting
 			$currentSortDbNames = array_merge([], $this->sorting);
 			foreach ($currentSortDbNames as $columnDbName => $sortDirection) {
@@ -538,6 +544,17 @@ trait InternalGettersSetters {
 		// complete sort param by given sorting array
 		foreach ($sortGridParams as $columnPropName => $sortDirection) {
 			$columnConfig = $this->configColumns->GetByPropName($columnPropName);
+			$columnSortCfg = $columnConfig->GetSort();
+			$columnHasAllowedSorting = ((
+				$this->ignoreDisabledColumns || (
+					!$this->ignoreDisabledColumns && !$columnConfig->GetDisabled()
+				)
+			) && (
+				is_bool($columnSortCfg) || 
+				(is_int($columnSortCfg) && $columnSortCfg !== 0)
+			));
+			if (!$columnHasAllowedSorting) 
+				throw new \InvalidArgumentException("Datagrid doesn't allow to sort by column `$columnPropName`.");
 			$sortDirection = strtoupper($sortDirection);
 			if (!isset($urlDirections[$sortDirection]))
 				throw new \InvalidArgumentException($invalidSortParamMsg);
@@ -546,15 +563,17 @@ trait InternalGettersSetters {
 			$sortParams[] = "{$columnUrlName}{$subjValueDelim}{$columnUrlDir}";
 			if (!$multiSorting) break;
 		}
+		if (count($sortParams) === 0) return NULL;
 		return implode($subjsDelim, $sortParams);
 	}
 
 	/**
 	 * Complete grid `filter` URL param for standard application `Url()` method.
 	 * @param  array|string $filterGridParams 
-	 * @return string
+	 * @param  bool         $clear
+	 * @return string|NULL
 	 */
-	protected function urlCompleteFilterParam ($filterGridParams) {
+	protected function urlCompleteFilterParam ($filterGridParams, $clear = FALSE) {
 		$invalidFilterParamMsg = implode("\n", [
 			"Datagrid unknown `filter` URL param. ".
 			"Filter param has to be array with keys as column config properties names ".
@@ -572,7 +591,7 @@ trait InternalGettersSetters {
 		$urlFilterOperators = $configUrlSegments->GetUrlFilterOperators();
 		$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
 		$filterParams = [];
-		if ($multiFiltering) {
+		if ($multiFiltering && !$clear) {
 			// accept initial grid filtering
 			$currentFilterDbNames = array_merge([], $this->filtering);
 			foreach ($currentFilterDbNames as $columnDbName => $filterOperatorsAndValues) {
@@ -594,7 +613,11 @@ trait InternalGettersSetters {
 			$columnConfig = $this->configColumns->GetByPropName($columnPropName);
 			// check if filtering is allowed for this column
 			$columnFilterCfg = $columnConfig->GetFilter();
-			$columnHasAllowedFiltering = (!$columnConfig->GetDisabled() && (
+			$columnHasAllowedFiltering = ((
+				$this->ignoreDisabledColumns || (
+					!$this->ignoreDisabledColumns && !$columnConfig->GetDisabled()
+				)
+			) && (
 				is_bool($columnFilterCfg) || 
 				(is_int($columnFilterCfg) && $columnFilterCfg !== 0)
 			));
@@ -644,6 +667,7 @@ trait InternalGettersSetters {
 			}
 			if (!$multiFiltering) break;
 		}
+		if (count($filterParams) === 0) return NULL;
 		return implode($subjsDelim, $filterParams);
 	}
 }

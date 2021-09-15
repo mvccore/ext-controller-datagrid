@@ -26,7 +26,7 @@ trait RenderMethods {
 	 */
 	public function Render ($controllerOrActionNameDashed = NULL, $actionNameDashed = NULL) {
 		if (!$this->renderCheckDispatchState()) return '';
-
+		
 		// Set up view store with parent controller view store, do not overwrite existing keys:
 		/** @var \MvcCore\Ext\Controllers\DataGrids\View $view */
 		$view = $this->view;
@@ -44,7 +44,7 @@ trait RenderMethods {
 		$view->SetUpRender(
 			$this->renderMode, $controllerOrActionNameDashed, $actionNameDashed
 		);
-
+		
 		// Render grid template and sub templates:
 		$result = $view->RenderGrid();
 

@@ -504,9 +504,9 @@ trait ActionMethods {
 		}
 		$redirectUrl = $this->GridUrl([
 			static::URL_PARAM_ACTION	=> NULL,
-			'page'						=> $page,
-			'count'						=> $count,
-			'filter'					=> count($filterParams) > 0 
+			static::URL_PARAM_PAGE		=> $page,
+			static::URL_PARAM_COUNT		=> $count,
+			static::URL_PARAM_FILTER	=> count($filterParams) > 0 
 				? implode($subjsDelim, $filterParams)
 				: NULL
 		]);
@@ -552,7 +552,10 @@ trait ActionMethods {
 		foreach ($this->configColumns->GetArray() as $configColumn) {
 			$columnFilterCfg = $configColumn->GetFilter();
 			if (
-				!$configColumn->GetDisabled() && (
+				(
+					$this->ignoreDisabledColumns || 
+					(!$this->ignoreDisabledColumns && !$configColumn->GetDisabled())
+				) && (
 					is_bool($columnFilterCfg) || 
 					(is_int($columnFilterCfg) && $columnFilterCfg !== 0)
 				)

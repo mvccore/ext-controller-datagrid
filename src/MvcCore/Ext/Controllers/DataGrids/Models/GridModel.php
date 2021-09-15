@@ -158,7 +158,7 @@ trait GridModel {
 			$column = $columnPropNameOrConfig;
 			$propName = $column->GetPropName();
 		} else {
-			$column = $this->grid->GetConfigColumns()->GetByPropName($columnPropNameOrConfig);
+			$column = $this->grid->GetConfigColumns(FALSE)->GetByPropName($columnPropNameOrConfig);
 			$propName = $columnPropNameOrConfig;
 		}
 		$value = $row->{'Get' . ucfirst($propName)}();
@@ -189,7 +189,7 @@ trait GridModel {
 			$column = $columnPropNameOrConfig;
 			$propName = $column->GetPropName();
 		} else {
-			$column = $this->grid->GetConfigColumns()->GetByPropName($columnPropNameOrConfig);
+			$column = $this->grid->GetConfigColumns(FALSE)->GetByPropName($columnPropNameOrConfig);
 			$propName = $columnPropNameOrConfig;
 		}
 		$value = $row->{'Get' . ucfirst($propName)}();

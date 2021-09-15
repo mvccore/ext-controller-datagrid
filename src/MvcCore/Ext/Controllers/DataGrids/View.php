@@ -188,7 +188,6 @@ class View extends \MvcCore\View {
 		if (!$internalTemplate)
 			$typePath = static::$scriptsDir;
 		$result = '';
-
 		if ($internalTemplate) {
 			$viewScriptFullPath = implode('/', [
 				static::GetGridScriptsFullPathBase(),

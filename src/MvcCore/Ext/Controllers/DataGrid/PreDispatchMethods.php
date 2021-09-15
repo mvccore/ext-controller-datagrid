@@ -321,12 +321,12 @@ trait PreDispatchMethods {
 			? intval(ceil(floatval($this->totalCount) / floatval($this->itemsPerPage))) 
 			: 0 ;
 		// If user write to large page number to URL, redirect user to the last page.
-		$page = $this->urlParams['page'];
+		$page = $this->urlParams[static::URL_PARAM_PAGE];
 		if ($page > $pagesCountByTotalCount && $pagesCountByTotalCount > 0) {
 			/** @var \MvcCore\Controller $context */
 			$context = $this;
 			$redirectUrl = $this->GridUrl([
-				'page'	=> $pagesCountByTotalCount,
+				static::URL_PARAM_PAGE	=> $pagesCountByTotalCount,
 			]);
 			$context::Redirect(
 				$redirectUrl, 
@@ -599,7 +599,6 @@ trait PreDispatchMethods {
 		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Column $configColumn */
 		$newConfigColumns = [];
 		foreach ($this->configColumns as $urlName => $configColumn) {
-			if ($configColumn->GetDisabled()) continue;
 			$cssClasses = $configColumn->GetCssClasses();
 			$cssClasses[] = $columnCssClassBase . $configColumn->GetPropName();
 			$configColumn->SetCssClasses([implode(' ', $cssClasses)]);

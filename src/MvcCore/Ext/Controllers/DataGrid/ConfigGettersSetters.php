@@ -171,6 +171,24 @@ trait ConfigGettersSetters {
 	
 	/**
 	 * @inheritDocs
+	 * @param  bool $ignoreDisabledColumns
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetIgnoreDisabledColumns ($ignoreDisabledColumns) {
+		$this->ignoreDisabledColumns = $ignoreDisabledColumns;
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @return bool
+	 */
+	public function GetIgnoreDisabledColumns () {
+		return $this->ignoreDisabledColumns;
+	}
+	
+	/**
+	 * @inheritDocs
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm $translator
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -250,14 +268,14 @@ trait ConfigGettersSetters {
 					$this->sortingMode, $this->filteringMode
 				),
 				'defaults'		=> [
-					'page'		=> 1,
-					'count'		=> $this->GetItemsPerPage(),
+					static::URL_PARAM_PAGE		=> 1,
+					static::URL_PARAM_COUNT		=> $this->GetItemsPerPage(),
 				],
 				'constraints'	=> [
-					'page'		=> '[0-9]+',
-					'count'		=> '[0-9]+',
-					'sort'		=> '[^/]+',
-					'filter'	=> '[^/]+',
+					static::URL_PARAM_PAGE		=> '[0-9]+',
+					static::URL_PARAM_COUNT		=> '[0-9]+',
+					static::URL_PARAM_SORT		=> '[^/]+',
+					static::URL_PARAM_FILTER	=> '[^/]+',
 				]
 			]);
 			$this->route->SetRouter($this->router);
@@ -307,10 +325,10 @@ trait ConfigGettersSetters {
 			if ($matches === NULL) {
 				$this->urlParams = [];
 			} else {
-				if (isset($matches['page'])) 
-					$matches['page'] = intval($matches['page']);
-				if (isset($matches['count'])) 
-					$matches['count'] = intval($matches['count']);
+				if (isset($matches[static::URL_PARAM_PAGE])) 
+					$matches[static::URL_PARAM_PAGE] = intval($matches[static::URL_PARAM_PAGE]);
+				if (isset($matches[static::URL_PARAM_COUNT])) 
+					$matches[static::URL_PARAM_COUNT] = intval($matches[static::URL_PARAM_COUNT]);
 				$this->urlParams = $matches;
 			}
 		}
@@ -412,9 +430,10 @@ trait ConfigGettersSetters {
 
 	/**
 	 * @inheritDocs
+	 * @param  bool $activeOnly `TRUE` by default.
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns|NULL
 	 */
-	public function GetConfigColumns () {
+	public function GetConfigColumns ($activeOnly = TRUE) {
 		if ($this->configColumns === NULL) {
 			$model = $this->GetModel(TRUE);
 			if ($model instanceof \MvcCore\Ext\Controllers\DataGrids\Models\IGridColumns) {
@@ -466,7 +485,18 @@ trait ConfigGettersSetters {
 				);
 			}
 		}
-		return $this->configColumns;
+		if ($activeOnly) {
+			$activeConfigColumns = [];
+			foreach ($this->configColumns->GetArray() as $urlName => $configColumn) {
+				if ($configColumn->GetDisabled()) continue;
+				$activeConfigColumns[$urlName] = $configColumn;
+			}
+			return new \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns(
+				$activeConfigColumns
+			);
+		} else {
+			return $this->configColumns;
+		}
 	}
 
 	

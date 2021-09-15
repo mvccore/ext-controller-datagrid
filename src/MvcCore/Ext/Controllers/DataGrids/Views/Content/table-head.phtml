@@ -2,8 +2,7 @@
 	/** @var \MvcCore\Ext\Controllers\DataGrids\View $this */
 	/** @var \MvcCore\Ext\Controllers\DataGrid $grid */
 ?><thead><tr><?php
-	
-	$configColumns = $grid->GetConfigColumns();
+	$configColumns = $grid->GetConfigColumns(TRUE);
 	$gridSortingMode = $grid->GetSortingMode();
 	$sortAllowed = $gridSortingMode > $grid::SORT_DISABLED;
 	$miltiSort = ($gridSortingMode & $grid::SORT_MULTIPLE_COLUMNS) != 0;

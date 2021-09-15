@@ -22,7 +22,7 @@
 
 			?><td class="grid-column-<?php echo $colNumber + 1; ?>"><?php
 		
-				foreach ($grid->GetConfigColumns() as $configColumn):
+				foreach ($grid->GetConfigColumns(TRUE) as $configColumn):
 					?><div class="grid-cell-content <?php
 						echo implode(' ', $configColumn->GetCssClasses());
 					?>"><?php

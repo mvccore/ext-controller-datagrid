@@ -29,6 +29,36 @@ interface IConstants {
 	 */
 	const URL_PARAM_ACTION				= 'grid-action';
 	
+	/**
+	 * Grid routing param name to define page.
+	 * @var string
+	 */
+	const URL_PARAM_PAGE				= 'page';
+	
+	/**
+	 * Grid routing param name to define items per page.
+	 * @var string
+	 */
+	const URL_PARAM_COUNT				= 'count';
+	
+	/**
+	 * Grid routing param name to define sorting.
+	 * @var string
+	 */
+	const URL_PARAM_SORT				= 'sort';
+	
+	/**
+	 * Grid routing param name to define filtering.
+	 * @var string
+	 */
+	const URL_PARAM_FILTER				= 'filter';
+	
+	/**
+	 * Grid routing param name to accept/not accept current sorting or filtering.
+	 * @var string
+	 */
+	const URL_PARAM_CLEAR				= 'clear';
+	
 
 	/**
 	 * Default `10` items per page.

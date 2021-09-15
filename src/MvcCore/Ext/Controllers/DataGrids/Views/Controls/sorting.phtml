@@ -4,7 +4,7 @@
 
 	$renderConf = $this->GetConfigRendering();
 	$sortingCssClasses = $renderConf->GetCssClassesControlSorting();
-	$configColumns = $grid->GetConfigColumns();
+	$configColumns = $grid->GetConfigColumns(TRUE);
 	$configColumns2Render = [];
 	foreach ($configColumns as $urlName => $configColumn):
 		if ($configColumn->GetSort()) 

@@ -164,6 +164,23 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @return array
 	 */
 	public function GetFiltering ();
+
+	/**
+	 * Set system property to sort or filter also by not visible columns.
+	 * `FALSE` (by default) means sorting or filtering will be only by visible columns.
+	 * `TRUE` means sorting or filtering will be by any column.
+	 * @param  bool $ignoreDisabledColumns
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetIgnoreDisabledColumns ($ignoreDisabledColumns);
+	
+	/**
+	 * Get system property to sort or filter also by not visible columns.
+	 * `FALSE` (by default) means sorting or filtering will be only by visible columns.
+	 * `TRUE` means sorting or filtering will be by any column.
+	 * @return bool
+	 */
+	public function GetIgnoreDisabledColumns ();
 	
 	/**
 	 * Set custom filter form instance, implementing interfaces:
@@ -327,9 +344,10 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * model class properties decoration. Model has to implementing interface
 	 * `\MvcCore\Ext\Controllers\DataGrids\Models\IGridColumns`
 	 * to create this iterator automatically from decorated properties.
+	 * @param  bool $activeOnly `TRUE` by default.
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns|NULL
 	 */
-	public function GetConfigColumns ();
+	public function GetConfigColumns ($activeOnly = TRUE);
 	
 	/**
 	 * Add datagrid html wrapper element css class.

@@ -90,6 +90,14 @@ trait ConfigProps {
 	protected $filtering = [];
 
 	/**
+	 * System property to sort or filter also by not visible columns.
+	 * `FALSE` (by default) means sorting or filtering will be only by visible columns.
+	 * `TRUE` means sorting or filtering will be by any column.
+	 * @var bool
+	 */
+	protected $ignoreDisabledColumns = FALSE;
+
+	/**
 	 * Custom filter form instance, implementing interfaces:
 	 * - `\MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm`
 	 * - `\MvcCore\Ext\IForm`
