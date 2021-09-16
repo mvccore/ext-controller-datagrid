@@ -289,8 +289,10 @@ trait ActionMethods {
 							break;
 						}
 					} else {
-						// the last equal operator
-						if (($columnFilterCfg & \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_EQUALS) != 0) {
+						if (
+							(is_bool($columnFilterCfg) && $columnFilterCfg) ||
+							($columnFilterCfg & \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_EQUALS) != 0
+						) {
 							$operator = $operatorKey;
 						} else if (
 							($columnFilterCfg & \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_ANYWHERE) != 0 ||
@@ -299,6 +301,7 @@ trait ActionMethods {
 						) {
 							$operator = 'LIKE';
 						} else {
+							x($columnFilterCfg);
 							throw new \InvalidArgumentException(
 								"Unknown filter configuration for column `{$propName}` to automatically submit column filtering."
 							);
