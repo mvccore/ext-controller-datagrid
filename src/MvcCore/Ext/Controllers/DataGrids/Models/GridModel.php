@@ -90,6 +90,15 @@ trait GridModel {
 	}
 
 	/**
+	 * Get database table offset, always initialized into integer.
+	 * This offset is always initialized by datagrid component automatically.
+	 * @return int|NULL
+	 */
+	public function GetOffset () {
+		return $this->offset;
+	}
+
+	/**
 	 * Set database table select limit, it could be initialized into integer or `NULL`.
 	 * This limit is always initialized by datagrid component automatically.
 	 * @param  int|NULL $limit 
@@ -98,6 +107,15 @@ trait GridModel {
 	public function SetLimit ($limit) {
 		$this->limit = $limit;
 		return $this;
+	}
+
+	/**
+	 * Get database table select limit, it could be initialized into integer or `NULL`.
+	 * This limit is always initialized by datagrid component automatically.
+	 * @return int|NULL
+	 */
+	public function GetLimit () {
+		return $this->limit;
 	}
 
 	/**
@@ -114,6 +132,17 @@ trait GridModel {
 	}
 
 	/**
+	 * Get database table filtering, keys are database table column names
+	 * and values are arrays. Each key in value array is condition 
+	 * operator and values are raw user input values to use in column condition.
+	 * This filtering is always initialized by datagrid component automatically.
+	 * @return array
+	 */
+	public function GetFiltering () {
+		return $this->filtering;
+	}
+
+	/**
 	 * Set database table sorting, keys are database table column names 
 	 * and values are sorting direction strings - `ASC | DESC`.
 	 * This sorting is always initialized by datagrid component automatically.
@@ -123,6 +152,16 @@ trait GridModel {
 	public function SetSorting (array $sorting) {
 		$this->sorting = $sorting;
 		return $this;
+	}
+
+	/**
+	 * Get database table sorting, keys are database table column names 
+	 * and values are sorting direction strings - `ASC | DESC`.
+	 * This sorting is always initialized by datagrid component automatically.
+	 * @return array
+	 */
+	public function GetSorting () {
+		return $this->sorting;
 	}
 	
 	/**
