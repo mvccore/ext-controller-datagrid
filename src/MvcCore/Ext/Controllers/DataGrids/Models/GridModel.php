@@ -201,46 +201,29 @@ trait GridModel {
 			$propName = $columnPropNameOrConfig;
 		}
 		$value = $row->{'Get' . ucfirst($propName)}();
-		if ($value !== NULL) {
-			$viewHelperName = $column->GetViewHelper();
-			if ($viewHelperName) {
-				return call_user_func_array(
-					[$view, $viewHelperName], 
-					array_merge([$value], $column->GetFormat() ?: [])
-				);
-			} else {
-				return static::convertToScalar(
-					$value, $column->GetFormat()
-				);
-			}
-		}
-		return NULL;
-	}
-	
-	/**
-	 * Get scalar value used in URL for filtering (convertable into string).
-	 * @param  mixed                                                    $row
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column|string $columnPropNameOrConfig 
-	 * @return string
-	 */
-	public function GetFilterUrlValue ($row, $columnPropNameOrConfig) {
-		if ($columnPropNameOrConfig instanceof \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn) {
-			$column = $columnPropNameOrConfig;
-			$propName = $column->GetPropName();
-		} else {
-			$column = $this->grid->GetConfigColumns(FALSE)->GetByPropName($columnPropNameOrConfig);
-			$propName = $columnPropNameOrConfig;
-		}
-		$value = $row->{'Get' . ucfirst($propName)}();
-		if ($value === NULL) {
-			$columnFilter = $column->GetFilter();
-			if (is_int($columnFilter) && ($columnFilter & \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_NULL) != 0)
-				return 'null';
+		if ($value === NULL) 
 			return '';
+		$viewHelperName = $column->GetViewHelper();
+		if ($viewHelperName) {
+			$format = $column->GetFormat() ?: [];
+			$formatCount = count($format);
+			// if there is viewHelper defined and if there are more formats, 
+			// unset first format argument used for database value parsing
+			if (
+				$formatCount > 1 && 
+				($value instanceof \DateTime || $value instanceof \DateTimeImmutable)
+			) {
+				$format = array_slice($format, 1, null, TRUE);
+			}
+			return call_user_func_array(
+				[$view, $viewHelperName], 
+				array_merge([$value], $format)
+			);
+		} else {
+			return static::convertToScalar(
+				$value, $column->GetFormat()
+			);
 		}
-		return static::convertToScalar(
-			$value, $column->GetFormat()
-		);
 	}
 	
 	/**

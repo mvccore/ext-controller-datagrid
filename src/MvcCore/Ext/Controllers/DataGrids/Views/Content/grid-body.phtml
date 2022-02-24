@@ -27,7 +27,8 @@
 						echo implode(' ', $configColumn->GetCssClasses());
 					?>"><?php
 					
-					$renderedCell = trim($model->RenderCell($item, $configColumn, $this));
+					$renderedCell = $model->RenderCell($item, $configColumn, $this);
+					$renderedCell = $renderedCell === NULL ? '' : trim($renderedCell);
 					if (mb_strlen($renderedCell) > 0):
 						$columnUrlHelper = $configColumn->GetUrlHelper();
 
@@ -39,10 +40,7 @@
 							?></a><?php
 						elseif ($columnUrlHelper && $configColumn->GetFilter()):
 							?><a class="grid-filter-link" href="<?php
-								echo $grid->GridFilterUrl(
-									$configColumn,
-									$model->GetFilterUrlValue($item, $configColumn)
-								);
+								echo $grid->GridFilterUrl($configColumn, $renderedCell);
 							?>"><?php
 								echo $this->EscapeHtml($renderedCell);
 							?></a><?php

@@ -111,12 +111,4 @@ interface IGridModel {
 	 * @return string
 	 */
 	public function RenderCell ($row, $columnNameOrConfig, \MvcCore\IView $view);
-
-	/**
-	 * Get scalar value used in URL for filtering (convertable into string).
-	 * @param  mixed                                                     $row
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn|string $columnPropNameOrConfig 
-	 * @return string
-	 */
-	public function GetFilterUrlValue ($row, $columnPropNameOrConfig);
 }
