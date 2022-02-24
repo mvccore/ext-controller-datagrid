@@ -196,8 +196,9 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDocs
-	 * @return mixed
+	 * @return array|mixed
 	 */
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize () {
 		return get_object_vars($this);
 	}

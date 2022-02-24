@@ -48,6 +48,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * Return count of iterator items.
 	 * @return int
 	 */
+	#[\ReturnTypeWillChange]
 	public function count() {
 		return count($this->array);
 	}
@@ -56,6 +57,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * Rewind iterator to the beginning.
 	 * @return void
 	 */
+	#[\ReturnTypeWillChange]
 	public function rewind () {
 		$this->position = 0;
 	}
@@ -64,6 +66,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * Move iterator to next position.
 	 * @return void
 	 */
+	#[\ReturnTypeWillChange]
 	public function next() {
 		++$this->position;
 	}
@@ -72,6 +75,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * Return iterator index value.
 	 * @return int
 	 */
+	#[\ReturnTypeWillChange]
 	public function key () {
 		return $this->position;
 	}
@@ -80,6 +84,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * Return boolean if iterator could continue to next position.
 	 * @return bool
 	 */
+	#[\ReturnTypeWillChange]
 	public function valid () {
 		return array_key_exists($this->position, $this->array);
 	}
@@ -99,6 +104,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * @param  int  $offset
 	 * @return bool
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetExists ($offset) {
 		$offsetInt = intval($offset);
 		return array_key_exists($offsetInt, $this->array);
@@ -109,6 +115,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * @param  int  $offset 
 	 * @return void
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetUnset ($offset) {
 		$offsetInt = intval($offset);
 		unset($this->array[$offsetInt]);
@@ -121,6 +128,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * Return current iterator value.
 	 * @return mixed
 	 */
+	#[\ReturnTypeWillChange]
 	public function current () {
 		return $this->array[$this->position];
 	}
@@ -131,6 +139,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * @param  mixed    $value 
 	 * @return void
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetSet ($offset = NULL, $value = NULL) {
 		$offsetInt = intval($offset);
 		if ($offset === NULL) {
@@ -145,6 +154,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * @param  int|NULL $offset 
 	 * @return mixed
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetGet ($offset) {
 		$offsetInt = intval($offset);
 		return array_key_exists($offsetInt, $this->array)

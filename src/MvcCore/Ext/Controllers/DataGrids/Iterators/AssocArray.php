@@ -55,6 +55,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * Return count of iterator items.
 	 * @return int
 	 */
+	#[\ReturnTypeWillChange]
 	public function count() {
 		return count($this->array);
 	}
@@ -63,6 +64,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * Rewind iterator to the beginning.
 	 * @return void
 	 */
+	#[\ReturnTypeWillChange]
 	public function rewind () {
 		$this->position = 0;
 	}
@@ -71,6 +73,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * Move iterator to next position.
 	 * @return void
 	 */
+	#[\ReturnTypeWillChange]
 	public function next() {
 		++$this->position;
 	}
@@ -79,6 +82,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * Return iterator index value.
 	 * @return string
 	 */
+	#[\ReturnTypeWillChange]
 	public function key () {
 		return $this->keys[$this->position];
 	}
@@ -87,6 +91,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * Return boolean if iterator could continue to next position.
 	 * @return bool
 	 */
+	#[\ReturnTypeWillChange]
 	public function valid () {
 		if (!array_key_exists($this->position, $this->keys)) return FALSE;
 		$key = $this->keys[$this->position];
@@ -107,6 +112,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * @param  string $offset
 	 * @return bool
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetExists ($offset) {
 		$offsetStr = (string) $offset;
 		return array_key_exists($offsetStr, $this->array);
@@ -117,6 +123,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * @param  string $offset 
 	 * @return void
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetUnset ($offset) {
 		$offsetStr = (string) $offset;
 		unset($this->array[$offsetStr]);
@@ -130,6 +137,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * Return current iterator value.
 	 * @return mixed
 	 */
+	#[\ReturnTypeWillChange]
 	public function current () {
 		$key = $this->keys[$this->position];
 		return $this->array[$key];
@@ -141,6 +149,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * @param  mixed  $value 
 	 * @return void
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetSet ($offset = NULL, $value = NULL) {
 		if ($offset === NULL) {
 			$this->array[] = $value;
@@ -156,6 +165,7 @@ implements		\Iterator, \ArrayAccess, \Countable {
 	 * @param  string $offset 
 	 * @return mixed
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetGet ($offset) {
 		$offsetStr = (string) $offset;
 		return array_key_exists($offsetStr, $this->array)

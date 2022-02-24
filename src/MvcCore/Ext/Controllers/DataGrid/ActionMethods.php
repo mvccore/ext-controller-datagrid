@@ -197,6 +197,7 @@ trait ActionMethods {
 		
 		$formValues = [];
 		foreach ($rawFormValues as $propName => $rawValues) {
+			$rawValues = $rawValues ?: '';
 			$rawValues = trim((string) $rawValues);
 			if (mb_strlen($rawValues) === 0) continue;
 			list($subjectName, $propName) = explode($form::HTML_IDS_DELIMITER, $propName);
