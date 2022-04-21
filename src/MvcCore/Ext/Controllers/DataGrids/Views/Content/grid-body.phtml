@@ -34,13 +34,13 @@
 
 						if (is_string($columnUrlHelper) && strlen($columnUrlHelper) > 0):
 							?><a class="grid-custom-link" href="<?php
-								echo $item->{$columnUrlHelper}();
+								echo $this->EscapeAttr($item->{$columnUrlHelper}());
 							?>"><?php
 								echo $this->EscapeHtml($renderedCell);
 							?></a><?php
 						elseif ($columnUrlHelper && $configColumn->GetFilter()):
 							?><a class="grid-filter-link" href="<?php
-								echo $grid->GridFilterUrl($configColumn, $renderedCell);
+								echo $this->EscapeAttr($grid->GridFilterUrl($configColumn, $renderedCell));
 							?>"><?php
 								echo $this->EscapeHtml($renderedCell);
 							?></a><?php
