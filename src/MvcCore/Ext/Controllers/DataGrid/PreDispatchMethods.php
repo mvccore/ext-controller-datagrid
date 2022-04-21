@@ -263,7 +263,8 @@ trait PreDispatchMethods {
 		if ($this->dispatchState >= \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED) return;
 		
 		if ($this->viewEnabled) {
-			$this->view = $this->createView();
+			if ($this->view === NULL)
+				$this->view = $this->createView();
 			$this->view->grid = $this;
 		}
 

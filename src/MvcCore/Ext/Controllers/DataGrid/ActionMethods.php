@@ -627,9 +627,13 @@ trait ActionMethods {
 			$viewHelper = $this->filteringViewHelpersCache[$viewHelperName];
 			return [$viewHelper !== NULL, $viewHelper];
 		}
-		$viewHelper = $viewHelperName !== NULL 
-			? $this->view->GetHelper($viewHelperName, FALSE) 
-			: NULL;
+		if ($viewHelperName === NULL) {
+			$viewHelper = NULL;
+		} else {
+			if ($this->view === NULL)
+				$this->view = $this->createView();
+			$viewHelper = $this->view->GetHelper($viewHelperName, FALSE) ;
+		}
 		$useViewHelper = $viewHelper instanceof \MvcCore\Ext\Controllers\DataGrids\Views\IReverseHelper;
 		if ($useViewHelper) {
 			$viewHelper->SetGrid($this);

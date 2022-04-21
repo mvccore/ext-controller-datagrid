@@ -487,16 +487,29 @@ trait InitMethods {
 				if (!$multiple && count($rawValuesArr) > 1)
 					$rawValuesArr = [$rawValuesArr[0]];
 				$columnFilter = $configColumn->GetFilter();
-				$columnAllowNullFilter = is_int($columnFilter) && ($columnFilter & self::FILTER_ALLOW_NULL) != 0;
+				$columnAllowNullFilter = (
+					is_int($columnFilter) && ($columnFilter & self::FILTER_ALLOW_NULL) != 0
+				);
+				$viewHelperName = $configColumn->GetViewHelper();
+				list ($useViewHelper, $viewHelper) = $this->getFilteringViewHelper($viewHelperName);
 				foreach ($rawValuesArr as $rawValue) {
 					$rawValue = $this->removeUnknownChars($rawValue);
 					if ($rawValue === NULL) continue;
+					if ($useViewHelper) {
+						$rawValue = call_user_func_array(
+							[$viewHelper, 'Unformat'],
+							array_merge([$rawValue], $configColumn->GetFormat() ?: [])
+						);
+						if ($rawValue === NULL) continue;
+					}
 					$rawValueToCheckType = $rawValue;
 					// complete possible operator prefixes from submitted value
 					$containsPercentage = $this->checkFilterFormValueForSpecialLikeChar($rawValue, '%');
 					$containsUnderScore = $this->checkFilterFormValueForSpecialLikeChar($rawValue, '_');
-					if (($containsPercentage & 1) !== 0) $rawValueToCheckType = str_replace('%', '', $rawValueToCheckType);
-					if (($containsUnderScore & 1) !== 0) $rawValueToCheckType = str_replace('_', '', $rawValueToCheckType);
+					if (($containsPercentage & 1) !== 0) 
+						$rawValueToCheckType = str_replace('%', '', $rawValueToCheckType);
+					if (($containsUnderScore & 1) !== 0) 
+						$rawValueToCheckType = str_replace('_', '', $rawValueToCheckType);
 					//  check if operator configuration allowes submitted value form
 					if ($regex !== NULL && !preg_match($regex, $rawValue)) continue;
 					// check value by configured types
