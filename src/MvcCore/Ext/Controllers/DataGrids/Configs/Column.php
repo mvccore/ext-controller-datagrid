@@ -97,11 +97,29 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	protected $viewHelper = NULL;
 
 	/**
-	 * Column width attribute for head cell, if value.
+	 * Column initial or current width, it can be defined 
+	 * as integer for pixel value, float for flex value
+	 * or string including `px` or `%` units.
 	 * Width is used only for table grid type.
 	 * @var string|int|float|NULL
 	 */
 	protected $width = NULL;
+
+	/**
+	 * Column min. width, it can be defined as integer 
+	 * or float for pixel value or string including `px` 
+	 * or `%` units. Min. width is used only for table grid type.
+	 * @var string|int|float|NULL
+	 */
+	protected $minWidth = NULL;
+
+	/**
+	 * Column max. width, it can be defined as integer 
+	 * or float for pixel value or string including `px` 
+	 * or `%` units. Min. width is used only for table grid type.
+	 * @var string|int|float|NULL
+	 */
+	protected $maxWidth = NULL;
 
 	/**
 	 * Column additional css classes for head cell and body cell.
@@ -110,7 +128,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	protected $cssClasses = [];
 	
 	/**
-	 * Force column disable.
+	 * `TRUE` for disabled column, `FALSE|NULL` for enabled column.
 	 * @var bool|NULL
 	 */
 	protected $disabled = NULL;
@@ -136,8 +154,16 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 * @param \string[]|NULL        $types        Property type(s), necessary for automatic formating.
 	 * @param array|NULL            $format       Property automatic formating arguments.
 	 * @param string|NULL           $viewHelper   Property automatic formating view helper name.
-	 * @param string|int|float|NULL $width        Column width attribute for head cell, if value.
+	 * @param string|int|float|NULL $width        Column initial or current width, it can be defined 
+	 *                                            as integer for pixel value, float for flex value
+	 *                                            or string including `px` or `%` units.
 	 *                                            Width is used only for table grid type.
+	 * @param string|int|float|NULL $minWidth     Column min. width, it can be defined as integer 
+	 *                                            or float for pixel value or string including `px` 
+	 *                                            or `%` units. Min. width is used only for table grid type.
+	 * @param string|int|float|NULL $maxWidth     Column max. width, it can be defined as integer 
+	 *                                            or float for pixel value or string including `px` 
+	 *                                            or `%` units. Min. width is used only for table grid type.
 	 * @param \string[]             $cssClasses   Column additional css classes for head cell and body cell.
 	 * @param bool|NULL             $disabled     Force column disable.
 	 */
@@ -155,6 +181,8 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		$format = NULL, 
 		$viewHelper = NULL,
 		$width = NULL,
+		$minWidth = NULL,
+		$maxWidth = NULL,
 		$cssClasses = NULL,
 		$disabled = NULL
 	) {
@@ -189,10 +217,11 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		if ($format !== NULL)		$this->format		= $format;
 		if ($viewHelper !== NULL)	$this->viewHelper	= $viewHelper;
 		if ($width !== NULL)		$this->width		= $width;
+		if ($minWidth !== NULL)		$this->minWidth		= $minWidth;
+		if ($maxWidth !== NULL)		$this->maxWidth		= $maxWidth;
 		if ($cssClasses !== NULL)	$this->cssClasses	= $cssClasses;
 		if ($disabled !== NULL)		$this->disabled		= $disabled;
 	}
-
 
 	/**
 	 * @inheritDocs
@@ -210,6 +239,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	public function GetPropName () {
 		return $this->propName;
 	}
+
 	/**
 	 * @inheritDocs
 	 * @param  string|NULL $propName
@@ -224,26 +254,10 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 * @inheritDocs
 	 * @return string|NULL
 	 */
-	public function GetDbColumnName () {
-		return $this->dbColumnName;
-	}
-	/**
-	 * @inheritDocs
-	 * @param  string|NULL $dbColumnName
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
-	 */
-	public function SetDbColumnName ($dbColumnName) {
-		$this->dbColumnName = $dbColumnName;
-		return $this;
-	}
-	
-	/**
-	 * @inheritDocs
-	 * @return string|NULL
-	 */
 	public function GetHeadingName () {
 		return $this->headingName;
 	}
+
 	/**
 	 * @inheritDocs
 	 * @param  string|NULL $headingName
@@ -276,9 +290,28 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 * @inheritDocs
 	 * @return string|NULL
 	 */
+	public function GetDbColumnName () {
+		return $this->dbColumnName;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param  string|NULL $dbColumnName
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetDbColumnName ($dbColumnName) {
+		$this->dbColumnName = $dbColumnName;
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @return string|NULL
+	 */
 	public function GetUrlName () {
 		return $this->urlName;
 	}
+	
 	/**
 	 * @inheritDocs
 	 * @param  string|NULL $urlName
@@ -296,7 +329,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	public function GetUrlHelper () {
 		return $this->urlHelper;
 	}
-
+	
 	/**
 	 * @inheritDocs
 	 * @param  bool|string|NULL $urlHelper
@@ -314,6 +347,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	public function GetColumnIndex () {
 		return $this->columnIndex;
 	}
+
 	/**
 	 * @inheritDocs
 	 * @param  int|NULL $columnIndex
@@ -331,6 +365,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	public function GetSort () {
 		return $this->sort;
 	}
+
 	/**
 	 * @inheritDocs
 	 * @param  string|bool|NULL $sort
@@ -348,6 +383,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	public function GetFilter () {
 		return $this->filter;
 	}
+
 	/**
 	 * @inheritDocs
 	 * @param  int|bool $filter
@@ -365,6 +401,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	public function GetTypes () {
 		return $this->types;
 	}
+
 	/**
 	 * @inheritDocs
 	 * @param  \string[] $types
@@ -382,9 +419,10 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	public function GetFormat () {
 		return $this->format;
 	}
+
 	/**
 	 * @inheritDocs
-	 * @param  array $format
+	 * @param  array|NULL $format
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetFormat ($format) {
@@ -399,9 +437,10 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	public function GetViewHelper () {
 		return $this->viewHelper;
 	}
+
 	/**
 	 * @inheritDocs
-	 * @param  array $viewHelper
+	 * @param  array|NULL $viewHelper
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetViewHelper ($viewHelper) {
@@ -411,13 +450,12 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDocs
-	 * @return string|NULL
+	 * @return string|int|float|NULL
 	 */
 	public function GetWidth () {
-		if ($this->width === NULL || is_string($this->width)) 
-			return $this->width;
-		return rtrim(rtrim(number_format($this->width, 3, '.', ''), '0'), '.');
+		return $this->width;
 	}
+
 	/**
 	 * @inheritDocs
 	 * @param  string|int|float|NULL $width
@@ -429,12 +467,57 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
+	 * Get column min. width, it can be defined as integer 
+	 * or float for pixel value or string including `px` 
+	 * or `%` units. Min. width is used only for table grid type.
+	 * @return string|int|float|NULL
+	 */
+	public function GetMinWidth () {
+		return $this->minWidth;
+	}
+
+	/**
+	 * Set column min. width, it can be defined as integer 
+	 * or float for pixel value or string including `px` 
+	 * or `%` units. Min. width is used only for table grid type.
+	 * @param  string|int|float|NULL $minWidth
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetMinWidth ($minWidth) {
+		$this->minWidth = $minWidth;
+		return $this;
+	}
+	
+	/**
+	 * Get column max. width, it can be defined as integer 
+	 * or float for pixel value or string including `px` 
+	 * or `%` units. Min. width is used only for table grid type.
+	 * @return string|int|float|NULL
+	 */
+	public function GetMaxWidth () {
+		return $this->maxWidth;
+	}
+
+	/**
+	 * Set column max. width, it can be defined as integer 
+	 * or float for pixel value or string including `px` 
+	 * or `%` units. Min. width is used only for table grid type.
+	 * @param  string|int|float|NULL $maxWidth
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetMaxWidth ($maxWidth) {
+		$this->maxWidth = $maxWidth;
+		return $this;
+	}
+
+	/**
 	 * @inheritDocs
 	 * @return \string[]|NULL
 	 */
 	public function GetCssClasses () {
 		return $this->cssClasses;
 	}
+
 	/**
 	 * @inheritDocs
 	 * @param  \string[] $cssClasses
@@ -452,9 +535,10 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	public function GetDisabled () {
 		return $this->disabled;
 	}
+
 	/**
 	 * @inheritDocs
-	 * @param  bool $disabled
+	 * @param  bool|NULL $disabled
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetDisabled ($disabled) {

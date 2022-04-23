@@ -26,6 +26,18 @@
 				echo ' width="' . $columnWidth . '"';
 			if ($columnTitle = $configColumn->GetTitle())
 				echo ' title="' . $this->EscapeAttr($columnTitle) . '"';
+			$minWidth = $configColumn->GetMinWidth();
+			$maxWidth = $configColumn->GetMaxWidth();
+			$minWidthNotNull = $minWidth !== NULL;
+			$maxWidthNotNull = $maxWidth !== NULL;
+			if ($minWidthNotNull || $maxWidthNotNull) {
+				echo ' style="';
+				if ($minWidthNotNull) 
+					echo 'min-width:' . (is_numeric($minWidth) ? $minWidth . 'px' : $minWidth) . ';';
+				if ($maxWidthNotNull) 
+					echo 'max-width:' . (is_numeric($maxWidth) ? $maxWidth . 'px' : $maxWidth) . ';';
+				echo '"';
+			}
 		?>><?php
 
 		if ($headFilter):
