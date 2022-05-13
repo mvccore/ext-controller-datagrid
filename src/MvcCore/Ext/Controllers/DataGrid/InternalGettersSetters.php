@@ -449,9 +449,31 @@ trait InternalGettersSetters {
 			\ReflectionProperty::IS_STATIC
 		);
 		$result = [];
+		$propsNotToPrint = [
+			'application'				=> FALSE,
+			'parentController'			=> FALSE,
+			'controller'				=> FALSE,
+			'childControllers'			=> FALSE,
+			'router'					=> FALSE,
+			'route'						=> FALSE,
+			'request'					=> FALSE,
+			'response'					=> FALSE,
+			'environment'				=> FALSE,
+			'router'					=> FALSE,
+			'user'						=> FALSE,
+			'layout'					=> FALSE,
+			'view'						=> FALSE,
+			'pageData'					=> FALSE,
+			'model'						=> FALSE,
+			'filteringViewHelpersCache'	=> FALSE,
+			'tableHeadFilterForm'		=> FALSE,
+		];
 		$phpWithTypes = PHP_VERSION_ID >= 70400;
 		foreach ($props as $prop) {
-			if (!$prop->isPublic()) $prop->setAccessible(TRUE);
+			if ($prop->isStatic()) 
+				continue;
+			if (!$prop->isPublic()) 
+				$prop->setAccessible(TRUE);
 			$value = NULL;
 			if ($phpWithTypes) {
 				if ($prop->isStatic() && $prop->isInitialized()) {
@@ -464,28 +486,17 @@ trait InternalGettersSetters {
 					? $prop->getValue()
 					: $prop->getValue($this);
 			}
-			if ($value instanceof \Closure) 
-				$value = '\\Closure';
+			if (isset($propsNotToPrint[$prop->name])) {
+				$value = is_object($value)
+					? get_class($value)
+					: gettype($value);
+			} else {
+				if ($value instanceof \Closure) 
+					$value = '\\Closure';
+				if (is_resource($value)) 
+					$value = 'resource (' . get_resource_id($value) . ', ' . get_resource_type($value) . ')';
+			}
 			$result[$prop->name] = $value;
-		}
-		return $result;
-	}
-
-	/**
-	 * Return array of properties to serialize.
-	 * @return \string[]
-	 */
-	public function __sleep () {
-		$type = new \ReflectionClass($this);
-		$props = $type->getProperties(
-			\ReflectionProperty::IS_PRIVATE |
-			\ReflectionProperty::IS_PROTECTED |
-			\ReflectionProperty::IS_PUBLIC
-		);
-		$result = [];
-		foreach ($props as $prop) {
-			if ($prop->name === 'translator') continue;
-			$result[] = $prop->name;
 		}
 		return $result;
 	}
