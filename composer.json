@@ -21,7 +21,7 @@
 	}],
 	"require": {
 		"php": ">=5.4.0",
-		"mvccore/mvccore": "^5.1.24"
+		"mvccore/mvccore": "^5.1.26"
 	},
 	"suggest": {
 		"mvccore/ext-model-db-*": "MvcCore model extension to work with database SQL queries in more comfortable API.",
