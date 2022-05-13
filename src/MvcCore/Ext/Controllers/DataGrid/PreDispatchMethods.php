@@ -264,7 +264,7 @@ trait PreDispatchMethods {
 		
 		if ($this->viewEnabled) {
 			if ($this->view === NULL)
-				$this->view = $this->createView();
+				$this->view = $this->createView(TRUE);
 			$this->view->grid = $this;
 		}
 
@@ -301,9 +301,10 @@ trait PreDispatchMethods {
 
 	/**
 	 * Create customized datagrid view instance.
+	 * @param  bool $actionView
 	 * @return \MvcCore\View
 	 */
-	protected function createView () {
+	protected function createView ($actionView = TRUE) {
 		$viewClass = $this->configRendering->GetViewClass();
 		$view = $viewClass::CreateInstance()
 			->SetController($this)

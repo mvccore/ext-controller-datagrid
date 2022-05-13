@@ -68,7 +68,7 @@ trait ActionMethods {
 		$clearBtnResultState = static::$tableHeadingFilterFormClearResultBase;
 		$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
 		$viewExists = $this->view !== NULL;
-		$this->view = $this->createView();
+		$this->view = $this->createView(TRUE);
 		foreach ($this->configColumns as $configColumn) {
 			$clearBtnResultState++;
 			if ($configColumn->GetDisabled() || !$configColumn->GetFilter()) continue;
@@ -235,7 +235,7 @@ trait ActionMethods {
 		$likeOperatorsAndPrefixes = array_intersect_key(static::$filterFormFieldValueOperatorPrefixes, $likeOperatorsArrFilter);
 		$notLikeOperatorsAndPrefixes = array_diff_key(static::$filterFormFieldValueOperatorPrefixes, $likeOperatorsArrFilter);
 		$viewExists = $this->view !== NULL;
-		$this->view = $this->createView();
+		$this->view = $this->createView(TRUE);
 		foreach ($formSubmitValues as $propName => $rawValues) {
 			if (!isset($filteringColumns[$propName])) continue;
 			$configColumn = $filteringColumns[$propName];
@@ -631,7 +631,7 @@ trait ActionMethods {
 			$viewHelper = NULL;
 		} else {
 			if ($this->view === NULL)
-				$this->view = $this->createView();
+				$this->view = $this->createView(TRUE);
 			$viewHelper = $this->view->GetHelper($viewHelperName, FALSE) ;
 		}
 		$useViewHelper = $viewHelper instanceof \MvcCore\Ext\Controllers\DataGrids\Views\IReverseHelper;
