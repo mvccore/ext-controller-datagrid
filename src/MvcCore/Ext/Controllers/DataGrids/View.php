@@ -199,7 +199,8 @@ class View extends \MvcCore\View {
 				$typePath, $relativePath
 			);
 			$viewScriptFullPath = static::GetViewScriptFullPath(
-				$this->GetTypedViewsDirFullPath($typePath), $relativePath
+				static::GetDefaultViewsDirFullPath($this->controller->GetApplication()) . '/' . $typePath, 
+				$relativePath
 			);
 		}
 
