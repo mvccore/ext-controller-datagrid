@@ -438,7 +438,7 @@ trait ConfigGettersSetters {
 			$model = $this->GetModel(TRUE);
 			if ($model instanceof \MvcCore\Ext\Controllers\DataGrids\Models\IGridColumns) {
 				/** @var \MvcCore\Ext\Controllers\DataGrids\Models\GridColumns $model */
-				$configColumnsArr = $model->GetConfigColumns();
+				$configColumnsArr = $model->SetGrid($this)->GetConfigColumns();
 			} else {
 				$context = $this;
 				$configColumnsArr = $context::ParseConfigColumns($this->model);

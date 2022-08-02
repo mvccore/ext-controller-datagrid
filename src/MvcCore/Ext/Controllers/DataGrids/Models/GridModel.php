@@ -185,48 +185,6 @@ trait GridModel {
 	}
 
 	/**
-	 * Render value with by possible view helper as scalar value 
-	 * into datagrid table cell (convertable into string).
-	 * @param  mixed                                                    $row
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column|string $columnNameOrConfig 
-	 * @param  \MvcCore\View                                            $view
-	 * @return string
-	 */
-	public function RenderCell ($row, $columnPropNameOrConfig, \MvcCore\IView $view) {
-		if ($columnPropNameOrConfig instanceof \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn) {
-			$column = $columnPropNameOrConfig;
-			$propName = $column->GetPropName();
-		} else {
-			$column = $this->grid->GetConfigColumns(FALSE)->GetByPropName($columnPropNameOrConfig);
-			$propName = $columnPropNameOrConfig;
-		}
-		$value = $row->{'Get' . ucfirst($propName)}();
-		if ($value === NULL) 
-			return '';
-		$viewHelperName = $column->GetViewHelper();
-		if ($viewHelperName) {
-			$format = $column->GetFormat() ?: [];
-			$formatCount = count($format);
-			// if there is viewHelper defined and if there are more formats, 
-			// unset first format argument used for database value parsing
-			if (
-				$formatCount > 1 && 
-				($value instanceof \DateTime || $value instanceof \DateTimeImmutable)
-			) {
-				$format = array_slice($format, 1, null, TRUE);
-			}
-			return call_user_func_array(
-				[$view, $viewHelperName], 
-				array_merge([$value], $format)
-			);
-		} else {
-			return static::convertToScalar(
-				$value, $column->GetFormat()
-			);
-		}
-	}
-	
-	/**
 	 * Complete ORDER BY condition SQL part by `$this->sorting` array given from datagrid.
 	 * @param  bool        $includeOrderBy Include ` WHERE ` keyword.
 	 * @param  string|NULL $columnsAlias   Optional SQL alias for each column.

@@ -1,17 +1,19 @@
 <?php
-	/** @var \MvcCore\Ext\Controllers\DataGrids\View $this */
-	/** @var \MvcCore\Ext\Controllers\DataGrid $grid */
-	/** @var \MvcCore\Ext\Controllers\DataGrids\Models\GridModel $model */
-
+	/**
+	 * @var \MvcCore\Ext\Controllers\DataGrids\View $this
+	 * @var \MvcCore\Ext\Controllers\DataGrid $grid
+	 * @var \MvcCore\Ext\Controllers\DataGrids\Models\GridModel $model
+	 * @var \MvcCore\Ext\Controllers\DataGrids\Models\GridRow $item
+	 */
 	$renderConf = $grid->GetConfigRendering();
 	$colsCount = $renderConf->GetGridColumnsCount();
 	$model = $grid->GetModel();
 	$colIndex = 0;
-
 ?><tbody>
 	<tr class="grid-row-odd"><?php
 
 		foreach ($grid->GetPageData() as $index => $item):
+			$item->SetGrid($grid);
 			$colNumber = $colIndex % $colsCount;
 
 			if ($colIndex > 0 && $colNumber === 0):
@@ -27,7 +29,7 @@
 						echo implode(' ', $configColumn->GetCssClasses());
 					?>"><?php
 					
-					$renderedCell = $model->RenderCell($item, $configColumn, $this);
+					$renderedCell = $item->RenderCell($configColumn, $this);
 					$renderedCell = $renderedCell === NULL ? '' : trim($renderedCell);
 					if (mb_strlen($renderedCell) > 0):
 						$columnUrlHelper = $configColumn->GetUrlHelper();

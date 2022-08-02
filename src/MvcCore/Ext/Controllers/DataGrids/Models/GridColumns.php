@@ -14,6 +14,10 @@
 namespace MvcCore\Ext\Controllers\DataGrids\Models;
 
 /**
+ * This mixin is always used in grid model class
+ * to be able to complete columns automatically from
+ * model class context or in any custom way from any 
+ * custom row model class.
  * @mixin \MvcCore\Model|\MvcCore\Ext\Models\Db\Model
  */
 trait GridColumns {
@@ -26,16 +30,36 @@ trait GridColumns {
 	 */
 	public function GetConfigColumns () {
 		/** @var \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $this */
+		$rowFullClassName = get_class($this); // row model is the same as grid model by default
+		$gridClass = get_class($this->grid);
+		list(
+			$rowModelMetaData, $rowModelAccessModFlags
+		) = static::getConfigColumnsModelMetaData($rowFullClassName);
+		return $gridClass::ParseConfigColumns(
+			$rowFullClassName, $rowModelMetaData, $rowModelAccessModFlags
+		);
+	}
+
+	/**
+	 * Return database model metadata and default access mod flags,
+	 * if `$this` context implements `\MvcCore\Ext\Models\Db\IModel`.
+	 * @param  \MvcCore\Ext\Models\Db\Model|string $rowContextOrFullClassName
+	 * @return array
+	 */
+	protected static function getConfigColumnsModelMetaData ($rowContextOrFullClassName) {
+		$accessModFlags = 0;
 		$modelMetaData = [];
 		$toolClass = \MvcCore\Application::GetInstance()->GetToolClass();
+		$rowFullClassName = is_string($rowContextOrFullClassName) 
+			? $rowContextOrFullClassName 
+			: get_class($rowContextOrFullClassName);
 		$implementsExtendedModel = $toolClass::CheckClassInterface(
-			get_class($this), 'MvcCore\\Ext\\Models\\Db\\IModel', FALSE, FALSE
+			$rowFullClassName, 
+			'MvcCore\\Ext\\Models\\Db\\IModel', FALSE, FALSE
 		);
-		$accessModFlags = 0;
 		if ($implementsExtendedModel) {
-			/** @var \MvcCore\Ext\Models\Db\Model $context */
-			$context = $this;
-			list($metaData) = $context::GetMetaData(0);
+			/** @var \MvcCore\Ext\Models\Db\Model $rowContext */
+			list($metaData) = $rowFullClassName::GetMetaData(0);
 			foreach ($metaData as $propData) {
 				$dbColumnName = $propData[4];
 				$allowNulls = $propData[1];
@@ -49,8 +73,6 @@ trait GridColumns {
 			if (static::$defaultPropsFlags !== 0)
 				$accessModFlags = static::$defaultPropsFlags;
 		}
-		return \MvcCore\Ext\Controllers\DataGrid::ParseConfigColumns(
-			$this, $modelMetaData, $accessModFlags
-		);
+		return [$modelMetaData, $accessModFlags];
 	}
 }

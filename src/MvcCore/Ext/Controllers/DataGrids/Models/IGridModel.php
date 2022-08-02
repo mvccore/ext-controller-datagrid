@@ -101,14 +101,4 @@ interface IGridModel {
 	 * @return array|\MvcCore\Ext\Models\Db\Readers\Streams\Iterator
 	 */
 	public function GetPageData ();
-
-	/**
-	 * Render value with by possible view helper as scalar value 
-	 * into datagrid table cell (convertable into string).
-	 * @param  mixed                                                     $row
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn|string $columnNameOrConfig 
-	 * @param  \MvcCore\IView                                            $view
-	 * @return string
-	 */
-	public function RenderCell ($row, $columnNameOrConfig, \MvcCore\IView $view);
 }

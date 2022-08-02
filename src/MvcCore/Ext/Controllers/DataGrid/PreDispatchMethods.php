@@ -34,17 +34,19 @@ trait PreDispatchMethods {
 	 * Third argument is access mod flags to load model instance properties.
 	 * If value is zero, there are used all access mode flags - private, protected and public.
 	 * 
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model 
-	 * @param  array                                                $modelMetaData
-	 * @param  int                                                  $accesModFlags
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel|string $rowModelOrFullClassName
+	 * @param  array                                                       $rowModelMetaData
+	 * @param  int                                                         $rowModelAccessModFlags
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column[]
 	 */
 	public static function ParseConfigColumns (
-		\MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model, 
-		$modelMetaData = [], 
-		$accesModFlags = 0
+		$rowModelOrFullClassName, 
+		$rowModelMetaData = [], 
+		$rowModelAccessModFlags = 0
 	) {
-		$props = static::parseConfigColumnsGetProps($model, $accesModFlags);
+		$props = static::parseConfigColumnsGetProps(
+			$rowModelOrFullClassName, $rowModelAccessModFlags
+		);
 		/** @var string|\MvcCore\Tool $toolClass */
 		$toolClass = \MvcCore\Application::GetInstance()->GetToolClass();
 		$columnConfigs = [];
@@ -52,7 +54,7 @@ trait PreDispatchMethods {
 		$indexSort = [];
 		foreach ($props as $index => $prop) {
 			$columnConfig = static::parseConfigColumn(
-				$prop, $index, $modelMetaData, $toolClass
+				$prop, $index, $rowModelMetaData, $toolClass
 			);
 			if ($columnConfig === NULL) continue;
 			$urlName = $columnConfig->GetUrlName();
@@ -77,12 +79,12 @@ trait PreDispatchMethods {
 
 	/**
 	 * Get model reflection properties by model instance and access mod flags.
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model 
-	 * @param  int                                                  $accesModFlags
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel|string $rowModelOrFullClassName 
+	 * @param  int                                                         $accesModFlags
 	 * @return \ReflectionProperty[]
 	 */
-	protected static function parseConfigColumnsGetProps ($model, $accesModFlags) {
-		$modelType = new \ReflectionClass($model);
+	protected static function parseConfigColumnsGetProps ($rowModelOrFullClassName, $accesModFlags) {
+		$modelType = new \ReflectionClass($rowModelOrFullClassName);
 		// `$accesModFlags` could contain foreing flags from model
 		$localFlags = 0;
 		if (($accesModFlags & \ReflectionProperty::IS_PRIVATE)	!= 0) $localFlags |= \ReflectionProperty::IS_PRIVATE;
@@ -272,15 +274,13 @@ trait PreDispatchMethods {
 		
 		$this->LoadModel();
 		
+		$this->preDispatchTranslations();
 		$this->preDispatchTotalCount();
 		$this->preDispatchPaging();
 		$this->preDispatchCountScales();
-		$this->preDispatchTranslations();
 		$this->preDispatchRenderConfig();
 		$this->preDispatchColumnsConfigs();
-		
-		if ($this->configRendering->GetRenderTableHeadFiltering() && $this->tableHeadFilterForm !== NULL) 
-			$this->tableHeadFilterForm->PreDispatch(FALSE);
+		$this->preDispatchTableHeadFilterForm();
 	}
 	
 	/**
@@ -539,7 +539,7 @@ trait PreDispatchMethods {
 		if (!$multiplePages && ($renderCountScales & static::CONTROL_DISPLAY_IF_NECESSARY) != 0) 
 			$this->configRendering->SetRenderControlCountScales(static::CONTROL_DISPLAY_NEVER);
 	}
-	
+
 	/**
 	 * Translate if necessary:
 	 * - controls texts
@@ -551,7 +551,7 @@ trait PreDispatchMethods {
 		if (!$this->translate) return;
 		foreach ($this->controlsTexts as $key => $controlText)
 			$this->controlsTexts[$key] = call_user_func_array(
-				$this->translator, [$controlText, ['{0}']]
+				$this->translator, [$controlText, ['{0}', '{1}']]
 			);
 		foreach ($this->configColumns as $configColumn) {
 			$configColumn->SetHeadingName(
@@ -559,6 +559,14 @@ trait PreDispatchMethods {
 					$this->translator, [$configColumn->GetHeadingName()]
 				)
 			);
+			$title = $configColumn->GetTitle();
+			if ($title !== NULL) {
+				$configColumn->SetTitle(
+					call_user_func_array(
+						$this->translator, [$title]
+					)
+				);
+			}
 		}
 	}
 
@@ -607,5 +615,27 @@ trait PreDispatchMethods {
 			$newConfigColumns[$urlName] = $configColumn;
 		}
 		$this->configColumns = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns($newConfigColumns);
+	}
+
+	/**
+	 * Execute `PreDispatch()` method on table head filter form 
+	 * if necessary and set up translated controls texts.
+	 * @return void
+	 */
+	protected function preDispatchTableHeadFilterForm () {
+		if (
+			$this->configRendering->GetRenderTableHeadFiltering() && 
+			$this->tableHeadFilterForm !== NULL
+		) {
+			$form = $this->tableHeadFilterForm;
+			$form->PreDispatch(FALSE);
+			$submitFields = $form->GetSubmitFields();
+			$delimiter = $form::HTML_IDS_DELIMITER;
+			foreach ($submitFields as $submitField) {
+				if (mb_strpos($submitField->GetName(), 'clear' . $delimiter) !== 0) continue;
+				// set up translated text value:
+				$submitField->SetValue($this->GetControlText('clear'));
+			}
+		}
 	}
 }
