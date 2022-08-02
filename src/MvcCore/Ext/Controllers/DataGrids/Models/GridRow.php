@@ -42,7 +42,7 @@ trait GridRow {
 	public function RenderCellByPropName (
 		\MvcCore\Ext\Controllers\IDataGrid $grid,
 		$columnPropName,
-		\MvcCore\IView $view = NULL, 
+		\MvcCore\IView $view = NULL 
 	) {
 		$columnConfig = $grid->GetConfigColumns(FALSE)->GetByPropName($columnPropName);
 		return $this->RenderCell(
