@@ -212,5 +212,6 @@ trait ConfigProps {
 		'all'		=> 'All',
 		'filter'	=> 'Filter',
 		'clear'		=> 'Clear',
+		'status'	=> 'Page {0} of total rows: {1}',
 	];
 }

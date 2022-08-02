@@ -33,13 +33,11 @@ trait RenderMethods {
 		$parentCtrlView = $this->parentController->GetView();
 		$view->SetUpStore($parentCtrlView, FALSE);
 		$view->view = $parentCtrlView;
-
 		// Set up child controllers into view if any of them is named by string index:
 		foreach ($this->childControllers as $ctrlKey => $childCtrl) {
 			if (!is_numeric($ctrlKey) && !isset($view->{$ctrlKey}))
 				$view->{$ctrlKey} = $childCtrl;
 		}
-		
 		// Set up view rendering:
 		$view->SetUpRender(
 			$this->renderMode, $controllerOrActionNameDashed, $actionNameDashed

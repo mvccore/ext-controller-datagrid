@@ -1,0 +1,20 @@
+<?php
+	/** @var \MvcCore\Ext\Controllers\DataGrids\View $this */
+	/** @var \MvcCore\Ext\Controllers\DataGrid $grid */
+	/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $renderConf */
+	$renderConf = $grid->GetConfigRendering();
+	$statusCssClasses = $renderConf->GetCssClassesControlStatus();
+	$statusText = $grid->GetControlText('status');
+	$itemsPerPageInt = $grid->GetItemsPerPage();
+	$totalCountInt = $grid->GetTotalCount();
+	$currentPage = $grid->GetPage();
+	$pagesCount = $itemsPerPageInt === 0
+		? 1
+		: intval(ceil(floatval($totalCountInt) / floatval($itemsPerPageInt)));
+	$statusText = str_replace(['{0}', '{1}'], [
+		"{$currentPage}/{$pagesCount}", $totalCountInt
+	], $statusText);
+?><span<?php
+	if (count($statusCssClasses) > 0)
+		echo ' class="' . implode(' ', $statusCssClasses) . '"';
+?>><?php echo $statusText; ?></span>

@@ -113,6 +113,13 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @var int
 	 */
 	protected $renderControlCountScales				= \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_ALWAYS;
+
+	/**
+	 * Render status control (all datagrid types).
+	 * Rendered if necessary by default.
+	 * @var int
+	 */
+	protected $renderControlStatus					= \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_IF_NECESSARY;
 	
 	/**
 	 * Render custom filter form (all datagrid types).
@@ -154,6 +161,12 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @var \string[]
 	 */
 	protected $cssClassesControlCountScales			= ['grid-control-count-scales'];
+	
+	/**
+	 * Css classes for datagrid status control.
+	 * @var \string[]
+	 */
+	protected $cssClassesControlStatus				= ['grid-control-status'];
 	
 
 	/**
@@ -204,6 +217,13 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * @var string|NULL
 	 */
 	protected $templateControlCountScales			= NULL;
+	
+	/**
+	 * Custom datagrid status control template.
+	 * Relative from `/App/Views/Scripts` without file extension.
+	 * @var string|NULL
+	 */
+	protected $templateControlStatus				= NULL;
 	
 	/**
 	 * Custom datagrid custom filter form control template.
@@ -482,6 +502,26 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 
 	/**
 	 * @inheritDocs
+	 * @param  int $renderControlStatus
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetRenderControlStatus ($renderControlStatus = \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_ALWAYS) {
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
+		$this->renderControlStatus = $renderControlStatus;
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return int
+	 */
+	public function GetRenderControlStatus () {
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
+		return $this->renderControlStatus;
+	}
+
+	/**
+	 * @inheritDocs
 	 * @param  bool $renderFilterForm
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -665,6 +705,39 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	public function GetCssClassesControlCountScales () {
 		return $this->cssClassesControlCountScales;
 	}
+	
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlStatus ($cssClasses) {
+		$this->cssClassesControlStatus = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlStatus ($cssClasses) {
+		$cssClassesArr = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		$this->cssClassesControlStatus = array_merge($this->cssClassesControlStatus, $cssClassesArr);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlStatus () {
+		return $this->cssClassesControlStatus;
+	}
 
 	
 	/**
@@ -805,6 +878,26 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	public function GetTemplateControlCountScales () {
 		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->templateControlCountScales;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param  string $templateControlStatus
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetTemplateControlStatus ($templateControlStatus) {
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
+		$this->templateControlStatus = $templateControlStatus;
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return string
+	 */
+	public function GetTemplateControlStatus () {
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
+		return $this->templateControlStatus;
 	}
 
 	/**

@@ -45,8 +45,9 @@
 	if ($headFiltering):
 		echo $headForm->RenderEnd();
 	endif;
-	if ($renderConf->GetRenderControlPaging() || $renderConf->GetRenderControlCountScales()):
+	if ($renderConf->GetRenderControlStatus() || $renderConf->GetRenderControlPaging() || $renderConf->GetRenderControlCountScales()):
 	?><div class="<?php echo $controlsWrapperCssClass; ?> grid-controls-bottom"><?php 
+		echo $this->RenderGridControlStatus();
 		if (isset($pagingCode)) echo $pagingCode;
 		echo $this->RenderGridControlCountScales();
 	?></div><?php

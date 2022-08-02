@@ -225,6 +225,21 @@ interface IRendering {
 	public function GetRenderControlCountScales ();
 
 	/**
+	 * Set render control with status text (all datagrid types).
+	 * This control is always rendered by default.
+	 * @param  int $renderControlStatus
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetRenderControlStatus ($renderControlStatus = \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_IF_NECESSARY);
+
+	/**
+	 * Get render control with status text (all datagrid types).
+	 * This control is always rendered by default.
+	 * @return int
+	 */
+	public function GetRenderControlStatus ();
+
+	/**
 	 * Set render custom filter form (all datagrid types).
 	 * This is not rendered by default. To render custom 
 	 * filter form, you have to create some form instance 
@@ -352,6 +367,27 @@ interface IRendering {
 	 */
 	public function GetCssClassesControlCountScales ();
 
+	/**
+	 * Set css classes for datagrid status text control.
+	 * All previously configured css classes will be replaced with given values.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlStatus ($cssClasses);
+
+	/**
+	 * Add css classes for datagrid status text control.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlStatus ($cssClasses);
+
+	/**
+	 * Get css classes for datagrid status text control.
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlStatus ();
+
 
 	/**
 	 * Set custom datagrid base content template.
@@ -457,6 +493,21 @@ interface IRendering {
 	 * @return string
 	 */
 	public function GetTemplateControlCountScales ();
+
+	/**
+	 * Set custom datagrid status text control template.
+	 * Relative from `/App/Views/Scripts` without file extension.
+	 * @param  string $templateControlStatus
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetTemplateControlStatus ($templateControlStatus);
+
+	/**
+	 * Get custom datagrid status text control template.
+	 * Relative from `/App/Views/Scripts` without file extension.
+	 * @return string
+	 */
+	public function GetTemplateControlStatus ();
 
 	/**
 	 * Set custom datagrid custom filter form control template.

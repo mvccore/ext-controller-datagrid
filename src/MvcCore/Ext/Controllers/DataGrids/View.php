@@ -155,6 +155,20 @@ class View extends \MvcCore\View {
 	}
 	
 	/**
+	 * Render datagrid status text control.
+	 * @return string
+	 */
+	public function RenderGridControlStatus () {
+		if (!$this->configRendering->GetRenderControlStatus()) 
+			return '';
+		ob_start();
+		echo $this->renderGridTemplate(
+			$this->configRendering->GetTemplateControlStatus(), 'Controls', 'status'
+		);
+		return ob_get_clean();
+	}
+	
+	/**
 	 * Render datagrid custom filter form control.
 	 * @return string
 	 */
