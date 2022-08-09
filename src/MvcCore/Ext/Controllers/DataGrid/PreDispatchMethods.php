@@ -47,14 +47,16 @@ trait PreDispatchMethods {
 		$props = static::parseConfigColumnsGetProps(
 			$rowModelOrFullClassName, $rowModelAccessModFlags
 		);
+		$app = \MvcCore\Application::GetInstance();
+		$attrsAnotations = $app->GetAttributesAnotations();
 		/** @var string|\MvcCore\Tool $toolClass */
-		$toolClass = \MvcCore\Application::GetInstance()->GetToolClass();
+		$toolClass = $app->GetToolClass();
 		$columnConfigs = [];
 		$naturalSort = [];
 		$indexSort = [];
 		foreach ($props as $index => $prop) {
 			$columnConfig = static::parseConfigColumn(
-				$prop, $index, $rowModelMetaData, $toolClass
+				$prop, $index, $rowModelMetaData, $attrsAnotations, $toolClass
 			);
 			if ($columnConfig === NULL) continue;
 			$urlName = $columnConfig->GetUrlName();
@@ -100,15 +102,16 @@ trait PreDispatchMethods {
 	 * @param  \ReflectionProperty  $prop
 	 * @param  int                  $index
 	 * @param  array                $modelMetaData
+	 * @param  bool                 $attrsAnotations
 	 * @param  string|\MvcCore\Tool $toolClass
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column|NULL
 	 */
 	protected static function parseConfigColumn (
-		\ReflectionProperty $prop, $index, $modelMetaData, $toolClass
+		\ReflectionProperty $prop, $index, $modelMetaData, $attrsAnotations, $toolClass
 	) {
 		if ($prop->isStatic()) NULL;
 		$attrClassFullName = static::$attrClassFullName;
-		if ($toolClass::GetAttributesAnotations()) {
+		if ($attrsAnotations) {
 			$attrClassNoFirstSlash = ltrim($attrClassFullName, '\\');
 			$args = $toolClass::GetAttrCtorArgs($prop, $attrClassNoFirstSlash);
 		} else {
