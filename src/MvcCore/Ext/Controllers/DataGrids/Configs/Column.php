@@ -22,20 +22,26 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * Model PHP code propery name.
+	 * @jsonSerialize
 	 * @var string|NULL
 	 */
+	#[JsonSerialize]
 	protected $propName = NULL;
 	
 	/**
 	 * Grid heading human readable text.
+	 * @jsonSerialize
 	 * @var string|NULL
 	 */
+	#[JsonSerialize]
 	protected $headingName = NULL;
 	
 	/**
 	 * Grid heading title attribute, displayed on heading mouse over.
+	 * @jsonSerialize
 	 * @var string|NULL
 	 */
+	#[JsonSerialize]
 	protected $title = NULL;
 	
 	/**
@@ -46,8 +52,10 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * URL column name when sorting or filtering.
+	 * @jsonSerialize
 	 * @var string|NULL
 	 */
+	#[JsonSerialize]
 	protected $urlName = NULL;
 	
 	/**
@@ -61,27 +69,35 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * Datagrid column index, starting with `0`, optional.
+	 * @jsonSerialize
 	 * @var int|NULL
 	 */
+	#[JsonSerialize]
 	protected $columnIndex = NULL;
 	
 	/**
 	 * Default sorting definition with values `ASC | DESC` 
 	 * or `TRUE | FALSE` to enable/disable sorting.
+	 * @jsonSerialize
 	 * @var string|bool|NULL
 	 */
+	#[JsonSerialize]
 	protected $sort = FALSE;
 
 	/**
 	 * Boolean to allow column filtering.
+	 * @jsonSerialize
 	 * @var int|bool
 	 */
+	#[JsonSerialize]
 	protected $filter = FALSE;
 
 	/**
 	 * Property type(s), necessary for automatic formating.
+	 * @jsonSerialize
 	 * @var \string[]|NULL
 	 */
+	#[JsonSerialize]
 	protected $types = NULL;
 
 	/**
@@ -101,30 +117,38 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 * as integer for pixel value, float for flex value
 	 * or string including `px` or `%` units.
 	 * Width is used only for table grid type.
+	 * @jsonSerialize
 	 * @var string|int|float|NULL
 	 */
+	#[JsonSerialize]
 	protected $width = NULL;
 
 	/**
 	 * Column min. width, it can be defined as integer 
 	 * or float for pixel value or string including `px` 
 	 * or `%` units. Min. width is used only for table grid type.
+	 * @jsonSerialize
 	 * @var string|int|float|NULL
 	 */
+	#[JsonSerialize]
 	protected $minWidth = NULL;
 
 	/**
 	 * Column max. width, it can be defined as integer 
 	 * or float for pixel value or string including `px` 
 	 * or `%` units. Min. width is used only for table grid type.
+	 * @jsonSerialize
 	 * @var string|int|float|NULL
 	 */
+	#[JsonSerialize]
 	protected $maxWidth = NULL;
 
 	/**
 	 * Column additional css classes for head cell and body cell.
+	 * @jsonSerialize
 	 * @var \string[]
 	 */
+	#[JsonSerialize]
 	protected $cssClasses = [];
 	
 	/**
@@ -223,15 +247,6 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		if ($disabled !== NULL)		$this->disabled		= $disabled;
 	}
 
-	/**
-	 * @inheritDocs
-	 * @return array|mixed
-	 */
-	#[\ReturnTypeWillChange]
-	public function jsonSerialize () {
-		return get_object_vars($this);
-	}
-	
 	/**
 	 * @inheritDocs
 	 * @return string|NULL
@@ -546,4 +561,12 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		return $this;
 	}
 	
+	/**
+	 * Return data for JSON serialization.
+	 * @return array|mixed
+	 */
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize () {
+		return JsonSerialize::Serialize($this, \ReflectionProperty::IS_PROTECTED);
+	}
 }

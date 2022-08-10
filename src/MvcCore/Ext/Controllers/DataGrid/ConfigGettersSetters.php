@@ -361,6 +361,7 @@ trait ConfigGettersSetters {
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
+	#[\ReturnTypeWillChange]
 	public function SetConfigRendering (\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering $configRendering) {
 		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering */
 		$this->configRendering = $configRendering;

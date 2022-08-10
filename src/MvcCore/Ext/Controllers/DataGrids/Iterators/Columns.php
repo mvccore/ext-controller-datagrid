@@ -13,7 +13,8 @@
 
 namespace MvcCore\Ext\Controllers\DataGrids\Iterators;
 
-class Columns extends \MvcCore\Ext\Controllers\DataGrids\Iterators\AssocArray {
+class	Columns
+extends \MvcCore\Ext\Tools\Collections\Map {
 	
 	/**
 	 * Reverse keys map, keyed by grid columns properties names,

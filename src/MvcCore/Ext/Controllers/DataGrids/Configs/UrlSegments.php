@@ -14,73 +14,92 @@
 namespace MvcCore\Ext\Controllers\DataGrids\Configs;
 
 class		UrlSegments 
-implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
+implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments,
+			\JsonSerializable {
 
 	/**
 	 * URL prefix to define which URL section is used for page number.
 	 * Default value is empty string.
 	 * If empty, there is used first section by default.
+	 * @jsonSerialize
 	 * @var string
 	 */
+	#[JsonSerialize]
 	protected $urlPrefixPage = '';
 	
 	/**
 	 * URL prefix to define which URL section is used for items per page count.
 	 * Default value is empty string.
 	 * If empty, there is used second section by default.
+	 * @jsonSerialize
 	 * @var string
 	 */
+	#[JsonSerialize]
 	protected $urlPrefixCount = '';
 	
 	/**
 	 * URL prefix to define which URL section is used for sorting.
 	 * Default value is `sort`.
+	 * @jsonSerialize
 	 * @var string
 	 */
+	#[JsonSerialize]
 	protected $urlPrefixSort = 'sort';
 	
 	/**
 	 * URL prefix to define which URL section is used for filtering.
 	 * Default value is `filter`.
+	 * @jsonSerialize
 	 * @var string
 	 */
+	#[JsonSerialize]
 	protected $urlPrefixFilter = 'filter';
 	
 	/**
 	 * URL suffix to define ascendent sort direction.
 	 * Default value is `a`.
+	 * @jsonSerialize
 	 * @var string
 	 */
+	#[JsonSerialize]
 	protected $urlSuffixSortAsc = 'a';
 	
 	/**
 	 * URL suffix to define descendent sort direction.
 	 * Default value is `d`.
+	 * @jsonSerialize
 	 * @var string
 	 */
+	#[JsonSerialize]
 	protected $urlSuffixSortDesc = 'd';
 	
 	/**
 	 * URL delimiter between sections.
 	 * Default value is `/`.
+	 * @jsonSerialize
 	 * @var string
 	 */
+	#[JsonSerialize]
 	protected $urlDelimiterSections = '/';
 	
 	/**
 	 * URL delimiter for each section where is defined prefix, 
 	 * between prefix and rest of the section.
 	 * Default value is `-`.
+	 * @jsonSerialize
 	 * @var string
 	 */
+	#[JsonSerialize]
 	protected $urlDelimiterPrefix = '-';
 	
 	/**
 	 * URL delimiter for sorting and filtering, 
 	 * between each pair of grid column with value(s).
 	 * Default value is `~`.
+	 * @jsonSerialize
 	 * @var string
 	 */
+	#[JsonSerialize]
 	protected $urlDelimiterSubjects = '~';
 	
 	/**
@@ -88,15 +107,19 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 * In sorting   - between grid column name and sort direction suffix.
 	 * In filtering - between grid column name, operator and (first) value.
 	 * Default value is `-`.
+	 * @jsonSerialize
 	 * @var string
 	 */
+	#[JsonSerialize]
 	protected $urlDelimiterSubjectValue = '-';
 	
 	/**
 	 * URL delimiter for filtering, between multiple filtering values.
 	 * Default value is `;`.
+	 * @jsonSerialize
 	 * @var string
 	 */
+	#[JsonSerialize]
 	protected $urlDelimiterValues = ';';
 
 	/**
@@ -112,8 +135,10 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 	 *    '<='       => 'lte',
 	 *    '>='       => 'gte',
 	 * ```
+	 * @jsonSerialize
 	 * @var array
 	 */
+	#[JsonSerialize]
 	protected $urlFilterOperators = [
 		'='			=> 'is',
 		'!='		=> 'not',
@@ -407,5 +432,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments {
 			$this->routePattern .= "/";
 		}
 		return $this->routePattern;
+	}
+
+	/**
+	 * Return data for JSON serialization.
+	 * @return array|mixed
+	 */
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize () {
+		return JsonSerialize::Serialize($this, \ReflectionProperty::IS_PROTECTED);
 	}
 }

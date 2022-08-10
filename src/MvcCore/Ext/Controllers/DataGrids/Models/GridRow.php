@@ -16,10 +16,26 @@ namespace MvcCore\Ext\Controllers\DataGrids\Models;
 trait GridRow {
 	
 	/**
+	 * Cache for local instance properties to serialize in JSON data.
+	 * @var array<string, bool>|NULL
+	 */
+	protected static $jsonPropsCache = NULL;
+
+	/**
 	 * Datagrid instance, always initialized by datagrid component automatically.
 	 * @var \MvcCore\Ext\Controllers\DataGrid|NULL
 	 */
 	protected $grid = NULL;
+
+	/**
+	 * Return local instance properties not to serialize in JSON data.
+	 * @return array<string, bool>
+	 */
+	public function GetJsonNonGridProps () {
+		return [
+			'grid'	=> TRUE,
+		];
+	}
 	
 	/**
 	 * Set datagrid instance, always initialized by datagrid component automatically.
@@ -88,4 +104,43 @@ trait GridRow {
 		}
 	}
 
+	/**
+	 * @inheritDocs
+	 * @param  int $propsFlags
+	 * @return array<string, mixed>
+	 */
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize ($propsFlags = 0) {
+		if (static::$jsonPropsCache === NULL) {
+			if ($propsFlags === 0) $propsFlags = static::$defaultPropsFlags;
+			list ($metaData, $sourceCodeNamesMap) = static::GetMetaData(
+				$propsFlags, [\MvcCore\Ext\Models\Db\Model\IConstants::METADATA_BY_CODE]
+			);
+			$jsonPropsCache = [];
+			foreach ($sourceCodeNamesMap as $propertyName => $metaDataIndex) {
+				list($propIsPrivate) = $metaData[$metaDataIndex];
+				$jsonPropsCache[$propertyName] = $propIsPrivate;
+			}
+			static::$jsonPropsCache = $jsonPropsCache;
+		}
+		$phpWithTypes = PHP_VERSION_ID >= 70400;
+		$result = [];
+		foreach (static::$jsonPropsCache as $propertyName => $propIsPrivate) {
+			$propValue = NULL;
+			if ($propIsPrivate) {
+				$prop = new \ReflectionProperty($this, $propertyName);
+				$prop->setAccessible(TRUE);
+				if ($phpWithTypes) {
+					if ($prop->isInitialized($this))
+						$propValue = $prop->getValue($this);
+				} else {
+					$propValue = $prop->getValue($this);
+				}
+			} else if (isset($this->{$propertyName})) {
+				$propValue = $this->{$propertyName};
+			}
+			$result[$propertyName] = $propValue;
+		}
+		return array_diff_key($result, static::GetJsonNonGridProps());
+	}
 }

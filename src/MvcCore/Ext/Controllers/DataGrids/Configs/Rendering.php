@@ -14,7 +14,8 @@
 namespace MvcCore\Ext\Controllers\DataGrids\Configs;
 
 class		Rendering
-implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
+implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
+			\JsonSerializable {
 	
 	/**
 	 * Datagrid type - table or grid of items.
@@ -33,22 +34,28 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	/**
 	 * Render table head in datagrid table type.
 	 * Rendered by default.
+	 * @jsonSerialize
 	 * @var bool
 	 */
+	#[JsonSerialize]
 	protected $renderTableHead						= TRUE;
 
 	/**
 	 * Render table head sorting links in datagrid table type.
 	 * Rendered by default.
+	 * @jsonSerialize
 	 * @var bool
 	 */
+	#[JsonSerialize]
 	protected $renderTableHeadSorting				= TRUE;
 
 	/**
 	 * Render table head filtering fields and buttons in datagrid table type.
 	 * Not rendered by default.
+	 * @jsonSerialize
 	 * @var bool
 	 */
+	#[JsonSerialize]
 	protected $renderTableHeadFiltering				= FALSE;
 
 	/**
@@ -61,22 +68,28 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	/**
 	 * Render paging control (all datagrid types).
 	 * Rendered if necessary by default.
+	 * @jsonSerialize
 	 * @var int
 	 */
+	#[JsonSerialize]
 	protected $renderControlPaging					= \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_IF_NECESSARY;
 	
 	/**
 	 * Render previous and next page links in paging control.
 	 * Rendered by default.
+	 * @jsonSerialize
 	 * @var bool
 	 */
+	#[JsonSerialize]
 	protected $renderControlPagingPrevAndNext		= TRUE;
 	
 	/**
 	 * Render first and last page links in paging control.
 	 * Rendered by default.
+	 * @jsonSerialize
 	 * @var bool
 	 */
+	#[JsonSerialize]
 	protected $renderControlPagingFirstAndLast		= FALSE;
 
 	/**
@@ -84,8 +97,10 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * This value means how many pages will be rendered 
 	 * around current page to left or to right side.
 	 * There are rendered 3 nearby pages to each side by default.
+	 * @jsonSerialize
 	 * @var int
 	 */
+	#[JsonSerialize]
 	protected $controlPagingNearbyPagesCount		= 3;
 	
 	/**
@@ -94,8 +109,10 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * The value means how many pages will be rendered in 
 	 * overview of all not rendered page links in each side.
 	 * There are rendered 2 outer pages to each side by default.
+	 * @jsonSerialize
 	 * @var int
 	 */
+	#[JsonSerialize]
 	protected $controlPagingOuterPagesCount			= 2;
 	
 	/**
@@ -103,22 +120,28 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	 * pages overview in paging control. If not rendered pages count 
 	 * in side, divided by outer pages count, is higher than this value,
 	 * then outer pages are rendered.
+	 * @jsonSerialize
 	 * @var int
 	 */
+	#[JsonSerialize]
 	protected $controlPagingOuterPagesDisplayRatio	= 3.0;
 	
 	/**
 	 * Render control with items per page (all datagrid types).
 	 * This control is always rendered by default.
+	 * @jsonSerialize
 	 * @var int
 	 */
+	#[JsonSerialize]
 	protected $renderControlCountScales				= \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_ALWAYS;
 
 	/**
 	 * Render status control (all datagrid types).
 	 * Rendered if necessary by default.
+	 * @jsonSerialize
 	 * @var int
 	 */
+	#[JsonSerialize]
 	protected $renderControlStatus					= \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_IF_NECESSARY;
 	
 	/**
@@ -146,26 +169,34 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	
 	/**
 	 * Css classes for datagrid sorting control.
+	 * @jsonSerialize
 	 * @var \string[]
 	 */
+	#[JsonSerialize]
 	protected $cssClassesControlSorting				= ['grid-control-sorting'];
 	
 	/**
 	 * Css classes for datagrid paging control.
+	 * @jsonSerialize
 	 * @var \string[]
 	 */
+	#[JsonSerialize]
 	protected $cssClassesControlPaging				= ['grid-control-paging'];
 	
 	/**
 	 * Css classes for datagrid count scales control.
+	 * @jsonSerialize
 	 * @var \string[]
 	 */
+	#[JsonSerialize]
 	protected $cssClassesControlCountScales			= ['grid-control-count-scales'];
 	
 	/**
 	 * Css classes for datagrid status control.
+	 * @jsonSerialize
 	 * @var \string[]
 	 */
+	#[JsonSerialize]
 	protected $cssClassesControlStatus				= ['grid-control-status'];
 	
 
@@ -938,5 +969,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering {
 	public function GetViewClass () {
 		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->viewClass;
+	}
+
+	/**
+	 * Return data for JSON serialization.
+	 * @return array<string, mixed>
+	 */
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize () {
+		return JsonSerialize::Serialize($this, \ReflectionProperty::IS_PROTECTED);
 	}
 }

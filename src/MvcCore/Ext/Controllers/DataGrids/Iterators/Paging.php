@@ -13,7 +13,8 @@
 
 namespace MvcCore\Ext\Controllers\DataGrids\Iterators;
 
-class Paging extends \MvcCore\Ext\Controllers\DataGrids\Iterators\SequenceArray {
+class	Paging 
+extends	\MvcCore\Ext\Tools\Collections\Set {
 
 	/**
 	 * Return current iterator value.
