@@ -153,8 +153,10 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * `TRUE` for disabled column, `FALSE|NULL` for enabled column.
+	 * @jsonSerialize
 	 * @var bool|NULL
 	 */
+	#[JsonSerialize]
 	protected $disabled = NULL;
 	
 
