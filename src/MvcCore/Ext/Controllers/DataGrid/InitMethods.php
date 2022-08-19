@@ -63,6 +63,7 @@ trait InitMethods {
 
 		parent::Init();
 		
+		$this->initCountScales();
 		$this->GetConfigUrlSegments();
 		$this->initTranslations();
 		$this->GetConfigColumns(FALSE);
@@ -82,6 +83,21 @@ trait InitMethods {
 		
 		call_user_func([$this, $this->gridAction]);
 	}
+	
+	/**
+	 * Set up items per page configured from script 
+	 * into count scales if it is not there.
+	 * @return void
+	 */
+	protected function initCountScales () {
+		if (in_array($this->itemsPerPage, $this->countScales, TRUE)) return;
+		$this->countScales[] = $this->itemsPerPage;
+		sort($this->countScales);
+		if ($this->countScales[0] === 0) {
+			array_shift($this->countScales);
+			$this->countScales[] = 0;
+		}
+	}
 
 	/**
 	 * Initialize necessary properties for application URL building.
@@ -97,7 +113,6 @@ trait InitMethods {
 		$this->GetGridRequest();
 		$this->GetUrlParams();
 		$this->initItemsPerPageByRoute();
-		$this->initTranslations();
 		$this->initUrlParamsQsParamsSeparator();
 		$this->initOperators();
 		$this->appUrlCompletionInit = TRUE;
@@ -123,7 +138,6 @@ trait InitMethods {
 	protected function initUrlParams () {
 		$this->initUrlParamsQsParamsSeparator();
 		if (!$this->initUrlParamsPage())			return FALSE;
-		$this->initUrlParamsCountScales();
 		if (!$this->initUrlParamsCount())			return FALSE;
 		if (!$this->initUrlParamsItemsPerPage())	return FALSE;
 		if (!$this->initUrlParamsPageAndCount())	return FALSE;
@@ -168,29 +182,16 @@ trait InitMethods {
 	}
 
 	/**
-	 * Set up items per page configured from script 
-	 * into count scales if it is not there.
-	 * @return void
-	 */
-	protected function initUrlParamsCountScales () {
-		if (in_array($this->itemsPerPage, $this->countScales, TRUE)) return;
-		$this->countScales[] = $this->itemsPerPage;
-		sort($this->countScales);
-		if ($this->countScales[0] === 0) {
-			array_shift($this->countScales);
-			$this->countScales[] = 0;
-		}
-	}
-
-	/**
 	 * Set up default count if null or 
 	 * check if count has allowed size.
 	 * @return bool
 	 */
 	protected function initUrlParamsCount () {
 		if (!isset($this->urlParams[static::URL_PARAM_COUNT])) {
+			// if there is no count param in url - use items per page as default count
 			$this->urlParams[static::URL_PARAM_COUNT] = $this->GetItemsPerPage();
 		} else {
+			// verify if count is not too high, if it is - redirect to highest count in count scales:
 			$urlCount = $this->urlParams[static::URL_PARAM_COUNT];
 			$lastCountsScale = $this->countScales[count($this->countScales) - 1];
 			if ($lastCountsScale !== 0 && ($urlCount === 0 || $urlCount > $lastCountsScale)) {
@@ -222,23 +223,12 @@ trait InitMethods {
 			$this->allowedCustomUrlCountScale ||
 			in_array($urlItemsPerPage, $this->countScales, TRUE)
 		) {
+			// if there is allowed custom count scale - set it up
 			$this->itemsPerPage = $urlItemsPerPage;
 		} else {
-			$differences = [];
-			$lastCountScale = 0;
-			foreach ($this->countScales as $index => $countScale) {
-				if ($countScale === 0) {
-					$differences[$urlItemsPerPage > $lastCountScale ? 0 : $urlItemsPerPage] = $index;
-				} else {
-					$differences[abs($countScale - $urlItemsPerPage)] = $index;
-				}
-				$lastCountScale = $countScale;
-			}
-			$minDifference = min(array_keys($differences));
-			$minDifferenceCountScaleKey = $differences[$minDifference];
-			$minDifferenceCountScale = $this->countScales[$minDifferenceCountScaleKey];
+			// if there is not allowed custom count scale - choose closest value and redirect
 			$redirectUrl = $this->GridUrl([
-				static::URL_PARAM_COUNT	=> $minDifferenceCountScale,
+				static::URL_PARAM_COUNT	=> $this->getClosestCountScale($urlItemsPerPage),
 			]);
 			/** @var \MvcCore\Controller $this */
 			$this::Redirect(
@@ -683,5 +673,26 @@ trait InitMethods {
 		if (mb_strlen($cleanedValue) === 0) return NULL;
 		
 		return $cleanedValue;
+	}
+
+	/**
+	 * 
+	 * @param  int $urlItemsPerPage 
+	 * @return int
+	 */
+	protected function getClosestCountScale ($urlItemsPerPage) {
+		$differences = [];
+		$lastCountScale = 0;
+		foreach ($this->countScales as $index => $countScale) {
+			if ($countScale === 0) {
+				$differences[$urlItemsPerPage > $lastCountScale ? 0 : $urlItemsPerPage] = $index;
+			} else {
+				$differences[abs($countScale - $urlItemsPerPage)] = $index;
+			}
+			$lastCountScale = $countScale;
+		}
+		$minDifference = min(array_keys($differences));
+		$minDifferenceCountScaleKey = $differences[$minDifference];
+		return $this->countScales[$minDifferenceCountScaleKey];
 	}
 }
