@@ -600,6 +600,21 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 */
 	public function GetColumnFilterIndex ($columnConfigOrPropName);
 
+
+	/**
+	 * Internal default action for datagrid content rendering.
+	 * @template
+	 * @return void
+	 */
+	public function ActionDefault ();
+
+	/**
+	 * Internal submit action for table head filter form.
+	 * @template
+	 * @return void
+	 */
+	public function ActionTableFilter ();
+	
 	/**
 	 * Get new filtering from filter form submit values array.
 	 * @param  array $formSubmitValues 
@@ -607,4 +622,12 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @return array
 	 */
 	public function GetFilteringFromFilterFormValues (array $formSubmitValues, array $filtering = []);
+
+	/**
+	 * Internal submit action for custom filtering form.
+	 * @template
+	 * @return void
+	 */
+	public function ActionFormFilter ();
+
 }
