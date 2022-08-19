@@ -23,7 +23,7 @@ trait ActionMethods {
 	 * @template
 	 * @return void
 	 */
-	protected function actionDefault () {
+	public function ActionDefault () {
 		if ($this->configRendering->GetRenderTableHeadFiltering()) 
 			$this->createTableHeadFilterForm(FALSE);
 		if ($this->controlFilterForm !== NULL) {
@@ -153,7 +153,7 @@ trait ActionMethods {
 	 * @template
 	 * @return void
 	 */
-	protected function actionTableFilter () {
+	public function ActionTableFilter () {
 		if (!$this->actionTableFilterSetUp()) return;
 		$headFilterFormState = $this->tableHeadFilterForm->GetDispatchState();
 		if ($headFilterFormState < \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED)
@@ -370,7 +370,7 @@ trait ActionMethods {
 	 * @template
 	 * @return void
 	 */
-	protected function actionFormFilter () {
+	public function ActionFormFilter () {
 		if (!$this->actionFormFilterSetUp()) return;
 		list ($submitResult, $newFiltering) = $this->actionFormFilterSubmit();
 		$this->filterFormRedirect($submitResult, $newFiltering);
@@ -482,8 +482,6 @@ trait ActionMethods {
 	 * @return void
 	 */
 	protected function filterFormRedirect ($submitResult, $newFiltering, $tableHeadFitlering = FALSE) {
-		/** @var \MvcCore\Controller $context */
-		$context = $this;
 		$filterParams = [];
 		$urlFilterOperators = $this->configUrlSegments->GetUrlFilterOperators();
 		$subjValueDelim = $this->configUrlSegments->GetUrlDelimiterSubjectValue();
@@ -523,7 +521,8 @@ trait ActionMethods {
 				? 'Grid control filter form success.'
 				: 'Grid control filter form error.';
 		}
-		$context::Redirect($redirectUrl, \MvcCore\IResponse::SEE_OTHER, $redirectReason);
+		/** @var \MvcCore\Controller $this */
+		$this::Redirect($redirectUrl, \MvcCore\IResponse::SEE_OTHER, $redirectReason);
 	}
 
 	/**
