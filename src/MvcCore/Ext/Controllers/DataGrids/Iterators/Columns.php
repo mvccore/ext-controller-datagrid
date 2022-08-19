@@ -32,7 +32,7 @@ extends \MvcCore\Ext\Tools\Collections\Map {
 
 	/**
 	 * Create grid columns iterator instance by given array.
-	 * @param \MvcCore\Ext\Controllers\DataGrids\Configs\Column[] $array 
+	 * @param array<string, \MvcCore\Ext\Controllers\DataGrids\Configs\Column> $array 
 	 */
 	public function __construct (array & $array) {
 		parent::__construct($array);
@@ -46,14 +46,17 @@ extends \MvcCore\Ext\Tools\Collections\Map {
 	/**
 	 * Get grid column config by column config property name.
 	 * @param  string $propName 
+	 * @param  bool   $thrownException
 	 * @throws \InvalidArgumentException Grid doesn't contain column config with code property name `{$propName}`.
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column|NULL
 	 */
-	public function GetByPropName ($propName) {
-		if (!isset($this->propsNamesMap[$propName]))
+	public function GetByPropName ($propName, $thrownException = TRUE) {
+		if (!isset($this->propsNamesMap[$propName])) {
+			if (!$thrownException) return NULL;
 			throw new \InvalidArgumentException(
 				"Datagrid doesn't contain column config with code property name `{$propName}`."
 			);
+		}
 		$key = $this->propsNamesMap[$propName];
 		return $this->array[$key];
 	}
@@ -62,13 +65,15 @@ extends \MvcCore\Ext\Tools\Collections\Map {
 	 * Get grid column config by column config database column name.
 	 * @param  string $dbColumnName 
 	 * @throws \InvalidArgumentException Grid doesn't contain column config with database column name `{$dbColumnName}`.
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column|NULL
 	 */
-	public function GetByDbColumnName ($dbColumnName) {
-		if (!isset($this->dbColumnsNamesMap[$dbColumnName])) 
+	public function GetByDbColumnName ($dbColumnName, $thrownException = TRUE) {
+		if (!isset($this->dbColumnsNamesMap[$dbColumnName])) {
+			if (!$thrownException) return NULL;
 			throw new \InvalidArgumentException(
 				"Datagrid doesn't contain column config with database column name `{$dbColumnName}`."
 			);
+		}
 		$key = $this->dbColumnsNamesMap[$dbColumnName];
 		return $this->array[$key];
 	}
