@@ -39,8 +39,8 @@ trait PreDispatchMethods {
 		
 		$this->LoadModel();
 		
+		if (!$this->preDispatchTotalCount()) return;
 		$this->preDispatchTranslations();
-		$this->preDispatchTotalCount();
 		$this->preDispatchPaging();
 		$this->preDispatchCountScales();
 		$this->preDispatchRenderConfig();
@@ -59,9 +59,10 @@ trait PreDispatchMethods {
 			->SetGrid($this)
 			->SetOffset($this->offset)
 			->SetLimit($this->limit)
-			->SetFiltering($this->filtering)
-			->SetSorting($this->sorting);
+			->SetSorting($this->sorting)
+			->SetFiltering($this->filtering);
 		$this->totalCount = $model->GetTotalCount();
+		$this->pageData = $model->GetPageData();
 	}
 
 	/**
@@ -78,7 +79,7 @@ trait PreDispatchMethods {
 			$view->SetConfigRendering($this->configRendering);
 		return $view;
 	}
-
+	
 	/**
 	 * Check if pages count is larger or at least the same as page number from URL.
 	 * @return bool
@@ -90,22 +91,48 @@ trait PreDispatchMethods {
 		// If user write to large page number to URL, redirect user to the last page.
 		$page = $this->urlParams[static::URL_PARAM_PAGE];
 		if ($page > $pagesCountByTotalCount && $pagesCountByTotalCount > 0) {
-			/** @var \MvcCore\Controller $context */
-			$context = $this;
 			$redirectUrl = $this->GridUrl([
 				static::URL_PARAM_PAGE	=> $pagesCountByTotalCount,
 			]);
-			$context::Redirect(
+			/** @var \MvcCore\Controller $this */
+			$this::Redirect(
 				$redirectUrl, 
 				\MvcCore\IResponse::SEE_OTHER, 
 				'Grid page is too high by total count.'
 			);
 			return FALSE;
 		}
-
-		$this->pageData = $this->model->GetPageData();
-
 		return TRUE;
+	}
+	
+	/**
+	 * Translate if necessary:
+	 * - controls texts
+	 * - columns human names
+	 * - columns url names (if configured)
+	 * @return void
+	 */
+	protected function preDispatchTranslations () {
+		if (!$this->translate) return;
+		foreach ($this->controlsTexts as $key => $controlText)
+			$this->controlsTexts[$key] = call_user_func_array(
+				$this->translator, [$controlText, ['{0}', '{1}']]
+			);
+		foreach ($this->configColumns as $configColumn) {
+			$configColumn->SetHeadingName(
+				call_user_func_array(
+					$this->translator, [$configColumn->GetHeadingName()]
+				)
+			);
+			$title = $configColumn->GetTitle();
+			if ($title !== NULL) {
+				$configColumn->SetTitle(
+					call_user_func_array(
+						$this->translator, [$title]
+					)
+				);
+			}
+		}
 	}
 
 	/**
@@ -303,36 +330,6 @@ trait PreDispatchMethods {
 		$multiplePages = $this->totalCount > $this->itemsPerPage && $this->itemsPerPage !== 0;
 		if (!$multiplePages && ($renderCountScales & static::CONTROL_DISPLAY_IF_NECESSARY) != 0) 
 			$this->configRendering->SetRenderControlCountScales(static::CONTROL_DISPLAY_NEVER);
-	}
-
-	/**
-	 * Translate if necessary:
-	 * - controls texts
-	 * - columns human names
-	 * - columns url names (if configured)
-	 * @return void
-	 */
-	protected function preDispatchTranslations () {
-		if (!$this->translate) return;
-		foreach ($this->controlsTexts as $key => $controlText)
-			$this->controlsTexts[$key] = call_user_func_array(
-				$this->translator, [$controlText, ['{0}', '{1}']]
-			);
-		foreach ($this->configColumns as $configColumn) {
-			$configColumn->SetHeadingName(
-				call_user_func_array(
-					$this->translator, [$configColumn->GetHeadingName()]
-				)
-			);
-			$title = $configColumn->GetTitle();
-			if ($title !== NULL) {
-				$configColumn->SetTitle(
-					call_user_func_array(
-						$this->translator, [$title]
-					)
-				);
-			}
-		}
 	}
 
 	/**
