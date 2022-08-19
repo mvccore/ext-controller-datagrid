@@ -23,6 +23,7 @@ class Page extends \MvcCore\Ext\Controllers\DataGrids\Paging\Item {
 	
 	/**
 	 * @inheritDocs
+	 * @param int|NULL        $offset 
 	 * @param string|NULL     $url 
 	 * @param string|int|NULL $text 
 	 * @param bool            $current 
@@ -32,12 +33,12 @@ class Page extends \MvcCore\Ext\Controllers\DataGrids\Paging\Item {
 	 * @param bool            $isLast 
 	 */
 	public function __construct (
-		$url = NULL, $text = NULL, 
+		$offset = NULL, $url = NULL, $text = NULL, 
 		$current = FALSE, 
 		$isPrev = FALSE, $isNext = FALSE,
 		$isFirst = FALSE, $isLast = FALSE
 	) {
-		parent::__construct($url, $text, $current, $isPrev, $isNext, $isFirst, $isLast);
+		parent::__construct($offset, $url, $text, $current, $isPrev, $isNext, $isFirst, $isLast);
 		if ($current) 
 			$this->cssClass .= ' grid-page-current';
 	}

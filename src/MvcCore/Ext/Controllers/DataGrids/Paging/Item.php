@@ -16,6 +16,12 @@ namespace MvcCore\Ext\Controllers\DataGrids\Paging;
 class Item {
 	
 	/**
+	 * Paging data offset.
+	 * @var int|NULL
+	 */
+	protected $offset = NULL;
+	
+	/**
 	 * Paging link URL.
 	 * @var string|NULL
 	 */
@@ -65,6 +71,7 @@ class Item {
 
 	/**
 	 * Create paging item instance.
+	 * @param int|NULL        $offset 
 	 * @param string|NULL     $url 
 	 * @param string|int|NULL $text 
 	 * @param bool            $current 
@@ -74,11 +81,12 @@ class Item {
 	 * @param bool            $isLast 
 	 */
 	public function __construct (
-		$url = NULL, $text = NULL, 
+		$offset = NULL, $url = NULL, $text = NULL, 
 		$current = FALSE, 
 		$isPrev = FALSE, $isNext = FALSE,
 		$isFirst = FALSE, $isLast = FALSE
 	) {
+		$this->offset = $offset;
 		$this->url = $url;
 		if ($text !== NULL) $this->text = (string) $text;
 		$this->current = $current;
@@ -89,11 +97,49 @@ class Item {
 	}
 	
 	/**
+	 * Set paging data offset.
+	 * @param  int|NULL $offset
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Paging\Item
+	 */
+	public function SetOffset ($offset) {
+		$this->offset = $offset;
+		return $this;
+	}
+	
+	/**
+	 * Get paging data offset.
+	 * @return int|NULL
+	 */
+	public function GetOffset () {
+		return $this->offset;
+	}
+	
+	/**
+	 * Set paging link URL.
+	 * @param  string|NULL $url
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Paging\Item
+	 */
+	public function SetUrl ($url) {
+		$this->url = $url;
+		return $this;
+	}
+	
+	/**
 	 * Get paging link URL.
 	 * @return string|NULL
 	 */
 	public function GetUrl () {
 		return $this->url;
+	}
+	
+	/**
+	 * Set paging link text.
+	 * @param  string|NULL $text
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Paging\Item
+	 */
+	public function SetText ($text) {
+		$this->text = $text;
+		return $this;
 	}
 	
 	/**

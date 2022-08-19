@@ -27,7 +27,7 @@
 		else:
 			?><a href="<?php
 				echo $pagingItem->GetUrl();
-			?>"><span><?php
+			?>" data-offset="<?php echo $pagingItem->GetOffset() ?>"><span><?php
 				echo $this->EscapeHtml($pagingItem->GetText());
 			?></span></a><?php
 		endif;

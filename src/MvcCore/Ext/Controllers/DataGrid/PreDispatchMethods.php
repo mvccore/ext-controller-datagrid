@@ -203,16 +203,21 @@ trait PreDispatchMethods {
 	 */
 	protected function preDispatchPagingPrevAndFirst (& $paging, $params) {
 		list ($itemsPerPage, $displayFirst, $displayPrev) = $params;
-		if ($displayPrev) 
+		if ($displayPrev) {
+			$offset = $this->offset - $itemsPerPage;
 			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
-				$this->GridPageUrl($this->offset - $itemsPerPage), 
+				$offset,
+				$this->GridPageUrl($offset), 
 				$this->GetControlText('previous'), FALSE, TRUE
 			))->SetIsPrev(TRUE);
-		if ($displayFirst) 
+		}
+		if ($displayFirst) {
 			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
+				0,
 				$this->GridPageUrl(0), 
 				$this->GetControlText('first')
 			))->SetIsFirst(TRUE);
+		}
 		if ($displayFirst || $displayPrev)
 			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dots;
 	}
@@ -233,8 +238,10 @@ trait PreDispatchMethods {
 				$pageIndex = intval(floor($stepCounter));
 				if ($i > 0)
 					$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dot;
+				$offset = ($pageIndex - 1) * $itemsPerPage;
 				$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
-					$this->GridPageUrl(($pageIndex - 1) * $itemsPerPage), 
+					$offset,
+					$this->GridPageUrl(), 
 					$pageIndex
 				);
 			}
@@ -262,8 +269,10 @@ trait PreDispatchMethods {
 			$beginIndex = max($beginIndex - abs($rightOverflowPagesCount), 1);
 
 		for ($pageIndex = $beginIndex; $pageIndex < $endIndex; $pageIndex++) {
+			$offset = ($pageIndex - 1) * $itemsPerPage;
 			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
-				$this->GridPageUrl(($pageIndex - 1) * $itemsPerPage), 
+				$offset,
+				$this->GridPageUrl($offset), 
 				$pageIndex, 
 				$pageIndex === $currentPage
 			);
@@ -287,8 +296,10 @@ trait PreDispatchMethods {
 				$pageIndex = intval(ceil($stepCounter));
 				if ($i > 0)
 					$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dot;
+				$offset = ($pageIndex - 1) * $itemsPerPage;
 				$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
-					$this->GridPageUrl(($pageIndex - 1) * $itemsPerPage), 
+					$offset,
+					$this->GridPageUrl($offset), 
 					$pageIndex
 				);
 			}
@@ -305,16 +316,22 @@ trait PreDispatchMethods {
 		list ($itemsPerPage, $displayLast, $displayNext) = $params;
 		if ($displayNext || $displayLast)
 			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dots;
-		if ($displayLast) 
+		if ($displayLast) {
+			$offset = ($this->pagesCount - 1) * $itemsPerPage;
 			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
-				$this->GridPageUrl(($this->pagesCount - 1) * $itemsPerPage), 
+				$offset,
+				$this->GridPageUrl($offset), 
 				str_replace('{0}', $this->pagesCount, $this->GetControlText('last'))
 			))->SetIsLast(TRUE);
-		if ($displayNext) 
+		}
+		if ($displayNext) {
+			$offset = $this->offset + $itemsPerPage;
 			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
-				$this->GridPageUrl($this->offset + $itemsPerPage), 
+				$offset,
+				$this->GridPageUrl($offset), 
 				$this->GetControlText('next')
 			))->SetIsNext(TRUE);
+		}
 	}
 	
 	/**
