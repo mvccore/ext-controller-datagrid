@@ -13,6 +13,8 @@
 
 namespace MvcCore\Ext\Controllers\DataGrid;
 
+use \MvcCore\Ext\Controllers\DataGrid\IConstants;
+
 /**
  * @mixin \MvcCore\Ext\Controllers\DataGrid
  */
@@ -32,9 +34,9 @@ trait InternalProps {
 	 * @var array
 	 */
 	protected static $gridActions = [
-		'filter-table'	=> 'actionTableFilter',
-		'filter-form'	=> 'actionFormFilter',
-		'default'		=> 'actionDefault',
+		IConstants::GRID_ACTION_FILTER_TABLE	=> 'ActionTableFilter',
+		IConstants::GRID_ACTION_FILTER_FORM		=> 'ActionFormFilter',
+		IConstants::GRID_ACTION_DEFAULT			=> 'ActionDefault',
 	];
 	
 	/**

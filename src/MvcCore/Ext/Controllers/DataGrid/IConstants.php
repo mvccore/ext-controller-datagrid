@@ -14,6 +14,24 @@
 namespace MvcCore\Ext\Controllers\DataGrid;
 
 interface IConstants {
+
+	/**
+	 * Grid action name for table filter submit.
+	 * @var string
+	 */
+	const GRID_ACTION_FILTER_TABLE = 'filter-table';
+	
+	/**
+	 * Grid action name for custom filter form submit.
+	 * @var string
+	 */
+	const GRID_ACTION_FILTER_FORM = 'filter-form';
+	
+	/**
+	 * Default grid action name.
+	 * @var string
+	 */
+	const GRID_ACTION_DEFAULT = 'default';
 	
 	/**
 	 * Current route param name. It could be used in rewrite 
