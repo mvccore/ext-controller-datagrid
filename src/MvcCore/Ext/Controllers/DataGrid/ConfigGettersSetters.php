@@ -262,7 +262,6 @@ trait ConfigGettersSetters {
 	 */
 	public function GetRoute () {
 		if ($this->route === NULL) {
-			
 			$this->route = new \MvcCore\Route([
 				'pattern'		=> $this->GetConfigUrlSegments()->GetRoutePattern(
 					$this->sortingMode, $this->filteringMode
@@ -361,7 +360,6 @@ trait ConfigGettersSetters {
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
-	#[\ReturnTypeWillChange]
 	public function SetConfigRendering (\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering $configRendering) {
 		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering */
 		$this->configRendering = $configRendering;
