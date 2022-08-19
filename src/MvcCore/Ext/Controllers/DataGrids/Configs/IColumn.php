@@ -233,6 +233,25 @@ interface IColumn {
 	public function SetMaxWidth ($maxWidth);
 
 	/**
+	 * Get column CSS `flex` value, it can be defined as single 
+	 * integer or float value for `flex-grow` only or as string 
+	 * value for full CSS `flex` shorthand to define `flex-grow`, 
+	 * `flex-shrink` and `flex-basis`.
+	 * @return string|int|float|NULL
+	 */
+	public function GetFlex ();
+
+	/**
+	 * Set column CSS `flex` value, it can be defined as single 
+	 * integer or float value for `flex-grow` only or as string 
+	 * value for full CSS `flex` shorthand to define `flex-grow`, 
+	 * `flex-shrink` and `flex-basis`.
+	 * @param  string|int|float|NULL $flex
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetFlex ($flex);
+
+	/**
 	 * Get column additional css classes for head cell and body cell.
 	 * @return \string[]|NULL
 	 */

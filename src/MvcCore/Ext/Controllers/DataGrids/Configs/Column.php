@@ -144,6 +144,17 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	protected $maxWidth = NULL;
 
 	/**
+	 * Column CSS `flex` value, it can be defined as single 
+	 * integer or float value for `flex-grow` only or as string 
+	 * value for full CSS `flex` shorthand to define `flex-grow`, 
+	 * `flex-shrink` and `flex-basis`.
+	 * @jsonSerialize
+	 * @var string|int|float|NULL
+	 */
+	#[JsonSerialize]
+	protected $flex = NULL;
+
+	/**
 	 * Column additional css classes for head cell and body cell.
 	 * @jsonSerialize
 	 * @var \string[]
@@ -190,6 +201,10 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 * @param string|int|float|NULL $maxWidth     Column max. width, it can be defined as integer 
 	 *                                            or float for pixel value or string including `px` 
 	 *                                            or `%` units. Min. width is used only for table grid type.
+	 * @param string|int|float|NULL $flex         Column CSS `flex` value, it can be defined as single 
+	 *                                            integer or float value for `flex-grow` only or as string 
+	 *                                            value for full CSS `flex` shorthand to define `flex-grow`, 
+	 *                                            `flex-shrink` and `flex-basis`.
 	 * @param \string[]             $cssClasses   Column additional css classes for head cell and body cell.
 	 * @param bool|NULL             $disabled     Force column disable.
 	 */
@@ -209,6 +224,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		$width = NULL,
 		$minWidth = NULL,
 		$maxWidth = NULL,
+		$flex = NULL,
 		$cssClasses = NULL,
 		$disabled = NULL
 	) {
@@ -245,6 +261,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		if ($width !== NULL)		$this->width		= $width;
 		if ($minWidth !== NULL)		$this->minWidth		= $minWidth;
 		if ($maxWidth !== NULL)		$this->maxWidth		= $maxWidth;
+		if ($flex !== NULL)			$this->flex			= $flex;
 		if ($cssClasses !== NULL)	$this->cssClasses	= $cssClasses;
 		if ($disabled !== NULL)		$this->disabled		= $disabled;
 	}
@@ -484,9 +501,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * Get column min. width, it can be defined as integer 
-	 * or float for pixel value or string including `px` 
-	 * or `%` units. Min. width is used only for table grid type.
+	 * @inheritDocs
 	 * @return string|int|float|NULL
 	 */
 	public function GetMinWidth () {
@@ -494,9 +509,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * Set column min. width, it can be defined as integer 
-	 * or float for pixel value or string including `px` 
-	 * or `%` units. Min. width is used only for table grid type.
+	 * @inheritDocs
 	 * @param  string|int|float|NULL $minWidth
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -506,9 +519,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * Get column max. width, it can be defined as integer 
-	 * or float for pixel value or string including `px` 
-	 * or `%` units. Min. width is used only for table grid type.
+	 * @inheritDocs
 	 * @return string|int|float|NULL
 	 */
 	public function GetMaxWidth () {
@@ -516,14 +527,30 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * Set column max. width, it can be defined as integer 
-	 * or float for pixel value or string including `px` 
-	 * or `%` units. Min. width is used only for table grid type.
+	 * @inheritDocs
 	 * @param  string|int|float|NULL $maxWidth
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetMaxWidth ($maxWidth) {
 		$this->maxWidth = $maxWidth;
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @return string|int|float|NULL
+	 */
+	public function GetFlex () {
+		return $this->flex;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param  string|int|float|NULL $flex
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetFlex ($flex) {
+		$this->flex = $flex;
 		return $this;
 	}
 
