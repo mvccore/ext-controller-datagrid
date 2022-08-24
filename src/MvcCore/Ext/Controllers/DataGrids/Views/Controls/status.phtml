@@ -5,12 +5,12 @@
 	$renderConf = $grid->GetConfigRendering();
 	$statusCssClasses = $renderConf->GetCssClassesControlStatus();
 	$statusText = $grid->GetControlText('status');
-	$itemsPerPageInt = $grid->GetItemsPerPage();
+	$countInt = $grid->GetCount();
 	$totalCountInt = $grid->GetTotalCount();
 	$currentPage = $grid->GetPage();
-	$pagesCount = $itemsPerPageInt === 0
+	$pagesCount = $countInt === 0
 		? 1
-		: intval(ceil(floatval($totalCountInt) / floatval($itemsPerPageInt)));
+		: intval(ceil(floatval($totalCountInt) / floatval($countInt)));
 	$statusText = str_replace(['{0}', '{1}'], [
 		"{$currentPage}/{$pagesCount}", $totalCountInt
 	], $statusText);

@@ -440,6 +440,12 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @return int|NULL
 	 */
 	public function GetPage ();
+	
+	/**
+	 * Get datagrid current rows count, always initialized into integer value by URL.
+	 * @return int|NULL
+	 */
+	public function GetCount ();
 
 	/**
 	 * Get database table offset, always initialized into integer value by URL.

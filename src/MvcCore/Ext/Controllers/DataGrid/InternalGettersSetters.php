@@ -25,6 +25,14 @@ trait InternalGettersSetters {
 	public function GetPage () {
 		return $this->page;
 	}
+	
+	/**
+	 * @inheritDocs
+	 * @return int|NULL
+	 */
+	public function GetCount () {
+		return $this->count;
+	}
 
 	/**
 	 * @inheritDocs
@@ -115,13 +123,13 @@ trait InternalGettersSetters {
 				? $this->urlParams[static::URL_PARAM_PAGE]
 				: $this->page;
 			$count = isset($this->urlParams[static::URL_PARAM_COUNT])
-				? $this->urlParams[static::URL_PARAM_COUNT]
+				? $this->count
 				: $this->itemsPerPage;
 			if (isset($rawGridParams[static::URL_PARAM_PAGE])) 
 				$page = $rawGridParams[static::URL_PARAM_PAGE];
 			if (isset($rawGridParams[static::URL_PARAM_COUNT])) 
 				$count = $rawGridParams[static::URL_PARAM_COUNT];
-			if ($count === $this->itemsPerPageRouteConfig) {
+			if ($count === $this->itemsPerPage) {
 				$count = NULL;
 				if ($page === 1) $page = NULL;
 			}
@@ -176,15 +184,15 @@ trait InternalGettersSetters {
 	 * @return string
 	 */
 	public function GridPageUrl ($offset) {
-		$itemsPerPage = $this->itemsPerPage;
+		$displayingCount = $this->count;
 		if (
-			$this->itemsPerPage === 0 && (
+			$displayingCount === 0 && (
 				$this->configRendering->GetRenderControlPaging() & static::CONTROL_DISPLAY_ALWAYS
 			) != 0
-		) $itemsPerPage = $this->totalCount;
-		$page = $this->intdiv($offset, $itemsPerPage) + 1;
+		) $displayingCount = $this->totalCount;
+		$page = $this->intdiv($offset, $displayingCount) + 1;
 		$params = [static::URL_PARAM_PAGE => $page];
-		if ($this->itemsPerPage === $this->itemsPerPageRouteConfig) {
+		if ($this->count === $this->itemsPerPage) {
 			$params[static::URL_PARAM_COUNT] = NULL;
 			if ($page === 1) $params[static::URL_PARAM_PAGE] = NULL;
 		}
@@ -201,12 +209,12 @@ trait InternalGettersSetters {
 		if ($count === 0) {
 			// if count is unlimited - page will be always the first:
 			$page = 1;
-		} else if ($count !== $this->itemsPerPage) {
+		} else if ($count !== $this->count) {
 			// target count is different than current count, choose page to display the same first item:
-			$firstItemInCurrentCount = ($this->page - 1) * $this->itemsPerPage;
+			$firstItemInCurrentCount = ($this->page - 1) * $this->count;
 			$page = intval(floor(floatval($firstItemInCurrentCount) / floatval($count)) + 1);
 		}
-		if ($count === $this->itemsPerPageRouteConfig) {
+		if ($count === $this->itemsPerPage) {
 			$count = NULL;
 			if ($page === 1)
 				$page = NULL;
@@ -272,8 +280,8 @@ trait InternalGettersSetters {
 			}
 		}
 		$page = $this->page;
-		$count = $this->itemsPerPage;
-		if ($count === $this->itemsPerPageRouteConfig) {
+		$count = $this->count;
+		if ($count === $this->itemsPerPage) {
 			$count = NULL;
 			if ($page === 1) $page = NULL;
 		}
@@ -371,8 +379,8 @@ trait InternalGettersSetters {
 			}
 		}
 		$page = $this->page;
-		$count = $this->itemsPerPage;
-		if ($count === $this->itemsPerPageRouteConfig) {
+		$count = $this->count;
+		if ($count === $this->itemsPerPage) {
 			$count = NULL;
 			if ($page === 1) $page = NULL;
 		}

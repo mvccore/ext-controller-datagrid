@@ -5,12 +5,12 @@
 	$renderConf = $this->GetConfigRendering();
 	$countScalesCssClasses = $renderConf->GetCssClassesControlCountScales();
 	$countScales = $grid->GetCountScales();
-	$itemsPerPage = $grid->GetItemsPerPage();
+	$displayingCount = $grid->GetCount();
 	$totalCount = $grid->GetTotalCount();
 	$countScales2Render = [];
 	foreach ($countScales as $countScale):
 		if ($countScale !== 0 && $countScale > $totalCount) continue;
-		$countScales2Render[$countScale] = $countScale === $itemsPerPage;
+		$countScales2Render[$countScale] = $countScale === $displayingCount;
 	endforeach;
 	$countScales2RenderCount = count($countScales2Render);
 	$firstIsCurrent = $countScales2RenderCount === 1 && $grid->GetPagesCount() === 1;

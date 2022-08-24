@@ -63,18 +63,21 @@ trait InitMethods {
 
 		parent::Init();
 		
-		$this->initCountScales();
 		$this->GetConfigUrlSegments();
 		$this->initTranslations();
 		$this->GetConfigColumns(FALSE);
+
+		$this->initGridAction();
+
 		$this->GetRoute();
 		$this->GetUrlParams();
 		
-		$this->initGridAction();
+		$this->initQsParamsSeparator();
+		$this->initCountScales();
+
 		if (!$this->initUrlParams()) return; // redirect inside
 		$this->initOffsetLimit();
 		
-		$this->initItemsPerPageByRoute();
 		if (!$this->initUrlBuilding()) return; // redirect inside
 		$this->initOperators();
 		
@@ -82,6 +85,48 @@ trait InitMethods {
 		if (!$this->initFiltering()) return; // redirect inside
 		
 		call_user_func([$this, $this->gridAction]);
+	}
+	
+	/**
+	 * Initialize necessary properties for application URL building.
+	 * Aplication URL building is always initialized in controllers,
+	 * where grid doesn't exist and where is necessary to create 
+	 * URL to controller containing datagrid with sorting or filtering.
+	 * @return void
+	 */
+	protected function initAppUrlCompletion () {
+		$this->GetConfigUrlSegments();
+		$this->initTranslations();
+		$this->GetConfigColumns(FALSE);
+		$this->GetGridRequest();
+		$this->initQsParamsSeparator();
+		$this->initCountScales();
+		$this->GetUrlParams();
+		$this->initOperators();
+		$this->appUrlCompletionInit = TRUE;
+	}
+
+	/**
+	 * Complete internal action method name.
+	 * @return void
+	 */
+	protected function initGridAction () {
+		$gridActionParam = $this->request->GetParam(static::URL_PARAM_ACTION, '-_a-zA-Z', static::$gridActionDefaultKey, 'string');
+		if (!isset(static::$gridActions[$gridActionParam])) $gridActionParam = static::$gridActionDefaultKey;
+		$this->gridAction = static::$gridActions[$gridActionParam];
+	}
+
+	/**
+	 * Init `$this->queryStringParamsSepatator` from router to build grid urls:
+	 * @return void
+	 */
+	protected function initQsParamsSeparator () {
+		if ($this->queryStringParamsSepatator === NULL) {
+			$routerType = new \ReflectionClass($this->router);
+			$method = $routerType->getMethod('getQueryStringParamsSepatator');
+			$method->setAccessible(TRUE);
+			$this->queryStringParamsSepatator = $method->invoke($this->router);
+		}
 	}
 	
 	/**
@@ -100,35 +145,6 @@ trait InitMethods {
 	}
 
 	/**
-	 * Initialize necessary properties for application URL building.
-	 * Aplication URL building is always initialized in controllers,
-	 * where grid doesn't exist and where is necessary to create 
-	 * URL to controller containing datagrid with sorting or filtering.
-	 * @return void
-	 */
-	protected function initAppUrlCompletion () {
-		$this->GetConfigUrlSegments();
-		$this->initTranslations();
-		$this->GetConfigColumns(FALSE);
-		$this->GetGridRequest();
-		$this->GetUrlParams();
-		$this->initItemsPerPageByRoute();
-		$this->initUrlParamsQsParamsSeparator();
-		$this->initOperators();
-		$this->appUrlCompletionInit = TRUE;
-	}
-
-	/**
-	 * Complete internal action method name.
-	 * @return void
-	 */
-	protected function initGridAction () {
-		$gridActionParam = $this->request->GetParam(static::URL_PARAM_ACTION, '-_a-zA-Z', static::$gridActionDefaultKey, 'string');
-		if (!isset(static::$gridActions[$gridActionParam])) $gridActionParam = static::$gridActionDefaultKey;
-		$this->gridAction = static::$gridActions[$gridActionParam];
-	}
-
-	/**
 	 * Initialize internal property `$this->queryStringParamsSepatator`
 	 * to be able to build internal grid URL strings.
 	 * Check valid values from URL for page and items par page.
@@ -136,48 +152,9 @@ trait InitMethods {
 	 * @return bool
 	 */
 	protected function initUrlParams () {
-		$this->initUrlParamsQsParamsSeparator();
-		if (!$this->initUrlParamsPage())			return FALSE;
-		if (!$this->initUrlParamsCount())			return FALSE;
-		if (!$this->initUrlParamsItemsPerPage())	return FALSE;
-		if (!$this->initUrlParamsPageAndCount())	return FALSE;
-		return TRUE;
-	}
-
-	/**
-	 * Init `$this->queryStringParamsSepatator` from router to build grid urls:
-	 * @return void
-	 */
-	protected function initUrlParamsQsParamsSeparator () {
-		if ($this->queryStringParamsSepatator === NULL) {
-			$routerType = new \ReflectionClass($this->router);
-			$method = $routerType->getMethod('getQueryStringParamsSepatator');
-			$method->setAccessible(TRUE);
-			$this->queryStringParamsSepatator = $method->invoke($this->router);
-		}
-	}
-
-	/**
-	 * Set up default page if NULL or redirect if page is zero.
-	 * @return bool
-	 */
-	protected function initUrlParamsPage () {
-		if (
-			isset($this->urlParams[static::URL_PARAM_PAGE]) &&
-			$this->urlParams[static::URL_PARAM_PAGE] < 1
-		) {
-			// redirect to proper page number:
-			$redirectUrl = $this->GridUrl([
-				static::URL_PARAM_PAGE	=> 1,
-			]);
-			/** @var \MvcCore\Controller $this */
-			$this::Redirect(
-				$redirectUrl, 
-				\MvcCore\IResponse::SEE_OTHER, 
-				'Grid page is too low.'
-			);
-			return FALSE;
-		}
+		if (!$this->initUrlParamCount())		return FALSE;
+		if (!$this->initUrlParamPage())			return FALSE;
+		if (!$this->initUrlParamPageByCount())	return FALSE;
 		return TRUE;
 	}
 
@@ -186,15 +163,15 @@ trait InitMethods {
 	 * check if count has allowed size.
 	 * @return bool
 	 */
-	protected function initUrlParamsCount () {
+	protected function initUrlParamCount () {
 		if (!isset($this->urlParams[static::URL_PARAM_COUNT])) {
 			// if there is no count param in url - use items per page as default count
-			$this->urlParams[static::URL_PARAM_COUNT] = $this->GetItemsPerPage();
+			$this->count = $this->GetItemsPerPage();
 		} else {
 			// verify if count is not too high, if it is - redirect to highest count in count scales:
-			$urlCount = $this->urlParams[static::URL_PARAM_COUNT];
+			$this->count = intval($this->urlParams[static::URL_PARAM_COUNT]);
 			$lastCountsScale = $this->countScales[count($this->countScales) - 1];
-			if ($lastCountsScale !== 0 && ($urlCount === 0 || $urlCount > $lastCountsScale)) {
+			if ($lastCountsScale !== 0 && ($this->count === 0 || $this->count > $lastCountsScale)) {
 				// redirect to allowed max count:
 				$redirectUrl = $this->GridUrl([
 					static::URL_PARAM_PAGE	=> $this->urlParams[static::URL_PARAM_PAGE],
@@ -209,26 +186,13 @@ trait InitMethods {
 				return FALSE;
 			}
 		}
-		return TRUE;
-	}
-
-	/**
-	 * Check if count scale from url is allowed or
-	 * redirect to allowed count scale if necessary.
-	 * @return bool
-	 */
-	protected function initUrlParamsItemsPerPage () {
-		$urlItemsPerPage = $this->urlParams[static::URL_PARAM_COUNT];
 		if (
-			$this->allowedCustomUrlCountScale ||
-			in_array($urlItemsPerPage, $this->countScales, TRUE)
+			!$this->allowedCustomUrlCountScale &&
+			!in_array($this->count, $this->countScales, TRUE)
 		) {
-			// if there is allowed custom count scale - set it up
-			$this->itemsPerPage = $urlItemsPerPage;
-		} else {
 			// if there is not allowed custom count scale - choose closest value and redirect
 			$redirectUrl = $this->GridUrl([
-				static::URL_PARAM_COUNT	=> $this->getClosestCountScale($urlItemsPerPage),
+				static::URL_PARAM_COUNT	=> $this->getClosestCountScale($this->count),
 			]);
 			/** @var \MvcCore\Controller $this */
 			$this::Redirect(
@@ -240,14 +204,38 @@ trait InitMethods {
 		}
 		return TRUE;
 	}
+	
+	/**
+	 * Set up default page if NULL or redirect if page is zero.
+	 * @return bool
+	 */
+	protected function initUrlParamPage () {
+		if (
+			isset($this->urlParams[static::URL_PARAM_PAGE]) &&
+			$this->urlParams[static::URL_PARAM_PAGE] === 0
+		) {
+			// redirect to proper page number:
+			$redirectUrl = $this->GridUrl([
+				static::URL_PARAM_PAGE	=> 1,
+			]);
+			/** @var \MvcCore\Controller $this */
+			$this::Redirect(
+				$redirectUrl, 
+				\MvcCore\IResponse::SEE_OTHER, 
+				'Grid page is too low.'
+			);
+			return FALSE;
+		}
+		$this->page = $this->urlParams[static::URL_PARAM_PAGE];
+		return TRUE;
+	}
 
 	/**
 	 * Check if page is not larger than 1 if count is unlimited.
 	 * @return bool
 	 */
-	protected function initUrlParamsPageAndCount () {
-		$this->page = $this->urlParams[static::URL_PARAM_PAGE];
-		if ($this->itemsPerPage === 0 && $this->page > 1) {
+	protected function initUrlParamPageByCount () {
+		if ($this->count === 0 && $this->page > 1) {
 			$redirectUrl = $this->GridUrl([
 				static::URL_PARAM_PAGE	=> 1,
 			]);
@@ -268,13 +256,10 @@ trait InitMethods {
 	 * @return void
 	 */
 	protected function initOffsetLimit () {
-		$count = $this->urlParams[static::URL_PARAM_COUNT];
-		$unlimitedCount = $count === 0;
-
+		$unlimitedCount = $this->count === 0;
 		$this->limit = $unlimitedCount
 			? NULL
-			: $count;
-
+			:  $this->count;
 		if ($unlimitedCount) {
 			$this->offset = 0;
 		} else {
@@ -302,20 +287,20 @@ trait InitMethods {
 	}
 
 	/**
-	 * 
+	 * TODO: PHPDocs
 	 * @return bool
 	 */
 	protected function initUrlBuildingCanonicalRedirect () {
 		// remove all default values from route to build urls with `$this->urlParams` only:
 		$defaultParams = [];
 		$pageIsDefault = $this->page === 1;
-		$countIsDefault = $this->itemsPerPage === $this->itemsPerPageRouteConfig;
+		$countIsDefault = $this->count === $this->itemsPerPage;
 		if ($pageIsDefault && $countIsDefault) {
-			$defaultParams = [static::URL_PARAM_PAGE => 1,		static::URL_PARAM_COUNT => $this->itemsPerPageRouteConfig];
+			$defaultParams = [static::URL_PARAM_PAGE => 1,		static::URL_PARAM_COUNT => $this->itemsPerPage];
 		} else if ($pageIsDefault && !$countIsDefault) {
 			$defaultParams = [static::URL_PARAM_PAGE => NULL,	static::URL_PARAM_COUNT => NULL];
 		} else if (!$pageIsDefault && $countIsDefault) {
-			$defaultParams = [static::URL_PARAM_PAGE => NULL,	static::URL_PARAM_COUNT => $this->itemsPerPageRouteConfig];
+			$defaultParams = [static::URL_PARAM_PAGE => NULL,	static::URL_PARAM_COUNT => $this->itemsPerPage];
 		} else {
 			$defaultParams = [static::URL_PARAM_PAGE => NULL,	static::URL_PARAM_COUNT => NULL];
 		}
@@ -334,14 +319,11 @@ trait InitMethods {
 
 		$redirectUrl = NULL;
 		if (
-			$gridParam === $reqPathRaw && 
-			$gridParam === '' && 
-			$this->request->HasParam(static::URL_PARAM_GRID)
+			$this->request->HasParam(static::URL_PARAM_GRID) &&
+			$gridParam !== '' && 
+			$reqPathRaw !== '' && 
+			$gridParam !== $reqPathRaw
 		) {
-			$redirectUrl = parent::Url($this->appRouteName, [
-				static::URL_PARAM_GRID => NULL
-			]);
-		} else if ($gridParam !== $reqPathRaw) {
 			$redirectUrl = parent::Url($this->appRouteName, [
 				static::URL_PARAM_GRID => $gridParam
 			]);
@@ -358,17 +340,6 @@ trait InitMethods {
 		return TRUE;
 	}
 	
-	/**
-	 * Init items per page by route configuration to build grid urls:
-	 * @return void
-	 */
-	protected function initItemsPerPageByRoute () {
-		if ($this->itemsPerPageRouteConfig === NULL) {
-			$routeConfig = $this->route->GetAdvancedConfigProperty('defaults');
-			$this->itemsPerPageRouteConfig = $routeConfig[static::URL_PARAM_COUNT];
-		}
-	}
-
 	/**
 	 * Initialize translation booleans and translate url names 
 	 * and URL operators if necessary. Initialize allowed default 

@@ -113,18 +113,18 @@ trait InternalProps {
 	protected static $attrClassFullName = '\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column';
 
 	/**
-	 * Originally configured grid value items per page.
-	 * @internal
-	 * @var int|NULL
-	 */
-	protected $itemsPerPageRouteConfig = NULL;
-
-	/**
 	 * Datagrid page, always initialized into integer value by URL.
 	 * @internal
 	 * @var int|NULL
 	 */
 	protected $page = NULL;
+
+	/**
+	 * Datagrid current rows count, always initialized into integer value by URL.
+	 * @internal
+	 * @var int|NULL
+	 */
+	protected $count = NULL;
 
 	/**
 	 * Database table offset, always initialized into integer value by URL.

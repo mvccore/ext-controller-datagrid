@@ -499,8 +499,8 @@ trait ActionMethods {
 			}
 		}
 		$page = $this->page;
-		$count = $this->itemsPerPage;
-		if ($count === $this->itemsPerPageRouteConfig) {
+		$count = $this->count;
+		if ($count === $this->itemsPerPage) {
 			$count = NULL;
 			if ($page === 1) $page = NULL;
 		}

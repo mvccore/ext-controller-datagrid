@@ -36,7 +36,7 @@ trait PreDispatchMethods {
 		}
 
 		parent::PreDispatch();
-		
+
 		$this->LoadModel();
 		
 		if (!$this->preDispatchTotalCount()) return;
@@ -85,8 +85,8 @@ trait PreDispatchMethods {
 	 * @return bool
 	 */
 	protected function preDispatchTotalCount () {
-		$pagesCountByTotalCount = ($this->itemsPerPage > 0) 
-			? intval(ceil(floatval($this->totalCount) / floatval($this->itemsPerPage))) 
+		$pagesCountByTotalCount = ($this->count > 0) 
+			? intval(ceil(floatval($this->totalCount) / floatval($this->count))) 
 			: 0 ;
 		// If user write to large page number to URL, redirect user to the last page.
 		$page = $this->urlParams[static::URL_PARAM_PAGE];
@@ -143,32 +143,32 @@ trait PreDispatchMethods {
 		$renderPaging = $this->configRendering->GetRenderControlPaging();
 		if (!$renderPaging) return;
 
-		$multiplePages = $this->totalCount > $this->itemsPerPage && $this->itemsPerPage !== 0;
+		$multiplePages = $this->totalCount > $this->count && $this->count !== 0;
 		if (($renderPaging & \MvcCore\Ext\Controllers\IDataGrid::CONTROL_DISPLAY_IF_NECESSARY) != 0 && !$multiplePages) {
 			$this->configRendering->SetRenderControlPaging(static::CONTROL_DISPLAY_NEVER);
 			return;
 		}
 		
 		$paging = [];
-		$itemsPerPage = $this->itemsPerPage;
+		$displayingCount = $this->count;
 		if (
-			$this->itemsPerPage === 0 && (
+			$displayingCount === 0 && (
 				$renderPaging & static::CONTROL_DISPLAY_ALWAYS
 			) != 0
-		) $itemsPerPage = $this->totalCount;
+		) $displayingCount = $this->totalCount;
 
 		$nearbyPages = $this->configRendering->GetControlPagingNearbyPagesCount();
 		$outerPages = $this->configRendering->GetControlPagingOuterPagesCount();
 		$prevAndNext = $this->configRendering->GetRenderControlPagingPrevAndNext();
 		$firstAndLast = $this->configRendering->GetRenderControlPagingFirstAndLast();
 
-		$this->pagesCount = intval(ceil($this->totalCount / $itemsPerPage));
-		$currentPage = $this->intdiv($this->offset, $itemsPerPage) + 1;
+		$this->pagesCount = intval(ceil($this->totalCount / $displayingCount));
+		$currentPage = $this->intdiv($this->offset, $displayingCount) + 1;
 
-		$displayPrev = $prevAndNext && $this->offset - $itemsPerPage >= 0;
-		$displayFirst = $firstAndLast && $this->offset > $nearbyPages * $itemsPerPage;
-		$displayNext = $prevAndNext && $this->offset + $itemsPerPage < $this->totalCount;
-		$displayLast = $firstAndLast && $this->offset < ($this->pagesCount * $itemsPerPage) - (($nearbyPages + 1) * $itemsPerPage);
+		$displayPrev = $prevAndNext && $this->offset - $displayingCount >= 0;
+		$displayFirst = $firstAndLast && $this->offset > $nearbyPages * $displayingCount;
+		$displayNext = $prevAndNext && $this->offset + $displayingCount < $this->totalCount;
+		$displayLast = $firstAndLast && $this->offset < ($this->pagesCount * $displayingCount) - (($nearbyPages + 1) * $displayingCount);
 		
 		$outerPagesMinRatio = $this->configRendering->GetControlPagingOuterPagesDisplayRatio();
 		$hiddenStartingPagesCount = $currentPage - $nearbyPages - ($firstAndLast ? 2 : 1);
@@ -177,19 +177,19 @@ trait PreDispatchMethods {
 		$displayOuterEndPages = $outerPages && (floatval($hiddenEndingPagesCount ) / floatval($outerPages)) > $outerPagesMinRatio;
 		
 		$this->preDispatchPagingPrevAndFirst($paging, [
-			$itemsPerPage, $displayFirst, $displayPrev
+			$displayingCount, $displayFirst, $displayPrev
 		]);
 		$this->preDispatchPagingLeftOuterPages($paging, [
-			$itemsPerPage, $displayOuterStartPages, $firstAndLast, $outerPages, $hiddenStartingPagesCount
+			$displayingCount, $displayOuterStartPages, $firstAndLast, $outerPages, $hiddenStartingPagesCount
 		]);
 		$this->preDispatchPagingNearbyAndCurrent($paging, [
-			$itemsPerPage, $currentPage, $nearbyPages
+			$displayingCount, $currentPage, $nearbyPages
 		]);
 		$this->preDispatchPagingRightOuterPages($paging, [
-			$itemsPerPage, $displayOuterEndPages, $firstAndLast, $outerPages, $hiddenEndingPagesCount
+			$displayingCount, $displayOuterEndPages, $firstAndLast, $outerPages, $hiddenEndingPagesCount
 		]);
 		$this->preDispatchPagingLastAndNext($paging, [
-			$itemsPerPage, $displayLast, $displayNext
+			$displayingCount, $displayLast, $displayNext
 		]);
 
 		$this->paging = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging($paging);
@@ -202,9 +202,9 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	protected function preDispatchPagingPrevAndFirst (& $paging, $params) {
-		list ($itemsPerPage, $displayFirst, $displayPrev) = $params;
+		list ($displayingCount, $displayFirst, $displayPrev) = $params;
 		if ($displayPrev) {
-			$offset = $this->offset - $itemsPerPage;
+			$offset = $this->offset - $displayingCount;
 			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
 				$offset,
 				$this->GridPageUrl($offset), 
@@ -229,7 +229,7 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	protected function preDispatchPagingLeftOuterPages (& $paging, $params) {
-		list($itemsPerPage, $displayOuterStartPages, $firstAndLast, $outerPages, $hiddenStartingPagesCount) = $params;
+		list($displayingCount, $displayOuterStartPages, $firstAndLast, $outerPages, $hiddenStartingPagesCount) = $params;
 		if ($displayOuterStartPages) {
 			$stepValue = floatval($hiddenStartingPagesCount) / floatval($outerPages + 1);
 			$stepCounter = $firstAndLast ? 1.0 : 0.0;
@@ -238,10 +238,10 @@ trait PreDispatchMethods {
 				$pageIndex = intval(floor($stepCounter));
 				if ($i > 0)
 					$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dot;
-				$offset = ($pageIndex - 1) * $itemsPerPage;
+				$offset = ($pageIndex - 1) * $displayingCount;
 				$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
 					$offset,
-					$this->GridPageUrl(), 
+					$this->GridPageUrl($offset), 
 					$pageIndex
 				);
 			}
@@ -256,7 +256,7 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	protected function preDispatchPagingNearbyAndCurrent (& $paging, $params) {
-		list($itemsPerPage, $currentPage, $nearbyPages) = $params;
+		list($displayingCount, $currentPage, $nearbyPages) = $params;
 		$beginIndex = max($currentPage - $nearbyPages, 1);
 		$endIndex = min($currentPage + $nearbyPages + 1, $this->pagesCount + 1);
 
@@ -269,7 +269,7 @@ trait PreDispatchMethods {
 			$beginIndex = max($beginIndex - abs($rightOverflowPagesCount), 1);
 
 		for ($pageIndex = $beginIndex; $pageIndex < $endIndex; $pageIndex++) {
-			$offset = ($pageIndex - 1) * $itemsPerPage;
+			$offset = ($pageIndex - 1) * $displayingCount;
 			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
 				$offset,
 				$this->GridPageUrl($offset), 
@@ -286,7 +286,7 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	protected function preDispatchPagingRightOuterPages (& $paging, $params) {
-		list($itemsPerPage, $displayOuterEndPages, $firstAndLast, $outerPages, $hiddenEndingPagesCount) = $params;
+		list($displayingCount, $displayOuterEndPages, $firstAndLast, $outerPages, $hiddenEndingPagesCount) = $params;
 		if ($displayOuterEndPages) {
 			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dots;
 			$stepValue = floatval($hiddenEndingPagesCount) / floatval($outerPages + 1);
@@ -296,7 +296,7 @@ trait PreDispatchMethods {
 				$pageIndex = intval(ceil($stepCounter));
 				if ($i > 0)
 					$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dot;
-				$offset = ($pageIndex - 1) * $itemsPerPage;
+				$offset = ($pageIndex - 1) * $displayingCount;
 				$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
 					$offset,
 					$this->GridPageUrl($offset), 
@@ -313,11 +313,11 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	protected function preDispatchPagingLastAndNext (& $paging, $params) {
-		list ($itemsPerPage, $displayLast, $displayNext) = $params;
+		list ($displayingCount, $displayLast, $displayNext) = $params;
 		if ($displayNext || $displayLast)
 			$paging[] = new \MvcCore\Ext\Controllers\DataGrids\Paging\Dots;
 		if ($displayLast) {
-			$offset = ($this->pagesCount - 1) * $itemsPerPage;
+			$offset = ($this->pagesCount - 1) * $displayingCount;
 			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
 				$offset,
 				$this->GridPageUrl($offset), 
@@ -325,7 +325,7 @@ trait PreDispatchMethods {
 			))->SetIsLast(TRUE);
 		}
 		if ($displayNext) {
-			$offset = $this->offset + $itemsPerPage;
+			$offset = $this->offset + $displayingCount;
 			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
 				$offset,
 				$this->GridPageUrl($offset), 
@@ -344,7 +344,7 @@ trait PreDispatchMethods {
 	protected function preDispatchCountScales () {
 		$renderCountScales = $this->configRendering->GetRenderControlCountScales();
 		if (!$renderCountScales) return;
-		$multiplePages = $this->totalCount > $this->itemsPerPage && $this->itemsPerPage !== 0;
+		$multiplePages = $this->totalCount > $this->count && $this->count !== 0;
 		if (!$multiplePages && ($renderCountScales & static::CONTROL_DISPLAY_IF_NECESSARY) != 0) 
 			$this->configRendering->SetRenderControlCountScales(static::CONTROL_DISPLAY_NEVER);
 	}
