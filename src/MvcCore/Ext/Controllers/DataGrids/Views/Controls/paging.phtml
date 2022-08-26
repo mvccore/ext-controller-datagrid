@@ -5,12 +5,14 @@
 
 	$pagingItems = $grid->GetPaging();
 	$renderConf = $this->GetConfigRendering();
-	$pagingCssClasses = $renderConf->GetCssClassesControlPaging();
-	$pagingCssClasses[] = 'grid-control-items-count-' . count($pagingItems);
+	$cssClassesControl = $renderConf->GetCssClassesControlPaging();
+	$cssClassesButton = implode(' ', $renderConf->GetCssClassesControlPagingButton());
+	$cssClassesCurrent = implode(' ', $renderConf->GetCssClassesControlPagingCurrent());
+	$cssClassesControl[] = 'grid-control-items-count-' . count($pagingItems);
 
 ?><table<?php
-	if (count($pagingCssClasses) > 0)
-		echo ' class="' . implode(' ', $pagingCssClasses) . '"';
+	if (count($cssClassesControl) > 0)
+		echo ' class="' . implode(' ', $cssClassesControl) . '"';
 ?>><tbody><?php
 	foreach ($pagingItems as $pagingItem):
 		
@@ -21,15 +23,15 @@
 		if ($pagingItem instanceof \MvcCore\Ext\Controllers\DataGrids\Paging\Dot):
 			?><span><?php echo $this->EscapeHtml($pagingItem->GetText()); ?></span><?php
 		elseif ($pagingItem->IsCurrent()):
-			?><span><?php
+			?><span class="<?php echo $cssClassesCurrent; ?>"><?php
 				echo $this->EscapeHtml($pagingItem->GetText());
 			?></span><?php
 		else:
-			?><a href="<?php
+			?><a class="<?php echo $cssClassesButton; ?>" href="<?php
 				echo $pagingItem->GetUrl();
-			?>" data-offset="<?php echo $pagingItem->GetOffset() ?>"><span><?php
+			?>" data-offset="<?php echo $pagingItem->GetOffset() ?>"><span><b><?php
 				echo $this->EscapeHtml($pagingItem->GetText());
-			?></span></a><?php
+			?></b></span></a><?php
 		endif;
 
 		?></td><?php

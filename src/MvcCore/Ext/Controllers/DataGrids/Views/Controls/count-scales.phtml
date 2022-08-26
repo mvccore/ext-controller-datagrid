@@ -3,7 +3,9 @@
 	/** @var \MvcCore\Ext\Controllers\DataGrid $grid */
 
 	$renderConf = $this->GetConfigRendering();
-	$countScalesCssClasses = $renderConf->GetCssClassesControlCountScales();
+	$cssClassesControl = $renderConf->GetCssClassesControlCountScales();
+	$cssClassesCurrent = implode(' ', $renderConf->GetCssClassesControlCountScalesCurrent());
+	$cssClassesButton = implode(' ', $renderConf->GetCssClassesControlCountScalesButton());
 	$countScales = $grid->GetCountScales();
 	$displayingCount = $grid->GetCount();
 	$totalCount = $grid->GetTotalCount();
@@ -14,16 +16,16 @@
 	endforeach;
 	$countScales2RenderCount = count($countScales2Render);
 	$firstIsCurrent = $countScales2RenderCount === 1 && $grid->GetPagesCount() === 1;
-	$countScalesCssClasses[] = 'grid-control-items-count-' . $countScales2RenderCount;
+	$cssClassesControl[] = 'grid-control-items-count-' . $countScales2RenderCount;
 
 ?><table<?php
-	if (count($countScalesCssClasses) > 0)
-		echo ' class="' . implode(' ', $countScalesCssClasses) . '"';
+	if (count($cssClassesControl) > 0)
+		echo ' class="' . implode(' ', $cssClassesControl) . '"';
 ?>><tbody><tr><?php
 	foreach ($countScales2Render as $countScale => $current):
 		$current = $current || $firstIsCurrent;
 		?><td class="grid-count<?php
-			if ($current) echo ' grid-count-current';
+			if ($current) echo ' ' . $cssClassesCurrent;
 		?>"><?php
 
 			$text = ($countScale === 0)
@@ -31,15 +33,19 @@
 				: (string) $countScale;
 
 			if ($current):
-				?><span class="grid-count-current"><?php
+				?><span class="<?php
+				echo $cssClassesCurrent;
+				?>"><?php
 					echo $text;
 				?></span><?php
 			else:
-				?><a class="grid-count-link" href="<?php
+				?><a class="<?php
+					echo $cssClassesButton;
+				?>" href="<?php
 					echo $grid->GridCountUrl($countScale);
-				?>"><?php
+				?>"><span><b><?php
 					echo $text;
-				?></a><?php
+				?></span></b></a><?php
 			endif;
 
 		?></td><?php
