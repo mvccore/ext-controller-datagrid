@@ -265,13 +265,26 @@ interface IColumn {
 	public function SetCssClasses ($cssClasses);
 	
 	/**
-	 * Get `TRUE` for disabled column, `FALSE|NULL` for enabled column.
+	 * Get `TRUE` for editable column, `FALSE|NULL` for not editable column (by default).
+	 * @return bool|NULL
+	 */
+	public function GetEditable ();
+
+	/**
+	 * Set `TRUE` for editable column, `FALSE|NULL` for not editable column (by default).
+	 * @param  bool|NULL $editable
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetEditable ($editable);
+	
+	/**
+	 * Get `TRUE` for disabled column, `FALSE|NULL` for enabled column (enabled by default).
 	 * @return bool|NULL
 	 */
 	public function GetDisabled ();
 
 	/**
-	 * Set `TRUE` for disabled column, `FALSE|NULL` for enabled column.
+	 * Set `TRUE` for disabled column, `FALSE|NULL` for enabled column (enabled by default).
 	 * @param  bool|NULL $disabled
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */

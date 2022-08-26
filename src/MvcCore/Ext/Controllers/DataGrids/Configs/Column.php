@@ -163,7 +163,15 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	protected $cssClasses = [];
 	
 	/**
-	 * `TRUE` for disabled column, `FALSE|NULL` for enabled column.
+	 * `TRUE` for editable column, `FALSE|NULL` for not editable column (by default).
+	 * @jsonSerialize
+	 * @var bool|NULL
+	 */
+	#[JsonSerialize]
+	protected $editable = NULL;
+	
+	/**
+	 * `TRUE` for disabled column, `FALSE|NULL` for enabled column (enabled by default).
 	 * @jsonSerialize
 	 * @var bool|NULL
 	 */
@@ -206,7 +214,9 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 *                                            value for full CSS `flex` shorthand to define `flex-grow`, 
 	 *                                            `flex-shrink` and `flex-basis`.
 	 * @param \string[]             $cssClasses   Column additional css classes for head cell and body cell.
-	 * @param bool|NULL             $disabled     Force column disable.
+	 * @param bool|NULL             $editable     `TRUE` for editable column, `FALSE|NULL` for 
+	 *                                            not editable column (by default).
+	 * @param bool|NULL             $disabled     Force column disable (enabled by default).
 	 */
 	public function __construct (
 		$propName = NULL, 
@@ -226,6 +236,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		$maxWidth = NULL,
 		$flex = NULL,
 		$cssClasses = NULL,
+		$editable = NULL,
 		$disabled = NULL
 	) {
 		$propNameHasValue = $propName !== NULL;
@@ -263,6 +274,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		if ($maxWidth !== NULL)		$this->maxWidth		= $maxWidth;
 		if ($flex !== NULL)			$this->flex			= $flex;
 		if ($cssClasses !== NULL)	$this->cssClasses	= $cssClasses;
+		if ($editable !== NULL)		$this->editable		= $editable;
 		if ($disabled !== NULL)		$this->disabled		= $disabled;
 	}
 
@@ -569,6 +581,24 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 */
 	public function SetCssClasses ($cssClasses) {
 		$this->cssClasses = $cssClasses;
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @return bool|NULL
+	 */
+	public function GetEditable () {
+		return $this->editable;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param  bool|NULL $editable
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetEditable ($editable) {
+		$this->editable = $editable;
 		return $this;
 	}
 	
