@@ -154,7 +154,7 @@ interface IRendering {
 	 * Set rendered  nearby pages count in page control.
 	 * This value means how many pages will be rendered 
 	 * around current page to left or to right side.
-	 * There are rendered 3 nearby pages to each side by default.
+	 * There are rendered 2 nearby pages to each side by default.
 	 * @param  int $nearbyPagesCount
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -164,7 +164,7 @@ interface IRendering {
 	 * Get rendered nearby pages count in page control.
 	 * This value means how many pages will be rendered 
 	 * around current page to left or to right side.
-	 * There are rendered 3 nearby pages to each side by default.
+	 * There are rendered 2 nearby pages to each side by default.
 	 * @return int
 	 */
 	public function GetControlPagingNearbyPagesCount ();
@@ -347,6 +347,48 @@ interface IRendering {
 	public function GetCssClassesControlPaging ();
 
 	/**
+	 * Set css classes for datagrid paging control button.
+	 * All previously configured css classes will be replaced with given values.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlPagingButton ($cssClasses);
+
+	/**
+	 * Add css classes for datagrid paging control button.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlPagingButton ($cssClasses);
+
+	/**
+	 * Get css classes for datagrid paging control button.
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlPagingButton ();
+
+	/**
+	 * Set css classes for datagrid paging control current text.
+	 * All previously configured css classes will be replaced with given values.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlPagingCurrent ($cssClasses);
+
+	/**
+	 * Add css classes for datagrid paging control current text.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlPagingCurrent ($cssClasses);
+
+	/**
+	 * Get css classes for datagrid paging control current text.
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlPagingCurrent ();
+
+	/**
 	 * Set css classes for datagrid count scales control.
 	 * All previously configured css classes will be replaced with given values.
 	 * @param string|\string[] $cssClasses
@@ -366,6 +408,47 @@ interface IRendering {
 	 * @return \string[]
 	 */
 	public function GetCssClassesControlCountScales ();
+
+	/**
+	 * Set css classes for datagrid count scales control button(s).
+	 * All previously configured css classes will be replaced with given values.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlCountScalesButton ($cssClasses);
+
+	/**
+	 * Add css classes for datagrid count scales control button.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlCountScalesButton ($cssClasses);
+
+	/**
+	 * Get css classes for datagrid count scales control button.
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlCountScalesButton ();
+	
+	/**
+	 * Set css classes for datagrid count scales control current scale text.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlCountScalesCurrent ($cssClasses);
+
+	/**
+	 * Add css classes for datagrid count scales control current scale text.
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlCountScalesCurrent ($cssClasses);
+
+	/**
+	 * Get css classes for datagrid count scales control current scale text.
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlCountScalesCurrent ();
 
 	/**
 	 * Set css classes for datagrid status text control.

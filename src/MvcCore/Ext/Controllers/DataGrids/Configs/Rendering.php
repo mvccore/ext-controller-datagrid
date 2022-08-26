@@ -96,12 +96,12 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	 * Rendered nearby pages count in page control.
 	 * This value means how many pages will be rendered 
 	 * around current page to left or to right side.
-	 * There are rendered 3 nearby pages to each side by default.
+	 * There are rendered 2 nearby pages to each side by default.
 	 * @jsonSerialize
 	 * @var int
 	 */
 	#[JsonSerialize]
-	protected $controlPagingNearbyPagesCount		= 3;
+	protected $controlPagingNearbyPagesCount		= 2;
 	
 	/**
 	 * Rendered outer pages count in page control.
@@ -184,12 +184,44 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	protected $cssClassesControlPaging				= ['grid-control-paging'];
 	
 	/**
+	 * Css classes for datagrid paging control button.
+	 * @jsonSerialize
+	 * @var \string[]
+	 */
+	#[JsonSerialize]
+	protected $cssClassesControlPagingButton		= [\MvcCore\Ext\Controllers\DataGrids\Paging\Item::PAGE_CSS_CLASS_BUTTON];
+	
+	/**
+	 * Css classes for datagrid paging control current text.
+	 * @jsonSerialize
+	 * @var \string[]
+	 */
+	#[JsonSerialize]
+	protected $cssClassesControlPagingCurrent		= [\MvcCore\Ext\Controllers\DataGrids\Paging\Item::PAGE_CSS_CLASS_CURRENT];
+
+	/**
 	 * Css classes for datagrid count scales control.
 	 * @jsonSerialize
 	 * @var \string[]
 	 */
 	#[JsonSerialize]
 	protected $cssClassesControlCountScales			= ['grid-control-count-scales'];
+	
+	/**
+	 * Css classes for datagrid count scales control button.
+	 * @jsonSerialize
+	 * @var \string[]
+	 */
+	#[JsonSerialize]
+	protected $cssClassesControlCountScalesButton	= ['grid-count-link'];
+	
+	/**
+	 * Css classes for datagrid count scales control current scale text.
+	 * @jsonSerialize
+	 * @var \string[]
+	 */
+	#[JsonSerialize]
+	protected $cssClassesControlCountScalesCurrent	= ['grid-count-current'];
 	
 	/**
 	 * Css classes for datagrid status control.
@@ -703,6 +735,72 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	public function GetCssClassesControlPaging () {
 		return $this->cssClassesControlPaging;
 	}
+	
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlPagingButton ($cssClasses) {
+		$this->cssClassesControlPagingButton = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlPagingButton ($cssClasses) {
+		$cssClassesArr = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		$this->cssClassesControlPagingButton = array_merge($this->cssClassesControlPagingButton, $cssClassesArr);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlPagingButton () {
+		return $this->cssClassesControlPagingButton;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlPagingCurrent ($cssClasses) {
+		$this->cssClassesControlPagingCurrent = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlPagingCurrent ($cssClasses) {
+		$cssClassesArr = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		$this->cssClassesControlPagingCurrent = array_merge($this->cssClassesControlPagingCurrent, $cssClassesArr);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlPagingCurrent () {
+		return $this->cssClassesControlPagingCurrent;
+	}
 
 	/**
 	 * @inheritDocs
@@ -736,6 +834,85 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	public function GetCssClassesControlCountScales () {
 		return $this->cssClassesControlCountScales;
 	}
+
+
+
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlCountScalesButton ($cssClasses) {
+		$this->cssClassesControlCountScalesButton = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlCountScalesButton ($cssClasses) {
+		$cssClassesArr = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		$this->cssClassesControlCountScalesButton = array_merge($this->cssClassesControlCountScalesButton, $cssClassesArr);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlCountScalesButton () {
+		return $this->cssClassesControlCountScalesButton;
+	}
+
+
+	
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetCssClassesControlCountScalesCurrent ($cssClasses) {
+		$this->cssClassesControlCountScalesCurrent = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param string|\string[] $cssClasses
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function AddCssClassesControlCountScalesCurrent ($cssClasses) {
+		$cssClassesArr = is_array($cssClasses)
+			? $cssClasses
+			: explode(' ', (string) $cssClasses);
+		$this->cssClassesControlCountScalesCurrent = array_merge($this->cssClassesControlCountScalesCurrent, $cssClassesArr);
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return \string[]
+	 */
+	public function GetCssClassesControlCountScalesCurrent () {
+		return $this->cssClassesControlCountScalesCurrent;
+	}
+
+
+
+
+
+
+
+
 	
 	/**
 	 * @inheritDocs
