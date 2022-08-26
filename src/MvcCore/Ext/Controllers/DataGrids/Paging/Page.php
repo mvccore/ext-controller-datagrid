@@ -17,12 +17,6 @@ class Page extends \MvcCore\Ext\Controllers\DataGrids\Paging\Item {
 	
 	/**
 	 * @inheritDocs
-	 * @var string
-	 */
-	protected $cssClass = 'grid-page-link';
-	
-	/**
-	 * @inheritDocs
 	 * @param int|NULL        $offset 
 	 * @param string|NULL     $url 
 	 * @param string|int|NULL $text 
@@ -39,7 +33,8 @@ class Page extends \MvcCore\Ext\Controllers\DataGrids\Paging\Item {
 		$isFirst = FALSE, $isLast = FALSE
 	) {
 		parent::__construct($offset, $url, $text, $current, $isPrev, $isNext, $isFirst, $isLast);
-		if ($current) 
-			$this->cssClass .= ' grid-page-current';
+		$this->cssClass = $current
+			? static::PAGE_CSS_CLASS_BUTTON . ' ' . static::PAGE_CSS_CLASS_CURRENT
+			: static::PAGE_CSS_CLASS_BUTTON;
 	}
 }

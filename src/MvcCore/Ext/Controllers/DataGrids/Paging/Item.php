@@ -14,7 +14,20 @@
 namespace MvcCore\Ext\Controllers\DataGrids\Paging;
 
 class Item {
+
+	/**
+	 * Current page css class for button and for parent table cell.
+	 * @var string
+	 */
+	const PAGE_CSS_CLASS_BUTTON = 'grid-page-link';
+
+	/**
+	 * Current page css class for button and for parent table cell.
+	 * @var string
+	 */
+	const PAGE_CSS_CLASS_CURRENT = 'grid-page-current';
 	
+
 	/**
 	 * Paging data offset.
 	 * @var int|NULL
