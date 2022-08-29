@@ -102,14 +102,18 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * Property automatic formating arguments.
+	 * @jsonSerialize
 	 * @var array|NULL
 	 */
+	#[JsonSerialize]
 	protected $format = NULL;
 
 	/**
 	 * Property automatic formating view helper name.
+	 * @jsonSerialize
 	 * @var string|NULL
 	 */
+	#[JsonSerialize]
 	protected $viewHelper = NULL;
 
 	/**
