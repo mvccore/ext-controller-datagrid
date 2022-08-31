@@ -317,11 +317,10 @@ trait InitMethods {
 		);
 		$gridParam = rtrim(rawurldecode($gridParam), '/');
 		$reqPathRaw = rtrim($this->gridRequest->GetPath(TRUE), '/');
-
+		
 		$redirectUrl = NULL;
 		if (
 			$this->request->HasParam(static::URL_PARAM_GRID) &&
-			$gridParam !== '' && 
 			$reqPathRaw !== '' && 
 			$gridParam !== $reqPathRaw
 		) {
