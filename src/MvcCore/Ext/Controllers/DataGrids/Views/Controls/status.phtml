@@ -4,17 +4,27 @@
 	/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $renderConf */
 	$renderConf = $grid->GetConfigRendering();
 	$statusCssClasses = $renderConf->GetCssClassesControlStatus();
-	$statusText = $grid->GetControlText('status');
-	$countInt = $grid->GetCount();
 	$totalCountInt = $grid->GetTotalCount();
-	$currentPage = $grid->GetPage();
-	$pagesCount = $countInt === 0
-		? 1
-		: intval(ceil(floatval($totalCountInt) / floatval($countInt)));
-	$statusText = str_replace(['{0}', '{1}'], [
-		"{$currentPage}/{$pagesCount}", $totalCountInt
-	], $statusText);
+	$statusTexts = [];
+	if ($renderConf->GetRenderControlPaging()) {
+		$statusTextPages = $grid->GetControlText('statusPages');
+		$countInt = $grid->GetCount();
+		$currentPage = $grid->GetPage();
+		$pagesCount = $countInt === 0
+			? 1
+			: intval(ceil(floatval($totalCountInt) / floatval($countInt)));
+		$statusTexts[] = str_replace(
+			['{0}', '{1}'], 
+			[$currentPage, $pagesCount],
+			$statusTextPages
+		);
+	}
+	$statusTextRows = count($grid->GetFiltering()) > 0
+		? $grid->GetControlText('statusRowsFiltered')
+		: $grid->GetControlText('statusRowsAll');
+	$statusTexts[] = str_replace('{0}', $totalCountInt, $statusTextRows);
+	
 ?><span<?php
 	if (count($statusCssClasses) > 0)
 		echo ' class="' . implode(' ', $statusCssClasses) . '"';
-?>><?php echo $statusText; ?></span>
+?>><?php echo implode(', ', $statusTexts); ?></span>

@@ -205,13 +205,15 @@ trait ConfigProps {
 	 * @var array
 	 */
 	protected $controlsTexts = [
-		'previous'	=> 'Previous',
-		'next'		=> 'Next',
-		'first'		=> 'First',
-		'last'		=> 'Last ({0})',
-		'all'		=> 'All',
-		'filter'	=> 'Filter',
-		'clear'		=> 'Clear',
-		'status'	=> 'Page {0} of total rows: {1}',
+		'previous'				=> 'Previous',
+		'next'					=> 'Next',
+		'first'					=> 'First',
+		'last'					=> 'Last ({0})',
+		'all'					=> 'All',
+		'filter'				=> 'Filter',
+		'clear'					=> 'Clear',
+		'statusPages'			=> 'page {0}/{1}',
+		'statusRowsAll'			=> 'total rows: {0}',
+		'statusRowsFiltered'	=> 'filtered rows: {0}',
 	];
 }
