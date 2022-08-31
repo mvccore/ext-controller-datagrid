@@ -210,23 +210,24 @@ trait InitMethods {
 	 * @return bool
 	 */
 	protected function initUrlParamPage () {
-		if (
-			isset($this->urlParams[static::URL_PARAM_PAGE]) &&
-			$this->urlParams[static::URL_PARAM_PAGE] === 0
-		) {
-			// redirect to proper page number:
-			$redirectUrl = $this->GridUrl([
-				static::URL_PARAM_PAGE	=> 1,
-			]);
-			/** @var \MvcCore\Controller $this */
-			$this::Redirect(
-				$redirectUrl, 
-				\MvcCore\IResponse::SEE_OTHER, 
-				'Grid page is too low.'
-			);
-			return FALSE;
+		if (!isset($this->urlParams[static::URL_PARAM_PAGE])) {
+			$this->page = 1;
+		} else {
+			if ($this->urlParams[static::URL_PARAM_PAGE] === 0) {
+				// redirect to proper page number:
+				$redirectUrl = $this->GridUrl([
+					static::URL_PARAM_PAGE	=> 1,
+				]);
+				/** @var \MvcCore\Controller $this */
+				$this::Redirect(
+					$redirectUrl, 
+					\MvcCore\IResponse::SEE_OTHER, 
+					'Grid page is too low.'
+				);
+				return FALSE;
+			}
+			$this->page = $this->urlParams[static::URL_PARAM_PAGE];
 		}
-		$this->page = $this->urlParams[static::URL_PARAM_PAGE];
 		return TRUE;
 	}
 
