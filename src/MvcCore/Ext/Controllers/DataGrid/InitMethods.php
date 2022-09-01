@@ -524,24 +524,31 @@ trait InitMethods {
 						} else {
 							$invalidFilterValue = TRUE;
 						}
-					} else if (is_array($columnTypes) && count($columnTypes) > 0) {
-						$typeValidationSuccess = FALSE;
-						foreach ($columnTypes as $columnType) {
-							$typeValidationSuccessLocal = $this->validateRawFilterValueByType(
-								$rawValueToCheckType, $columnType
-							);
-							if ($typeValidationSuccessLocal) {
-								$typeValidationSuccess = TRUE;
-								break;
-							}
-						}
-						if (!$typeValidationSuccess) {
-							$invalidFilterValue = TRUE;
-							continue;
-						}
-						$values[] = $rawValue;
 					} else {
-						$values[] = $rawValue;
+						if (
+							!$containsPercentage &&
+							!$containsUnderScore &&
+							is_array($columnTypes) && 
+							count($columnTypes) > 0
+						) {
+							$typeValidationSuccess = FALSE;
+							foreach ($columnTypes as $columnType) {
+								$typeValidationSuccessLocal = $this->validateRawFilterValueByType(
+									$rawValueToCheckType, $columnType
+								);
+								if ($typeValidationSuccessLocal) {
+									$typeValidationSuccess = TRUE;
+									break;
+								}
+							}
+							if (!$typeValidationSuccess) {
+								$invalidFilterValue = TRUE;
+								continue;
+							}
+							$values[] = $rawValue;
+						} else {
+							$values[] = $rawValue;
+						}
 					}
 				}
 			}
@@ -576,16 +583,18 @@ trait InitMethods {
 	}
 
 	/**
-	 * 
+	 * If there is variable type validation regular expression, validate
+	 * filter value by regular expression and return `TRUE` if value pass. 
+	 * If there is no regular expression, return also `TRUE`.
+	 * This method is not for security issues, it's for mismatch values.
 	 * @param  string $rawFilterValueStr 
 	 * @param  string $typeStr 
 	 * @return bool
 	 */
 	protected function validateRawFilterValueByType ($rawFilterValueStr, $typeStr) {
-		$typeValidator = isset(static::$filterValuesTypeValidators[$typeStr])
-			? static::$filterValuesTypeValidators[$typeStr]
-			: NULL;
-		if ($typeValidator === NULL) return FALSE;
+		if (!isset(static::$filterValuesTypeValidators[$typeStr]))
+			return TRUE;
+		$typeValidator = static::$filterValuesTypeValidators[$typeStr];
 		return (bool) preg_match($typeValidator, $rawFilterValueStr);
 	}
 

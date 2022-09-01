@@ -111,7 +111,7 @@ trait ActionMethods {
 			$columnFilter = $configColumn->GetFilter();
 			$columnAllowNullFilter = is_int($columnFilter) && ($columnFilter & self::FILTER_ALLOW_NULL) != 0;
 			foreach ($columnFiltering as $operator => $values) {
-				$valueOperator = static::$filterFormFieldValueOperatorPrefixes[$operator];
+				$valueOperator = static::$filterOperatorPrefixes[$operator];
 				if (!$multiFiltering) 
 					$values = [$values[0]];
 				foreach ($values as $index => $value) {
@@ -194,10 +194,9 @@ trait ActionMethods {
 		$form->ClearSession();
 		
 		$filteringColumns = $this->getFilteringColumns();
-		
 		$formValues = [];
 		foreach ($rawFormValues as $propName => $rawValues) {
-			$rawValues = $rawValues ?: '';
+			$rawValues = $rawValues === NULL || $rawValues === FALSE ? '' : $rawValues;
 			$rawValues = trim((string) $rawValues);
 			if (mb_strlen($rawValues) === 0) continue;
 			list($subjectName, $propName) = explode($form::HTML_IDS_DELIMITER, $propName);
@@ -232,8 +231,8 @@ trait ActionMethods {
 		$filteringColumns = $this->getFilteringColumns();
 		$urlFilterOperators = $this->configUrlSegments->GetUrlFilterOperators();
 		$likeOperatorsArrFilter = ['LIKE' => 1, 'NOT LIKE' => 1];
-		$likeOperatorsAndPrefixes = array_intersect_key(static::$filterFormFieldValueOperatorPrefixes, $likeOperatorsArrFilter);
-		$notLikeOperatorsAndPrefixes = array_diff_key(static::$filterFormFieldValueOperatorPrefixes, $likeOperatorsArrFilter);
+		$likeOperatorsAndPrefixes = array_intersect_key(static::$filterOperatorPrefixes, $likeOperatorsArrFilter);
+		$notLikeOperatorsAndPrefixes = array_diff_key(static::$filterOperatorPrefixes, $likeOperatorsArrFilter);
 		$viewExists = $this->view !== NULL;
 		$this->view = $this->createView(TRUE);
 		foreach ($formSubmitValues as $propName => $rawValues) {
@@ -302,7 +301,6 @@ trait ActionMethods {
 						) {
 							$operator = 'LIKE';
 						} else {
-							x($columnFilterCfg);
 							throw new \InvalidArgumentException(
 								"Unknown filter configuration for column `{$propName}` to automatically submit column filtering."
 							);
@@ -325,7 +323,12 @@ trait ActionMethods {
 					} else {
 						continue;
 					}
-				} else if (is_array($columnTypes) && count($columnTypes) > 0) {
+				} else if (
+					!$containsPercentage &&
+					!$containsUnderScore &&
+					is_array($columnTypes) && 
+					count($columnTypes) > 0
+				) {
 					$typeValidationSuccess = FALSE;
 					foreach ($columnTypes as $columnType) {
 						$typeValidationSuccessLocal = $this->validateRawFilterValueByType(
