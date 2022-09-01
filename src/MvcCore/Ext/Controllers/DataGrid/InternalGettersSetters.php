@@ -20,6 +20,14 @@ trait InternalGettersSetters {
 	
 	/**
 	 * @inheritDocs
+	 * @return array
+	 */
+	public function GetFilterOperatorPrefixes () {
+		return $this->filterOperatorPrefixes;
+	}
+
+	/**
+	 * @inheritDocs
 	 * @return int|NULL
 	 */
 	public function GetPage () {

@@ -68,24 +68,6 @@ trait InternalProps {
 	];
 
 	/**
-	 * Filter form field value prefixes to define operator.
-	 * LIKE operators are used automatically only if filter value 
-	 * contains not escaped percentage or underscore.
-	 * @var array
-	 */
-	protected static $filterFormFieldValueOperatorPrefixes = [
-		'NOT LIKE'	=> '!',
-		'!='		=> '!',
-		'>='		=> '>=',
-		'<='		=> '<=',
-		'>'			=> '>',
-		'<'			=> '<',
-		// empty prefixes has to be last
-		'LIKE'		=> '',
-		'='			=> '',
-	];
-
-	/**
 	 * Regular expressions to validate raw client filter values against configured types.
 	 * @var array
 	 */
@@ -111,6 +93,24 @@ trait InternalProps {
 	 * @var string|\MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	protected static $attrClassFullName = '\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column';
+
+	/**
+	 * Filter form field value prefixes to define operator.
+	 * LIKE operators are used automatically only if filter value 
+	 * contains not escaped percentage or underscore.
+	 * @var array
+	 */
+	protected $filterOperatorPrefixes = [
+		'NOT LIKE'	=> '!',
+		'!='		=> '!',
+		'>='		=> '>=',
+		'<='		=> '<=',
+		'>'			=> '>',
+		'<'			=> '<',
+		// empty prefixes has to be last
+		'LIKE'		=> '',
+		'='			=> '',
+	];
 
 	/**
 	 * Datagrid page, always initialized into integer value by URL.

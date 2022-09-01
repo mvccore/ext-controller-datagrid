@@ -434,6 +434,14 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @return string|NULL
 	 */
 	public function GetControlText ($textKey);
+
+	/**
+	 * Get filter form field value prefixes to define operator.
+	 * LIKE operators are used automatically only if filter value 
+	 * contains not escaped percentage or underscore.
+	 * @return array
+	 */
+	public function GetFilterOperatorPrefixes ();
 	
 	/**
 	 * Get datagrid page, always initialized into integer value by URL.
