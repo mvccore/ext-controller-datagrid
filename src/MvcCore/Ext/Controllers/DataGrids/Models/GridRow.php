@@ -83,23 +83,14 @@ trait GridRow {
 			return '';
 		$viewHelperName = $columnConfig->GetViewHelper();
 		if ($viewHelperName) {
-			$format = $columnConfig->GetFormat() ?: [];
-			$formatCount = count($format);
-			// if there is viewHelper defined and if there are more formats, 
-			// unset first format argument used for database value parsing
-			if (
-				$formatCount > 1 && 
-				($value instanceof \DateTime || $value instanceof \DateTimeImmutable)
-			) {
-				$format = array_slice($format, 1, null, TRUE);
-			}
+			$formatArgs = $columnConfig->GetFormatArgs() ?: [];
 			return call_user_func_array(
 				[$view, $viewHelperName], 
-				array_merge([$value], $format)
+				array_merge([$value], $formatArgs)
 			);
 		} else {
 			return static::convertToScalar(
-				$value, $columnConfig->GetFormat()
+				$value, $columnConfig->GetParserArgs()
 			);
 		}
 	}

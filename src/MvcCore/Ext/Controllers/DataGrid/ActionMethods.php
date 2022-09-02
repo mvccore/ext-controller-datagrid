@@ -111,7 +111,7 @@ trait ActionMethods {
 			$columnFilter = $configColumn->GetFilter();
 			$columnAllowNullFilter = is_int($columnFilter) && ($columnFilter & self::FILTER_ALLOW_NULL) != 0;
 			foreach ($columnFiltering as $operator => $values) {
-				$valueOperator = static::$filterOperatorPrefixes[$operator];
+				$valueOperator = $this->filterOperatorPrefixes[$operator];
 				if (!$multiFiltering) 
 					$values = [$values[0]];
 				foreach ($values as $index => $value) {
@@ -123,7 +123,7 @@ trait ActionMethods {
 					} else if ($useViewHelper) {
 						$values[$index] = call_user_func_array(
 							[$viewHelper, $viewHelperName], 
-							array_merge([$value], $configColumn->GetFormat() ?: [])
+							array_merge([$value], $configColumn->GetFormatArgs() ?: [])
 						);
 					}
 				}
@@ -231,8 +231,8 @@ trait ActionMethods {
 		$filteringColumns = $this->getFilteringColumns();
 		$urlFilterOperators = $this->configUrlSegments->GetUrlFilterOperators();
 		$likeOperatorsArrFilter = ['LIKE' => 1, 'NOT LIKE' => 1];
-		$likeOperatorsAndPrefixes = array_intersect_key(static::$filterOperatorPrefixes, $likeOperatorsArrFilter);
-		$notLikeOperatorsAndPrefixes = array_diff_key(static::$filterOperatorPrefixes, $likeOperatorsArrFilter);
+		$likeOperatorsAndPrefixes = array_intersect_key($this->filterOperatorPrefixes, $likeOperatorsArrFilter);
+		$notLikeOperatorsAndPrefixes = array_diff_key($this->filterOperatorPrefixes, $likeOperatorsArrFilter);
 		$viewExists = $this->view !== NULL;
 		$this->view = $this->createView(TRUE);
 		foreach ($formSubmitValues as $propName => $rawValues) {
@@ -256,7 +256,7 @@ trait ActionMethods {
 				if ($useViewHelper && !$valueIsStringNull) {
 					$rawValue = call_user_func_array(
 						[$viewHelper, 'Unformat'],
-						array_merge([$rawValue], $configColumn->GetFormat() ?: [])
+						array_merge([$rawValue], $configColumn->GetFormatArgs() ?: [])
 					);
 					if ($rawValue === NULL) continue;
 				}

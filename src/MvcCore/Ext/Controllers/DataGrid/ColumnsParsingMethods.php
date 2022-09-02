@@ -131,10 +131,11 @@ trait ColumnsParsingMethods {
 		$types = NULL;
 		if (isset($modelMetaData[$propName])) {
 			list(
-				$args['dbColumnName'], $allowNull, $types, $format
+				$args['dbColumnName'], $allowNull, $types, $parserArgs, $formatArgs
 			) = $modelMetaData[$propName];
 			if (!isset($args['types']) && $types !== NULL) $args['types'] = $types;
-			if (!isset($args['format']) && $format !== NULL) $args['format'] = $format;
+			if (!isset($args['parserArgs']) && $parserArgs !== NULL) $args['parserArgs'] = $parserArgs;
+			if (!isset($args['formatArgs']) && $formatArgs !== NULL) $args['formatArgs'] = $formatArgs;
 		}
 		if ($args === NULL || ($args !== NULL && !isset($args['dbColumnName']))) return NULL;
 		/** @var \ReflectionClass $columnType */

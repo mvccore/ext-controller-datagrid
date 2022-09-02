@@ -503,7 +503,7 @@ trait InitMethods {
 					if ($useViewHelper) {
 						$rawValue = call_user_func_array(
 							[$viewHelper, 'Unformat'],
-							array_merge([$rawValue], $configColumn->GetFormat() ?: [])
+							array_merge([$rawValue], $configColumn->GetFormatArgs() ?: [])
 						);
 						if ($rawValue === NULL) continue;
 					}

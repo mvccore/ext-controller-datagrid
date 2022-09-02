@@ -101,12 +101,20 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	protected $types = NULL;
 
 	/**
+	 * Property automatic parsing arguments.
+	 * @jsonSerialize
+	 * @var array|NULL
+	 */
+	#[JsonSerialize]
+	protected $parserArgs = NULL;
+
+	/**
 	 * Property automatic formating arguments.
 	 * @jsonSerialize
 	 * @var array|NULL
 	 */
 	#[JsonSerialize]
-	protected $format = NULL;
+	protected $formatArgs = NULL;
 
 	/**
 	 * Property automatic formating view helper name.
@@ -201,7 +209,8 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 * @param int|bool              $filter       Filtering mode flags to allow specify operators 
 	 *                                            for each column or boolean to allow filtering only.
 	 * @param \string[]|NULL        $types        Property type(s), necessary for automatic formating.
-	 * @param array|NULL            $format       Property automatic formating arguments.
+	 * @param array|NULL            $parserArgs   Property automatic parsing arguments.
+	 * @param array|NULL            $formatArgs   Property automatic formating arguments.
 	 * @param string|NULL           $viewHelper   Property automatic formating view helper name.
 	 * @param string|int|float|NULL $width        Column initial or current width, it can be defined 
 	 *                                            as integer for pixel value, float for flex value
@@ -233,7 +242,8 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		$sort = NULL, 
 		$filter = NULL, 
 		$types = NULL, 
-		$format = NULL, 
+		$parserArgs = NULL, 
+		$formatArgs = NULL, 
 		$viewHelper = NULL,
 		$width = NULL,
 		$minWidth = NULL,
@@ -271,7 +281,8 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		if ($sort !== NULL)			$this->sort			= $sort;
 		if ($filter !== NULL)		$this->filter		= $filter;
 		if ($types !== NULL)		$this->types		= $types;
-		if ($format !== NULL)		$this->format		= $format;
+		if ($parserArgs !== NULL)	$this->parserArgs	= $parserArgs;
+		if ($formatArgs !== NULL)	$this->formatArgs	= $formatArgs;
 		if ($viewHelper !== NULL)	$this->viewHelper	= $viewHelper;
 		if ($width !== NULL)		$this->width		= $width;
 		if ($minWidth !== NULL)		$this->minWidth		= $minWidth;
@@ -466,17 +477,35 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 * @inheritDocs
 	 * @return array|NULL
 	 */
-	public function GetFormat () {
-		return $this->format;
+	public function GetParserArgs () {
+		return $this->parserArgs;
 	}
 
 	/**
 	 * @inheritDocs
-	 * @param  array|NULL $format
+	 * @param  array|NULL $parserArgs
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
-	public function SetFormat ($format) {
-		$this->format = $format;
+	public function SetParserArgs ($parserArgs) {
+		$this->parserArgs = $parserArgs;
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @return array|NULL
+	 */
+	public function GetFormatArgs () {
+		return $this->formatArgs;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param  array|NULL $formatArgs
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetFormatArgs ($formatArgs) {
+		$this->formatArgs = $formatArgs;
 		return $this;
 	}
 	

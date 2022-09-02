@@ -64,10 +64,11 @@ trait GridColumns {
 				$dbColumnName = $propData[4];
 				$allowNulls = $propData[1];
 				$types = $propData[2];
-				$formatArgs = $propData[5];
+				$parserArgs = $propData[5];
+				$formatArgs = $propData[6];
 				if ($dbColumnName !== NULL) {
 					$propertyName = $propData[3];
-					$modelMetaData[$propertyName] = [$dbColumnName, $allowNulls, $types, $formatArgs];
+					$modelMetaData[$propertyName] = [$dbColumnName, $allowNulls, $types, $parserArgs, $formatArgs];
 				}
 			}
 			if (static::$defaultPropsFlags !== 0)

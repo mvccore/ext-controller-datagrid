@@ -154,17 +154,30 @@ interface IColumn {
 	public function SetTypes ($types);
 	
 	/**
+	 * Get property automatic parser arguments.
+	 * @return array|NULL
+	 */
+	public function GetParserArgs ();
+	
+	/**
+	 * Set property automatic parser arguments.
+	 * @param  array|NULL $parserArgs
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetParserArgs ($parserArgs);
+	
+	/**
 	 * Get property automatic formating arguments.
 	 * @return array|NULL
 	 */
-	public function GetFormat ();
+	public function GetFormatArgs ();
 	
 	/**
 	 * Set property automatic formating arguments.
-	 * @param  array|NULL $format
+	 * @param  array|NULL $formatArgs
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
-	public function SetFormat ($format);
+	public function SetFormatArgs ($formatArgs);
 	
 	/**
 	 * Get property automatic formating view helper name.
