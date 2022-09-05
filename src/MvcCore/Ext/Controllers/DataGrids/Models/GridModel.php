@@ -73,7 +73,7 @@ trait GridModel {
 	 * @param  \MvcCore\Ext\Controllers\DataGrid|NULL $grid
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridModel
 	 */
-	public function SetGrid (\MvcCore\Ext\Controllers\IDataGrid $grid) {
+	public function SetGrid (\MvcCore\Ext\Controllers\IDataGrid $grid = NULL) {
 		$this->grid = $grid;
 		return $this;
 	}
@@ -184,19 +184,20 @@ trait GridModel {
 		return $this->pageData;
 	}
 
+	
 	/**
 	 * Complete ORDER BY condition SQL part by `$this->sorting` array given from datagrid.
 	 * @param  bool        $includeOrderBy Include ` WHERE ` keyword.
 	 * @param  string|NULL $columnsAlias   Optional SQL alias for each column.
-	 * @param  string      $quoteChars     One or two characters to quote column identifiers from left and right.
+	 * @param  string      $driverName     Driver specific name, optional.
 	 * @return string
 	 */
-	protected function getSortingSql ($includeOrderBy = TRUE, $columnsAlias = NULL, $quoteChars = '""') {
+	protected function getSortingSql ($includeOrderBy = TRUE, $columnsAlias = NULL, $driverName = 'default') {
 		$sortSqlItems = [];
 		$alias = $columnsAlias === NULL ? '' : $columnsAlias . '.';
-		$quotes = static::prepareQuotes($quoteChars);
+		$driverSpecifics = $this->getDriversSqlSpecs($driverName);
 		foreach ($this->sorting as $columnName => $direction) {
-			$columnNameQuoted = static::quoteColumn($columnName, $quotes);
+			$columnNameQuoted = $this->quoteColumn($columnName, $driverSpecifics->quotes);
 			$sortSqlItems[] = "{$alias}{$columnNameQuoted} {$direction}";
 		}
 		$sortSql = '';
@@ -214,26 +215,54 @@ trait GridModel {
 	 * @param  bool        $includeWhere  Include ` WHERE ` keyword.
 	 * @param  string|NULL $columnsAlias  Optional SQL alias for each column.
 	 * @param  array       $params        Optional query params array, empty or with any initialized value from before.
-	 * @param  string      $paramBaseName Base name for every created param inside this method.
-	 * @param  string      $quoteChars    One or two characters to quote column identifiers from left and right.
+	 * @param  string      $driverName    Driver specific name, optional.
+	 * @param  string      $paramBaseName Base name for every created param inside this method, optional.
 	 * @return array [string $conditionsSql, array $params]
 	 */
-	protected function getConditionSqlAndParams ($includeWhere = TRUE, $columnsAlias = NULL, $params = [], $paramBaseName = ':p', $quoteChars = '""') {
+	protected function getConditionSqlAndParams ($includeWhere = TRUE, $columnsAlias = NULL, $params = [], $driverName = 'default', $paramBaseName = ':p') {
 		static $inOperators = [
 			'='		=> 'IN',
 			'!='	=> 'NOT IN',
 		];
-		$conditionSqlItems = [];
+		$allColumnsSqlItems = [];
 		$alias = $columnsAlias === NULL ? '' : $columnsAlias . '.';
 		if ($params === NULL) $params = [];
 		if ($paramBaseName === NULL) $paramBaseName = ':p';
-		$quotes = static::prepareQuotes($quoteChars);
+		$driverSpecifics = $this->getDriversSqlSpecs($driverName);
+		$configColumns = $this->grid->GetConfigColumns(FALSE);
+		$operatorMultiValues = " {$this->getConditionOperatorMultiValues()} ";
 		$index = 0;
 		foreach ($this->filtering as $columnName => $operatorAndRawValues) {
-			$columnNameQuoted = static::quoteColumn($columnName, $quotes);
+			$columnSqlItems = [];
+			$columnNameQuoted = $this->quoteColumn($columnName, $driverSpecifics->quotes);
+			$dateTimeType = FALSE;
+			$dateFormatPattern = NULL;
+			$columnCfg = $configColumns->GetByDbColumnName($columnName, FALSE);
+			if ($columnCfg !== NULL) {
+				$columnTypes = $columnCfg->GetTypes() ?: [];
+				foreach ($columnTypes as $columnType) {
+					if (is_a($columnType, '\\DateTime') || is_subclass_of($columnType, '\\DateTime')) {
+						$dateTimeType = TRUE;
+						break;
+					}
+				}
+				if ($dateTimeType) {
+					$formatArgs = $columnCfg->GetFormatArgs() ?: [];
+					if (count($formatArgs) > 1) $dateFormatPattern = "'" . $formatArgs[1] . "'";
+				}
+			}
 			foreach ($operatorAndRawValues as $operator => $rawValues) {
 				$multipleValues = count($rawValues) > 1;
 				$nullOperator = $operator === '=' ? 'IS' : 'IS NOT';
+				$conditionLeftSide = "{$alias}{$columnNameQuoted}";
+				if (
+					$dateTimeType && $dateFormatPattern !== NULL && 
+					$driverSpecifics->likeDate !== NULL && mb_strpos($operator, 'LIKE') !== FALSE
+				) $conditionLeftSide = str_replace(
+					['<column>', '<pattern>'],
+					[$conditionLeftSide, $dateFormatPattern],
+					$driverSpecifics->likeDate
+				);
 				if ($multipleValues) {
 					$valuesContainsNull = FALSE;
 					foreach ($rawValues as $rawValue) 
@@ -249,66 +278,48 @@ trait GridModel {
 							$index++;
 						}
 						$paramsNamesStr = implode(", ", $paramsNames);
-						$conditionSqlItems[] = "{$alias}{$columnNameQuoted} {$inOperator} ({$paramsNamesStr})";
+						$columnSqlItems[] = "{$conditionLeftSide} {$inOperator} ({$paramsNamesStr})";
 					} else {
 						$conditionSqlSubItems = [];
 						foreach ($rawValues as $rawValue) {
 							if (mb_strtolower($rawValue) === 'null') {
-								$conditionSqlSubItems[] = "{$alias}{$columnNameQuoted} {$nullOperator} NULL";
+								$conditionSqlSubItems[] = "{$conditionLeftSide} {$nullOperator} NULL";
 							} else {
 								$paramName = "{$paramBaseName}{$index}";
 								$params[$paramName] = $rawValue;
-								$conditionSqlSubItems[] = "{$alias}{$columnNameQuoted} {$operator} {$paramName}";
+								$conditionSqlSubItems[] = "{$conditionLeftSide} {$operator} {$paramName}";	
 								$index++;
 							}
 						}
 						$implodeOperator = $operator === 'LIKE' || $operator === '=' ? " OR " : " AND ";
-						$conditionSqlItems[] = "(" . implode($implodeOperator, $conditionSqlSubItems) . ")";
+						$columnSqlItems[] = "(" . implode($implodeOperator, $conditionSqlSubItems) . ")";
 					}
 				} else {
 					$rawValue = $rawValues[0];
 					if (mb_strtolower($rawValue) === 'null') {
-						$conditionSqlItems[] = "{$alias}{$columnNameQuoted} {$nullOperator} NULL";
+						$columnSqlItems[] = "{$conditionLeftSide} {$nullOperator} NULL";
 					} else {
 						$paramName = "{$paramBaseName}{$index}";
 						$params[$paramName] = $rawValues[0];
-						$conditionSqlItems[] = "{$alias}{$columnNameQuoted} {$operator} {$paramName}";
+						$columnSqlItems[] = "{$conditionLeftSide} {$operator} {$paramName}";
 						$index++;
 					}
 				}
 			}
+			if (count($columnSqlItems) > 0)
+				$allColumnsSqlItems[] = "(" . implode($operatorMultiValues, $columnSqlItems) . ")";
 		}
 		$conditionsSql = '';
-		if (count($conditionSqlItems) > 0) {
+		if (count($allColumnsSqlItems) > 0) {
+			$operatorMultiColumns = " {$this->getConditionOperatorMultiColumns()} ";
 			$conditionsSql = (
 				($includeWhere ? " WHERE " : "") . 
-				implode(" AND ", $conditionSqlItems) . " "
+				implode($operatorMultiColumns, $allColumnsSqlItems) . " "
 			);
 		}
 		return [$conditionsSql, $params];
 	}
 
-	
-	/**
-	 * Prepare `string $quoteChars` param usually called from functions 
-	 * `getSortingSql()` and from `getConditionSqlAndParams()`
-	 * into `\string[] $quoteChars` param for function `quoteColumn()`.
-	 * @param  string $quoteChars 
-	 * @return string[]
-	 */
-	protected static function prepareQuotes ($quoteChars) {
-		$quotes = ['',''];
-		if ($quoteChars === NULL) 
-			return $quotes;
-		$quoteCharsLength = mb_strlen($quoteChars);
-		if ($quoteCharsLength === 0) 
-			return $quotes;
-		$firstChar = mb_substr($quoteChars, 0, 1);
-		return $quoteCharsLength === 1
-			? [$firstChar, $firstChar]
-			: [$firstChar, mb_substr($quoteChars, 1, 1)];
-	}
-	
 	/**
 	 * Quote column identifier by given quote chars,
 	 * always caleld from functions `getSortingSql()` 
@@ -317,8 +328,47 @@ trait GridModel {
 	 * @param  \string[] $quoteChars 
 	 * @return string
 	 */
-	protected static function quoteColumn ($columnName, $quoteChars = ['"', '"']) {
+	protected function quoteColumn ($columnName, $quoteChars = ['"', '"']) {
 		return $quoteChars[0].$columnName.$quoteChars[1];
+	}
+	
+	/**
+	 * Get driver SQL specifics as stdClass:
+	 * - `quotes`   - column quotes
+	 * - `likeDate` - date/time column converter for like condition if necessary.
+	 * @param  string $driver 
+	 * @return \stdClass
+	 */
+	protected function getDriversSqlSpecs ($driver) {
+		static $driversSpecifics = [
+			'cubrid'	=> ['quotes'	=> ['"', '"'],	'likeDate'	=> 'DATE_FORMAT(<column>, <pattern>)',],
+			'firebird'	=> ['quotes'	=> ['"', '"'],	'likeDate'	=> NULL,],
+			'ibm'		=> ['quotes'	=> ['"', '"'],	'likeDate'	=> 'VARCHAR_FORMAT(<column>, <pattern>)',],
+			'informix'	=> ['quotes'	=> ['"', '"'],	'likeDate'	=> 'TO_CHAR(<column>, <pattern>)',],
+			'mysql'		=> ['quotes'	=> ['`', '`'],	'likeDate'	=> '<column>',],
+			'sqlite'	=> ['quotes'	=> ['"', '"'],	'likeDate'	=> '<column>',],
+			'pgsql'		=> ['quotes'	=> ['"', '"'],	'likeDate'	=> 'TO_CHAR(<column>, <pattern>)',],
+			'sqlsrv'	=> ['quotes'	=> ['[', ']'],	'likeDate'	=> 'FORMAT(<column>, <pattern>)',],
+		];
+		return isset($driversSpecifics[$driver])
+			? (object) $driversSpecifics[$driver]
+			: (object) ['quotes' => ['"', '"'], 'likeDate' => 'FORMAT(<column>, <pattern>)',];
+	}
+	
+	/**
+	 * Get SQL operator for multiple columns, default is `AND`.
+	 * @return string
+	 */
+	protected function getConditionOperatorMultiColumns () {
+		return 'AND';
+	}
+
+	/**
+	 * Get SQL operator for multiple values in single column, default is `OR`.
+	 * @return string
+	 */
+	protected function getConditionOperatorMultiValues () {
+		return 'OR';
 	}
 
 

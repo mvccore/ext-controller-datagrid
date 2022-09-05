@@ -20,7 +20,7 @@ interface IGridModel {
 	 * @param  \MvcCore\Ext\Controllers\IDataGrid|NULL $grid
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel
 	 */
-	public function SetGrid (\MvcCore\Ext\Controllers\IDataGrid $grid);
+	public function SetGrid (\MvcCore\Ext\Controllers\IDataGrid $grid = NULL);
 
 	/**
 	 * Set database table offset, always initialized into integer.
