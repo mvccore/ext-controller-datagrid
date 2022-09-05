@@ -241,7 +241,11 @@ trait GridModel {
 			if ($columnCfg !== NULL) {
 				$columnTypes = $columnCfg->GetTypes() ?: [];
 				foreach ($columnTypes as $columnType) {
-					if (is_a($columnType, '\\DateTime') || is_subclass_of($columnType, '\\DateTime')) {
+					if (
+						$columnType === 'DateTime' ||
+						is_a($columnType, '\\DateTime') || 
+						is_subclass_of($columnType, '\\DateTime')
+					) {
 						$dateTimeType = TRUE;
 						break;
 					}

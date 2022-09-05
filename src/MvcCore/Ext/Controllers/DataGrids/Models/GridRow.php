@@ -86,7 +86,7 @@ trait GridRow {
 			$formatArgs = $columnConfig->GetFormatArgs() ?: [];
 			return call_user_func_array(
 				[$view, $viewHelperName], 
-				array_merge([$value], $formatArgs)
+				array_merge([$value], count($formatArgs) > 0 ? [$formatArgs[0]] : [])
 			);
 		} else {
 			return static::convertToScalar(
