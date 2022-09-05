@@ -475,7 +475,6 @@ trait InternalGettersSetters {
 			'request'					=> FALSE,
 			'response'					=> FALSE,
 			'environment'				=> FALSE,
-			'router'					=> FALSE,
 			'user'						=> FALSE,
 			'layout'					=> FALSE,
 			'view'						=> FALSE,
