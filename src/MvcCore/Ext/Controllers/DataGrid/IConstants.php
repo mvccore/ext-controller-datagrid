@@ -143,7 +143,7 @@ interface IConstants {
 	const FILTER_MULTIPLE_COLUMNS		= 2;
 	
 	/**
-	 * Datagrid filtering enabled with operators `<`, `>`, `<=`, `>=`.
+	 * Datagrid filtering enabled with operators `=`, `!=`.
 	 * @var int
 	 */
 	const FILTER_ALLOW_EQUALS			= 4;
@@ -179,10 +179,22 @@ interface IConstants {
 	const FILTER_ALLOW_NULL				= 128;
 	
 	/**
-	 * Datagrid filtering enabled for all features.
+	 * Datagrid filtering enabled for `null` values.
 	 * @var int
 	 */
-	const FILTER_ALLOW_ALL				= 252; // 4|8|16|32|64|128
+	const FILTER_ALLOW_NOT_NULL			= 256;
+	
+	/**
+	 * Datagrid filtering enabled for all features including null values.
+	 * @var int
+	 */
+	const FILTER_ALLOW_ALL_WITH_NULL	= 252; // 4|8|16|32|64|128
+	
+	/**
+	 * Datagrid filtering enabled for all features except null values.
+	 * @var int
+	 */
+	const FILTER_ALLOW_ALL_NOT_NULL		= 380; // 4|8|16|32|64|256
 
 
 	/**

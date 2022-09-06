@@ -198,6 +198,45 @@ trait ConfigProps {
 	protected $filterFormValuesDelimiter = ';';
 	
 	/**
+	 * Column PHP code types and technicaly possible 
+	 * filtering modes against database.
+	 * @var array<string, int[]>
+	 */
+	protected $typesPossibleFilterFlags = [
+		'string'		=> [
+			self::FILTER_ALLOW_EQUALS, 
+			self::FILTER_ALLOW_RANGES,
+			self::FILTER_ALLOW_LIKE_RIGHT_SIDE,
+			self::FILTER_ALLOW_LIKE_LEFT_SIDE,
+			self::FILTER_ALLOW_LIKE_ANYWHERE,
+		],
+		'bool'			=> [
+			self::FILTER_ALLOW_EQUALS,
+		],
+		'int'			=> [
+			self::FILTER_ALLOW_EQUALS, 
+			self::FILTER_ALLOW_RANGES,
+			self::FILTER_ALLOW_LIKE_RIGHT_SIDE,
+			self::FILTER_ALLOW_LIKE_LEFT_SIDE,
+			self::FILTER_ALLOW_LIKE_ANYWHERE,
+		],
+		'float'			=> [
+			self::FILTER_ALLOW_EQUALS, 
+			self::FILTER_ALLOW_RANGES,
+			self::FILTER_ALLOW_LIKE_RIGHT_SIDE,
+			self::FILTER_ALLOW_LIKE_LEFT_SIDE,
+			self::FILTER_ALLOW_LIKE_ANYWHERE,
+		],
+		'DateTime'	=> [
+			self::FILTER_ALLOW_EQUALS, 
+			self::FILTER_ALLOW_RANGES,
+			self::FILTER_ALLOW_LIKE_RIGHT_SIDE,
+			self::FILTER_ALLOW_LIKE_LEFT_SIDE,
+			self::FILTER_ALLOW_LIKE_ANYWHERE,
+		],
+	];
+
+	/**
 	 * Grid controls visible texts.
 	 * Keys are used as pointers, values could be configured 
 	 * into any text values. This array is translated 

@@ -235,37 +235,18 @@ trait GridModel {
 		foreach ($this->filtering as $columnName => $operatorAndRawValues) {
 			$columnSqlItems = [];
 			$columnNameQuoted = $this->quoteColumn($columnName, $driverSpecifics->quotes);
-			$dateTimeType = FALSE;
-			$dateFormatPattern = NULL;
 			$columnCfg = $configColumns->GetByDbColumnName($columnName, FALSE);
-			if ($columnCfg !== NULL) {
-				$columnTypes = $columnCfg->GetTypes() ?: [];
-				foreach ($columnTypes as $columnType) {
-					if (
-						$columnType === 'DateTime' ||
-						is_a($columnType, '\\DateTime') || 
-						is_subclass_of($columnType, '\\DateTime')
-					) {
-						$dateTimeType = TRUE;
-						break;
-					}
-				}
-				if ($dateTimeType) {
-					$formatArgs = $columnCfg->GetFormatArgs() ?: [];
-					if (count($formatArgs) > 1) $dateFormatPattern = "'" . $formatArgs[1] . "'";
-				}
-			}
+			list(
+				$collateSqlStr,
+				$dateTimeType,
+				$dateFormatPattern,
+			) = $this->getSqlConditionSpecialTypeParts($columnCfg, $driverSpecifics);
 			foreach ($operatorAndRawValues as $operator => $rawValues) {
 				$multipleValues = count($rawValues) > 1;
 				$nullOperator = $operator === '=' ? 'IS' : 'IS NOT';
-				$conditionLeftSide = "{$alias}{$columnNameQuoted}";
-				if (
-					$dateTimeType && $dateFormatPattern !== NULL && 
-					$driverSpecifics->likeDate !== NULL && mb_strpos($operator, 'LIKE') !== FALSE
-				) $conditionLeftSide = str_replace(
-					['<column>', '<pattern>'],
-					[$conditionLeftSide, $dateFormatPattern],
-					$driverSpecifics->likeDate
+				$conditionLeftSide = $this->getSqlConditionLeftSide (
+					$alias, $columnNameQuoted, $dateTimeType, 
+					$dateFormatPattern, $driverSpecifics, $operator
 				);
 				if ($multipleValues) {
 					$valuesContainsNull = FALSE;
@@ -282,7 +263,7 @@ trait GridModel {
 							$index++;
 						}
 						$paramsNamesStr = implode(", ", $paramsNames);
-						$columnSqlItems[] = "{$conditionLeftSide} {$inOperator} ({$paramsNamesStr})";
+						$columnSqlItems[] = "{$conditionLeftSide}{$collateSqlStr} {$inOperator} ({$paramsNamesStr})";
 					} else {
 						$conditionSqlSubItems = [];
 						foreach ($rawValues as $rawValue) {
@@ -291,7 +272,7 @@ trait GridModel {
 							} else {
 								$paramName = "{$paramBaseName}{$index}";
 								$params[$paramName] = $rawValue;
-								$conditionSqlSubItems[] = "{$conditionLeftSide} {$operator} {$paramName}";	
+								$conditionSqlSubItems[] = "{$conditionLeftSide} {$operator} {$paramName}{$collateSqlStr}";	
 								$index++;
 							}
 						}
@@ -305,7 +286,7 @@ trait GridModel {
 					} else {
 						$paramName = "{$paramBaseName}{$index}";
 						$params[$paramName] = $rawValues[0];
-						$columnSqlItems[] = "{$conditionLeftSide} {$operator} {$paramName}";
+						$columnSqlItems[] = "{$conditionLeftSide} {$operator} {$paramName}{$collateSqlStr}";
 						$index++;
 					}
 				}
@@ -325,6 +306,74 @@ trait GridModel {
 	}
 
 	/**
+	 * Get SQL condition left side.
+	 * @param  string    $alias 
+	 * @param  string    $columnNameQuoted 
+	 * @param  bool      $dateTimeType 
+	 * @param  string    $dateFormatPattern 
+	 * @param  \stdClass $driverSpecifics 
+	 * @param  string    $operator 
+	 * @return array|string
+	 */
+	protected function getSqlConditionLeftSide (
+		$alias, $columnNameQuoted, $dateTimeType, $dateFormatPattern, \stdClass $driverSpecifics, $operator
+	) {
+		$conditionLeftSide = "{$alias}{$columnNameQuoted}";
+		if (
+			$dateTimeType && $dateFormatPattern !== NULL && 
+			$driverSpecifics->likeDate !== NULL && mb_strpos($operator, 'LIKE') !== FALSE
+		) $conditionLeftSide = str_replace(
+			['<column>', '<pattern>'],
+			[$conditionLeftSide, $dateFormatPattern],
+			$driverSpecifics->likeDate
+		);
+		return $conditionLeftSide;
+	}
+
+	/**
+	 * Get very specific SQL condition props.
+	 * @param  mixed $columnCfg 
+	 * @param  \stdClass $driverSpecifics 
+	 * @return [string, bool, string]
+	 */
+	protected function getSqlConditionSpecialTypeParts (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $columnCfg, \stdClass $driverSpecifics) {
+		$stringType = FALSE;
+		$collateSqlStr = '';
+		$dateTimeType = FALSE;
+		$dateFormatPattern = NULL;
+		if ($columnCfg !== NULL) {
+			$useCollation = $driverSpecifics->collate !== NULL;
+			$columnTypes = $columnCfg->GetTypes() ?: [];
+			foreach ($columnTypes as $columnType) {
+				$columnType = str_replace('?', '', $columnType);
+				if (
+					$columnType === 'DateTime' ||
+					is_a($columnType, '\\DateTime') || 
+					is_subclass_of($columnType, '\\DateTime')
+				) {
+					$dateTimeType = TRUE;
+					break;
+				}
+				if ($useCollation && $columnType === 'string') {
+					$stringType = TRUE;
+					break;
+				}
+			}
+			if ($dateTimeType) {
+				$formatArgs = $columnCfg->GetFormatArgs() ?: [];
+				if (count($formatArgs) > 1) $dateFormatPattern = "'" . $formatArgs[1] . "'";
+			}
+			if ($stringType)
+				$collateSqlStr = " COLLATE {$driverSpecifics->collate}";
+		}
+		return [
+			$collateSqlStr,
+			$dateTimeType,
+			$dateFormatPattern,
+		];
+	}
+
+	/**
 	 * Quote column identifier by given quote chars,
 	 * always caleld from functions `getSortingSql()` 
 	 * and from `getConditionSqlAndParams()`.
@@ -340,23 +389,60 @@ trait GridModel {
 	 * Get driver SQL specifics as stdClass:
 	 * - `quotes`   - column quotes
 	 * - `likeDate` - date/time column converter for like condition if necessary.
+	 * - `collate`	- different collation to ignore accents and case insensitive chars if necessary.
 	 * @param  string $driver 
 	 * @return \stdClass
 	 */
 	protected function getDriversSqlSpecs ($driver) {
 		static $driversSpecifics = [
-			'cubrid'	=> ['quotes'	=> ['"', '"'],	'likeDate'	=> 'DATE_FORMAT(<column>, <pattern>)',],
-			'firebird'	=> ['quotes'	=> ['"', '"'],	'likeDate'	=> NULL,],
-			'ibm'		=> ['quotes'	=> ['"', '"'],	'likeDate'	=> 'VARCHAR_FORMAT(<column>, <pattern>)',],
-			'informix'	=> ['quotes'	=> ['"', '"'],	'likeDate'	=> 'TO_CHAR(<column>, <pattern>)',],
-			'mysql'		=> ['quotes'	=> ['`', '`'],	'likeDate'	=> '<column>',],
-			'sqlite'	=> ['quotes'	=> ['"', '"'],	'likeDate'	=> '<column>',],
-			'pgsql'		=> ['quotes'	=> ['"', '"'],	'likeDate'	=> 'TO_CHAR(<column>, <pattern>)',],
-			'sqlsrv'	=> ['quotes'	=> ['[', ']'],	'likeDate'	=> 'FORMAT(<column>, <pattern>)',],
+			'cubrid'	=> [
+				'quotes'	=> ['"', '"'],
+				'likeDate'	=> 'DATE_FORMAT(<column>, <pattern>)',
+				'collate'	=> NULL,
+			],
+			'firebird'	=> [
+				'quotes'	=> ['"', '"'],
+				'likeDate'	=> NULL,
+				'collate'	=> NULL,
+			],
+			'ibm'		=> [
+				'quotes'	=> ['"', '"'],
+				'likeDate'	=> 'VARCHAR_FORMAT(<column>, <pattern>)',
+				'collate'	=> NULL,
+			],
+			'informix'	=> [
+				'quotes'	=> ['"', '"'],
+				'likeDate'	=> 'TO_CHAR(<column>, <pattern>)',
+				'collate'	=> NULL,
+			],
+			'mysql'		=> [
+				'quotes'	=> ['`', '`'],
+				'likeDate'	=> '<column>',
+				'collate'	=> NULL,
+			],
+			'sqlite'	=> [
+				'quotes'	=> ['"', '"'],
+				'likeDate'	=> '<column>',
+				'collate'	=> NULL,
+			],
+			'pgsql'		=> [
+				'quotes'	=> ['"', '"'],
+				'likeDate'	=> 'TO_CHAR(<column>, <pattern>)',
+				'collate'	=> NULL,
+			],
+			'sqlsrv'	=> [
+				'quotes'	=> ['[', ']'],
+				'likeDate'	=> 'FORMAT(<column>, <pattern>)',
+				'collate'	=> 'Latin1_General_CI_AI',
+			],
 		];
 		return isset($driversSpecifics[$driver])
 			? (object) $driversSpecifics[$driver]
-			: (object) ['quotes' => ['"', '"'], 'likeDate' => 'FORMAT(<column>, <pattern>)',];
+			: (object) [
+				'quotes'	=> ['"', '"'], 
+				'likeDate'	=> 'FORMAT(<column>, <pattern>)',
+				'collate'	=> NULL,
+			];
 	}
 	
 	/**

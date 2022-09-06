@@ -567,6 +567,24 @@ trait ConfigGettersSetters {
 	
 	/**
 	 * @inheritDocs
+	 * @return array<string, int[]>
+	 */
+	public function GetTypesPossibleFilterFlags () {
+		return $this->typesPossibleFilterFlags;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @param  array<string, int[]> $typesPossibleFilterFlags
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetTypesPossibleFilterFlags ($typesPossibleFilterFlags) {
+		$this->typesPossibleFilterFlags = $typesPossibleFilterFlags;
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
 	 * @param  string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */

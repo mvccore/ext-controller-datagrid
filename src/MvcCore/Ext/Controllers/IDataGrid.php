@@ -406,7 +406,22 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetFilterFormValuesDelimiter ($filterFormValuesDelimiter);
+
+	/**
+	 * Get column PHP code types and technicaly possible 
+	 * filtering modes against database.
+	 * @return array<string, int[]>
+	 */
+	public function GetTypesPossibleFilterFlags ();
 	
+	/**
+	 * Set column PHP code types and technicaly possible 
+	 * filtering modes against database.
+	 * @param  array<string, int[]> $typesPossibleFilterFlags
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetTypesPossibleFilterFlags ($typesPossibleFilterFlags);
+
 	/**
 	 * Set grid controls visible texts.
 	 * Keys are used as pointers, values could be configured 

@@ -368,13 +368,72 @@ trait InitMethods {
 	 * @return void
 	 */
 	protected function initOperators () {
-		if (!$this->filteringMode) return;
-		foreach ($this->configColumns as $urlName => $columnConfig) {
+		if (!$this->filteringMode) {
+			foreach ($this->configColumns as $columnConfig)
+				$columnConfig->SetFilter(self::FILTER_DISABLED);
+			return;
+		}
+		foreach ($this->configColumns as $columnConfig) {
+			/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $columnConfig */
 			$columnFilterCfg = $columnConfig->GetFilter();
-			if (is_integer($columnFilterCfg) && $columnFilterCfg !== 0) 
-				$this->columnsAllowedOperators[$columnConfig->GetPropName()] = $this->getAllowedOperators($columnFilterCfg);
+			$propName = $columnConfig->GetPropName();
+			if (is_integer($columnFilterCfg) && $columnFilterCfg !== 0) {
+				if (
+					$columnFilterCfg === self::FILTER_ALLOW_NULL ||
+					$columnFilterCfg === self::FILTER_ALLOW_NOT_NULL
+				) {
+					$columnFilterCfg = $this->initColumnOperators($columnConfig, $columnFilterCfg);
+					$this->columnsAllowedOperators[$propName] = $this->getAllowedOperators($columnFilterCfg);
+				}
+			} else if (is_bool($columnFilterCfg) && $columnFilterCfg) {
+				$columnFilterCfg = $this->initColumnOperators($columnConfig, 0);
+				$this->columnsAllowedOperators[$propName] = $this->getAllowedOperators($columnFilterCfg);
+			}
 		}
 		$this->defaultAllowedOperators = $this->getAllowedOperators($this->filteringMode);
+	}
+
+	/**
+	 * Initialize column config filtering flag by global filtering flag by column type.
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $columnConfig 
+	 * @param  int                                                $columnFilterCfg
+	 * @return int
+	 */
+	protected function initColumnOperators (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $columnConfig, $columnFilterCfg) {
+		$types = $columnConfig->GetTypes();
+		if (is_array($types) && count($types) > 0) {
+			$type = $types[0];
+			$allowNulls = strpos($type, '?') !== FALSE;
+			$type = ltrim(str_replace('?', '', $type), '\\');
+			$columnFilterCfg |= ($allowNulls ? self::FILTER_ALLOW_NULL : self::FILTER_ALLOW_NOT_NULL);
+			if (isset($this->typesPossibleFilterFlags[$type])) {
+				$typesPossibleFilterFlags = $this->typesPossibleFilterFlags[$type];
+				foreach ($typesPossibleFilterFlags as $typesPossibleFilterFlag)
+					if (($this->filteringMode & $typesPossibleFilterFlag) != 0)
+						$columnFilterCfg |= $typesPossibleFilterFlag;
+			} else {
+				$currentType = $type;
+				$parentType = NULL;
+				while (TRUE) {
+					$parentClassFullName = get_parent_class($currentType);
+					if ($parentClassFullName === FALSE) break;
+					$currentType = $parentClassFullName;
+					if (isset($this->typesPossibleFilterFlags[$currentType])) {
+						$parentType = $currentType;
+						break;
+					}
+				}
+				if ($parentType !== NULL) {
+					$typesPossibleFilterFlags = $this->typesPossibleFilterFlags[$parentType];
+					$this->typesPossibleFilterFlags[$type] = $typesPossibleFilterFlags;
+					foreach ($typesPossibleFilterFlags as $typesPossibleFilterFlag)
+						if (($this->filteringMode & $typesPossibleFilterFlag) != 0)
+							$columnFilterCfg |= $typesPossibleFilterFlag;
+				}
+			}
+			$columnConfig->SetFilter($columnFilterCfg);
+		}
+		return $columnFilterCfg;
 	}
 
 	/**
@@ -604,11 +663,14 @@ trait InitMethods {
 	 */
 	protected function getAllowedOperators ($columnFilterFlags) {
 		$urlFilterOperators = $this->configUrlSegments->GetUrlFilterOperators();
+		$allowEquals		= ($columnFilterFlags & static::FILTER_ALLOW_EQUALS) != 0;
 		$allowRanges		= ($columnFilterFlags & static::FILTER_ALLOW_RANGES) != 0;
 		$allowLikeRight		= ($columnFilterFlags & static::FILTER_ALLOW_LIKE_RIGHT_SIDE) != 0;
 		$allowLikeLeft		= ($columnFilterFlags & static::FILTER_ALLOW_LIKE_LEFT_SIDE)  != 0;
 		$allowLikeAnywhere	= ($columnFilterFlags & static::FILTER_ALLOW_LIKE_ANYWHERE) != 0;
-		$operators = ['=', '!=']; // equal and not equal are allowed for filtering by default
+		$operators = [];
+		if ($allowEquals)
+			$operators = array_merge($operators, ['=', '!=']);
 		if ($allowRanges)
 			$operators = array_merge($operators, ['<', '>', '<=', '>=']);
 		if ($allowLikeRight || $allowLikeLeft || $allowLikeAnywhere) 
@@ -621,7 +683,7 @@ trait InitMethods {
 			$regex = NULL;
 			if ($likeOperator && !$allowLikeAnywhere) {
 				if ($allowLikeRight && !$allowLikeLeft) {
-					$regex = "#^([^%_]).*$#";
+					$regex = "#^([^%_]).*#";
 				} else if ($allowLikeLeft && !$allowLikeRight) {
 					$regex = "#.*([^%_])$#";
 				} else if ($allowLikeLeft && $allowLikeRight) {
