@@ -468,7 +468,11 @@ trait InitMethods {
 			if ($rawColumnName === NULL) continue;
 			if (!isset($this->configColumns[$rawColumnName])) continue;
 			$configColumn = $this->configColumns[$rawColumnName];
-			if (!$this->ignoreDisabledColumns && $configColumn->GetDisabled()) continue;
+			if (!$this->ignoreDisabledColumns) {
+				if (!$configColumn->GetDisabled()) $configColumn->SetDisabled(FALSE);
+			} else {
+				if ($configColumn->GetDisabled()) continue;
+			}
 			$columnSortCfg = $configColumn->GetSort();
 			if ($columnSortCfg === FALSE || $columnSortCfg === NULL) continue;
 			$sorting[$configColumn->GetDbColumnName()] = $direction;
@@ -533,7 +537,13 @@ trait InitMethods {
 			$columnPropName = $configColumn->GetPropName();
 			$columnTypes = $configColumn->GetTypes();
 			// check if column support filtering
-			if (!isset($filteringColumns[$columnPropName])) continue;
+			if (!isset($filteringColumns[$columnPropName])) {
+				if (!$this->ignoreDisabledColumns) {
+					$configColumn->SetDisabled(FALSE);
+				} else {
+					continue;
+				}
+			}
 			$columnFilterCfg = $configColumn->GetFilter();
 			// check if column has allowed parsed operator
 			$allowedOperators = is_integer($columnFilterCfg)
