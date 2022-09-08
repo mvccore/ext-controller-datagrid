@@ -576,8 +576,7 @@ trait InternalGettersSetters {
 					!$this->ignoreDisabledColumns && !$columnConfig->GetDisabled()
 				)
 			) && (
-				is_bool($columnSortCfg) || 
-				(is_int($columnSortCfg) && $columnSortCfg !== 0)
+				$columnSortCfg !== FALSE && $columnSortCfg !== 0
 			));
 			if (!$columnHasAllowedSorting) 
 				throw new \InvalidArgumentException("Datagrid doesn't allow to sort by column `$columnPropName`.");
@@ -644,8 +643,7 @@ trait InternalGettersSetters {
 					!$this->ignoreDisabledColumns && !$columnConfig->GetDisabled()
 				)
 			) && (
-				is_bool($columnFilterCfg) || 
-				(is_int($columnFilterCfg) && $columnFilterCfg !== 0)
+				$columnFilterCfg !== FALSE && $columnFilterCfg !== 0
 			));
 			if (!$columnHasAllowedFiltering) 
 				throw new \InvalidArgumentException("Datagrid doesn't allow to filter by column `$columnPropName`.");

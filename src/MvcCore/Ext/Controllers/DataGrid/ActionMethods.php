@@ -562,8 +562,7 @@ trait ActionMethods {
 					$this->ignoreDisabledColumns || 
 					(!$this->ignoreDisabledColumns && !$configColumn->GetDisabled())
 				) && (
-					is_bool($columnFilterCfg) || 
-					(is_int($columnFilterCfg) && $columnFilterCfg !== 0)
+					$columnFilterCfg !== FALSE && $columnFilterCfg !== 0
 				)
 			) {
 				$configColumns[$configColumn->GetPropName()] = $configColumn;
