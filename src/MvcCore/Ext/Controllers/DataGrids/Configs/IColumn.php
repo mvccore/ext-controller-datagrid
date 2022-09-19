@@ -152,6 +152,18 @@ interface IColumn {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetTypes ($types);
+
+	/**
+	 * Get TRUE` if first type implements `\DateTimeInterface`.
+	 * @return bool
+	 */
+	public function GetIsDateTime ();
+	
+	/**
+	 * Get TRUE` if first type is `string`.
+	 * @return bool
+	 */
+	public function GetIsString ();
 	
 	/**
 	 * Get property automatic parser arguments.

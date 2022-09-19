@@ -84,11 +84,29 @@ interface IRendering {
 	public function SetRenderTableHeadFiltering ($renderTableHeadFiltering);
 
 	/**
-	 * Get render table head filtering fields and buttons in datagrid table type.
+	 * Get render table body cells as filtering links, 
+	 * where `=` filtering allowed or where `LIKE` filtering
+	 * allowed for `DateTime` displayed as `Date`.
 	 * Not rendered by default.
 	 * @return bool
 	 */
 	public function GetRenderTableHeadFiltering ();
+
+	/**
+	 * Set render table body cells as filtering links, 
+	 * where `=` filtering allowed or where `LIKE` filtering
+	 * allowed for `DateTime` displayed as `Date`.
+	 * Not rendered by default.
+	 * @param  bool $renderTableBodyFilteringLinks
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetRenderTableBodyFilteringLinks ($renderTableBodyFilteringLinks);
+
+	/**
+	 * @inheritDocs
+	 * @return bool
+	 */
+	public function GetRenderTableBodyFilteringLinks ();
 
 	/**
 	 * Set render separated sort control (all datagrid types).

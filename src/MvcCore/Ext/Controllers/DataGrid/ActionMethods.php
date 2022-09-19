@@ -115,7 +115,7 @@ trait ActionMethods {
 				if (!$multiFiltering) 
 					$values = [$values[0]];
 				foreach ($values as $index => $value) {
-					if (strtolower($value) === 'null') {
+					if (strtolower($value) === static::NULL_STRING_VALUE) {
 						if (!$columnAllowNullFilter) {
 							unset($values[$index]);
 							continue;
@@ -252,7 +252,7 @@ trait ActionMethods {
 				// remove unknown characters
 				$rawValue = $this->removeUnknownChars($rawValue);
 				if ($rawValue === NULL) continue;
-				$valueIsStringNull = strtolower($rawValue) === 'null';
+				$valueIsStringNull = strtolower($rawValue) === static::NULL_STRING_VALUE;
 				if ($useViewHelper && !$valueIsStringNull) {
 					$rawValue = call_user_func_array(
 						[$viewHelper, 'Unformat'],
@@ -319,7 +319,7 @@ trait ActionMethods {
 				// check value by configured types
 				if ($valueIsStringNull) {
 					if ($columnAllowNullFilter) {
-						$rawValue = 'null';
+						$rawValue = static::NULL_STRING_VALUE;
 					} else {
 						continue;
 					}

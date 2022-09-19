@@ -6,6 +6,7 @@
 	 * @var \MvcCore\Ext\Controllers\DataGrids\Models\GridRow $item
 	 */
 	$renderConf = $grid->GetConfigRendering();
+	$renderFilteringLinks = $renderConf->GetRenderTableBodyFilteringLinks();
 	$colsCount = $renderConf->GetGridColumnsCount();
 	$model = $grid->GetModel();
 	$colIndex = 0;
@@ -40,12 +41,14 @@
 							?>"><?php
 								echo $this->EscapeHtml($renderedCell);
 							?></a><?php
-						elseif ($columnUrlHelper && $configColumn->GetFilter()):
+
+						elseif ($renderFilteringLinks && $columnUrlHelper && $configColumn->GetFilter()):
 							?><a class="grid-filter-link" href="<?php
 								echo $this->EscapeAttr($grid->GridFilterUrl($configColumn, $renderedCell));
 							?>"><?php
 								echo $this->EscapeHtml($renderedCell);
 							?></a><?php
+
 						else:
 							echo $this->EscapeHtml($renderedCell);
 						endif;

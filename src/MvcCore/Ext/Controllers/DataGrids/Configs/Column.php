@@ -101,6 +101,22 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	protected $types = NULL;
 
 	/**
+	 * Boolean `TRUE` if first type implements `\DateTimeInterface`.
+	 * @jsonSerialize
+	 * @var bool
+	 */
+	#[JsonSerialize]
+	protected $isDateTime = FALSE;
+
+	/**
+	 * Boolean `TRUE` if first type is `string`.
+	 * @jsonSerialize
+	 * @var bool
+	 */
+	#[JsonSerialize]
+	protected $isString = FALSE;
+
+	/**
 	 * Property automatic parsing arguments.
 	 * @jsonSerialize
 	 * @var array|NULL
@@ -280,7 +296,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		if ($columnIndex !== NULL)	$this->columnIndex	= $columnIndex;
 		if ($sort !== NULL)			$this->sort			= $sort;
 		if ($filter !== NULL)		$this->filter		= $filter;
-		if ($types !== NULL)		$this->types		= $types;
+		if ($types !== NULL)		$this->SetTypes($types);
 		if ($parserArgs !== NULL)	$this->parserArgs	= $parserArgs;
 		if ($formatArgs !== NULL)	$this->formatArgs	= $formatArgs;
 		if ($viewHelper !== NULL)	$this->viewHelper	= $viewHelper;
@@ -470,7 +486,46 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 */
 	public function SetTypes ($types) {
 		$this->types = $types;
+		$this->isString = FALSE;
+		$this->isDateTime = FALSE;
+		if (count($types) > 0) {
+			$firstType = str_replace('?', '', $types[0]);
+			if ($firstType === 'string') {
+				$this->isString = TRUE;
+			} else if (class_exists($firstType)) {
+				$phpWithDtInterface = PHP_VERSION_ID >= 50500;
+				if ($phpWithDtInterface) {
+					$columnTypeInterfaces = class_implements($firstType);
+					$this->isDateTime = isset($columnTypeInterfaces['DateTimeInterface']);
+				} else {
+					$this->isDateTime = (
+						$columnType === 'DateTime' ||
+						$columnType === 'DateTimeImmutable' ||
+						is_a($columnType, '\\DateTime') || 
+						is_a($columnType, '\\DateTimeImmutable') || 
+						is_subclass_of($columnType, '\\DateTime') ||
+						is_subclass_of($columnType, '\\DateTimeImmutable')
+					);
+				}
+			}
+		}
 		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @return bool
+	 */
+	public function GetIsDateTime () {
+		return $this->isDateTime;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @return bool
+	 */
+	public function GetIsString () {
+		return $this->isString;
 	}
 	
 	/**

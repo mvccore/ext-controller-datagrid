@@ -32,6 +32,14 @@ interface IConstants {
 	 * @var string
 	 */
 	const GRID_ACTION_DEFAULT			= 'default';
+
+
+	/**
+	 * URL and form input null value.
+	 * @var string
+	 */
+	const NULL_STRING_VALUE				= 'null';
+
 	
 	/**
 	 * Current route param name. It could be used in rewrite 

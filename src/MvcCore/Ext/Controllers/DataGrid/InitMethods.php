@@ -587,9 +587,9 @@ trait InitMethods {
 					//  check if operator configuration allowes submitted value form
 					if ($regex !== NULL && !preg_match($regex, $rawValue)) continue;
 					// check value by configured types
-					if (strtolower($rawValue) === 'null') {
+					if (strtolower($rawValue) === static::NULL_STRING_VALUE) {
 						if ($columnAllowNullFilter) {
-							$values[] = 'null';
+							$values[] = static::NULL_STRING_VALUE;
 						} else {
 							$invalidFilterValue = TRUE;
 						}

@@ -196,7 +196,7 @@ trait ColumnsParsingMethods {
 						$typeName = $refTypesItem->getName();
 						if ($strIndex === NULL && $typeName === 'string')
 							$strIndex = $index;
-						if ($typeName !== 'null')
+						if ($typeName !== static::NULL_STRING_VALUE)
 							$types[] = $typeName;
 					}
 					if ($strIndex !== NULL) {

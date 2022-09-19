@@ -229,32 +229,30 @@ trait GridModel {
 		if ($params === NULL) $params = [];
 		if ($paramBaseName === NULL) $paramBaseName = ':p';
 		$driverSpecifics = $this->getDriversSqlSpecs($driverName);
-		$configColumns = $this->grid->GetConfigColumns(FALSE);
+		$collateIsNotNull = $driverSpecifics->collate !== NULL;
+		$grid = $this->grid;
+		$nullStrVal = $grid::NULL_STRING_VALUE;
+		$configColumns = $grid->GetConfigColumns(FALSE);
 		$operatorMultiValues = " {$this->getConditionOperatorMultiValues()} ";
 		$index = 0;
 		foreach ($this->filtering as $columnName => $operatorAndRawValues) {
 			$columnSqlItems = [];
 			$columnNameQuoted = $this->quoteColumn($columnName, $driverSpecifics->quotes);
 			$columnCfg = $configColumns->GetByDbColumnName($columnName, FALSE);
-			list(
-				$collateSqlStr,
-				$dateTimeType,
-				$dateFormatPattern,
-			) = $this->getSqlConditionSpecialTypeParts($columnCfg, $driverSpecifics);
+			$collateSqlStr = $collateIsNotNull && $columnCfg->GetIsString()
+				? " COLLATE {$driverSpecifics->collate}"
+				: "";
 			foreach ($operatorAndRawValues as $operator => $rawValues) {
 				$multipleValues = count($rawValues) > 1;
-				$nullOperator = $operator === '=' ? 'IS' : 'IS NOT';
 				$conditionLeftSide = $this->getSqlConditionLeftSide (
-					$alias, $columnNameQuoted, $dateTimeType, 
-					$dateFormatPattern, $driverSpecifics, $operator
+					$alias, $columnNameQuoted, $columnCfg, $driverSpecifics, $operator
 				);
 				if ($multipleValues) {
-					$valuesContainsNull = FALSE;
-					foreach ($rawValues as $rawValue) 
-						if ($valuesContainsNull = (mb_strtolower($rawValue) === 'null')) 
-							break;
-					if (isset($inOperators[$operator]) && !$valuesContainsNull) {
-						$inOperator = $inOperators[$operator];
+					list (
+						$rawValuesContainsNull, $rawValuesIsNull
+					) = $this->getRawValuesNullStates($rawValues, $nullStrVal);
+					if (!$rawValuesContainsNull && isset($inOperators[$operator])) {
+						$sqlOperator = $inOperators[$operator];
 						$paramsNames = [];
 						foreach ($rawValues as $rawValue) {
 							$paramName = "{$paramBaseName}{$index}";
@@ -263,32 +261,27 @@ trait GridModel {
 							$index++;
 						}
 						$paramsNamesStr = implode(", ", $paramsNames);
-						$columnSqlItems[] = "{$conditionLeftSide}{$collateSqlStr} {$inOperator} ({$paramsNamesStr})";
+						$columnSqlItems[] = "{$conditionLeftSide}{$collateSqlStr} {$sqlOperator} ({$paramsNamesStr})";
 					} else {
 						$conditionSqlSubItems = [];
 						foreach ($rawValues as $rawValue) {
-							if (mb_strtolower($rawValue) === 'null') {
-								$conditionSqlSubItems[] = "{$conditionLeftSide} {$nullOperator} NULL";
-							} else {
-								$paramName = "{$paramBaseName}{$index}";
-								$params[$paramName] = $rawValue;
-								$conditionSqlSubItems[] = "{$conditionLeftSide} {$operator} {$paramName}{$collateSqlStr}";	
-								$index++;
-							}
+							$isRawValueNull = mb_strtolower($rawValue) === $nullStrVal;
+							$sqlOperator = $this->getSqlConditionOperator($isRawValueNull, $operator);
+							$conditionRightSide = $this->getSqlConditionRightSide(
+								$isRawValueNull, $paramBaseName, $index, $params, $rawValue, $collateSqlStr
+							);
+							$conditionSqlSubItems[] = "{$conditionLeftSide} {$sqlOperator} {$conditionRightSide}";
 						}
 						$implodeOperator = $operator === 'LIKE' || $operator === '=' ? " OR " : " AND ";
 						$columnSqlItems[] = "(" . implode($implodeOperator, $conditionSqlSubItems) . ")";
 					}
 				} else {
-					$rawValue = $rawValues[0];
-					if (mb_strtolower($rawValue) === 'null') {
-						$columnSqlItems[] = "{$conditionLeftSide} {$nullOperator} NULL";
-					} else {
-						$paramName = "{$paramBaseName}{$index}";
-						$params[$paramName] = $rawValues[0];
-						$columnSqlItems[] = "{$conditionLeftSide} {$operator} {$paramName}{$collateSqlStr}";
-						$index++;
-					}
+					$isRawValueNull = mb_strtolower($rawValues[0]) === $nullStrVal;
+					$sqlOperator = $this->getSqlConditionOperator($isRawValueNull, $operator);
+					$conditionRightSide = $this->getSqlConditionRightSide(
+						$isRawValueNull, $paramBaseName, $index, $params, $rawValues[0], $collateSqlStr
+					);
+					$columnSqlItems[] = "{$conditionLeftSide} {$sqlOperator} {$conditionRightSide}";
 				}
 			}
 			if (count($columnSqlItems) > 0)
@@ -306,71 +299,92 @@ trait GridModel {
 	}
 
 	/**
+	 * Get array about raw values equal to `null`:
+	 * - 0 - `TRUE` if any raw value is equal to `null`
+	 * - 1 - `bool[]` array about each raw value if it is equal to `null`.
+	 * @param  array $rawValues 
+	 * @param  string $nullStrVal 
+	 * @return array|[bool, bool[]]
+	 */
+	protected function getRawValuesNullStates (array $rawValues, $nullStrVal) {
+		$rawValuesContainsNull = FALSE;
+		$rawValuesIsNull = [];
+		foreach ($rawValues as $rawIndex => $rawValue) {
+			$rawValueIsNull = mb_strtolower($rawValue) === $nullStrVal;
+			$rawValuesIsNull[$rawIndex] = $rawValueIsNull;
+			if ($rawValueIsNull)
+				$rawValuesContainsNull = TRUE;
+		}
+		return [$rawValuesContainsNull, $rawValuesIsNull];
+	}
+
+	/**
 	 * Get SQL condition left side.
-	 * @param  string    $alias 
-	 * @param  string    $columnNameQuoted 
-	 * @param  bool      $dateTimeType 
-	 * @param  string    $dateFormatPattern 
-	 * @param  \stdClass $driverSpecifics 
-	 * @param  string    $operator 
+	 * @param  string                                            $alias 
+	 * @param  string                                            $columnNameQuoted 
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $columnCfg 
+	 * @param  string                                            $dateFormatPattern 
+	 * @param  \stdClass                                         $driverSpecifics 
+	 * @param  string                                            $operator 
 	 * @return array|string
 	 */
 	protected function getSqlConditionLeftSide (
-		$alias, $columnNameQuoted, $dateTimeType, $dateFormatPattern, \stdClass $driverSpecifics, $operator
+		$alias, $columnNameQuoted, \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $columnCfg, \stdClass $driverSpecifics, $operator
 	) {
 		$conditionLeftSide = "{$alias}{$columnNameQuoted}";
 		if (
-			$dateTimeType && $dateFormatPattern !== NULL && 
-			$driverSpecifics->likeDate !== NULL && mb_strpos($operator, 'LIKE') !== FALSE
-		) $conditionLeftSide = str_replace(
-			['<column>', '<pattern>'],
-			[$conditionLeftSide, $dateFormatPattern],
-			$driverSpecifics->likeDate
-		);
+			$columnCfg->GetIsDateTime() &&
+			$driverSpecifics->likeDate !== NULL && 
+			mb_strpos($operator, 'LIKE') !== FALSE
+		) {
+			$formatArgs = $columnCfg->GetFormatArgs() ?: [];
+			if (count($formatArgs) > 1) {
+				$dateFormatPattern = "'" . $formatArgs[1] . "'";
+				$conditionLeftSide = str_replace(
+					['<column>', '<pattern>'],
+					[$conditionLeftSide, $dateFormatPattern],
+					$driverSpecifics->likeDate
+				);
+			}
+		}
 		return $conditionLeftSide;
 	}
 
 	/**
-	 * Get very specific SQL condition props.
-	 * @param  mixed $columnCfg 
-	 * @param  \stdClass $driverSpecifics 
-	 * @return [string, bool, string]
+	 * Get SQL condition center operator part 
+	 * for standard cases (not for `IN` and `NOT IN`).
+	 * @param  bool   $isRawValueNull 
+	 * @param  string $operator 
+	 * @return string
 	 */
-	protected function getSqlConditionSpecialTypeParts (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $columnCfg, \stdClass $driverSpecifics) {
-		$stringType = FALSE;
-		$collateSqlStr = '';
-		$dateTimeType = FALSE;
-		$dateFormatPattern = NULL;
-		if ($columnCfg !== NULL) {
-			$useCollation = $driverSpecifics->collate !== NULL;
-			$columnTypes = $columnCfg->GetTypes() ?: [];
-			foreach ($columnTypes as $columnType) {
-				$columnType = str_replace('?', '', $columnType);
-				if (
-					$columnType === 'DateTime' ||
-					is_a($columnType, '\\DateTime') || 
-					is_subclass_of($columnType, '\\DateTime')
-				) {
-					$dateTimeType = TRUE;
-					break;
-				}
-				if ($useCollation && $columnType === 'string') {
-					$stringType = TRUE;
-					break;
-				}
-			}
-			if ($dateTimeType) {
-				$formatArgs = $columnCfg->GetFormatArgs() ?: [];
-				if (count($formatArgs) > 1) $dateFormatPattern = "'" . $formatArgs[1] . "'";
-			}
-			if ($stringType)
-				$collateSqlStr = " COLLATE {$driverSpecifics->collate}";
+	protected function getSqlConditionOperator ($isRawValueNull, $operator) {
+		return $isRawValueNull
+			? $operator === '=' ? 'IS' : 'IS NOT'
+			: $operator;
+	}
+
+	/**
+	 * Get SQL condition right side part 
+	 * for standard cases (not for `IN` and `NOT IN`).
+	 * @param  bool   $isRawValueNull 
+	 * @param  string $paramBaseName 
+	 * @param  int    $index 
+	 * @param  array  $params 
+	 * @param  mixed  $rawValue 
+	 * @param  string $collateSqlStr 
+	 * @return string
+	 */
+	protected function getSqlConditionRightSide (
+		$isRawValueNull, $paramBaseName, & $index, array & $params, $rawValue, $collateSqlStr
+	) {
+		if ($isRawValueNull) {
+			return "NULL";
+		} else {
+			$paramName = "{$paramBaseName}{$index}";
+			$index++;
+			$params[$paramName] = $rawValue;
+			return "{$paramName}{$collateSqlStr}";
 		}
-		return [
-			$collateSqlStr,
-			$dateTimeType,
-			$dateFormatPattern,
-		];
 	}
 
 	/**

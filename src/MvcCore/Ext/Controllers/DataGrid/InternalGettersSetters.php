@@ -326,16 +326,24 @@ trait InternalGettersSetters {
 		$filterParams = [];
 
 		// special behaviour for datetimes displayed as dates:
-		$types = $column->GetTypes();
 		if (
 			$operator === NULL &&
-			is_array($types) && count($types) > 1 && 
-			$types[0] === '\DateTime' && $types[1] === '\Date' &&
-			substr($cellValue, strlen($cellValue) - 1, 1) !== '%'
+			$column->GetIsDateTime() &&
+			substr($cellValue, strlen($cellValue) - 1, 1) !== '%' // not ending with `...%` already
 		) {
-			$cellValue .= '%';
-			$operator = 'LIKE';
+			$types = $column->GetTypes();
+			if (count($types) > 1) {
+				$secondType = $types[1];
+				if ($secondType === 'Date') {
+					$cellValue .= '%';
+					$operator = 'LIKE';
+				} else if ($secondType === 'Time') {
+					$cellValue = '%' . $cellValue;
+					$operator = 'LIKE';
+				}
+			}
 		}
+
 		if ($operator === NULL) {
 			$colCfgFilter = $column->GetFilter();
 			if (is_bool($colCfgFilter)) {

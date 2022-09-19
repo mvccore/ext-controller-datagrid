@@ -57,6 +57,17 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	 */
 	#[JsonSerialize]
 	protected $renderTableHeadFiltering				= FALSE;
+	
+	/**
+	 * Render table body cells as filtering links, 
+	 * where `=` filtering allowed or where `LIKE` filtering
+	 * allowed for `DateTime` displayed as `Date`.
+	 * Not rendered by default.
+	 * @jsonSerialize
+	 * @var bool
+	 */
+	#[JsonSerialize]
+	protected $renderTableBodyFilteringLinks		= FALSE;
 
 	/**
 	 * Render separated sort control (all datagrid types).
@@ -396,6 +407,26 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	public function GetRenderTableHeadFiltering () {
 		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
 		return $this->renderTableHeadFiltering;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param  bool $renderTableBodyFilteringLinks
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function SetRenderTableBodyFilteringLinks ($renderTableBodyFilteringLinks) {
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
+		$this->renderTableBodyFilteringLinks = $renderTableBodyFilteringLinks;
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return bool
+	 */
+	public function GetRenderTableBodyFilteringLinks () {
+		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $this */
+		return $this->renderTableBodyFilteringLinks;
 	}
 
 	/**
