@@ -91,42 +91,92 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	public function GetSortingMode ();
 
 	/**
-	 * Set filtering mode to enable/disable columns filtering or to set filtering options:
+	 * Add filtering mode flag to enable/disable columns filtering or to set filtering options:
 	 * - Enable/disable filtering completelly:
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_DISABLED`
 	 * - Enable single column filtering only:
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_SINGLE_COLUMN`
 	 * - Enable multi columns filtering:
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_MULTIPLE_COLUMNS`
-	 * - Enable columns filtering by range:
+	 * - Enable columns filtering by equal and not equal:
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_EQUALS`
+	 * - Enable columns filtering by range operators:
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_RANGES`
 	 * - Enable columns filtering with like operator 
 	 *   on right only, left only or anywhere:
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_RIGHT_SIDE`
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_LEFT_SIDE`
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_ANYWHERE`
-	 * By default, there is enabled to filter single column only.
+	 * By default, there is enabled to filter single column only with equals and ranges operators.
 	 * @param  int $filteringMode 
 	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
-	public function SetFilteringMode ($filteringMode = \MvcCore\Ext\Controllers\IDataGrid::FILTER_SINGLE_COLUMN);
-
+	public function AddFilteringMode ($filteringMode = \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_RIGHT_SIDE);
+	
 	/**
-	 * Get filtering mode to enable/disable columns filtering or to set filtering options:
+	 * Remove filtering mode flag to enable/disable columns filtering or to set filtering options:
 	 * - Enable/disable filtering completelly:
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_DISABLED`
 	 * - Enable single column filtering only:
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_SINGLE_COLUMN`
 	 * - Enable multi columns filtering:
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_MULTIPLE_COLUMNS`
-	 * - Enable columns filtering by range:
+	 * - Enable columns filtering by equal and not equal:
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_EQUALS`
+	 * - Enable columns filtering by range operators:
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_RANGES`
 	 * - Enable columns filtering with like operator 
 	 *   on right only, left only or anywhere:
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_RIGHT_SIDE`
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_LEFT_SIDE`
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_ANYWHERE`
-	 * By default, there is enabled to filter single column only.
+	 * By default, there is enabled to filter single column only with equals and ranges operators.
+	 * @param  int $filteringMode 
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
+	 */
+	public function RemoveFilteringMode ($filteringMode = \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_ANYWHERE);
+
+	/**
+	 * Set filtering mode flags to enable/disable columns filtering or to set filtering options:
+	 * - Enable/disable filtering completelly:
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_DISABLED`
+	 * - Enable single column filtering only:
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_SINGLE_COLUMN`
+	 * - Enable multi columns filtering:
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_MULTIPLE_COLUMNS`
+	 * - Enable columns filtering by equal and not equal:
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_EQUALS`
+	 * - Enable columns filtering by range operators:
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_RANGES`
+	 * - Enable columns filtering with like operator 
+	 *   on right only, left only or anywhere:
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_RIGHT_SIDE`
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_LEFT_SIDE`
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_ANYWHERE`
+	 * By default, there is enabled to filter single column only with equals and ranges operators.
+	 * @param  int $filteringMode 
+	 * @return \MvcCore\Ext\Controllers\IDataGrid
+	 */
+	public function SetFilteringMode ($filteringMode = \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_DEFAULT);
+
+	/**
+	 * Get filtering mode flags to enable/disable columns filtering or to set filtering options:
+	 * - Enable/disable filtering completelly:
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_DISABLED`
+	 * - Enable single column filtering only:
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_SINGLE_COLUMN`
+	 * - Enable multi columns filtering:
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_MULTIPLE_COLUMNS`
+	 * - Enable columns filtering by equal and not equal:
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_EQUALS`
+	 * - Enable columns filtering by range operators:
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_RANGES`
+	 * - Enable columns filtering with like operator 
+	 *   on right only, left only or anywhere:
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_RIGHT_SIDE`
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_LEFT_SIDE`
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_ANYWHERE`
+	 * By default, there is enabled to filter single column only with equals and ranges operators.
 	 * @return int
 	 */
 	public function GetFilteringMode ();

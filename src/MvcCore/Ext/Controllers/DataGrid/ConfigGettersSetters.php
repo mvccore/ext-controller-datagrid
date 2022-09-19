@@ -114,13 +114,33 @@ trait ConfigGettersSetters {
 		return $this->sortingMode;
 	}
 	
+	
+	/**
+	 * @inheritDocs
+	 * @param  int $filteringMode 
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function AddFilteringMode ($filteringMode = \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_RIGHT_SIDE) {
+		$this->filteringMode |= $filteringMode;
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @param  int $filteringMode 
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function RemoveFilteringMode ($filteringMode = \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_ANYWHERE) {
+		$this->filteringMode = ~((~$this->filteringMode) | $filteringMode);
+		return $this;
+	}
 
 	/**
 	 * @inheritDocs
 	 * @param  int $filteringMode 
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
-	public function SetFilteringMode ($filteringMode = \MvcCore\Ext\Controllers\IDataGrid::FILTER_MULTIPLE_COLUMNS) {
+	public function SetFilteringMode ($filteringMode = \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_DEFAULT) {
 		$this->filteringMode = $filteringMode;
 		return $this;
 	}

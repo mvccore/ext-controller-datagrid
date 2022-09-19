@@ -53,24 +53,26 @@ trait ConfigProps {
 	protected $sortingMode = self::SORT_SINGLE_COLUMN;
 
 	/**
-	 * Filtering mode to enable/disable columns filtering or to set filtering options:
+	 * Filtering mode flags to enable/disable columns filtering or to set filtering options:
 	 * - Enable/disable filtering completelly:
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_DISABLED`
 	 * - Enable single column filtering only:
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_SINGLE_COLUMN`
 	 * - Enable multi columns filtering:
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_MULTIPLE_COLUMNS`
-	 * - Enable columns filtering by range:
+	 * - Enable columns filtering by equal and not equal:
+	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_EQUALS`
+	 * - Enable columns filtering by range operators:
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_RANGES`
 	 * - Enable columns filtering with like operator 
 	 *   on right only, left only or anywhere:
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_RIGHT_SIDE`
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_LEFT_SIDE`
 	 *   - `\MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_LIKE_ANYWHERE`
-	 * By default, there is enabled to filter single column only.
+	 * By default, there is enabled to filter single column only with equals and ranges operators.
 	 * @var int
 	 */
-	protected $filteringMode = self::FILTER_SINGLE_COLUMN;
+	protected $filteringMode = self::FILTER_ALLOW_DEFAULT;
 	
 	/**
 	 * Datagrid table sorting, initialized by URL, keys are configured 

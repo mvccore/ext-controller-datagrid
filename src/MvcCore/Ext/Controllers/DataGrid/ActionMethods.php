@@ -291,7 +291,7 @@ trait ActionMethods {
 					} else {
 						if (
 							(is_bool($columnFilterCfg) && $columnFilterCfg) ||
-							($columnFilterCfg & \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_EQUALS) != 0
+							(is_int($columnFilterCfg) && ($columnFilterCfg & \MvcCore\Ext\Controllers\IDataGrid::FILTER_ALLOW_EQUALS) != 0)
 						) {
 							$operator = $operatorKey;
 						} else if (

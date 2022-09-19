@@ -196,6 +196,12 @@ interface IConstants {
 	 */
 	const FILTER_ALLOW_ALL_NOT_NULL		= 380; // 4|8|16|32|64|256
 
+	/**
+	 * Default filtering mode flags - single column only with equals and ranges operators.
+	 * @var int
+	 */
+	const FILTER_ALLOW_DEFAULT			= 13; // 1|4|8
+
 
 	/**
 	 * Never display this control.
