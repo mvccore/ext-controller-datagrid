@@ -264,8 +264,8 @@ trait GridModel {
 						$columnSqlItems[] = "{$conditionLeftSide}{$collateSqlStr} {$sqlOperator} ({$paramsNamesStr})";
 					} else {
 						$conditionSqlSubItems = [];
-						foreach ($rawValues as $rawValue) {
-							$isRawValueNull = mb_strtolower($rawValue) === $nullStrVal;
+						foreach ($rawValues as $rawValueIndex => $rawValue) {
+							$isRawValueNull = $rawValuesIsNull[$rawValueIndex];
 							$sqlOperator = $this->getSqlConditionOperator($isRawValueNull, $operator);
 							$conditionRightSide = $this->getSqlConditionRightSide(
 								$isRawValueNull, $paramBaseName, $index, $params, $rawValue, $collateSqlStr
