@@ -74,6 +74,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 */
 	#[JsonSerialize]
 	protected $columnIndex = NULL;
+
+	/**
+	 * Datagrid column index customized by user, starting with `0`, optional.
+	 * @jsonSerialize
+	 * @var int|NULL
+	 */
+	#[JsonSerialize]
+	protected $columnIndexUser = NULL;
 	
 	/**
 	 * Default sorting definition with values `ASC | DESC` 
@@ -416,7 +424,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		$this->urlHelper = $urlHelper;
 		return $this;
 	}
-
+	
 	/**
 	 * @inheritDocs
 	 * @return int|NULL
@@ -432,6 +440,24 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 */
 	public function SetColumnIndex ($columnIndex) {
 		$this->columnIndex = $columnIndex;
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return int|NULL
+	 */
+	public function GetColumnIndexUser () {
+		return $this->columnIndexUser;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param  int|NULL $columnIndexUser
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetColumnIndexUser ($columnIndexUser) {
+		$this->columnIndexUser = $columnIndexUser;
 		return $this;
 	}
 

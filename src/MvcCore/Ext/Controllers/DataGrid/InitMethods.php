@@ -468,10 +468,12 @@ trait InitMethods {
 			if ($rawColumnName === NULL) continue;
 			if (!isset($this->configColumns[$rawColumnName])) continue;
 			$configColumn = $this->configColumns[$rawColumnName];
-			if ($this->ignoreDisabledColumns) {
-				if ($configColumn->GetDisabled()) $configColumn->SetDisabled(FALSE);
-			} else {
-				if ($configColumn->GetDisabled()) continue;
+			if ($configColumn->GetDisabled()) {
+				if ($this->ignoreDisabledColumns) {
+					$this->enableColumn($configColumn);
+				} else {
+					continue;
+				}
 			}
 			$columnSortCfg = $configColumn->GetSort();
 			if ($columnSortCfg === FALSE || $columnSortCfg === NULL) continue;
@@ -540,7 +542,7 @@ trait InitMethods {
 			if (isset($filteringColumns[$columnPropName])) {
 				if ($this->ignoreDisabledColumns) {
 					if ($configColumn->GetDisabled())
-						$configColumn->SetDisabled(FALSE);
+						$this->enableColumn($configColumn);
 				} else {
 					continue;
 				}
@@ -747,5 +749,16 @@ trait InitMethods {
 		$minDifference = min(array_keys($differences));
 		$minDifferenceCountScaleKey = $differences[$minDifference];
 		return $this->countScales[$minDifferenceCountScaleKey];
+	}
+	
+	/**
+	 * Set column config enabled and set `$this->writeColumnsChange` to `TRUE`
+	 * to recognize column config change when request is done.
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $columnConfig 
+	 * @return void
+	 */
+	protected function enableColumn (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $columnConfig) {
+		$columnConfig->SetDisabled(FALSE);
+		$this->writeChangedColumnsConfigs = TRUE;
 	}
 }

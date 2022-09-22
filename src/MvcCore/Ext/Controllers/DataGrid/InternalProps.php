@@ -243,4 +243,11 @@ trait InternalProps {
 	 * @var array
 	 */
 	protected $filteringViewHelpersCache = [];
+
+	/**
+	 * If `TRUE`, some column config has been chagned durring request
+	 * and it's necessary to write into database or session.
+	 * @var bool
+	 */
+	protected $writeChangedColumnsConfigs = FALSE;
 }

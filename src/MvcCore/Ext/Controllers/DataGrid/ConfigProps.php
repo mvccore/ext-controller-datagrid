@@ -236,6 +236,13 @@ trait ConfigProps {
 			self::FILTER_ALLOW_LIKE_LEFT_SIDE,
 			self::FILTER_ALLOW_LIKE_ANYWHERE,
 		],
+		'DateTimeImmutable'	=> [
+			self::FILTER_ALLOW_EQUALS, 
+			self::FILTER_ALLOW_RANGES,
+			self::FILTER_ALLOW_LIKE_RIGHT_SIDE,
+			self::FILTER_ALLOW_LIKE_LEFT_SIDE,
+			self::FILTER_ALLOW_LIKE_ANYWHERE,
+		],
 	];
 
 	/**
