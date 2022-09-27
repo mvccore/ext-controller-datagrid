@@ -138,10 +138,6 @@ trait InitMethods {
 		if (in_array($this->itemsPerPage, $this->countScales, TRUE)) return;
 		$this->countScales[] = $this->itemsPerPage;
 		sort($this->countScales);
-		if ($this->countScales[0] === 0) {
-			array_shift($this->countScales);
-			$this->countScales[] = 0;
-		}
 	}
 
 	/**
@@ -170,8 +166,9 @@ trait InitMethods {
 		} else {
 			// verify if count is not too high, if it is - redirect to highest count in count scales:
 			$this->count = intval($this->urlParams[static::URL_PARAM_COUNT]);
-			$lastCountsScale = $this->countScales[count($this->countScales) - 1];
-			if ($lastCountsScale !== 0 && ($this->count === 0 || $this->count > $lastCountsScale)) {
+			$allCountScaleMatched = array_search(0, $this->countScales, TRUE) !== FALSE;
+			$lastCountsScale = max($this->countScales);
+			if (!$allCountScaleMatched && ($this->count === 0 || $this->count > $lastCountsScale)) {
 				// redirect to allowed max count:
 				$redirectUrl = $this->GridUrl([
 					static::URL_PARAM_PAGE	=> $this->urlParams[static::URL_PARAM_PAGE],
