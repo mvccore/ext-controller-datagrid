@@ -262,8 +262,8 @@ trait ActionMethods {
 				}
 				$rawValueToCheckType = $rawValue;
 				// complete possible operator prefixes from submitted value
-				$containsPercentage = $this->checkFilterFormValueForSpecialLikeChar($rawValue, '%');
-				$containsUnderScore = $this->checkFilterFormValueForSpecialLikeChar($rawValue, '_');
+				$containsPercentage = $this->CheckFilterValueForSpecialLikeChar($rawValue, '%');
+				$containsUnderScore = $this->CheckFilterValueForSpecialLikeChar($rawValue, '_');
 				if ($containsPercentage || $containsUnderScore) {
 					if (($containsPercentage & 1) !== 0 || ($containsUnderScore & 1) !== 0) {
 						$operatorsAndPrefixes = $likeOperatorsAndPrefixes;
@@ -584,38 +584,6 @@ trait ActionMethods {
 					"Please install extension `{$extensionName}` ".
 					"to create datagrid filtering component."
 				);
-	}
-
-	/**
-	 * Check if given value contains any LIKE/NOT LIKE special 
-	 * character: `%` or `_` or escaped like this: `[%]` or `[_]`.
-	 * Returns `0` if no special char `%` or `_` matched.
-	 * Returns `1` if special char `%` or `_` matched in raw form only, not escaped.
-	 * Returns `2` if special char `%` or `_` matched in escaped form only.
-	 * Returns `1 | 2` if special char `%` or `_` matched in both forms.
-	 * @param  string $rawValue 
-	 * @param  string $specialLikeChar 
-	 * @return int
-	 */
-	protected function checkFilterFormValueForSpecialLikeChar ($rawValue, $specialLikeChar) {
-		$containsSpecialChar = 0;
-		$index = 0;
-		$length = mb_strlen($rawValue);
-		$matchedEscapedChar = 0;
-		while ($index < $length) {
-			$specialCharPos = mb_strpos($rawValue, $specialLikeChar, $index);
-			if ($specialCharPos === FALSE) break;
-			$escapedSpecialCharPos = mb_strpos($rawValue, '['.$specialLikeChar.']', max(0, $index - 1));
-			if ($escapedSpecialCharPos !== FALSE && $specialCharPos - 1 === $escapedSpecialCharPos) {
-				$index = $specialCharPos + mb_strlen($specialLikeChar) + 1;
-				$matchedEscapedChar = 2;
-				continue;
-			}
-			$index = $specialCharPos + 1;
-			$containsSpecialChar = 1;
-			break;
-		}
-		return $containsSpecialChar | $matchedEscapedChar;
 	}
 
 	/**

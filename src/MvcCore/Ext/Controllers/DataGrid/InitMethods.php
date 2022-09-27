@@ -581,8 +581,8 @@ trait InitMethods {
 					}
 					$rawValueToCheckType = $rawValue;
 					// complete possible operator prefixes from submitted value
-					$containsPercentage = $this->checkFilterFormValueForSpecialLikeChar($rawValue, '%');
-					$containsUnderScore = $this->checkFilterFormValueForSpecialLikeChar($rawValue, '_');
+					$containsPercentage = $this->CheckFilterValueForSpecialLikeChar($rawValue, '%');
+					$containsUnderScore = $this->CheckFilterValueForSpecialLikeChar($rawValue, '_');
 					if (($containsPercentage & 1) !== 0) 
 						$rawValueToCheckType = str_replace('%', '', $rawValueToCheckType);
 					if (($containsUnderScore & 1) !== 0) 

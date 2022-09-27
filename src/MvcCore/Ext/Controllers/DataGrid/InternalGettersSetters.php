@@ -461,6 +461,34 @@ trait InternalGettersSetters {
 	}
 
 	/**
+	 * @inheritDocs
+	 * @param  string $rawValue 
+	 * @param  string $specialLikeChar 
+	 * @return int
+	 */
+	public function CheckFilterValueForSpecialLikeChar ($rawValue, $specialLikeChar) {
+		$containsSpecialChar = 0;
+		$index = 0;
+		$length = mb_strlen($rawValue);
+		$matchedEscapedChar = 0;
+		while ($index < $length) {
+			$specialCharPos = mb_strpos($rawValue, $specialLikeChar, $index);
+			if ($specialCharPos === FALSE) break;
+			$escapedSpecialCharPos = mb_strpos($rawValue, '['.$specialLikeChar.']', max(0, $index - 1));
+			if ($escapedSpecialCharPos !== FALSE && $specialCharPos - 1 === $escapedSpecialCharPos) {
+				$index = $specialCharPos + mb_strlen($specialLikeChar) + 1;
+				$matchedEscapedChar = 2;
+				continue;
+			}
+			$index = $specialCharPos + 1;
+			$containsSpecialChar = 1;
+			break;
+		}
+		return $containsSpecialChar | $matchedEscapedChar;
+	}
+
+
+	/**
 	 * Return serializable properties and values for debug dump.
 	 * @return array
 	 */
@@ -702,4 +730,5 @@ trait InternalGettersSetters {
 		if (count($filterParams) === 0) return NULL;
 		return implode($subjsDelim, $filterParams);
 	}
+
 }

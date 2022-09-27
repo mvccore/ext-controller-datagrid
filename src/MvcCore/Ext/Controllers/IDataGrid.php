@@ -679,6 +679,19 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 */
 	public function GetColumnFilterIndex ($columnConfigOrPropName);
 
+	/**
+	 * Check if given value contains any LIKE/NOT LIKE special 
+	 * character: `%` or `_` or escaped like this: `[%]` or `[_]`.
+	 * Returns `0` if no special char `%` or `_` matched.
+	 * Returns `1` if special char `%` or `_` matched in raw form only, not escaped.
+	 * Returns `2` if special char `%` or `_` matched in escaped form only.
+	 * Returns `1 | 2` if special char `%` or `_` matched in both forms.
+	 * @param  string $rawValue 
+	 * @param  string $specialLikeChar 
+	 * @return int
+	 */
+	public function CheckFilterValueForSpecialLikeChar ($rawValue, $specialLikeChar);
+
 
 	/**
 	 * Internal default action for datagrid content rendering.
@@ -708,5 +721,4 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @return void
 	 */
 	public function ActionFormFilter ();
-
 }
