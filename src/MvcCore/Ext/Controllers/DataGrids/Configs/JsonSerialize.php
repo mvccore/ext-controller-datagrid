@@ -21,6 +21,13 @@ class JsonSerialize {
 	
 	const PHP_DOCS_TAG_NAME = '@jsonSerialize';
 
+	/**
+	 * Return array with class properties marked with 
+	 * `#[JsonSerialize]` attribute or `@jsonSerialize` PHP Docs tag.
+	 * @param  mixed $object 
+	 * @param  int   $propsFlags 
+	 * @return array
+	 */
 	public static function Serialize ($object, $propsFlags = \ReflectionProperty::IS_PROTECTED) {
 		/** @var \ReflectionProperty[] $props */
 		$props = (new \ReflectionClass($object))->getProperties($propsFlags);
