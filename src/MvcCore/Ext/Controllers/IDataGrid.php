@@ -18,17 +18,32 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	/**
 	 * Set model class instance.
 	 * @requires
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model 
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\GridModel $model 
 	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetModel (\MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model);
 
 	/**
 	 * Get model class instance.
-	 * @throws \InvalidArgumentException
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel|NULL
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridModel|NULL
 	 */
-	public function GetModel ($throwExceptionIfNull = FALSE);
+	public function GetModel ();
+
+	/**
+	 * Set row model class full name, not required, 
+	 * if `NULL`, grid model class is used.
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\GridRow|string|NULL $rowClass
+	 * @param  int                                                           $propsFlags
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetRowClass (/*\MvcCore\Ext\Controllers\DataGrids\Models\IGridRow|string*/ $rowClass, $propsFlags = 0);
+
+	/**
+	 * Get row model class full name, not required, 
+	 * if `NULL`, grid model class is used.
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridRow|string|NULL
+	 */
+	public function GetRowClass ();
 
 	/**
 	 * Set items per page, `10` by default.
@@ -254,8 +269,21 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm|NULL
 	 */
 	public function GetControlFilterForm ();
-	
 
+	/**
+	 * Set cache instance or `FALSE` to disable cache.
+	 * @param  \MvcCore\Ext\ICache|FALSE|NULL $cache
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetCache ($cache);
+	
+	/**
+	 * Get cache instance or `FALSE` if cache is disabled.
+	 * If cache is `NULL`, cache is automatically initialized.
+	 * @return \MvcCore\Ext\ICache|FALSE|NULL
+	 */
+	public function GetCache ();
+	
 	/**
 	 * Set translator instance. Any callable accepting first argument
 	 * as string translation key and second argument as array with replacements.
@@ -398,6 +426,26 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns|NULL
 	 */
 	public function GetConfigColumns ($activeOnly = TRUE);
+
+	/**
+	 * Try to parse decorated class properties atributes or PHPDocs tags
+	 * to complete array of datagrid columns configuration.
+	 * 
+	 * First argument is datagrid model instance used to get all instance properties.
+	 * 
+	 * Second argument is used for automatic columns configuration completion
+	 * by model class implementing `\MvcCore\Ext\Controllers\DataGrids\Models\IGridColumns`.
+	 * Array keys are properties names, array values are arrays with three items:
+	 * - `string`    - database column name 
+	 * - `\string[]` - property type(s)
+	 * - `array`     - format arguments
+	 * 
+	 * Third argument is access mod flags to load model instance properties.
+	 * If value is zero, there are used all access mode flags - private, protected and public.
+	 * 
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column[]
+	 */
+	public function ParseConfigColumns ();
 	
 	/**
 	 * Add datagrid html wrapper element css class.
@@ -691,7 +739,12 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @return int
 	 */
 	public function CheckFilterValueForSpecialLikeChar ($rawValue, $specialLikeChar);
-
+	
+	/**
+	 * Return columns configs cache key and cache tags.
+	 * @return array|[string, \string[]]
+	 */
+	public function GetGridCacheKeyAndTags ();
 
 	/**
 	 * Internal default action for datagrid content rendering.

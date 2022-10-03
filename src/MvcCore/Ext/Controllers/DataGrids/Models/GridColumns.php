@@ -29,51 +29,7 @@ trait GridColumns {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column[]
 	 */
 	public function GetConfigColumns () {
-		/** @var \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $this */
-		$rowFullClassName = get_class($this); // row model is the same as grid model by default
-		$gridClass = get_class($this->grid);
-		list(
-			$rowModelMetaData, $rowModelAccessModFlags
-		) = static::getConfigColumnsModelMetaData($rowFullClassName);
-		return $gridClass::ParseConfigColumns(
-			$rowFullClassName, $rowModelMetaData, $rowModelAccessModFlags
-		);
+		return $this->grid->ParseConfigColumns();
 	}
 
-	/**
-	 * Return database model metadata and default access mod flags,
-	 * if `$this` context implements `\MvcCore\Ext\Models\Db\IModel`.
-	 * @param  \MvcCore\Ext\Models\Db\Model|string $rowContextOrFullClassName
-	 * @return array
-	 */
-	protected static function getConfigColumnsModelMetaData ($rowContextOrFullClassName) {
-		$accessModFlags = 0;
-		$modelMetaData = [];
-		$toolClass = \MvcCore\Application::GetInstance()->GetToolClass();
-		$rowFullClassName = is_string($rowContextOrFullClassName) 
-			? $rowContextOrFullClassName 
-			: get_class($rowContextOrFullClassName);
-		$implementsExtendedModel = $toolClass::CheckClassInterface(
-			$rowFullClassName, 
-			'MvcCore\\Ext\\Models\\Db\\IModel', FALSE, FALSE
-		);
-		if ($implementsExtendedModel) {
-			/** @var \MvcCore\Ext\Models\Db\Model $rowContext */
-			list($metaData) = $rowFullClassName::GetMetaData(0);
-			foreach ($metaData as $propData) {
-				$dbColumnName = $propData[4];
-				$allowNulls = $propData[1];
-				$types = $propData[2];
-				$parserArgs = $propData[5];
-				$formatArgs = $propData[6];
-				if ($dbColumnName !== NULL) {
-					$propertyName = $propData[3];
-					$modelMetaData[$propertyName] = [$dbColumnName, $allowNulls, $types, $parserArgs, $formatArgs];
-				}
-			}
-			if (static::$defaultPropsFlags !== 0)
-				$accessModFlags = static::$defaultPropsFlags;
-		}
-		return [$modelMetaData, $accessModFlags];
-	}
 }

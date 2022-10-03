@@ -99,6 +99,7 @@ trait ActionMethods {
 		$form = $this->tableHeadFilterForm;
 		$propName = $configColumn->GetPropName();
 		$valueField = (new \MvcCore\Ext\Forms\Fields\Text)
+			->SetPlaceHolder($this->GetControlText('filterFormPlaceholder'))
 			->SetName(implode($form::HTML_IDS_DELIMITER, ['value', $propName]))
 			->SetValidators([]);
 		$dbColumnName = $configColumn->GetDbColumnName();
@@ -137,12 +138,12 @@ trait ActionMethods {
 		}
 		$filterField = (new \MvcCore\Ext\Forms\Fields\SubmitButton)
 			->SetName(implode($form::HTML_IDS_DELIMITER, ['filter', $propName]))
-			->SetValue($this->GetControlText('filter'))
+			->SetValue($this->GetControlText('filterFormFilter'))
 			->AddCssClasses('filter');
 		$clearField = (new \MvcCore\Ext\Forms\Fields\SubmitButton)
 			->SetCustomResultState($clearBtnResultState)
 			->SetName(implode($form::HTML_IDS_DELIMITER, ['clear', $propName]))
-			->SetValue($this->GetControlText('clear'))
+			->SetValue($this->GetControlText('filterFormClear'))
 			->AddCssClasses('clear');
 		return [$valueField, $filterField, $clearField];
 	}

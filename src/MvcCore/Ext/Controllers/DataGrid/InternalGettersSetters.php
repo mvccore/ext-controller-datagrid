@@ -486,6 +486,18 @@ trait InternalGettersSetters {
 		}
 		return $containsSpecialChar | $matchedEscapedChar;
 	}
+	
+	/**
+	 * @inheritDocs
+	 * @return array|[string, \string[]]
+	 */
+	public function GetGridCacheKeyAndTags () {
+		$req = $this->request;
+		list($ctrl, $action) = [$req->GetControllerName(), $req->GetActionName()];
+		$clsName = get_class($this);
+		$cacheKey = "grid_{$ctrl}_{$action}_{$clsName}";
+		return [$cacheKey, ['grid']];
+	}
 
 
 	/**
@@ -548,6 +560,130 @@ trait InternalGettersSetters {
 					$value = 'resource (' . get_resource_id($value) . ', ' . get_resource_type($value) . ')';
 			}
 			$result[$prop->name] = $value;
+		}
+		return $result;
+	}
+
+	/**
+	 * Complete missing values where necessary for configuration input.
+	 * @param  array|array<string,\MvcCore\Ext\Controllers\DataGrids\Configs\Column> $configColumn
+	 * @param  bool                                                                  $throwInvalidTypeError
+	 * @return array|array<string, \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn>
+	 */
+	protected function configColumnsCompleteMissing (array $configColumnsArr, & $throwInvalidTypeError) {
+		$result = [];
+		foreach ($configColumnsArr as $index => $configColumn) {
+			if ($configColumn instanceof \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn) {
+				$propName = $configColumn->GetPropName();
+				if ($propName === NULL) throw new \InvalidArgumentException(
+					"Datagrid column configuration item requires `propName` (index: {$index})."
+				);
+				$urlName = $configColumn->GetUrlName();
+				if ($urlName === NULL) {
+					$urlName = $propName;
+					$configColumn->SetUrlName($urlName);
+				}
+				$dbColumnName = $configColumn->GetDbColumnName();
+				if ($dbColumnName === NULL) 
+					$configColumn->SetDbColumnName($propName);
+				$headingName = $configColumn->GetHeadingName();
+				if ($headingName === NULL) 
+					$configColumn->SetHeadingName($propName);
+				$result[$urlName] = $configColumn;
+			} else {
+				$throwInvalidTypeError = TRUE;
+				break;
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * Complete config columns for first time, if there was nothing in cache.
+	 * @throws \InvalidArgumentException
+	 * @return void
+	 */
+	protected function configColumnsParseTranslateValidate () {
+		$model = $this->GetModel();
+		if ($model instanceof \MvcCore\Ext\Controllers\DataGrids\Models\IGridColumns) {
+			/** @var \MvcCore\Ext\Controllers\DataGrids\Models\GridColumns $model */
+			$configColumnsArr = $model->SetGrid($this)->GetConfigColumns();
+		} else {
+			$configColumnsArr = $this->ParseConfigColumns();
+		}
+		if (is_array($configColumnsArr) && count($configColumnsArr) > 0) {
+			if ($this->translate)
+				$configColumnsArr = $this->configColumnsTranslate($configColumnsArr);
+			$this->configColumnsValidateUrlNames($configColumnsArr);
+			$this->configColumns = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns(
+				$configColumnsArr
+			);
+		} else {
+			throw new \InvalidArgumentException(
+				"There was not possible to complete datagrid columns from given model instance. \n".
+				"- 1. You can use datagrid setter method `SetConfigColumns()` to directly configure datagrid columns or \n".
+				"- 2. You can implement interface `\\MvcCore\\Ext\\Controllers\\DataGrids\\Models\\IGridColumns` \n".
+				"  on given model instance and decorate model properties with attribute class \n".
+				"  `\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column` ".
+				"  or with equivalent PHPDocs tag names."
+			);
+		}
+	}
+	
+	/**
+	 * Validate config columns url names for invalid characters.
+	 * @throws \InvalidArgumentException
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	protected function configColumnsValidateUrlNames (array $configColumns) {
+		$configColumnsUrlNames = array_keys($configColumns);
+		$configColumnsUrlNamesStr = implode("\n", $configColumnsUrlNames);
+		$notAllowedCharsInUrlNames = [
+			$this->configUrlSegments->GetUrlDelimiterSubjectValue(),
+			$this->configUrlSegments->GetUrlDelimiterSubjects(),
+		];
+		foreach ($notAllowedCharsInUrlNames as $notAllowedCharInUrlNames) {
+			if (mb_strpos($configColumnsUrlNamesStr, $notAllowedCharInUrlNames) !== FALSE) {
+				foreach ($configColumnsUrlNames as $configColumnsUrlName) {
+					if (mb_strpos($configColumnsUrlName, $notAllowedCharInUrlNames) !== FALSE) {
+						throw new \InvalidArgumentException(
+							"Datagrid column configuration url name `{$configColumnsUrlName}` ".
+							"contains not allowed grid url segment character `{$notAllowedCharInUrlNames}`. ".
+							"Try to configure different grid url segment or different property url name."
+						);
+					}
+				}
+			}
+		}
+		return $this;
+	}
+	
+	/**
+	 * If following property is not `NULL`, translate properties: `urlName`, `headingName`, and `title`.
+	 * @param  array|array<string,\MvcCore\Ext\Controllers\DataGrids\Configs\Column> $configColumn
+	 * @return array|array<string,\MvcCore\Ext\Controllers\DataGrids\Configs\Column>
+	 */
+	protected function configColumnsTranslate (array $configColumns) {
+		$result = [];
+		foreach ($configColumns as $columnConfig) {
+			$propName = $columnConfig->GetUrlName();
+			$headingName = $columnConfig->GetHeadingName();
+			if ($propName === $headingName) continue;
+			$urlName = $columnConfig->GetUrlName();
+			$title = $columnConfig->GetTitle();
+			if ($headingName !== NULL) {
+				$headingName = call_user_func_array($this->translator, [$headingName]);
+				$columnConfig->SetHeadingName($headingName);
+			}
+			if ($this->translateUrlNames) {
+				$urlName = call_user_func_array($this->translator, [$urlName]);
+				$columnConfig->SetUrlName($urlName);
+			}
+			if ($title !== NULL) {
+				$title = call_user_func_array($this->translator, [$title]);
+				$columnConfig->SetTitle($title);
+			}
+			$result[$urlName] = $columnConfig;
 		}
 		return $result;
 	}
@@ -730,5 +866,4 @@ trait InternalGettersSetters {
 		if (count($filterParams) === 0) return NULL;
 		return implode($subjsDelim, $filterParams);
 	}
-
 }

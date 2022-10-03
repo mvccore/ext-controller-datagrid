@@ -54,7 +54,7 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	public function LoadModel () {
-		$model = $this->GetModel(TRUE);
+		$model = $this->GetModel();
 		$model
 			->SetGrid($this)
 			->SetOffset($this->offset)
@@ -208,14 +208,14 @@ trait PreDispatchMethods {
 			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
 				$offset,
 				$this->GridPageUrl($offset), 
-				$this->GetControlText('previous'), FALSE, TRUE
+				$this->GetControlText('pagingControlPrevious'), FALSE, TRUE
 			))->SetIsPrev(TRUE);
 		}
 		if ($displayFirst) {
 			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
 				0,
 				$this->GridPageUrl(0), 
-				$this->GetControlText('first')
+				$this->GetControlText('pagingControlFirst')
 			))->SetIsFirst(TRUE);
 		}
 		if ($displayFirst || $displayPrev)
@@ -321,7 +321,7 @@ trait PreDispatchMethods {
 			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
 				$offset,
 				$this->GridPageUrl($offset), 
-				str_replace('{0}', $this->pagesCount, $this->GetControlText('last'))
+				str_replace('{0}', $this->pagesCount, $this->GetControlText('pagingControlLast'))
 			))->SetIsLast(TRUE);
 		}
 		if ($displayNext) {
@@ -329,7 +329,7 @@ trait PreDispatchMethods {
 			$paging[] = (new \MvcCore\Ext\Controllers\DataGrids\Paging\Page(
 				$offset,
 				$this->GridPageUrl($offset), 
-				$this->GetControlText('next')
+				$this->GetControlText('pagingControlNext')
 			))->SetIsNext(TRUE);
 		}
 	}
@@ -413,7 +413,7 @@ trait PreDispatchMethods {
 			foreach ($submitFields as $submitField) {
 				if (mb_strpos($submitField->GetName(), 'clear' . $delimiter) !== 0) continue;
 				// set up translated text value:
-				$submitField->SetValue($this->GetControlText('clear'));
+				$submitField->SetValue($this->GetControlText('filterFormClear'));
 			}
 		}
 	}

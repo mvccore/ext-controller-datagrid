@@ -25,6 +25,19 @@ trait ConfigProps {
 	protected $model = NULL;
 
 	/**
+	 * Row model class full name, not required, 
+	 * if `NULL`, grid model class is used.
+	 * @var string|NULL
+	 */
+	protected $rowClass = NULL;
+
+	/**
+	 * Row model class properties flags, not required, `0` by default.
+	 * @var string|NULL
+	 */
+	protected $rowClassPropsFlags = 0;
+
+	/**
 	 * Items per page, `10` by default.
 	 * @var int
 	 */
@@ -109,6 +122,12 @@ trait ConfigProps {
 	 * @var \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm|NULL
 	 */
 	protected $controlFilterForm = NULL;
+
+	/**
+	 * MvcCore cache extension instance or false for disabled or not installed cache.
+	 * @var \MvcCore\Ext\ICache|FALSE|NULL
+	 */
+	protected $cache = NULL;
 
 	/**
 	 * Translator instance. Any callable accepting first argument
@@ -253,15 +272,20 @@ trait ConfigProps {
 	 * @var array
 	 */
 	protected $controlsTexts = [
-		'previous'				=> 'Previous',
-		'next'					=> 'Next',
-		'first'					=> 'First',
-		'last'					=> 'Last ({0})',
-		'all'					=> 'All',
-		'filter'				=> 'Filter',
-		'clear'					=> 'Clear',
+		'pagingControlPrevious'	=> 'Previous',
+		'pagingControlNext'		=> 'Next',
+		'pagingControlFirst'	=> 'First',
+		'pagingControlLast'		=> 'Last ({0})',
+		'scalesControlAll'		=> 'All',
+		'filterFormPlaceHolder'	=> 'Enter to search',
+		'filterFormFilter'		=> 'Filter',
+		'filterFormClear'		=> 'Clear',
 		'statusPages'			=> 'page {0}/{1}',
 		'statusRowsAll'			=> 'total rows: {0}',
 		'statusRowsFiltered'	=> 'filtered rows: {0}',
+		'titlePage'				=> 'page: {0}',
+		'titleScale'			=> 'scale: {0}',
+		'titleSort'				=> 'sort: {0}',
+		'titleFilter'			=> 'filter: {0}',
 	];
 }

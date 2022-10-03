@@ -12,6 +12,7 @@
  */
 
 namespace MvcCore\Ext\Controllers\DataGrid;
+use A;
 
 /**
  * @mixin \MvcCore\Ext\Controllers\DataGrid
@@ -25,21 +26,36 @@ trait ConfigGettersSetters {
 	 */
 	public function SetModel (\MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model) {
 		$this->model = $model;
-		$this->GetModel(TRUE);// validate
 		return $this;
 	}
 
 	/**
 	 * @inheritDocs
-	 * @throws \InvalidArgumentException
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel|NULL
 	 */
-	public function GetModel ($throwExceptionIfNull = FALSE) {
-		if (
-			($this->model === NULL && $throwExceptionIfNull) || 
-			($this->model !== NULL && !($this->model instanceof \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel))
-		) throw new \InvalidArgumentException("No datagrid model defined or model doesn't implement `\\MvcCore\\Ext\\Controllers\\DataGrids\\Models\\IGridModel`.");
+	public function GetModel () {
 		return $this->model;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\GridRow|string|NULL $rowClass
+	 * @param  int                                                           $rowClassPropsFlags
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetRowClass (/*\MvcCore\Ext\Controllers\DataGrids\Models\IGridRow*/ $rowClass, $propsFlags = 0) {
+		$this->rowClass = $rowClass;
+		if ($propsFlags > 0)
+			$this->rowClassPropsFlags = $propsFlags;
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridRow|string|NULL
+	 */
+	public function GetRowClass () {
+		return $this->rowClass;
 	}
 
 	/**
@@ -209,7 +225,7 @@ trait ConfigGettersSetters {
 	
 	/**
 	 * @inheritDocs
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm $translator
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm $filterForm
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetControlFilterForm (\MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm $filterForm) {
@@ -227,6 +243,37 @@ trait ConfigGettersSetters {
 	 */
 	public function GetControlFilterForm () {
 		return $this->controlFilterForm;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @param  \MvcCore\Ext\ICache|FALSE|NULL $cache
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetCache ($cache) {
+		$this->cache = $cache;
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @return \MvcCore\Ext\ICache|FALSE|NULL
+	 */
+	public function GetCache () {
+		if ($this->cache === NULL) {
+			$cache = FALSE;
+			$cacheClassName = static::$cacheClass;
+			if (class_exists($cacheClassName)) {
+				/** @var \MvcCore\Ext\ICache|NULL $cache */
+				$cache = $cacheClassName::GetStore();
+				if ($cache === NULL)
+					throw new \RuntimeException("Cache has not configured default store.");
+				if (!$cache->GetEnabled())
+					$cache = FALSE;
+			}
+			$this->cache = $cache;
+		}
+		return $this->cache;
 	}
 	
 	/**
@@ -406,43 +453,27 @@ trait ConfigGettersSetters {
 		if ($configColumns instanceof \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns) {
 			$this->configColumns = $configColumns;	
 		} else if (is_array($configColumns)) {
-			/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\Column $configColumn */
-			$configColumnsByUrlNames = [];
-			foreach ($configColumns as $index => $configColumn) {
-				if ($configColumn instanceof \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn) {
-					$propName = $configColumn->GetPropName();
-					if ($propName === NULL) throw new \InvalidArgumentException(
-						"Datagrid column configuration item requires `propName` (index: {$index})."
-					);
-					$urlName = $configColumn->GetUrlName();
-					if ($urlName === NULL) $urlName = $propName;
-					$urlNameTranslated = $this->translateUrlNames
-						? call_user_func_array($this->translator, [$urlName])
-						: $urlName;
-					$configColumn->SetUrlName($urlNameTranslated);
-					$dbColumnName = $configColumn->GetDbColumnName();
-					if ($dbColumnName === NULL) 
-						$configColumn->SetDbColumnName($propName);
-					$headingName = $configColumn->GetHeadingName();
-					if ($headingName === NULL) 
-						$configColumn->SetHeadingName($propName);
-					$configColumnsByUrlNames[$urlNameTranslated] = $configColumn;
-				} else {
-					$throwInvalidTypeError = TRUE;
-					break;
-				}
-			}
+			$configColumnsArr = $this->configColumnsCompleteMissing(
+				$configColumns, $throwInvalidTypeError
+			);
+			if ($this->translate)
+				$configColumnsArr = $this->configColumnsTranslate($configColumnsArr);
+			$this->configColumnsValidateUrlNames($configColumnsArr);
 			if (!$throwInvalidTypeError)
 				$this->configColumns = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns(
-					$configColumnsByUrlNames
+					$configColumnsArr
 				);
+			if ($cache = $this->GetCache()) {
+				list ($cacheKey, $cacheTags) = $this->GetGridCacheKeyAndTags();
+				$cache->Save($cacheKey, $this->configColumns, NULL, $cacheTags);
+			}
 		} else {
 			$throwInvalidTypeError = TRUE;
 		}
 		if ($throwInvalidTypeError) throw new \InvalidArgumentException(
-			"Datagrid column configuration has to be array of types ".
-			"`\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column` or iterator ".
-			"`\\MvcCore\\Ext\\Controllers\\DataGrids\\Iterators\\Columns`."
+			"Datagrid column configuration has to be iterator ".
+			"`\\MvcCore\\Ext\\Controllers\\DataGrids\\Iterators\\Columns` ".
+			" or array of types `\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column`."
 		);
 		return $this;
 	}
@@ -450,58 +481,20 @@ trait ConfigGettersSetters {
 	/**
 	 * @inheritDocs
 	 * @param  bool $activeOnly `TRUE` by default.
+	 * @throws \RuntimeException|\InvalidArgumentException
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns|NULL
 	 */
 	public function GetConfigColumns ($activeOnly = TRUE) {
 		if ($this->configColumns === NULL) {
-			$model = $this->GetModel(TRUE);
-			if ($model instanceof \MvcCore\Ext\Controllers\DataGrids\Models\IGridColumns) {
-				/** @var \MvcCore\Ext\Controllers\DataGrids\Models\GridColumns $model */
-				$configColumnsArr = $model->SetGrid($this)->GetConfigColumns();
+			if ($cache = $this->GetCache()) {
+				list ($cacheKey, $cacheTags) = $this->GetGridCacheKeyAndTags();
+				$this->configColumns = $cache->Load($cacheKey, function (\MvcCore\Ext\ICache $cache, string $cacheKey) use (& $cacheTags) {
+					$this->configColumnsParseTranslateValidate();
+					$cache->Save($cacheKey, $this->configColumns, NULL, $cacheTags);
+					return $this->configColumns;
+				});
 			} else {
-				$context = $this;
-				$configColumnsArr = $context::ParseConfigColumns($this->model);
-			}
-			if (is_array($configColumnsArr) && count($configColumnsArr) > 0) {
-				$configColumnsUrlNames = array_keys($configColumnsArr);
-				$configColumnsUrlNamesStr = implode("\n", $configColumnsUrlNames);
-				$notAllowedCharsInUrlNames = [
-					$this->configUrlSegments->GetUrlDelimiterSubjectValue(),
-					$this->configUrlSegments->GetUrlDelimiterSubjects(),
-				];
-				foreach ($notAllowedCharsInUrlNames as $notAllowedCharInUrlNames) {
-					if (mb_strpos($configColumnsUrlNamesStr, $notAllowedCharInUrlNames) !== FALSE) {
-						foreach ($configColumnsUrlNames as $configColumnsUrlName) {
-							if (mb_strpos($configColumnsUrlName, $notAllowedCharInUrlNames) !== FALSE) {
-								throw new \InvalidArgumentException(
-									"Datagrid column configuration url name `{$configColumnsUrlName}` ".
-									"contains not allowed grid url segment character `{$notAllowedCharInUrlNames}`. ".
-									"Try to configure different grid url segment or different property url name."
-								);
-							}
-						}
-					}
-				}
-				if ($this->translateUrlNames) {
-					$configColumnsArrTranslated = [];
-					foreach ($configColumnsArr as $urlName => $configColumn) {
-						$urlNameTranslated = call_user_func_array($this->translator, [$urlName]);
-						$configColumnsArrTranslated[$urlNameTranslated] = $configColumn->SetUrlName($urlNameTranslated);;
-					}
-					$configColumnsArr = $configColumnsArrTranslated;
-				}
-				$this->configColumns = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns(
-					$configColumnsArr
-				);
-			} else {
-				throw new \InvalidArgumentException(
-					"There was not possible to complete datagrid columns from given model instance. \n".
-					"- 1. You can use datagrid setter method `SetConfigColumns()` to directly configure datagrid columns or \n".
-					"- 2. You can implement interface `\\MvcCore\\Ext\\Controllers\\DataGrids\\Models\\IGridColumns` \n".
-					"  on given model instance and decorate model properties with attribute class \n".
-					"  `\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column` ".
-					"  or with equivalent PHPDocs tag names."
-				);
+				$this->configColumnsParseTranslateValidate();
 			}
 		}
 		if ($activeOnly) {

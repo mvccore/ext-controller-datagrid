@@ -25,7 +25,34 @@ trait InternalProps {
 	 * @internal
 	 * @var string
 	 */
-	protected static $gridActionDefaultKey = 'default';
+	protected static $gridActionDefaultKey		= 'default';
+
+	/**
+	 * Grid model class interface.
+	 * @var string
+	 */
+	protected static $modelInterface			= "\\MvcCore\\Ext\\Controllers\\DataGrids\\Models\\IGridModel";
+
+	/**
+	 * Row model class interface.
+	 * @var string
+	 */
+	protected static $rowModelInterface			= "\\MvcCore\\Ext\\Controllers\\DataGrids\\Models\\IGridRow";
+
+	/**
+	 * Cache class to cache parsed columns configurations.
+	 * Class has to implement `\MvcCore\Ext\ICache` or class
+	 * has to implement static method `GetStore()` and instance 
+	 * methods `Load()` and `Save()`.
+	 * @var string
+	 */
+	protected static $cacheClass				= "\\MvcCore\\Ext\\Cache";
+
+	/**
+	 * Extended model class name.
+	 * @var string
+	 */
+	protected static $extendedModelInterface	= "\\MvcCore\\Ext\\Models\\Db\\IModel";
 
 	/**
 	 * Internal datagrid actions.
@@ -247,7 +274,16 @@ trait InternalProps {
 	/**
 	 * If `TRUE`, some column config has been chagned durring request
 	 * and it's necessary to write into database or session.
+	 * @internal
 	 * @var bool
 	 */
 	protected $writeChangedColumnsConfigs = FALSE;
+
+	/**
+	 * If `TRUE`, row class implements extended model interface.
+	 * @internal
+	 * @var bool|NULL
+	 */
+	protected $rowClassIsExtendedModel = NULL;
+
 }

@@ -63,6 +63,7 @@ trait InitMethods {
 
 		parent::Init();
 		
+		$this->initModelClasses();
 		$this->GetConfigUrlSegments();
 		$this->initTranslations();
 		$this->GetConfigColumns(FALSE);
@@ -86,6 +87,41 @@ trait InitMethods {
 		
 		call_user_func([$this, $this->gridAction]);
 	}
+
+	/**
+	 * Validate model and row classes.
+	 * @throws \InvalidArgumentException
+	 * @return void
+	 */
+	protected function initModelClasses () {
+		if ($this->rowClassIsExtendedModel !== NULL) return;
+		if ($this->model === NULL) 
+			throw new \InvalidArgumentException(
+				"No datagrid model defined."
+			);
+		$extendedModelInterface = ltrim(self::$extendedModelInterface, '\\');
+		$modelInterface = ltrim(self::$modelInterface, '\\');
+		$modelInterfaces = class_implements($this->model);
+		if (!isset($modelInterfaces[$modelInterface])) 
+			throw new \InvalidArgumentException(
+				"Datagrid data model class doesn't implement `\\{$modelInterface}`."
+			);
+		if (
+			!($this->model instanceof \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel)
+		) throw new \InvalidArgumentException(
+			"Datagrid model class doesn't implement ".
+			"`\\MvcCore\\Ext\\Controllers\\DataGrids\\Models\\IGridModel`."
+		);
+		if ($this->rowClass === NULL)
+			$this->rowClass = get_class($this->model);
+		$rowInterfaces = class_implements($this->rowClass);
+		$rowInterface = ltrim(self::$rowModelInterface, '\\');
+		if (!isset($rowInterfaces[$rowInterface])) 
+			throw new \InvalidArgumentException(
+				"Datagrid row class doesn't implement `\\{$rowInterface}`."
+			);
+		$this->rowClassIsExtendedModel = isset($rowInterfaces[$extendedModelInterface]);
+	}
 	
 	/**
 	 * Initialize necessary properties for application URL building.
@@ -95,6 +131,7 @@ trait InitMethods {
 	 * @return void
 	 */
 	protected function initAppUrlCompletion () {
+		$this->initModelClasses();
 		$this->GetConfigUrlSegments();
 		$this->initTranslations();
 		$this->GetConfigColumns(FALSE);

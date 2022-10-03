@@ -19,33 +19,19 @@ namespace MvcCore\Ext\Controllers\DataGrid;
 trait ColumnsParsingMethods {
 	
 	/**
-	 * Try to parse decorated class properties atributes or PHPDocs tags
-	 * to complete array of datagrid columns configuration.
-	 * 
-	 * First argument is datagrid model instance used to get all instance properties.
-	 * 
-	 * Second argument is used for automatic columns configuration completion
-	 * by model class implementing `\MvcCore\Ext\Controllers\DataGrids\Models\IGridColumns`.
-	 * Array keys are properties names, array values are arrays with three items:
-	 * - `string`    - database column name 
-	 * - `\string[]` - property type(s)
-	 * - `array`     - format arguments
-	 * 
-	 * Third argument is access mod flags to load model instance properties.
-	 * If value is zero, there are used all access mode flags - private, protected and public.
-	 * 
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel|string $rowModelOrFullClassName
-	 * @param  array                                                       $rowModelMetaData
-	 * @param  int                                                         $rowModelAccessModFlags
+	 * @inheritDocs
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column[]
 	 */
-	public static function ParseConfigColumns (
-		$rowModelOrFullClassName, 
-		$rowModelMetaData = [], 
-		$rowModelAccessModFlags = 0
-	) {
-		$props = static::parseConfigColumnsGetProps(
-			$rowModelOrFullClassName, $rowModelAccessModFlags
+	public function ParseConfigColumns () {
+		$rowFullClassName = $this->GetRowClass();
+		$rowClassPropsFlags = $this->rowClassPropsFlags !== 0
+			? $this->rowClassPropsFlags
+			: $rowFullClassName::GetDefaultPropsFlags();
+		$rowModelMetaData = [];
+		if ($this->rowClassIsExtendedModel)
+			$rowModelMetaData = $this->getExtendedModelMetaData($rowClassPropsFlags);
+		$props = $this->parseConfigColumnsGetProps(
+			$rowFullClassName, $rowClassPropsFlags
 		);
 		$app = \MvcCore\Application::GetInstance();
 		$attrsAnotations = $app->GetAttributesAnotations();
@@ -55,7 +41,7 @@ trait ColumnsParsingMethods {
 		$naturalSort = [];
 		$indexSort = [];
 		foreach ($props as $index => $prop) {
-			$columnConfig = static::parseConfigColumn(
+			$columnConfig = $this->parseConfigColumn(
 				$prop, $index, $rowModelMetaData, $attrsAnotations, $toolClass
 			);
 			if ($columnConfig === NULL) continue;
@@ -73,19 +59,46 @@ trait ColumnsParsingMethods {
 		if (count($indexSort) === 0) {
 			return $columnConfigs;
 		} else {
-			return static::parseConfigColumnSort(
+			return $this->parseConfigColumnSort(
 				$columnConfigs, $naturalSort, $indexSort
 			);
 		}
 	}
 
 	/**
+	 * Return database model metadata if row class
+	 * implements extended model interface `\MvcCore\Ext\Models\Db\IModel`.
+	 * @param  int $rowModelPropsFlags
+	 * @return array
+	 */
+	protected function getExtendedModelMetaData ($rowModelPropsFlags) {
+		/** @var \MvcCore\Ext\Models\Db\Model $rowFullClassName */
+		$rowFullClassName = $this->GetRowClass();
+		$modelMetaData = [];
+		list ($metaData) = $rowFullClassName::GetMetaData($rowModelPropsFlags);
+		foreach ($metaData as $propData) {
+			$dbColumnName = $propData[4];
+			$allowNulls = $propData[1];
+			$types = $propData[2];
+			$parserArgs = $propData[5];
+			$formatArgs = $propData[6];
+			if ($dbColumnName !== NULL) {
+				$propertyName = $propData[3];
+				$modelMetaData[$propertyName] = [
+					$dbColumnName, $allowNulls, $types, $parserArgs, $formatArgs
+				];
+			}
+		}
+		return $modelMetaData;
+	}
+
+	/**
 	 * Get model reflection properties by model instance and access mod flags.
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel|string $rowModelOrFullClassName 
-	 * @param  int                                                         $accesModFlags
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridRow|string $rowModelOrFullClassName 
+	 * @param  int                                                       $accesModFlags
 	 * @return \ReflectionProperty[]
 	 */
-	protected static function parseConfigColumnsGetProps ($rowModelOrFullClassName, $accesModFlags) {
+	protected function parseConfigColumnsGetProps ($rowModelOrFullClassName, $accesModFlags) {
 		$modelType = new \ReflectionClass($rowModelOrFullClassName);
 		// `$accesModFlags` could contain foreing flags from model
 		$localFlags = 0;
@@ -106,7 +119,7 @@ trait ColumnsParsingMethods {
 	 * @param  string|\MvcCore\Tool $toolClass
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column|NULL
 	 */
-	protected static function parseConfigColumn (
+	protected function parseConfigColumn (
 		\ReflectionProperty $prop, $index, $modelMetaData, $attrsAnotations, $toolClass
 	) {
 		if ($prop->isStatic()) NULL;
@@ -133,17 +146,25 @@ trait ColumnsParsingMethods {
 			list(
 				$args['dbColumnName'], $allowNull, $types, $parserArgs, $formatArgs
 			) = $modelMetaData[$propName];
-			if (!isset($args['types']) && $types !== NULL) $args['types'] = $types;
-			if (!isset($args['parserArgs']) && $parserArgs !== NULL) $args['parserArgs'] = $parserArgs;
-			if (!isset($args['formatArgs']) && $formatArgs !== NULL) $args['formatArgs'] = $formatArgs;
+			if (!isset($args['types']) && $types !== NULL) 
+				$args['types'] = $types;
+			if (!isset($args['parserArgs']) && $parserArgs !== NULL) 
+				$args['parserArgs'] = $parserArgs;
+			if (!isset($args['formatArgs']) && $formatArgs !== NULL) 
+				$args['formatArgs'] = $formatArgs;
 		}
-		if ($args === NULL || ($args !== NULL && !isset($args['dbColumnName']))) return NULL;
+		if ($args === NULL || ($args !== NULL && !isset($args['dbColumnName']))) 
+			return NULL;
 		/** @var \ReflectionClass $columnType */
 		/** @var \ReflectionParameter[] $ctorParams */
-		list ($columnType, $ctorParams, $phpWithTypes, $phpWithUnionTypes) = static::getAttrClassReflObjects();
+		list (
+			$columnType, $ctorParams, $phpWithTypes, $phpWithUnionTypes
+		) = $this->getAttrClassReflObjects();
 		$typesNotSet = !isset($args['types']);
 		if ($allowNull === NULL || $typesNotSet) {
-			list($types, $allowNull) = static::parseConfigColumnTypes($prop, $phpWithTypes, $phpWithUnionTypes);
+			list($types, $allowNull) = $this->parseConfigColumnTypes(
+				$prop, $phpWithTypes, $phpWithUnionTypes
+			);
 			if ($typesNotSet) $args['types'] = $types;
 		}
 		if (isset($args['filter'])) {
@@ -181,7 +202,7 @@ trait ColumnsParsingMethods {
 	 * @param  bool                $phpWithUnionTypes 
 	 * @return array               [\string[], bool]
 	 */
-	protected static function parseConfigColumnTypes (\ReflectionProperty $prop, $phpWithTypes, $phpWithUnionTypes) {
+	protected function parseConfigColumnTypes (\ReflectionProperty $prop, $phpWithTypes, $phpWithUnionTypes) {
 		$phpWithTypes = PHP_VERSION_ID >= 70400;
 		$phpWithUnionTypes = PHP_VERSION_ID >= 80000;
 		if ($phpWithTypes && $prop->hasType()) {
@@ -236,7 +257,7 @@ trait ColumnsParsingMethods {
 	 * Return cached reflection class for column config and it's constructor arguments array.
 	 * @return array [\ReflectionClass, \ReflectionParameter[], bool, bool]
 	 */
-	protected static function getAttrClassReflObjects () {
+	protected function getAttrClassReflObjects () {
 		static $__attrClassReflObjects = NULL;
 		if ($__attrClassReflObjects === NULL) {
 			$columnType = new \ReflectionClass(static::$attrClassFullName);
@@ -257,7 +278,7 @@ trait ColumnsParsingMethods {
 	 * @param  array                                               $indexSort 
 	 * @return array
 	 */
-	protected static function parseConfigColumnSort (array $columnConfigs, array $naturalSort, array $indexSort) {
+	protected function parseConfigColumnSort (array $columnConfigs, array $naturalSort, array $indexSort) {
 		$result = [];
 		ksort($indexSort);
 		foreach ($indexSort as $columnIndex => $indexedUrlNames) 
