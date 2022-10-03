@@ -668,8 +668,11 @@ trait InternalGettersSetters {
 		foreach ($configColumns as $columnConfig) {
 			$propName = $columnConfig->GetUrlName();
 			$headingName = $columnConfig->GetHeadingName();
-			if ($propName === $headingName) continue;
 			$urlName = $columnConfig->GetUrlName();
+			if ($propName === $headingName) {
+				$result[$propName] = $columnConfig;
+				continue;
+			}
 			$title = $columnConfig->GetTitle();
 			if ($headingName !== NULL) {
 				$headingName = call_user_func_array($this->translator, [$headingName]);

@@ -122,7 +122,7 @@ trait ColumnsParsingMethods {
 	protected function parseConfigColumn (
 		\ReflectionProperty $prop, $index, $modelMetaData, $attrsAnotations, $toolClass
 	) {
-		if ($prop->isStatic()) NULL;
+		if ($prop->isStatic()) return NULL;
 		$attrClassFullName = static::$attrClassFullName;
 		if ($attrsAnotations) {
 			$attrClassNoFirstSlash = ltrim($attrClassFullName, '\\');
