@@ -33,7 +33,7 @@ interface IGridRow {
 	public function RenderCellByPropName (
 		\MvcCore\Ext\Controllers\IDataGrid $grid,
 		$columnPropName,
-		\MvcCore\IView $view = NULL, 
+		\MvcCore\IView $view = NULL
 	);
 
 	/**
