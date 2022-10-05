@@ -16,6 +16,13 @@ namespace MvcCore\Ext\Controllers\DataGrids\Configs;
 interface IRendering {
 
 	/**
+	 * Merge any other rendering config.
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering 
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function Merge (\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering $configRendering);
+
+	/**
 	 * Set datagrid type - table or grid of items.
 	 * `\MvcCore\Ext\Controllers\IDataGrid::TYPE_TABLE` type by default.
 	 * @param  int $type

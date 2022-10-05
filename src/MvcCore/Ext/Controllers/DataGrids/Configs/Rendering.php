@@ -315,6 +315,32 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 
 	/**
 	 * @inheritDocs
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering 
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
+	 */
+	public function Merge (\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering $configRendering) {
+		$type = new \ReflectionClass($this);
+		/** @var \ReflectionProperty[] $props */
+		$props = $type->getProperties(
+			\ReflectionProperty::IS_PRIVATE | 
+			\ReflectionProperty::IS_PROTECTED |
+			\ReflectionProperty::IS_PUBLIC
+		);
+		$emptyInstance = new static();
+		foreach ($props as $prop) {
+			if ($prop->isStatic()) continue;
+			if ($prop->isPrivate()) $prop->setAccessible(TRUE);
+			$defaultValue = $prop->getValue($emptyInstance);
+			$currentValue = $prop->getValue($this);
+			$newValue = $prop->getValue($configRendering);
+			if ($newValue !== $defaultValue && $newValue !== $currentValue)
+				$prop->setValue($this, $newValue);
+		}
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
 	 * @param  int $type
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
