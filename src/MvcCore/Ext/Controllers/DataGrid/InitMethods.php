@@ -149,7 +149,8 @@ trait InitMethods {
 	 */
 	protected function initGridAction () {
 		$gridActionParam = $this->request->GetParam(static::URL_PARAM_ACTION, '-_a-zA-Z', static::$gridActionDefaultKey, 'string');
-		if (!isset(static::$gridActions[$gridActionParam])) $gridActionParam = static::$gridActionDefaultKey;
+		if (!isset(static::$gridActions[$gridActionParam])) 
+			$gridActionParam = static::$gridActionDefaultKey;
 		$this->gridAction = static::$gridActions[$gridActionParam];
 	}
 
