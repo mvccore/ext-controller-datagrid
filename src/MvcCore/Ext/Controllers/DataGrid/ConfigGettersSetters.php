@@ -458,7 +458,7 @@ trait ConfigGettersSetters {
 			);
 			if ($this->translate)
 				$configColumnsArr = $this->configColumnsTranslate($configColumnsArr);
-			$this->configColumnsValidateUrlNames($configColumnsArr);
+			$this->configColumnsValidateNames($configColumnsArr);
 			if (!$throwInvalidTypeError)
 				$this->configColumns = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns(
 					$configColumnsArr

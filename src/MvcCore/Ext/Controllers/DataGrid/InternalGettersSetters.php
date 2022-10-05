@@ -614,7 +614,7 @@ trait InternalGettersSetters {
 		if (is_array($configColumnsArr) && count($configColumnsArr) > 0) {
 			if ($this->translate)
 				$configColumnsArr = $this->configColumnsTranslate($configColumnsArr);
-			$this->configColumnsValidateUrlNames($configColumnsArr);
+			$this->configColumnsValidateNames($configColumnsArr);
 			$this->configColumns = new \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns(
 				$configColumnsArr
 			);
@@ -635,7 +635,7 @@ trait InternalGettersSetters {
 	 * @throws \InvalidArgumentException
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
-	protected function configColumnsValidateUrlNames (array $configColumns) {
+	protected function configColumnsValidateNames (array $configColumns) {
 		$configColumnsUrlNames = array_keys($configColumns);
 		$configColumnsUrlNamesStr = implode("\n", $configColumnsUrlNames);
 		$notAllowedCharsInUrlNames = [
@@ -655,6 +655,10 @@ trait InternalGettersSetters {
 				}
 			}
 		}
+		if (isset($configColumns[static::URL_PARAM_GRID]))
+			throw new \InvalidArgumentException(
+				"Datagrid column can't have url name with system value `{".static::URL_PARAM_GRID."}`."
+			);
 		return $this;
 	}
 	
