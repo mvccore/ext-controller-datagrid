@@ -577,6 +577,24 @@ trait ConfigGettersSetters {
 		$this->filterFormValuesDelimiter = $filterFormValuesDelimiter;
 		return $this;
 	}
+
+	/**
+	 * @inheritDocs
+	 * @return \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|NULL
+	 */
+	public function GetHandlerClientRowModelDefinition () {
+		return $this->handlerClientRowModelDefinition;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|NULL $handlerClientRowModelDefinition
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetHandlerClientRowModelDefinition ($handlerClientRowModelDefinition) {
+		$this->handlerClientRowModelDefinition = $handlerClientRowModelDefinition;
+		return $this;
+	}
 	
 	/**
 	 * @inheritDocs

@@ -217,6 +217,12 @@ trait ConfigProps {
 	 * @var string
 	 */
 	protected $filterFormValuesDelimiter = ';';
+
+	/**
+	 * Custom handler to define client TS row model generating.
+	 * @var \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|NULL
+	 */
+	protected $handlerClientRowModelDefinition = NULL;
 	
 	/**
 	 * Column PHP code types and technicaly possible 

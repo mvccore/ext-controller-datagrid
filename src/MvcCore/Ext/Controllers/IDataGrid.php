@@ -506,6 +506,19 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	public function SetFilterFormValuesDelimiter ($filterFormValuesDelimiter);
 
 	/**
+	 * Get custom handler to define client TS row model generating.
+	 * @return \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|NULL
+	 */
+	public function GetHandlerClientRowModelDefinition ();
+
+	/**
+	 * Set custom handler to define client TS row model generating.
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|NULL $handlerClientRowModelDefinition
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetHandlerClientRowModelDefinition ($handlerClientRowModelDefinition);
+
+	/**
 	 * Get column PHP code types and technicaly possible 
 	 * filtering modes against database.
 	 * @return array<string, int[]>

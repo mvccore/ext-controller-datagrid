@@ -26,20 +26,9 @@ trait ActionMethods {
 	public function ActionDefault () {
 		if ($this->configRendering->GetRenderTableHeadFiltering()) 
 			$this->createTableHeadFilterForm(FALSE);
-		if ($this->controlFilterForm !== NULL) {
-			list (
-				$columnsConfigsIterator, $filteringByPropNames
-			) = $this->getFormColumnsAndFiltering();
-			/** @var $form \MvcCore\Ext\Form|\MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Controller */
-			$form = $this->controlFilterForm;
-			$form
-				->SetConfigColumns($columnsConfigsIterator)
-				->SetFiltering($filteringByPropNames);
-			$this->AddChildController($form, 'controlFilterForm');
-			$controlFilterFormState = $form->GetDispatchState();
-			if ($controlFilterFormState < \MvcCore\IController::DISPATCH_STATE_INITIALIZED)
-				$form->Init(FALSE);
-		}
+		$this->initTableHeadFilterForm();
+		$this->initDevClientRowModelDefinition();
+		
 	}
 
 	/**
@@ -82,7 +71,7 @@ trait ActionMethods {
 		if ($controlFilterFormState < \MvcCore\IController::DISPATCH_STATE_INITIALIZED)
 			$form->Init($submit);
 	}
-
+	
 	/**
 	 * Internal factory method to create table head filter form column fields.
 	 * @template
@@ -148,6 +137,51 @@ trait ActionMethods {
 		return [$valueField, $filterField, $clearField];
 	}
 
+	/**
+	 * Initialize filter form if necessary.
+	 * @return void
+	 */
+	protected function initTableHeadFilterForm () {
+		if ($this->controlFilterForm === NULL) return;
+		list (
+			$columnsConfigsIterator, $filteringByPropNames
+		) = $this->getFormColumnsAndFiltering();
+		/** @var $form \MvcCore\Ext\Form|\MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Controller */
+		$form = $this->controlFilterForm;
+		$form
+			->SetConfigColumns($columnsConfigsIterator)
+			->SetFiltering($filteringByPropNames);
+		$this->AddChildController($form, 'controlFilterForm');
+		$controlFilterFormState = $form->GetDispatchState();
+		if ($controlFilterFormState < \MvcCore\IController::DISPATCH_STATE_INITIALIZED)
+			$form->Init(FALSE);
+	}
+
+	/**
+	 * Initialize row model client TypeScript code definition if necessary.
+	 * @return void
+	 */
+	protected function initDevClientRowModelDefinition () {
+		if (
+			!$this->environment->IsDevelopment() || 
+			$this->handlerClientRowModelDefinition === NULL
+		) return;
+		$generatorClass = static::$toolsTsGeneratorClass;
+		if (!class_exists($generatorClass)) throw new \RuntimeException(
+			"Class `$generatorClass` not installed, please install ".
+			"composer package `mvccore/ext-tool-ts-generator`."
+		);
+		$rowFullClassName = $this->rowClass;
+		$rowClassPropsFlags = $this->rowClassPropsFlags !== 0
+			? $this->rowClassPropsFlags
+			: ($this->rowClassIsExtendedModel
+				? $rowFullClassName::GetDefaultPropsFlags()
+				: \MvcCore\IModel::PROPS_INHERIT_PROTECTED
+			);
+		call_user_func_array($this->handlerClientRowModelDefinition, [
+			$generatorClass, $rowFullClassName, $rowClassPropsFlags
+		]);
+	}
 
 	/**
 	 * Internal submit action for table head filter form.

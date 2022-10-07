@@ -55,6 +55,12 @@ trait InternalProps {
 	protected static $extendedModelInterface	= "\\MvcCore\\Ext\\Models\\Db\\IModel";
 
 	/**
+	 * Tools class to generate development TS row model definitions.
+	 * @var string
+	 */
+	protected static $toolsTsGeneratorClass		= "\\MvcCore\\Ext\\Tools\\TsGenerator";
+
+	/**
 	 * Internal datagrid actions.
 	 * Keys are url values, values are local method names.
 	 * @internal
@@ -72,9 +78,9 @@ trait InternalProps {
 	 * @var array
 	 */
 	protected static $formExtensionsClasses = [
-		'mvccore/ext-form'				=> 'MvcCore\\Ext\\Form',
-		'mvccore/ext-form-field-text'	=> 'MvcCore\\Ext\\Forms\Fields\\Text',
-		'mvccore/ext-form-field-button'	=> 'MvcCore\\Ext\\Forms\Fields\\SubmitButton',
+		'mvccore/ext-form'						=> 'MvcCore\\Ext\\Form',
+		'mvccore/ext-form-field-text'			=> 'MvcCore\\Ext\\Forms\Fields\\Text',
+		'mvccore/ext-form-field-button'			=> 'MvcCore\\Ext\\Forms\Fields\\SubmitButton',
 	];
 
 	/**
