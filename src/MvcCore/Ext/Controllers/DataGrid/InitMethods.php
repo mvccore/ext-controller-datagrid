@@ -29,7 +29,7 @@ trait InitMethods {
 		if (is_string($this->countScales)) 
 			$this->countScales = array_map('intval', explode(',', (string) $this->countScales));
 		if ($controller === NULL) {
-			$controller = \MvcCore\Ext\Form::GetCallerControllerInstance();
+			$controller = \MvcCore\Controller::GetCallerControllerInstance();
 			if ($controller === NULL) 
 				$controller = \MvcCore\Application::GetInstance()->GetController();
 			if ($controller === NULL) throw new \InvalidArgumentException(
@@ -38,6 +38,9 @@ trait InitMethods {
 				.'by first `\MvcCore\Ext\Controllers\DataGrid::__construct($controller);` argument.'
 			);
 		}
+		$backtraceItems = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+		if (count($backtraceItems) === 2)
+			$this->creationPlaceImprint = hash('crc32b', $backtraceItems[1]);
 		$controller->AddChildController($this, $childControllerIndex);
 	}
 

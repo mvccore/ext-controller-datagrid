@@ -146,6 +146,12 @@ trait InternalProps {
 	];
 
 	/**
+	 * Grid instance creation place imprint from `debug_backtrace()`.
+	 * @var string|null
+	 */
+	protected $creationPlaceImprint = NULL;
+
+	/**
 	 * Datagrid page, always initialized into integer value by URL.
 	 * @internal
 	 * @var int|NULL

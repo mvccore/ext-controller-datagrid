@@ -492,10 +492,7 @@ trait InternalGettersSetters {
 	 * @return array|[string, \string[]]
 	 */
 	public function GetGridCacheKeyAndTags () {
-		$req = $this->request;
-		list($ctrl, $action) = [$req->GetControllerName(), $req->GetActionName()];
-		$clsName = get_class($this);
-		$cacheKey = "grid_{$ctrl}_{$action}_{$clsName}";
+		$cacheKey = "grid_{$this->creationPlaceImprint}";
 		return [$cacheKey, ['grid']];
 	}
 
