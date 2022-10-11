@@ -26,6 +26,7 @@
 	},
 	"suggest": {
 		"mvccore/ext-model-db-*": "MvcCore model extension to work with database SQL queries in more comfortable API.",
+		"mvccore/ext-tool-ts-generator": "MvcCore tools extension to easilly generate TypeScript classes, interfaces or enums from PHP equivalents.",
 		"mvccore/ext-form": "MvcCore extension to create custom filter form.",
 		"mvccore/ext-form-field-*": "MvcCore form extension to create custom filter form fields.",
 		"mvccore/ext-cache-*": "MvcCore cache extensions to speed up operations driven by class anotations."

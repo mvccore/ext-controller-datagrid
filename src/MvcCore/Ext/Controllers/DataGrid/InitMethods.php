@@ -581,6 +581,9 @@ trait InitMethods {
 				} else {
 					continue;
 				}
+			} else {
+				if ($configColumn->GetDisabled())
+					$this->enableColumn($configColumn);
 			}
 			$columnFilterCfg = $configColumn->GetFilter();
 			// check if column has allowed parsed operator
