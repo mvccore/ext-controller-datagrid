@@ -32,5 +32,5 @@ implements	\MvcCore\Ext\Controllers\IDataGrid {
 	 * Comparison by PHP function version_compare();
 	 * @see http://php.net/manual/en/function.version-compare.php
 	 */
-	const VERSION = '5.1.28';
+	const VERSION = '5.1.29';
 }
