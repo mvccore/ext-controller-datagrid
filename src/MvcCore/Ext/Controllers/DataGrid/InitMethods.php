@@ -40,7 +40,7 @@ trait InitMethods {
 		}
 		$backtraceItems = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
 		if (count($backtraceItems) === 2)
-			$this->creationPlaceImprint = hash('crc32b', $backtraceItems[1]);
+			$this->creationPlaceImprint = hash('crc32b', serialize($backtraceItems[1]));
 		$controller->AddChildController($this, $childControllerIndex);
 	}
 
