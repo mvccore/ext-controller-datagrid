@@ -333,8 +333,12 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 			$defaultValue = $prop->getValue($emptyInstance);
 			$currentValue = $prop->getValue($this);
 			$newValue = $prop->getValue($configRendering);
-			if ($newValue !== $defaultValue && $newValue !== $currentValue)
+			if (
+				($newValue !== $currentValue && $newValue !== $defaultValue) ||
+				($newValue !== $currentValue && $currentValue !== $defaultValue)
+			)
 				$prop->setValue($this, $newValue);
+
 		}
 		return $this;
 	}
