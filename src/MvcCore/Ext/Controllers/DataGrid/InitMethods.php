@@ -416,13 +416,7 @@ trait InitMethods {
 			$columnFilterCfg = $columnConfig->GetFilter();
 			$propName = $columnConfig->GetPropName();
 			if (is_integer($columnFilterCfg) && $columnFilterCfg !== 0) {
-				if (
-					$columnFilterCfg === self::FILTER_ALLOW_NULL ||
-					$columnFilterCfg === self::FILTER_ALLOW_NOT_NULL
-				) {
-					$columnFilterCfg = $this->initColumnOperators($columnConfig, $columnFilterCfg);
-					$this->columnsAllowedOperators[$propName] = $this->getAllowedOperators($columnFilterCfg);
-				}
+				$this->columnsAllowedOperators[$propName] = $this->getAllowedOperators($columnFilterCfg);
 			} else if (is_bool($columnFilterCfg) && $columnFilterCfg) {
 				$columnFilterCfg = $this->initColumnOperators($columnConfig, 0);
 				$this->columnsAllowedOperators[$propName] = $this->getAllowedOperators($columnFilterCfg);
@@ -443,12 +437,20 @@ trait InitMethods {
 			$type = $types[0];
 			$allowNulls = strpos($type, '?') !== FALSE;
 			$type = ltrim(str_replace('?', '', $type), '\\');
-			$columnFilterCfg |= ($allowNulls ? self::FILTER_ALLOW_NULL : self::FILTER_ALLOW_NOT_NULL);
+			if (
+				($columnFilterCfg & self::FILTER_ALLOW_NULL) === 0 &&
+				($columnFilterCfg & self::FILTER_ALLOW_NOT_NULL) === 0
+			) {
+				$columnFilterCfg |= ($allowNulls 
+					? self::FILTER_ALLOW_NULL 
+					: self::FILTER_ALLOW_NOT_NULL);
+			}
 			if (isset($this->typesPossibleFilterFlags[$type])) {
 				$typesPossibleFilterFlags = $this->typesPossibleFilterFlags[$type];
 				foreach ($typesPossibleFilterFlags as $typesPossibleFilterFlag)
 					if (($this->filteringMode & $typesPossibleFilterFlag) != 0)
 						$columnFilterCfg |= $typesPossibleFilterFlag;
+
 			} else {
 				$currentType = $type;
 				$parentType = NULL;
@@ -718,6 +720,8 @@ trait InitMethods {
 	protected function getAllowedOperators ($columnFilterFlags) {
 		$urlFilterOperators = $this->configUrlSegments->GetUrlFilterOperators();
 		$allowEquals		= ($columnFilterFlags & static::FILTER_ALLOW_EQUALS) != 0;
+		$allowNull			= ($columnFilterFlags & static::FILTER_ALLOW_NULL) != 0;
+		$allowNotNull		= ($columnFilterFlags & static::FILTER_ALLOW_NOT_NULL) != 0;
 		$allowRanges		= ($columnFilterFlags & static::FILTER_ALLOW_RANGES) != 0;
 		$allowLikeRight		= ($columnFilterFlags & static::FILTER_ALLOW_LIKE_RIGHT_SIDE) != 0;
 		$allowLikeLeft		= ($columnFilterFlags & static::FILTER_ALLOW_LIKE_LEFT_SIDE)  != 0;
@@ -749,6 +753,26 @@ trait InitMethods {
 				'multiple'	=> $multipleValues,
 				'regex'		=> $regex,
 			];
+		}
+		if ($allowNull) {
+			$operator = '=';
+			$urlSegment = $urlFilterOperators[$operator];
+			if (!isset($allowedOperators[$urlSegment]))
+				$allowedOperators[$urlSegment] = (object) [
+					'operator'	=> $operator,
+					'multiple'	=> FALSE,
+					'regex'		=> "#^null$#",
+				];
+		}
+		if ($allowNotNull) {
+			$operator = '!=';
+			$urlSegment = $urlFilterOperators[$operator];
+			if (!isset($allowedOperators[$urlSegment]))
+				$allowedOperators[$urlSegment] = (object) [
+					'operator'	=> $operator,
+					'multiple'	=> FALSE,
+					'regex'		=> "#^null$#",
+				];
 		}
 		return $allowedOperators;
 	}

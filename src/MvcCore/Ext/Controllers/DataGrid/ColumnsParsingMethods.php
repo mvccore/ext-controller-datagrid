@@ -171,17 +171,25 @@ trait ColumnsParsingMethods {
 			$filter = $args['filter'];
 			if ($allowNull) {
 				if (is_int($filter)) {
-					$filter = ~((~$filter) | self::FILTER_ALLOW_NOT_NULL); // remove allow not nulls flag if any
+					//$filter = ~((~$filter) | self::FILTER_ALLOW_NOT_NULL); // remove allow not nulls flag if any
 					$filter |= self::FILTER_ALLOW_NULL; // add allow nulls flag
 				} else if ($filter === TRUE) {
-					$filter = self::FILTER_ALLOW_NULL;
+					if (is_array($args['types']) && count($args['types']) > 0) {
+						$firstType = $args['types'][0];
+						if (strpos($firstType, '?') === FALSE)
+							$args['types'][0] = '?' . $firstType;
+					}
 				}
 			} else {
 				if (is_int($filter)) {
-					$filter = ~((~$filter) | self::FILTER_ALLOW_NULL); // remove allow nulls flag if any
+					//$filter = ~((~$filter) | self::FILTER_ALLOW_NULL); // remove allow nulls flag if any
 					$filter |= self::FILTER_ALLOW_NOT_NULL; // add allow not null flag
 				} else if ($filter === TRUE) {
-					$filter = self::FILTER_ALLOW_NOT_NULL;
+					if (is_array($args['types']) && count($args['types']) > 0) {
+						$firstType = $args['types'][0];
+						if (strpos($firstType, '?') === FALSE)
+							$args['types'][0] = '?' . $firstType;
+					}
 				}
 			}
 			$args['filter'] = $filter;
