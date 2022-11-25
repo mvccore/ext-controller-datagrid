@@ -86,6 +86,8 @@ trait GridRow {
 			$formatArgs = $columnConfig->GetFormatArgs() ?: [];
 			return call_user_func_array(
 				[$view, $viewHelperName], 
+				// ipass into view helper only first format arg, 
+				// the second is always used for db like formating
 				array_merge([$value], count($formatArgs) > 0 ? [$formatArgs[0]] : [])
 			);
 		} else {

@@ -592,7 +592,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDocs
-	 * @return array|NULL
+	 * @return string|NULL
 	 */
 	public function GetViewHelper () {
 		return $this->viewHelper;
@@ -600,7 +600,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDocs
-	 * @param  array|NULL $viewHelper
+	 * @param  string|NULL $viewHelper
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetViewHelper ($viewHelper) {
