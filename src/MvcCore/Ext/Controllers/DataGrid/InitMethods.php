@@ -70,7 +70,7 @@ trait InitMethods {
 		$this->GetConfigUrlSegments();
 		$this->initTranslations();
 		$this->GetConfigColumns(FALSE);
-
+			
 		$this->initGridAction();
 
 		$this->GetRoute();
@@ -229,9 +229,14 @@ trait InitMethods {
 			!in_array($this->count, $this->countScales, TRUE)
 		) {
 			// if there is not allowed custom count scale - choose closest value and redirect
-			$redirectUrl = $this->GridUrl([
+			$params = [
 				static::URL_PARAM_COUNT	=> $this->getClosestCountScale($this->count),
-			]);
+			];
+			if (count($this->countScales) === 1) {
+				$params[static::URL_PARAM_PAGE] = 1;
+				$params[static::URL_PARAM_COUNT] = NULL;
+			}
+			$redirectUrl = $this->GridUrl($params);
 			/** @var \MvcCore\Controller $this */
 			$this::Redirect(
 				$redirectUrl, 
