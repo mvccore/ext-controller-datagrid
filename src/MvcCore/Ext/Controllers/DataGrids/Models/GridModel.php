@@ -268,7 +268,9 @@ trait GridModel {
 							$isRawValueNull = $rawValuesIsNull[$rawValueIndex];
 							$sqlOperator = $this->getSqlConditionOperator($isRawValueNull, $operator);
 							$conditionRightSide = $this->getSqlConditionRightSide(
-								$isRawValueNull, $paramBaseName, $index, $params, $rawValue, $collateSqlStr
+								$isRawValueNull, $paramBaseName, $index, 
+								$params, $rawValue, $collateSqlStr,
+								$columnCfg
 							);
 							$conditionSqlSubItems[] = "{$conditionLeftSide} {$sqlOperator} {$conditionRightSide}";
 						}
@@ -279,7 +281,9 @@ trait GridModel {
 					$isRawValueNull = mb_strtolower($rawValues[0]) === $nullStrVal;
 					$sqlOperator = $this->getSqlConditionOperator($isRawValueNull, $operator);
 					$conditionRightSide = $this->getSqlConditionRightSide(
-						$isRawValueNull, $paramBaseName, $index, $params, $rawValues[0], $collateSqlStr
+						$isRawValueNull, $paramBaseName, $index, 
+						$params, $rawValues[0], $collateSqlStr,
+						$columnCfg
 					);
 					$columnSqlItems[] = "{$conditionLeftSide} {$sqlOperator} {$conditionRightSide}";
 				}
@@ -366,16 +370,19 @@ trait GridModel {
 	/**
 	 * Get SQL condition right side part 
 	 * for standard cases (not for `IN` and `NOT IN`).
-	 * @param  bool   $isRawValueNull 
-	 * @param  string $paramBaseName 
-	 * @param  int    $index 
-	 * @param  array  $params 
-	 * @param  mixed  $rawValue 
-	 * @param  string $collateSqlStr 
+	 * @param  bool                                               $isRawValueNull 
+	 * @param  string                                             $paramBaseName 
+	 * @param  int                                                $index 
+	 * @param  array                                              $params 
+	 * @param  mixed                                              $rawValue 
+	 * @param  string                                             $collateSqlStr 
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $columnCfg
 	 * @return string
 	 */
 	protected function getSqlConditionRightSide (
-		$isRawValueNull, $paramBaseName, & $index, array & $params, $rawValue, $collateSqlStr
+		$isRawValueNull, $paramBaseName, & $index, 
+		array & $params, $rawValue, $collateSqlStr, 
+		\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $columnCfg
 	) {
 		if ($isRawValueNull) {
 			return "NULL";
