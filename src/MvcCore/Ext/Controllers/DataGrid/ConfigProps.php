@@ -202,6 +202,12 @@ trait ConfigProps {
 	 * @var \string[]
 	 */
 	protected $cssClasses = ['grid'];
+
+	/**
+	 * Datagrid html wrapper element html attributes.
+	 * @var array|array<string, string>
+	 */
+	protected $containerAttrs = [];
 	
 	/**
 	 * Internal table heading filter form instance in grid table type.

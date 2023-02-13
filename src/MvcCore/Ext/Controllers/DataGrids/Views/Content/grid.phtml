@@ -6,6 +6,10 @@
 	$gridType = $renderConf->GetType();
 	$gridTableType = ($gridType & $grid::TYPE_TABLE) !== 0;
 	$gridCssClasses = $grid->GetCssClasses();
+	$gridContAttrsStrs = [];
+	foreach ($grid->GetContainerAttrs() as $gridContAttrName => $gridContAttrValue):
+		$gridContAttrsStrs[] = $gridContAttrName . '="' . $this->EscapeAttr($gridContAttrValue) . '"';
+	endforeach;
 	$contentTableCssClasses = $renderConf->GetCssClassesContentTable();
 	$controlsWrapperCssClasses = $renderConf->GetCssClassesControlsWrapper();
 	$controlsWrapperCssClass = count($controlsWrapperCssClasses) > 0
@@ -19,6 +23,8 @@
 ?><div<?php
 	if (count($gridCssClasses) > 0) 
 		echo ' class="'.implode(' ', $gridCssClasses) . '"';
+	if (count($gridContAttrsStrs) > 0)
+		echo ' ' . implode(' ', $gridContAttrsStrs);
 ?>><?php
 	if ($renderConf->GetRenderControlPaging() || $renderConf->GetRenderControlSorting()):
 	?><div class="<?php echo $controlsWrapperCssClass; ?> grid-controls-top"><?php

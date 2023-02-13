@@ -648,4 +648,33 @@ trait ConfigGettersSetters {
 		return $this->cssClasses;
 	}
 
+	/**
+	 * @inheritDocs
+	 * @param  array|array<string,string> $containerAttrs
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function AddContainerAttrs ($containerAttrs) {
+		$this->containerAttrs = array_merge($this->containerAttrs, $containerAttrs);
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @param  array|array<string,string> $containerAttrs
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetContainerAttrs ($containerAttrs) {
+		$this->containerAttrs = $containerAttrs;
+		return $this;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @return array|array<string,string>
+	 */
+	public function GetContainerAttrs () {
+		return $this->containerAttrs;
+	}
+
+
 }

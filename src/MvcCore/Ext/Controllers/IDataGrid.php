@@ -472,6 +472,26 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @return \string[]
 	 */
 	public function GetCssClasses ();
+
+	/**
+	 * Add datagrid html wrapper element html attributes.
+	 * @param  array|array<string,string> $containerAttrs
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function AddContainerAttrs ($containerAttrs);
+	
+	/**
+	 * Set datagrid html wrapper element html attributes.
+	 * @param  array|array<string,string> $containerAttrs
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	public function SetContainerAttrs ($containerAttrs);
+
+	/**
+	 * Get datagrid html wrapper element html attributes.
+	 * @return array|array<string,string>
+	 */
+	public function GetContainerAttrs ();
 	
 	/**
 	 * Set internal table heading filter form instance in grid table type.
