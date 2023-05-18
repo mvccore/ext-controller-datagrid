@@ -174,7 +174,7 @@ class View extends \MvcCore\View {
 	 */
 	public function RenderGridFilterForm () {
 		return $this->renderGridTemplate(
-			$this->configRendering->GetTemplateFilterForm(), 'form', 'filter'
+			$this->configRendering->GetTemplateFilterForm(), 'Form', 'filter'
 		);
 	}
 	
