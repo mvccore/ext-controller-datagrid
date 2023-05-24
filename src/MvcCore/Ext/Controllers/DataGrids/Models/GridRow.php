@@ -92,7 +92,7 @@ trait GridRow {
 			);
 		} else {
 			return static::convertToScalar(
-				$value, $columnConfig->GetParserArgs()
+				$propName, $value, $columnConfig->GetParserArgs()
 			);
 		}
 	}
