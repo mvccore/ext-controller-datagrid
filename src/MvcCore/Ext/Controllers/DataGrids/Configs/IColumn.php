@@ -314,4 +314,19 @@ interface IColumn {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetDisabled ($disabled);
+
+	/**
+	 * Get `TRUE` to always send column in AJAX response, no matter if column is active 
+	 * or not, `FALSE|NULL` to not send inactive column (`NULL` by default).
+	 * @return bool|NULL
+	 */
+	public function GetAlwaysSend ();
+
+	/**
+	 * Set `TRUE` to always send column in AJAX response, no matter if column is active 
+	 * or not, `FALSE|NULL` to not send inactive column (`NULL` by default).
+	 * @param  bool|NULL $alwaysSend
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetAlwaysSend ($alwaysSend);
 }

@@ -214,6 +214,15 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	#[JsonSerialize]
 	protected $disabled = NULL;
 	
+	/**
+	 * `TRUE` to always send column in AJAX response, no matter if column is active 
+	 * or not, `FALSE|NULL` to not send inactive column (`NULL` by default).
+	 * @jsonSerialize
+	 * @var bool|NULL
+	 */
+	#[JsonSerialize]
+	protected $alwaysSend = NULL;
+	
 
 	/**
 	 * Create datagrid column config item.
@@ -254,6 +263,9 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 * @param bool|NULL             $editable     `TRUE` for editable column, `FALSE|NULL` for 
 	 *                                            not editable column (by default).
 	 * @param bool|NULL             $disabled     Force column disable (enabled by default).
+	 * @param bool|NULL             $alwaysSend   `TRUE` to always send column in AJAX response, no matter 
+	 *                                            if column is active or not, `FALSE|NULL` to not send inactive 
+	 *                                            column (`NULL` by default).
 	 */
 	public function __construct (
 		$propName = NULL, 
@@ -275,7 +287,8 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		$flex = NULL,
 		$cssClasses = NULL,
 		$editable = NULL,
-		$disabled = NULL
+		$disabled = NULL,
+		$alwaysSend = NULL
 	) {
 		$propNameHasValue = $propName !== NULL;
 		if ($propNameHasValue) 
@@ -315,6 +328,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		if ($cssClasses !== NULL)	$this->cssClasses	= $cssClasses;
 		if ($editable !== NULL)		$this->editable		= $editable;
 		if ($disabled !== NULL)		$this->disabled		= $disabled;
+		if ($alwaysSend !== NULL)	$this->alwaysSend	= $alwaysSend;
 	}
 
 	/**
@@ -731,6 +745,24 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 */
 	public function SetDisabled ($disabled) {
 		$this->disabled = $disabled;
+		return $this;
+	}
+	
+	/**
+	 * @inheritDocs
+	 * @return bool|NULL
+	 */
+	public function GetAlwaysSend () {
+		return $this->alwaysSend;
+	}
+
+	/**
+	 * @inheritDocs
+	 * @param  bool|NULL $alwaysSend
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetAlwaysSend ($alwaysSend) {
+		$this->alwaysSend = $alwaysSend;
 		return $this;
 	}
 	
