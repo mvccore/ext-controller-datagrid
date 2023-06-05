@@ -47,6 +47,13 @@ trait ColumnsParsingMethods {
 			if ($columnConfig === NULL) continue;
 			$urlName = $columnConfig->GetUrlName();
 			$columnIndex = $columnConfig->GetColumnIndex();
+			if (isset($columnConfigs[$urlName])) {
+				$propClass = $prop->getDeclaringClass()->getName();
+				throw new \Exception(
+					"There is already defined column with url "
+					."name: `{$urlName}` (grid id: `{$this->id}`, class: `{$propClass}`)."
+				);
+			}
 			$columnConfigs[$urlName] = $columnConfig;
 			if ($columnIndex === NULL) {
 				$naturalSort[] = $urlName;
@@ -187,8 +194,8 @@ trait ColumnsParsingMethods {
 				} else if ($filter === TRUE) {
 					if (is_array($args['types']) && count($args['types']) > 0) {
 						$firstType = $args['types'][0];
-						if (strpos($firstType, '?') === FALSE)
-							$args['types'][0] = '?' . $firstType;
+						if (strpos($firstType, '?') === 0)
+							$args['types'][0] = substr($firstType, 1);
 					}
 				}
 			}
