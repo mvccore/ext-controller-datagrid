@@ -13,6 +13,8 @@
 
 namespace MvcCore\Ext\Controllers\DataGrid;
 
+use \MvcCore\Ext\Controllers\DataGrids\Configs\Type;
+
 /**
  * @mixin \MvcCore\Ext\Controllers\DataGrid
  */
@@ -333,11 +335,11 @@ trait InternalGettersSetters {
 		) {
 			$types = $column->GetTypes();
 			if (count($types) > 1) {
-				$secondType = $types[1];
-				if ($secondType === 'Date') {
+				$displayingType = $types[1];
+				if ($displayingType === Type::CLIENT_DATE) {
 					$cellValue .= '%';
 					$operator = 'LIKE';
-				} else if ($secondType === 'Time') {
+				} else if ($displayingType === Type::CLIENT_TIME) {
 					$cellValue = '%' . $cellValue;
 					$operator = 'LIKE';
 				}
