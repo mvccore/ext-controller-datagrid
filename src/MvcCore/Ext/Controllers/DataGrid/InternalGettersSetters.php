@@ -678,15 +678,27 @@ trait InternalGettersSetters {
 			}
 			$title = $columnConfig->GetTitle();
 			if ($headingName !== NULL) {
-				$headingName = call_user_func_array($this->translator, [$headingName]);
+				if (is_array($headingName)) {
+					$headingName = call_user_func_array($this->translator, [$headingName[0], $headingName[1]]);	
+				} else {
+					$headingName = call_user_func_array($this->translator, [$headingName]);	
+				}
 				$columnConfig->SetHeadingName($headingName);
 			}
 			if ($this->translateUrlNames) {
-				$urlName = call_user_func_array($this->translator, [$urlName]);
+				if (is_array($headingName)) {
+					$urlName = call_user_func_array($this->translator, [$urlName[0], $urlName[1]]);
+				} else {
+					$urlName = call_user_func_array($this->translator, [$urlName]);
+				}
 				$columnConfig->SetUrlName($urlName);
 			}
 			if ($title !== NULL) {
-				$title = call_user_func_array($this->translator, [$title]);
+				if (is_array($title)) {
+					$title = call_user_func_array($this->translator, [$title[0], $title[1]]);
+				} else {
+					$title = call_user_func_array($this->translator, [$title]);
+				}
 				$columnConfig->SetTitle($title);
 			}
 			$result[$urlName] = $columnConfig;
