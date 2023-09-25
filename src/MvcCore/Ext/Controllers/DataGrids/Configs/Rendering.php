@@ -72,8 +72,10 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	/**
 	 * Render separated sort control (all datagrid types).
 	 * Not rendered by default.
+	 * @jsonSerialize
 	 * @var bool
 	 */
+	#[JsonSerialize]
 	protected $renderControlSorting					= FALSE;
 
 	/**
@@ -160,22 +162,28 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	 * This is not rendered by default. To render custom 
 	 * filter form, you have to create some form instance 
 	 * and give it into datagrid. Then you can enable this rendering.
+	 * @jsonSerialize
 	 * @var bool
 	 */
+	#[JsonSerialize]
 	protected $renderFilterForm						= FALSE;
 
 
 	/**
 	 * Css classes for datagrid main `<table>` element containing data rows.
+	 * @jsonSerialize
 	 * @var \string[]
 	 */
+	#[JsonSerialize]
 	protected $cssClassesContentTable				= ['grid-content'];
 	
 	/**
 	 * Css classes for datagrid `<div>` elements wrapping top and bottom 
 	 * sorting, paging and count scales controls.
+	 * @jsonSerialize
 	 * @var \string[]
 	 */
+	#[JsonSerialize]
 	protected $cssClassesControlsWrapper			= ['grid-controls'];
 	
 	/**
@@ -897,11 +905,9 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 
-
-
 	/**
 	 * @inheritDocs
-	 * @param string|\string[] $cssClasses
+	 * @param  string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function SetCssClassesControlCountScalesButton ($cssClasses) {
@@ -913,7 +919,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 
 	/**
 	 * @inheritDocs
-	 * @param string|\string[] $cssClasses
+	 * @param  string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function AddCssClassesControlCountScalesButton ($cssClasses) {
@@ -931,7 +937,6 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	public function GetCssClassesControlCountScalesButton () {
 		return $this->cssClassesControlCountScalesButton;
 	}
-
 
 	
 	/**
@@ -968,13 +973,6 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 
-
-
-
-
-
-
-	
 	/**
 	 * @inheritDocs
 	 * @param string|\string[] $cssClasses

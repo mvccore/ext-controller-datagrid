@@ -299,5 +299,6 @@ trait ConfigProps {
 		'titleScale'			=> 'scale: {0}',
 		'titleSort'				=> 'sort: {0}',
 		'titleFilter'			=> 'filter: {0}',
+		'refresh'				=> 'refresh',
 	];
 }
