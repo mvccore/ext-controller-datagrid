@@ -39,7 +39,8 @@ trait ActionMethods {
 	 */
 	protected function createTableHeadFilterForm ($submit = FALSE) {
 		$this->checkExtendedFormClasses();
-		$formId = 'grid-table-head-filtering-'.sha1(serialize([
+		$serializeFn = function_exists('igbinary_serialize') ? 'igbinary_serialize' : 'serialize';
+		$formId = 'grid-table-head-filtering-'.sha1(call_user_func($serializeFn, [
 			$this->controllerName, $this->actionName, $this->configColumns
 		]));
 		$actionUrl = parent::Url(

@@ -19,7 +19,7 @@ namespace MvcCore\Ext\Controllers\DataGrid;
 trait ColumnsParsingMethods {
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column[]
 	 */
 	public function ParseConfigColumns () {

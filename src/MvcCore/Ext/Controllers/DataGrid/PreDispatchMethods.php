@@ -21,7 +21,7 @@ trait PreDispatchMethods {
 	/**
 	 * Process necessary operations for rendering 
 	 * and set up and call model instance total count.
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return void
 	 */
 	public function PreDispatch () {

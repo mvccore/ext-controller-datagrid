@@ -16,7 +16,7 @@ namespace MvcCore\Ext\Controllers\DataGrids\Paging;
 class Page extends \MvcCore\Ext\Controllers\DataGrids\Paging\Item {
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param int|NULL        $offset 
 	 * @param string|NULL     $url 
 	 * @param string|int|NULL $text 

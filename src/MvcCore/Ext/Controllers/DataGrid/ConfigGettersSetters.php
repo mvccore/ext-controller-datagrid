@@ -20,7 +20,7 @@ use A;
 trait ConfigGettersSetters {
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel $model 
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -30,7 +30,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel|NULL
 	 */
 	public function GetModel () {
@@ -38,7 +38,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\GridRow|string|NULL $rowClass
 	 * @param  int                                                           $rowClassPropsFlags
 	 * @return \MvcCore\Ext\Controllers\DataGrid
@@ -51,7 +51,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridRow|string|NULL
 	 */
 	public function GetRowClass () {
@@ -59,7 +59,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int $itemsPerPage
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -69,7 +69,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int
 	 */
 	public function GetItemsPerPage () {
@@ -77,7 +77,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \int[] $countScales
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -87,7 +87,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \int[]
 	 */
 	public function GetCountScales () {
@@ -95,7 +95,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  bool $allowedCustomUrlCountScale
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -105,7 +105,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool
 	 */
 	public function GetAllowedCustomUrlCountScale () {
@@ -113,7 +113,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int $sortingMode 
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -123,7 +123,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int
 	 */
 	public function GetSortingMode () {
@@ -132,7 +132,7 @@ trait ConfigGettersSetters {
 	
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int $filteringMode 
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -142,7 +142,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int $filteringMode 
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -152,7 +152,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int $filteringMode 
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -162,7 +162,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int
 	 */
 	public function GetFilteringMode () {
@@ -170,7 +170,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  array $sorting
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -180,7 +180,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return array
 	 */
 	public function GetSorting () {
@@ -188,7 +188,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  array $filtering
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -198,7 +198,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return array
 	 */
 	public function GetFiltering () {
@@ -206,7 +206,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  bool $ignoreDisabledColumns
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -216,7 +216,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool
 	 */
 	public function GetIgnoreDisabledColumns () {
@@ -224,7 +224,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm $filterForm
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -238,7 +238,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm|NULL
 	 */
 	public function GetControlFilterForm () {
@@ -246,7 +246,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \MvcCore\Ext\ICache|FALSE|NULL $cache
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -256,7 +256,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \MvcCore\Ext\ICache|FALSE|NULL
 	 */
 	public function GetCache () {
@@ -277,7 +277,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  callable|\Closure $translator
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -287,7 +287,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return callable|\Closure|NULL
 	 */
 	public function GetTranslator () {
@@ -295,7 +295,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  bool $translateUrlNames
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -305,7 +305,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool
 	 */
 	public function GetTranslateUrlNames () {
@@ -313,7 +313,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \MvcCore\Route|NULL $route
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -324,7 +324,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \MvcCore\Route|NULL
 	 */
 	public function GetRoute () {
@@ -370,7 +370,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  array $urlParams
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -380,7 +380,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return array
 	 */
 	public function GetUrlParams () {
@@ -402,7 +402,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $configUrlSegments
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -413,7 +413,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function GetConfigUrlSegments () {
@@ -423,7 +423,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -434,7 +434,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	public function GetConfigRendering () {
@@ -444,7 +444,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column[]|\MvcCore\Ext\Controllers\DataGrids\Iterators\Columns $configRendering
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -479,7 +479,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  bool $activeOnly `TRUE` by default.
 	 * @throws \RuntimeException|\InvalidArgumentException
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns|NULL
@@ -513,7 +513,7 @@ trait ConfigGettersSetters {
 
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  array $controlsTexts
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -523,7 +523,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return array
 	 */
 	public function GetControlsTexts () {
@@ -531,7 +531,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string|NULL
 	 */
 	public function GetControlText ($textKey) {
@@ -541,7 +541,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \MvcCore\Ext\Form $tableHeadFilterForm
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -551,7 +551,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \MvcCore\Ext\Form
 	 */
 	public function GetTableHeadFilterForm () {
@@ -561,7 +561,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string
 	 */
 	public function GetFilterFormValuesDelimiter () {
@@ -569,7 +569,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string $filterFormValuesDelimiter
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -579,7 +579,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|NULL
 	 */
 	public function GetHandlerClientRowModelDefinition () {
@@ -587,7 +587,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|NULL $handlerClientRowModelDefinition
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -597,7 +597,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return array<string, int[]>
 	 */
 	public function GetTypesPossibleFilterFlags () {
@@ -605,7 +605,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  array<string, int[]> $typesPossibleFilterFlags
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -615,7 +615,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -628,7 +628,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -641,7 +641,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \string[]
 	 */
 	public function GetCssClasses () {
@@ -649,7 +649,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  array|array<string,string> $containerAttrs
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -659,7 +659,7 @@ trait ConfigGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  array|array<string,string> $containerAttrs
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -669,7 +669,7 @@ trait ConfigGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return array|array<string,string>
 	 */
 	public function GetContainerAttrs () {

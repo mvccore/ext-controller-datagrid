@@ -19,7 +19,7 @@ namespace MvcCore\Ext\Controllers\DataGrid;
 trait RenderMethods {
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string $controllerOrActionNameDashed 
 	 * @param  string $actionNameDashed 
 	 * @return string

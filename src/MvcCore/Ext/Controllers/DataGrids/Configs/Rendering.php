@@ -322,7 +322,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering $configRendering 
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -352,7 +352,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int $type
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -362,7 +362,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int
 	 */
 	public function GetType () {
@@ -370,7 +370,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int $gridColumnsCount
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -380,7 +380,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int
 	 */
 	public function GetGridColumnsCount () {
@@ -388,7 +388,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  bool $renderTableHead
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -399,7 +399,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool
 	 */
 	public function GetRenderTableHead () {
@@ -408,7 +408,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  bool $renderTableHeadSorting
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -419,7 +419,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool
 	 */
 	public function GetRenderTableHeadSorting () {
@@ -428,7 +428,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  bool $renderTableHeadFiltering
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -439,7 +439,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool
 	 */
 	public function GetRenderTableHeadFiltering () {
@@ -448,7 +448,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  bool $renderTableBodyFilteringLinks
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -459,7 +459,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool
 	 */
 	public function GetRenderTableBodyFilteringLinks () {
@@ -468,7 +468,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  bool $renderControlSorting
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -479,7 +479,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool
 	 */
 	public function GetRenderControlSorting () {
@@ -488,7 +488,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int $renderControlPaging
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -499,7 +499,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int
 	 */
 	public function GetRenderControlPaging () {
@@ -508,7 +508,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  bool $renderControlPagingPrevAndNext
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -519,7 +519,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool
 	 */
 	public function GetRenderControlPagingPrevAndNext () {
@@ -529,7 +529,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  bool $renderControlPagingFirstAndLast
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -540,7 +540,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool
 	 */
 	public function GetRenderControlPagingFirstAndLast () {
@@ -549,7 +549,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int $nearbyPagesCount
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -560,7 +560,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int
 	 */
 	public function GetControlPagingNearbyPagesCount () {
@@ -569,7 +569,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int $outerPagesCount
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -580,7 +580,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int
 	 */
 	public function GetControlPagingOuterPagesCount () {
@@ -589,7 +589,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  float $outerPagesDisplayRatio
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -604,7 +604,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return float
 	 */
 	public function GetControlPagingOuterPagesDisplayRatio () {
@@ -613,7 +613,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int $renderControlCountScales
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -624,7 +624,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int
 	 */
 	public function GetRenderControlCountScales () {
@@ -633,7 +633,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int $renderControlStatus
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -644,7 +644,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int
 	 */
 	public function GetRenderControlStatus () {
@@ -653,7 +653,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  bool $renderFilterForm
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -664,7 +664,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool
 	 */
 	public function GetRenderFilterForm () {
@@ -674,7 +674,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -686,7 +686,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -699,7 +699,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \string[]
 	 */
 	public function GetCssClassesContentTable () {
@@ -707,7 +707,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -719,7 +719,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -732,7 +732,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \string[]
 	 */
 	public function GetCssClassesControlsWrapper () {
@@ -740,7 +740,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -752,7 +752,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -765,7 +765,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \string[]
 	 */
 	public function GetCssClassesControlSorting () {
@@ -773,7 +773,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -785,7 +785,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -798,7 +798,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \string[]
 	 */
 	public function GetCssClassesControlPaging () {
@@ -806,7 +806,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -818,7 +818,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -831,7 +831,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \string[]
 	 */
 	public function GetCssClassesControlPagingButton () {
@@ -839,7 +839,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -851,7 +851,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -864,7 +864,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \string[]
 	 */
 	public function GetCssClassesControlPagingCurrent () {
@@ -872,7 +872,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -884,7 +884,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -897,7 +897,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \string[]
 	 */
 	public function GetCssClassesControlCountScales () {
@@ -906,7 +906,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -918,7 +918,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -931,7 +931,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \string[]
 	 */
 	public function GetCssClassesControlCountScalesButton () {
@@ -940,7 +940,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -952,7 +952,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -965,7 +965,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \string[]
 	 */
 	public function GetCssClassesControlCountScalesCurrent () {
@@ -974,7 +974,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -986,7 +986,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|\string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -999,7 +999,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \string[]
 	 */
 	public function GetCssClassesControlStatus () {
@@ -1008,7 +1008,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string $templateContent
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -1019,7 +1019,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string
 	 */
 	public function GetTemplateContent () {
@@ -1028,7 +1028,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string $templateTableHead
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -1039,7 +1039,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string
 	 */
 	public function GetTemplateTableHead () {
@@ -1048,7 +1048,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string $templateTableBody
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -1059,7 +1059,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string
 	 */
 	public function GetTemplateTableBody () {
@@ -1068,7 +1068,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string $templateGridBody
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -1079,7 +1079,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string
 	 */
 	public function GetTemplateGridBody () {
@@ -1088,7 +1088,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string $templateControlPaging
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -1099,7 +1099,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string
 	 */
 	public function GetTemplateControlPaging () {
@@ -1108,7 +1108,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string $templateControlSorting
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -1119,7 +1119,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string
 	 */
 	public function GetTemplateControlSorting () {
@@ -1128,7 +1128,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string $templateControlCountScales
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -1139,7 +1139,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string
 	 */
 	public function GetTemplateControlCountScales () {
@@ -1148,7 +1148,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string $templateControlStatus
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -1159,7 +1159,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string
 	 */
 	public function GetTemplateControlStatus () {
@@ -1168,7 +1168,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string $templateFilterForm
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -1179,7 +1179,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string
 	 */
 	public function GetTemplateFilterForm () {
@@ -1188,7 +1188,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|\MvcCore\Ext\Controllers\DataGrids\View|\MvcCore\View $viewClass 
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
@@ -1199,7 +1199,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string|\MvcCore\Ext\Controllers\DataGrids\View|\MvcCore\View
 	 */
 	public function GetViewClass () {

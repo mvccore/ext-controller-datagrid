@@ -190,7 +190,7 @@ class View extends \MvcCore\View {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string $typePath     By default: `"Layouts" | "Scripts"`. It could be `"Forms" | "Forms/Fields"` etc...
 	 * @param  string $relativePath
 	 * @param  bool   $internalTemplate

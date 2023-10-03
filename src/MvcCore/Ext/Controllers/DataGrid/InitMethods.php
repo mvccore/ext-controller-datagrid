@@ -39,13 +39,15 @@ trait InitMethods {
 			);
 		}
 		$backtraceItems = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-		if (count($backtraceItems) === 2)
-			$this->creationPlaceImprint = hash('crc32b', serialize($backtraceItems[1]));
+		if (count($backtraceItems) === 2) {
+			$serializeFn = function_exists('igbinary_serialize') ? 'igbinary_serialize' : 'serialize';
+			$this->creationPlaceImprint = hash('crc32b', call_user_func($serializeFn, $backtraceItems[1]));
+		}
 		$controller->AddChildController($this, $childControllerIndex);
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return void
 	 */
 	public function Init () {

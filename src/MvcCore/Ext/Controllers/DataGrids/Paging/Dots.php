@@ -16,19 +16,19 @@ namespace MvcCore\Ext\Controllers\DataGrids\Paging;
 class Dots extends \MvcCore\Ext\Controllers\DataGrids\Paging\Dot {
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @var string
 	 */
 	protected $text = ''; // \u{2026}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @var string
 	 */
 	protected $cssClass = 'grid-page-space grid-page-space-dots';
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param string|NULL     $url 
 	 * @param string|int|NULL $text 
 	 * @param bool            $current 

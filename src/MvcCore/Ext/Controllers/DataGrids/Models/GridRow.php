@@ -98,7 +98,7 @@ trait GridRow {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int $propsFlags
 	 * @return array<string, mixed>
 	 */

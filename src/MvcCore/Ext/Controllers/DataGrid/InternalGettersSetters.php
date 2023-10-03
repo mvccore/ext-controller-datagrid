@@ -21,7 +21,7 @@ use \MvcCore\Ext\Controllers\DataGrids\Configs\Type;
 trait InternalGettersSetters {
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return array
 	 */
 	public function GetFilterOperatorPrefixes () {
@@ -29,7 +29,7 @@ trait InternalGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int|NULL
 	 */
 	public function GetPage () {
@@ -37,7 +37,7 @@ trait InternalGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int|NULL
 	 */
 	public function GetCount () {
@@ -45,7 +45,7 @@ trait InternalGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int|NULL
 	 */
 	public function GetOffset () {
@@ -53,7 +53,7 @@ trait InternalGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int|NULL
 	 */
 	public function GetLimit () {
@@ -61,7 +61,7 @@ trait InternalGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int|NULL
 	 */
 	public function GetPagesCount () {
@@ -69,7 +69,7 @@ trait InternalGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging|NULL
 	 */
 	public function GetPaging () {
@@ -77,7 +77,7 @@ trait InternalGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool
 	 */
 	public function GetTranslate () {
@@ -85,7 +85,7 @@ trait InternalGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int|NULL
 	 */
 	public function GetTotalCount () {
@@ -93,7 +93,7 @@ trait InternalGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return array|\MvcCore\Ext\Models\Db\Readers\Streams\Iterator|NULL
 	 */
 	public function GetPageData () {
@@ -101,7 +101,7 @@ trait InternalGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \MvcCore\Request
 	 */
 	public function GetGridRequest () {
@@ -118,7 +118,7 @@ trait InternalGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|NULL $controllerActionOrRouteName Should be `"Controller:Action"` combination or just any route name as custom specific string.
 	 * @param  array       $params                      Optional, array with params, key is param name, value is param value.
 	 * @throws \InvalidArgumentException                Grid doesn't contain given column name, unknown sort direction, unknown filter format...
@@ -170,7 +170,7 @@ trait InternalGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string
 	 */
 	public function GridUrl (array $gridParams = []) {
@@ -189,7 +189,7 @@ trait InternalGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int $offset
 	 * @return string
 	 */
@@ -210,7 +210,7 @@ trait InternalGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int $count
 	 * @return string
 	 */
@@ -236,7 +236,7 @@ trait InternalGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column|string $columnConfigOrPropName 
 	 * @param  string|NULL                                              $direction
 	 * @return string
@@ -305,7 +305,7 @@ trait InternalGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column|string $columnConfigOrPropName 
 	 * @param  mixed                                                    $cellValue 
 	 * @param  string                                                   $operator
@@ -412,7 +412,7 @@ trait InternalGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column|string $columnConfigOrPropName 
 	 * @return bool|NULL
 	 */
@@ -435,7 +435,7 @@ trait InternalGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column|string $columnConfigOrPropName 
 	 * @return int|FALSE
 	 */
@@ -449,7 +449,7 @@ trait InternalGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column|string $columnConfigOrPropName 
 	 * @return int|FALSE
 	 */
@@ -463,7 +463,7 @@ trait InternalGettersSetters {
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string $rawValue 
 	 * @param  string $specialLikeChar 
 	 * @return int
@@ -490,7 +490,7 @@ trait InternalGettersSetters {
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return array|[string, \string[]]
 	 */
 	public function GetGridCacheKeyAndTags () {

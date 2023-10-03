@@ -332,7 +332,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string|NULL
 	 */
 	public function GetPropName () {
@@ -340,7 +340,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|NULL $propName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -350,7 +350,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string|NULL
 	 */
 	public function GetHeadingName () {
@@ -358,7 +358,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|NULL $headingName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -368,7 +368,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string|NULL
 	 */
 	public function GetTitle () {
@@ -376,7 +376,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|NULL $title
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -386,7 +386,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string|NULL
 	 */
 	public function GetDbColumnName () {
@@ -394,7 +394,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|NULL $dbColumnName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -404,7 +404,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string|NULL
 	 */
 	public function GetUrlName () {
@@ -412,7 +412,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|NULL $urlName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -422,7 +422,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool|string|NULL
 	 */
 	public function GetUrlHelper () {
@@ -430,7 +430,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  bool|string|NULL $urlHelper
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -440,7 +440,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int|NULL
 	 */
 	public function GetColumnIndex () {
@@ -448,7 +448,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int|NULL $columnIndex
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -458,7 +458,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int|NULL
 	 */
 	public function GetColumnIndexUser () {
@@ -466,7 +466,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int|NULL $columnIndexUser
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -476,7 +476,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string|bool|NULL
 	 */
 	public function GetSort () {
@@ -484,7 +484,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|bool|NULL $sort
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -494,7 +494,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return int|bool
 	 */
 	public function GetFilter () {
@@ -502,7 +502,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  int|bool $filter
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -512,7 +512,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \string[]|NULL
 	 */
 	public function GetTypes () {
@@ -520,7 +520,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \string[] $types
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -553,7 +553,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool
 	 */
 	public function GetIsDateTime () {
@@ -561,7 +561,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool
 	 */
 	public function GetIsString () {
@@ -569,7 +569,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return array|NULL
 	 */
 	public function GetParserArgs () {
@@ -577,7 +577,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  array|NULL $parserArgs
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -587,7 +587,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return array|NULL
 	 */
 	public function GetFormatArgs () {
@@ -595,7 +595,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  array|NULL $formatArgs
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -605,7 +605,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string|NULL
 	 */
 	public function GetViewHelper () {
@@ -613,7 +613,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|NULL $viewHelper
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -623,7 +623,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string|int|float|NULL
 	 */
 	public function GetWidth () {
@@ -631,7 +631,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|int|float|NULL $width
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -641,7 +641,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string|int|float|NULL
 	 */
 	public function GetMinWidth () {
@@ -649,7 +649,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|int|float|NULL $minWidth
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -659,7 +659,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string|int|float|NULL
 	 */
 	public function GetMaxWidth () {
@@ -667,7 +667,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|int|float|NULL $maxWidth
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -677,7 +677,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return string|int|float|NULL
 	 */
 	public function GetFlex () {
@@ -685,7 +685,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  string|int|float|NULL $flex
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -695,7 +695,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return \string[]|NULL
 	 */
 	public function GetCssClasses () {
@@ -703,7 +703,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  \string[] $cssClasses
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -713,7 +713,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool|NULL
 	 */
 	public function GetEditable () {
@@ -721,7 +721,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  bool|NULL $editable
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -731,7 +731,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool|NULL
 	 */
 	public function GetDisabled () {
@@ -739,7 +739,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  bool|NULL $disabled
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
@@ -749,7 +749,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 	
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool|NULL
 	 */
 	public function GetAlwaysSend () {
@@ -757,7 +757,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	}
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @param  bool|NULL $alwaysSend
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */

@@ -110,7 +110,7 @@ interface IRendering {
 	public function SetRenderTableBodyFilteringLinks ($renderTableBodyFilteringLinks);
 
 	/**
-	 * @inheritDocs
+	 * @inheritDoc
 	 * @return bool
 	 */
 	public function GetRenderTableBodyFilteringLinks ();
