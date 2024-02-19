@@ -529,7 +529,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		$this->isString = FALSE;
 		$this->isDateTime = FALSE;
 		if (count($types) > 0) {
-			$firstType = str_replace('?', '', $types[0]);
+			$firstType = str_replace('?', '', (string) $types[0]);
 			if ($firstType === 'string') {
 				$this->isString = TRUE;
 			} else if (class_exists($firstType)) {
@@ -539,12 +539,12 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 					$this->isDateTime = isset($columnTypeInterfaces['DateTimeInterface']);
 				} else {
 					$this->isDateTime = (
-						$columnType === 'DateTime' ||
-						$columnType === 'DateTimeImmutable' ||
-						is_a($columnType, '\\DateTime') || 
-						is_a($columnType, '\\DateTimeImmutable') || 
-						is_subclass_of($columnType, '\\DateTime') ||
-						is_subclass_of($columnType, '\\DateTimeImmutable')
+						$firstType === 'DateTime' ||
+						$firstType === 'DateTimeImmutable' ||
+						is_a($firstType, '\\DateTime') || 
+						is_a($firstType, '\\DateTimeImmutable') || 
+						is_subclass_of($firstType, '\\DateTime') ||
+						is_subclass_of($firstType, '\\DateTimeImmutable')
 					);
 				}
 			}
