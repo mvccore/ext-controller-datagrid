@@ -25,9 +25,8 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	public function PreDispatch () {
-		if ($this->dispatchState <= \MvcCore\IController::DISPATCH_STATE_INITIALIZED) 
-			$this->Init();
-		if ($this->dispatchState >= \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED) return;
+		if (!$this->DispatchStateCheck(static::DISPATCH_STATE_PRE_DISPATCHED)) 
+			return;
 		
 		if ($this->viewEnabled) {
 			if ($this->view === NULL)

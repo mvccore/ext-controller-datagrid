@@ -68,9 +68,7 @@ trait ActionMethods {
 			$form->AddFields($fields);
 		}
 		if (!$viewExists) $this->view = NULL;
-		$controlFilterFormState = $form->GetDispatchState();
-		if ($controlFilterFormState < \MvcCore\IController::DISPATCH_STATE_INITIALIZED)
-			$form->Init($submit);
+		$form->DispatchStateCheck($form::DISPATCH_STATE_INITIALIZED, $submit);
 	}
 	
 	/**

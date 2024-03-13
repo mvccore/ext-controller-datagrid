@@ -25,7 +25,8 @@ trait RenderMethods {
 	 * @return string
 	 */
 	public function Render ($controllerOrActionNameDashed = NULL, $actionNameDashed = NULL) {
-		if (!$this->renderCheckDispatchState()) return '';
+		if (!$this->viewEnabled || !$this->DispatchStateCheck(static::DISPATCH_STATE_RENDERED)) 
+			return '';
 		
 		// Set up view store with parent controller view store, do not overwrite existing keys:
 		/** @var \MvcCore\Ext\Controllers\DataGrids\View $view */
@@ -49,7 +50,7 @@ trait RenderMethods {
 		// Render this view or view with layout by render mode:
 		unset($view, $this->view);
 
-		$this->dispatchState = \MvcCore\IController::DISPATCH_STATE_RENDERED;
+		$this->dispatchMoveState(static::DISPATCH_STATE_RENDERED);
 		return $result;
 	}
 }

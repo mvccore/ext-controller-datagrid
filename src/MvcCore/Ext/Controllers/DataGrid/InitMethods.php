@@ -51,7 +51,8 @@ trait InitMethods {
 	 * @return void
 	 */
 	public function Init () {
-		if ($this->dispatchState > \MvcCore\IController::DISPATCH_STATE_CREATED) return;
+		if (!$this->DispatchStateCheck(static::DISPATCH_STATE_INITIALIZED)) 
+			return;
 		
 		$this->GetConfigRendering();
 		if ($this->configRendering->GetRenderFilterForm()) {
