@@ -784,14 +784,14 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @template
 	 * @return void
 	 */
-	public function ActionDefault ();
+	public function DefaultInit ();
 
 	/**
 	 * Internal submit action for table head filter form.
 	 * @template
 	 * @return void
 	 */
-	public function ActionTableFilter ();
+	public function TableFilterInit ();
 	
 	/**
 	 * Get new filtering from filter form submit values array.
@@ -806,5 +806,5 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	 * @template
 	 * @return void
 	 */
-	public function ActionFormFilter ();
+	public function FormFilterInit ();
 }

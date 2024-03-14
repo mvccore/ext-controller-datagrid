@@ -25,7 +25,7 @@ trait InternalProps {
 	 * @internal
 	 * @var string
 	 */
-	protected static $gridActionDefaultKey		= 'default';
+	protected static $gridInitActionDefaultKey	= 'default';
 
 	/**
 	 * Grid model class interface.
@@ -66,10 +66,10 @@ trait InternalProps {
 	 * @internal
 	 * @var array
 	 */
-	protected static $gridActions = [
-		IConstants::GRID_ACTION_FILTER_TABLE	=> 'ActionTableFilter',
-		IConstants::GRID_ACTION_FILTER_FORM		=> 'ActionFormFilter',
-		IConstants::GRID_ACTION_DEFAULT			=> 'ActionDefault',
+	protected static $gridInitActions = [
+		IConstants::GRID_ACTION_FILTER_TABLE	=> 'TableFilterInit',
+		IConstants::GRID_ACTION_FILTER_FORM		=> 'FormFilterInit',
+		IConstants::GRID_ACTION_DEFAULT			=> 'DefaultInit',
 	];
 	
 	/**
@@ -242,11 +242,11 @@ trait InternalProps {
 	protected $pageData = NULL;
 
 	/**
-	 * Internal grid action method name.
+	 * Internal grid init action method name.
 	 * @internal
 	 * @var string|NULL
 	 */
-	protected $gridAction = NULL;
+	protected $gridInitAction = NULL;
 	
 	/**
 	 * Empty request instance only with `path` value, 

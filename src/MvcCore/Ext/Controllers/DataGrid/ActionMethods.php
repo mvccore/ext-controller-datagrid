@@ -23,7 +23,7 @@ trait ActionMethods {
 	 * @template
 	 * @return void
 	 */
-	public function ActionDefault () {
+	public function DefaultInit () {
 		if ($this->configRendering->GetRenderTableHeadFiltering()) 
 			$this->createTableHeadFilterForm(FALSE);
 		$this->initTableHeadFilterForm();
@@ -187,12 +187,12 @@ trait ActionMethods {
 	 * @template
 	 * @return void
 	 */
-	public function ActionTableFilter () {
-		if (!$this->actionTableFilterSetUp()) return;
+	public function TableFilterInit () {
+		if (!$this->initTableFilterSetUp()) return;
 		$headFilterFormState = $this->tableHeadFilterForm->GetDispatchState();
 		if ($headFilterFormState < \MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED)
 			$this->tableHeadFilterForm->PreDispatch(TRUE);
-		list ($submitResult, $newFiltering) = $this->actionTableFilterSubmit();
+		list ($submitResult, $newFiltering) = $this->initTableFilterSubmit();
 		$this->filterFormRedirect($submitResult, $newFiltering);
 	}
 
@@ -201,7 +201,7 @@ trait ActionMethods {
 	 * prepare table head filter form instance for submitting.
 	 * @return bool
 	 */
-	protected function actionTableFilterSetUp () {
+	protected function initTableFilterSetUp () {
 		/** @var \MvcCore\Controller $context */
 		$context = $this;
 		if (!$this->configRendering->GetRenderTableHeadFiltering()) {
@@ -220,7 +220,7 @@ trait ActionMethods {
 	 * keys as properties names, values as arrays with operators and values.
 	 * @return array [boolean $submitResult, array $newFiltering]
 	 */
-	protected function actionTableFilterSubmit () {
+	protected function initTableFilterSubmit () {
 		$form = $this->tableHeadFilterForm;
 		list ($result, $rawFormValues) = $form->Submit();
 		if ($result === $form::RESULT_ERRORS) 
@@ -407,9 +407,9 @@ trait ActionMethods {
 	 * @template
 	 * @return void
 	 */
-	public function ActionFormFilter () {
-		if (!$this->actionFormFilterSetUp()) return;
-		list ($submitResult, $newFiltering) = $this->actionFormFilterSubmit();
+	public function FormFilterInit () {
+		if (!$this->initFormFilterSetUp()) return;
+		list ($submitResult, $newFiltering) = $this->initFormFilterSubmit();
 		$this->filterFormRedirect($submitResult, $newFiltering);
 	}
 	
@@ -418,7 +418,7 @@ trait ActionMethods {
 	 * prepare control filter form instance for submitting.
 	 * @return bool
 	 */
-	protected function actionFormFilterSetUp () {
+	protected function initFormFilterSetUp () {
 		/** @var \MvcCore\Controller $context */
 		$context = $this;
 		if ($this->controlFilterForm === NULL) {
@@ -451,7 +451,7 @@ trait ActionMethods {
 	 * keys as properties names, values as arrays with operators and values.
 	 * @return array [boolean $submitResult, array $newFiltering]
 	 */
-	protected function actionFormFilterSubmit () {
+	protected function initFormFilterSubmit () {
 		$form = $this->controlFilterForm;
 		list($submitResult, $formFiltering) = $form->Submit();
 		if ($submitResult === $form::RESULT_ERRORS) 

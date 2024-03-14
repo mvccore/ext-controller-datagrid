@@ -56,6 +56,12 @@ interface IConstants {
 	const URL_PARAM_ACTION				= 'grid-action';
 	
 	/**
+	 * Query string param name defining datagrid internal debuging.
+	 * @var string
+	 */
+	const URL_PARAM_DEBUG				= 'grid-debug';
+	
+	/**
 	 * Grid routing param name to define page.
 	 * @var string
 	 */

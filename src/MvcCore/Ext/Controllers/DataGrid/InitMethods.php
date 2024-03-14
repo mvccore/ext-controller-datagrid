@@ -29,7 +29,7 @@ trait InitMethods {
 		if (is_string($this->countScales)) 
 			$this->countScales = array_map('intval', explode(',', (string) $this->countScales));
 		if ($controller === NULL) {
-			$controller = \MvcCore\Controller::GetCallerControllerInstance();
+			$controller = self::GetCallerControllerInstance();
 			if ($controller === NULL) 
 				$controller = \MvcCore\Application::GetInstance()->GetController();
 			if ($controller === NULL) throw new \InvalidArgumentException(
@@ -38,12 +38,51 @@ trait InitMethods {
 				.'by first `\MvcCore\Ext\Controllers\DataGrid::__construct($controller);` argument.'
 			);
 		}
+		$this->parentController = $controller;
 		$backtraceItems = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
 		if (count($backtraceItems) === 2) {
-			$serializeFn = function_exists('igbinary_serialize') ? 'igbinary_serialize' : 'serialize';
-			$this->creationPlaceImprint = hash('crc32b', call_user_func($serializeFn, $backtraceItems[1]));
+			$creationPlace = array_merge(['controller' => get_class($this->parentController)], $backtraceItems[1]);
+			$creationPlaceStr = function_exists('igbinary_serialize')
+				? igbinary_serialize($creationPlace)
+				: serialize($creationPlace);
+			$this->creationPlaceImprint = hash('crc32b', $creationPlaceStr);
 		}
-		$controller->AddChildController($this, $childControllerIndex);
+		$this->parentController->AddChildController($this, $childControllerIndex);
+	}
+	
+	/**
+	 * @inheritDoc
+	 * @param  int $state 
+	 * Dispatch state, that is required to be completed. Possible values are:
+	 * - `\MvcCore\IController::DISPATCH_STATE_INITIALIZED`,
+	 * - `\MvcCore\IController::DISPATCH_STATE_PRE_DISPATCHED`,
+	 * - `\MvcCore\IController::DISPATCH_STATE_ACTION_EXECUTED`,
+	 * - `\MvcCore\IController::DISPATCH_STATE_RENDERED`,
+	 * - `\MvcCore\IController::DISPATCH_STATE_TERMINATED`.
+	 * @return bool
+	 */
+	public function DispatchStateCheck ($state) {
+		if ($this->dispatchState >= $state) 
+			return FALSE;
+		// here is always `$this->dispatchState < $state`:
+		if ($this->dispatchStateSemaphore) 
+			return TRUE;
+		$this->dispatchStateSemaphore = TRUE;
+
+		if ($state > static::DISPATCH_STATE_INITIALIZED)
+			$this->dispatchMethods(
+				$this, 'Init', 
+				static::DISPATCH_STATE_INITIALIZED, FALSE
+			);
+
+		if ($state > static::DISPATCH_STATE_PRE_DISPATCHED)
+			$this->dispatchMethods(
+				$this, 'PreDispatch', 
+				static::DISPATCH_STATE_PRE_DISPATCHED, FALSE
+			);
+
+		$this->dispatchStateSemaphore = FALSE;
+		return TRUE;
 	}
 
 	/**
@@ -51,7 +90,7 @@ trait InitMethods {
 	 * @return void
 	 */
 	public function Init () {
-		if (!$this->DispatchStateCheck(static::DISPATCH_STATE_INITIALIZED)) 
+		if ($this->dispatchState >= self::DISPATCH_STATE_INITIALIZED) 
 			return;
 		
 		$this->GetConfigRendering();
@@ -74,7 +113,7 @@ trait InitMethods {
 		$this->initTranslations();
 		$this->GetConfigColumns(FALSE);
 			
-		$this->initGridAction();
+		$this->initGridActions();
 
 		$this->GetRoute();
 		$this->GetUrlParams();
@@ -91,7 +130,8 @@ trait InitMethods {
 		$this->initSorting();
 		if (!$this->initFiltering()) return; // redirect inside
 		
-		call_user_func([$this, $this->gridAction]);
+		if ($this->gridInitAction !== NULL)
+			call_user_func([$this, $this->gridInitAction]);
 	}
 
 	/**
@@ -153,11 +193,13 @@ trait InitMethods {
 	 * Complete internal action method name.
 	 * @return void
 	 */
-	protected function initGridAction () {
-		$gridActionParam = $this->request->GetParam(static::URL_PARAM_ACTION, '-_a-zA-Z', static::$gridActionDefaultKey, 'string');
-		if (!isset(static::$gridActions[$gridActionParam])) 
-			$gridActionParam = static::$gridActionDefaultKey;
-		$this->gridAction = static::$gridActions[$gridActionParam];
+	protected function initGridActions () {
+		$gridActionParam = $this->request->GetParam(static::URL_PARAM_ACTION, '-_a-zA-Z', static::$gridInitActionDefaultKey, 'string');
+		if ($this->gridInitAction === NULL) {
+			if (!isset(static::$gridInitActions[$gridActionParam])) 
+				$gridActionParam = static::$gridInitActionDefaultKey;
+			$this->gridInitAction = static::$gridInitActions[$gridActionParam];
+		}
 	}
 
 	/**
@@ -321,7 +363,7 @@ trait InitMethods {
 	 * @return bool
 	 */
 	protected function initUrlBuilding () {
-		$defaultAction = $this->gridAction === static::$gridActions[static::$gridActionDefaultKey];
+		$defaultAction = $this->gridInitAction === static::$gridInitActions[static::$gridInitActionDefaultKey];
 		$processCanonicalRedirect = $defaultAction && $this->router->GetAutoCanonizeRequests();
 		
 		if ($processCanonicalRedirect && !$this->initUrlBuildingCanonicalRedirect()) 
@@ -334,7 +376,7 @@ trait InitMethods {
 	}
 
 	/**
-	 * TODO: PHPDocs
+	 * Initialize URL building and redirect to canonical url if necessary.
 	 * @return bool
 	 */
 	protected function initUrlBuildingCanonicalRedirect () {
