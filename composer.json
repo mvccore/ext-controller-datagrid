@@ -1,7 +1,7 @@
 {
 	"name": "mvccore/ext-controller-datagrid",
 	"type": "library",
-	"description": "MvcCore controller extension to define and render datagrid component by model class.",
+	"description": "MvcCore - Extension - Controller - DataGrid - extension to define and render datagrid component by model class.",
 	"keywords": [
 		"mvc",
 		"mvccore",
