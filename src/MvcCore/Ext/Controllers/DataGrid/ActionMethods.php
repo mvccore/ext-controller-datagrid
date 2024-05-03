@@ -559,7 +559,7 @@ trait ActionMethods {
 				: 'Grid control filter form error.';
 		}
 		/** @var \MvcCore\Controller $this */
-		$this::Redirect($redirectUrl, \MvcCore\IResponse::SEE_OTHER, $redirectReason);
+		$this::Redirect($redirectUrl, \MvcCore\IResponse::SEE_OTHER, $redirectReason, 'Grid filter form redirect.');
 	}
 
 	/**
