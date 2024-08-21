@@ -25,7 +25,7 @@ trait PreDispatchMethods {
 	 * @return void
 	 */
 	public function PreDispatch () {
-		if ($this->dispatchState >= self::DISPATCH_STATE_PRE_DISPATCHED) 
+		if ($this->dispatchState >= static::DISPATCH_STATE_PRE_DISPATCHED) 
 			return;
 		
 		if ($this->viewEnabled) {

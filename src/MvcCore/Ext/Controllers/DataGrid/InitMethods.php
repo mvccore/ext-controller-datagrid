@@ -90,7 +90,7 @@ trait InitMethods {
 	 * @return void
 	 */
 	public function Init () {
-		if ($this->dispatchState >= self::DISPATCH_STATE_INITIALIZED) 
+		if ($this->dispatchState >= static::DISPATCH_STATE_INITIALIZED) 
 			return;
 		
 		$this->GetConfigRendering();
