@@ -28,6 +28,7 @@ trait ColumnsParsingMethods {
 			? $this->rowClassPropsFlags
 			: $rowFullClassName::GetDefaultPropsFlags();
 		$rowModelMetaData = [];
+		$this->initModelClasses(); // necessary to call for sure for completed property bellow
 		if ($this->rowClassIsExtendedModel)
 			$rowModelMetaData = $this->getExtendedModelMetaData($rowClassPropsFlags);
 		$props = $this->parseConfigColumnsGetProps(
