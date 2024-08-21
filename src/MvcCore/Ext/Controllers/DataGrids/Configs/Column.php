@@ -31,7 +31,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	/**
 	 * Grid heading human readable text.
 	 * @jsonSerialize
-	 * @var string|NULL
+	 * @var string|array|NULL
 	 */
 	#[JsonSerialize]
 	protected $headingName = NULL;
@@ -39,7 +39,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	/**
 	 * Grid heading title attribute, displayed on heading mouse over.
 	 * @jsonSerialize
-	 * @var string|NULL
+	 * @var string|array|NULL
 	 */
 	#[JsonSerialize]
 	protected $title = NULL;
@@ -53,7 +53,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	/**
 	 * URL column name when sorting or filtering.
 	 * @jsonSerialize
-	 * @var string|NULL
+	 * @var string|array|NULL
 	 */
 	#[JsonSerialize]
 	protected $urlName = NULL;
@@ -228,9 +228,9 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 * Create datagrid column config item.
 	 * @param string|NULL           $propName     Data grid model property name.
 	 * @param string|NULL           $dbColumnName Database column name. If `NULL`, `$propName` is used.
-	 * @param string|NULL           $headingName  Data grid visible column name. If `NULL`, `$propName` is used.
-	 * @param string|NULL           $title        Grid heading title attribute, displayed on heading mouse over.
-	 * @param string|NULL           $urlName      Data grid url column name to define sorting or filtering. 
+	 * @param string|array|NULL     $headingName  Data grid visible column name. If `NULL`, `$propName` is used.
+	 * @param string|array|NULL     $title        Grid heading title attribute, displayed on heading mouse over.
+	 * @param string|array|NULL     $urlName      Data grid url column name to define sorting or filtering. 
 	 *                                            If `NULL`, `$propName` is used.
 	 * @param bool|string|NULL      $urlHelper    URL helper to generate cell anchor URL.
 	 *                                            Boolean to enable/disable anchor url for filtering
@@ -351,7 +351,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return string|NULL
+	 * @return string|array|NULL
 	 */
 	public function GetHeadingName () {
 		return $this->headingName;
@@ -359,7 +359,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  string|NULL $headingName
+	 * @param  string|array|NULL $headingName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetHeadingName ($headingName) {
@@ -369,7 +369,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return string|NULL
+	 * @return string|array|NULL
 	 */
 	public function GetTitle () {
 		return $this->title;
@@ -377,7 +377,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @param  string|NULL $title
+	 * @param  string|array|NULL $title
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetTitle ($title) {
@@ -405,7 +405,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return string|NULL
+	 * @return string|array|NULL
 	 */
 	public function GetUrlName () {
 		return $this->urlName;
@@ -413,7 +413,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @param  string|NULL $urlName
+	 * @param  string|array|NULL $urlName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetUrlName ($urlName) {

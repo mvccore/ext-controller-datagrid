@@ -30,26 +30,26 @@ interface IColumn {
 	
 	/**
 	 * Get grid heading human readable text.
-	 * @return string|NULL
+	 * @return string|array|NULL
 	 */
 	public function GetHeadingName ();
 	
 	/**
 	 * Set grid heading human readable text.
-	 * @param  string|NULL $headingName
+	 * @param  string|array|NULL $headingName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetHeadingName ($headingName);
 	
 	/**
 	 * Get grid heading title attribute, displayed on heading mouse over.
-	 * @return string|NULL
+	 * @return string|array|NULL
 	 */
 	public function GetTitle ();
 	
 	/**
 	 * Set grid heading title attribute, displayed on heading mouse over.
-	 * @param  string|NULL $title
+	 * @param  string|array|NULL $title
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetTitle ($title);
@@ -69,13 +69,13 @@ interface IColumn {
 
 	/**
 	 * Get URL column name when sorting or filtering.
-	 * @return string|NULL
+	 * @return string|array|NULL
 	 */
 	public function GetUrlName ();
 	
 	/**
 	 * Set URL column name when sorting or filtering.
-	 * @param  string|NULL $urlName
+	 * @param  string|array|NULL $urlName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetUrlName ($urlName);
