@@ -611,6 +611,7 @@ trait InternalGettersSetters {
 			$configColumnsArr = $this->ParseConfigColumns();
 		}
 		if (is_array($configColumnsArr) && count($configColumnsArr) > 0) {
+			$this->configColumnsReindex($configColumnsArr);
 			if ($this->translate)
 				$configColumnsArr = $this->configColumnsTranslate($configColumnsArr);
 			$this->configColumnsValidateNames($configColumnsArr);
@@ -628,13 +629,47 @@ trait InternalGettersSetters {
 			);
 		}
 	}
+
+	/**
+	 * Reindex all columns into sequential index from `0` to `n` without configuration holes.
+	 * @return \MvcCore\Ext\Controllers\DataGrid
+	 */
+	protected function configColumnsReindex (array & $configColumns) {
+		$index = 0;
+		$columnsWithIndexes = [];
+		$columnsWithoutIndexes = [];
+		foreach ($configColumns as $urlName => $configColumn) {
+			$columnIndex = $configColumn->GetColumnIndex();
+			if ($columnIndex === NULL) {
+				$columnsWithoutIndexes[] = $urlName;
+			} else if (isset($columnsWithIndexes[$columnIndex])) {
+				$columnsWithIndexes[$columnIndex][] = $urlName;
+			} else {
+				$columnsWithIndexes[$columnIndex] = [$urlName];
+			}
+		}
+		ksort($columnsWithIndexes, SORT_NUMERIC);
+		foreach ($columnsWithIndexes as $columnIndex => $urlNames) {
+			foreach ($urlNames as $urlName) {
+				$configColumn = $configColumns[$urlName];
+				$configColumn->SetColumnIndex($index++);
+			}
+		}
+		$index = -1;
+		$columnsWithoutIndexes = array_reverse($columnsWithoutIndexes);
+		foreach ($columnsWithoutIndexes as $urlName) {
+			$configColumn = $configColumns[$urlName];
+			$configColumn->SetColumnIndex($index--);
+		}
+		return $this;
+	}
 	
 	/**
 	 * Validate config columns url names for invalid characters.
 	 * @throws \InvalidArgumentException
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
-	protected function configColumnsValidateNames (array $configColumns) {
+	protected function configColumnsValidateNames (array & $configColumns) {
 		$configColumnsUrlNames = array_keys($configColumns);
 		$configColumnsUrlNamesStr = implode("\n", $configColumnsUrlNames);
 		$notAllowedCharsInUrlNames = [
@@ -668,10 +703,9 @@ trait InternalGettersSetters {
 	 */
 	protected function configColumnsTranslate (array $configColumns) {
 		$result = [];
-		foreach ($configColumns as $columnConfig) {
-			$propName = $columnConfig->GetUrlName();
+		foreach ($configColumns as $urlName => $columnConfig) {
+			$propName = $columnConfig->GetPropName();
 			$headingName = $columnConfig->GetHeadingName();
-			$urlName = $columnConfig->GetUrlName();
 			if ($propName === $headingName) {
 				$result[$propName] = $columnConfig;
 				continue;

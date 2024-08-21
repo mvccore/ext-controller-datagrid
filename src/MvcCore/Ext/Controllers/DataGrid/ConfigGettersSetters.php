@@ -488,11 +488,14 @@ trait ConfigGettersSetters {
 		if ($this->configColumns === NULL) {
 			if ($cache = $this->GetCache()) {
 				list ($cacheKey, $cacheTags) = $this->GetGridCacheKeyAndTags();
-				$this->configColumns = $cache->Load($cacheKey, function (\MvcCore\Ext\ICache $cache, string $cacheKey) use (& $cacheTags) {
-					$this->configColumnsParseTranslateValidate();
-					$cache->Save($cacheKey, $this->configColumns, NULL, $cacheTags);
-					return $this->configColumns;
-				});
+				$this->configColumns = $cache->Load(
+					$cacheKey, 
+					function (\MvcCore\Ext\ICache $cache, string $cacheKey) use (& $cacheTags) {
+						$this->configColumnsParseTranslateValidate();
+						$cache->Save($cacheKey, $this->configColumns, NULL, $cacheTags);
+						return $this->configColumns;
+					}
+				);
 			} else {
 				$this->configColumnsParseTranslateValidate();
 			}
