@@ -27,8 +27,6 @@ trait ActionMethods {
 		if ($this->configRendering->GetRenderTableHeadFiltering()) 
 			$this->createTableHeadFilterForm(FALSE);
 		$this->initTableHeadFilterForm();
-		$this->initDevClientRowModelDefinition();
-		
 	}
 
 	/**
@@ -154,32 +152,6 @@ trait ActionMethods {
 		$controlFilterFormState = $form->GetDispatchState();
 		if ($controlFilterFormState < \MvcCore\IController::DISPATCH_STATE_INITIALIZED)
 			$form->Init(FALSE);
-	}
-
-	/**
-	 * Initialize row model client TypeScript code definition if necessary.
-	 * @return void
-	 */
-	protected function initDevClientRowModelDefinition () {
-		if (
-			!$this->environment->IsDevelopment() || 
-			$this->handlerClientRowModelDefinition === NULL
-		) return;
-		$generatorClass = static::$toolsTsGeneratorClass;
-		if (!class_exists($generatorClass)) throw new \RuntimeException(
-			"Class `$generatorClass` not installed, please install ".
-			"composer package `mvccore/ext-tool-ts-generator`."
-		);
-		$rowFullClassName = $this->rowClass;
-		$rowClassPropsFlags = $this->rowClassPropsFlags !== 0
-			? $this->rowClassPropsFlags
-			: ($this->rowClassIsExtendedModel
-				? $rowFullClassName::GetDefaultPropsFlags()
-				: \MvcCore\IModel::PROPS_INHERIT_PROTECTED
-			);
-		call_user_func_array($this->handlerClientRowModelDefinition, [
-			$generatorClass, $rowFullClassName, $rowClassPropsFlags
-		]);
 	}
 
 	/**
