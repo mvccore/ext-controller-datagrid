@@ -231,9 +231,10 @@ interface IDataGrid extends \MvcCore\Ext\Controllers\DataGrid\IConstants {
 	public function GetFiltering ();
 
 	/**
-	 * Set system property to sort or filter also by not visible columns.
-	 * `FALSE` (by default) means sorting or filtering will be only by visible columns.
-	 * `TRUE` means sorting or filtering will be by any column.
+	 * Set system property to sort or filter by URL param also by not currently visible columns.
+	 * `FALSE` (by default) means sorting or filtering by URL will be only by currently visible columns.
+	 * `TRUE` means sorting or filtering by URL will be by any column and if column in URL is
+	 * not currently visible, it will be enabled automatically.
 	 * @param  bool $ignoreDisabledColumns
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
