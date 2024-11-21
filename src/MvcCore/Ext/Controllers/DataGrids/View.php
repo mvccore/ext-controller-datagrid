@@ -14,40 +14,48 @@
 namespace MvcCore\Ext\Controllers\DataGrids;
 
 class View extends \MvcCore\View {
+
+	/**
+	 * Grid view types to package view scripts paths.
+	 * @var array<int,string>
+	 */
+	protected static $viewTypes2AppPaths= [
+		self::VIEW_TYPE_GRID_CONTENT	=> '~/MvcCore/Ext/Controllers/DataGrids/Views/Content',
+		self::VIEW_TYPE_GRID_CONTROL	=> '~/MvcCore/Ext/Controllers/DataGrids/Views/Controls',
+		self::VIEW_TYPE_GRID_FORM		=> '~/MvcCore/Ext/Controllers/DataGrids/Views/Form',
+	];
+
+	/**
+	 * Grid content view type.
+	 * @var int 
+	 */
+	const VIEW_TYPE_GRID_CONTENT		= 32;
 	
 	/**
-	 * Internal templates full path base.
-	 * @var string|NULL
+	 * Grid control view type.
+	 * @var int 
 	 */
-	protected $gridScriptsFullPathBase = NULL;
+	const VIEW_TYPE_GRID_CONTROL		= 64;
+	
+	/**
+	 * Grid form view type.
+	 * @var int 
+	 */
+	const VIEW_TYPE_GRID_FORM			= 128;
+	
+	/**
+	 * Internal cache array for templates full path bases to speed up
+	 * multiple method calls for `static::getGridScriptsFullPathBase();`.
+	 * Key is current view class full name, value is composer package root path.
+	 * @var array<string, string>
+	 */
+	protected static $gridScriptsFullPathBases	= [];
 	
 	/**
 	 * Grid rendering config pointer.
 	 * @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering|NULL
 	 */
-	protected $configRendering = NULL;
-	
-	/**
-	 * Set custom internal templates full path base.
-	 * @internal
-	 * @param  string $gridScriptsFullPathBase
-	 * @return \MvcCore\Ext\Controllers\DataGrids\View
-	 */
-	public function SetGridScriptsFullPathBase ($gridScriptsFullPathBase) {
-		$this->gridScriptsFullPathBase = $gridScriptsFullPathBase;
-		return $this;
-	}
-	
-	/**
-	 * Get custom internal templates full path base.
-	 * @internal
-	 * @return string
-	 */
-	public function GetGridScriptsFullPathBase () {
-		if ($this->gridScriptsFullPathBase === NULL)
-			$this->gridScriptsFullPathBase = str_replace('\\', '/', __DIR__) . '/Views';
-		return $this->gridScriptsFullPathBase;
-	}
+	protected $configRendering			= NULL;
 	
 	/**
 	 * Set datagrid rendering config.
@@ -76,7 +84,9 @@ class View extends \MvcCore\View {
 	 */
 	public function RenderGrid () {
 		return $this->renderGridTemplate(
-			$this->configRendering->GetTemplateContent(), 'Content', 'grid'
+			self::VIEW_TYPE_GRID_CONTENT, 
+			$this->configRendering->GetTemplateContent(), 
+			'grid'
 		);
 	}
 	
@@ -88,7 +98,9 @@ class View extends \MvcCore\View {
 		if (!$this->configRendering->GetRenderTableHead()) 
 			return '';
 		return $this->renderGridTemplate(
-			$this->configRendering->GetTemplateTableHead(), 'Content', 'table-head'
+			self::VIEW_TYPE_GRID_CONTENT, 
+			$this->configRendering->GetTemplateTableHead(), 
+			'table-head'
 		);
 	}
 	
@@ -98,7 +110,9 @@ class View extends \MvcCore\View {
 	 */
 	public function RenderGridBodyTable () {
 		return $this->renderGridTemplate(
-			$this->configRendering->GetTemplateTableBody(), 'Content', 'table-body'
+			self::VIEW_TYPE_GRID_CONTENT, 
+			$this->configRendering->GetTemplateTableBody(), 
+			'table-body'
 		);
 	}
 	
@@ -108,7 +122,9 @@ class View extends \MvcCore\View {
 	 */
 	public function RenderGridBodyGrid () {
 		return $this->renderGridTemplate(
-			$this->configRendering->GetTemplateGridBody(), 'Content', 'grid-body'
+			self::VIEW_TYPE_GRID_CONTENT, 
+			$this->configRendering->GetTemplateGridBody(), 
+			'grid-body'
 		);
 	}
 	
@@ -119,11 +135,11 @@ class View extends \MvcCore\View {
 	public function RenderGridControlSorting () {
 		if (!$this->configRendering->GetRenderControlSorting()) 
 			return '';
-		ob_start();
-		echo $this->renderGridTemplate(
-			$this->configRendering->GetTemplateControlSorting(), 'Controls', 'sorting'
+		return $this->renderGridTemplate(
+			self::VIEW_TYPE_GRID_CONTROL, 
+			$this->configRendering->GetTemplateControlSorting(), 
+			'sorting'
 		);
-		return ob_get_clean();
 	}
 	
 	/**
@@ -133,11 +149,11 @@ class View extends \MvcCore\View {
 	public function RenderGridControlCountScales () {
 		if (!$this->configRendering->GetRenderControlCountScales()) 
 			return '';
-		ob_start();
-		echo $this->renderGridTemplate(
-			$this->configRendering->GetTemplateControlCountScales(), 'Controls', 'count-scales'
+		return $this->renderGridTemplate(
+			self::VIEW_TYPE_GRID_CONTROL, 
+			$this->configRendering->GetTemplateControlCountScales(), 
+			'count-scales'
 		);
-		return ob_get_clean();
 	}
 	
 	/**
@@ -147,11 +163,11 @@ class View extends \MvcCore\View {
 	public function RenderGridControlPaging () {
 		if (!$this->configRendering->GetRenderControlPaging()) 
 			return '';
-		ob_start();
-		echo $this->renderGridTemplate(
-			$this->configRendering->GetTemplateControlPaging(), 'Controls', 'paging'
+		return $this->renderGridTemplate(
+			self::VIEW_TYPE_GRID_CONTROL, 
+			$this->configRendering->GetTemplateControlPaging(), 
+			'paging'
 		);
-		return ob_get_clean();
 	}
 	
 	/**
@@ -161,11 +177,11 @@ class View extends \MvcCore\View {
 	public function RenderGridControlStatus () {
 		if (!$this->configRendering->GetRenderControlStatus()) 
 			return '';
-		ob_start();
-		echo $this->renderGridTemplate(
-			$this->configRendering->GetTemplateControlStatus(), 'Controls', 'status'
+		return $this->renderGridTemplate(
+			self::VIEW_TYPE_GRID_CONTROL, 
+			$this->configRendering->GetTemplateControlStatus(), 
+			'status'
 		);
-		return ob_get_clean();
 	}
 	
 	/**
@@ -173,8 +189,12 @@ class View extends \MvcCore\View {
 	 * @return string
 	 */
 	public function RenderGridFilterForm () {
+		if (!$this->configRendering->GetRenderFilterForm()) 
+			return '';
 		return $this->renderGridTemplate(
-			$this->configRendering->GetTemplateFilterForm(), 'Form', 'filter'
+			self::VIEW_TYPE_GRID_FORM, 
+			$this->configRendering->GetTemplateFilterForm(), 
+			'filter'
 		);
 	}
 	
@@ -183,75 +203,71 @@ class View extends \MvcCore\View {
 	 * @internal
 	 * @return string
 	 */
-	protected function renderGridTemplate ($configTemplate, $typePath, $defaultTemplate) {
-		return $configTemplate === NULL
-			? $this->Render($typePath, $defaultTemplate, TRUE)
-			: $this->RenderScript($configTemplate);
+	protected function renderGridTemplate ($viewType, $configTemplate, $defaultTemplate, array $variables = []) {
+		if (count($variables) > 0) {
+			$currentStore = & $this->__protected['store'];
+			// always overvrite existing keys:
+			$this->__protected['store'] = array_merge($currentStore, $variables);
+		}
+		if ($configTemplate !== NULL) {
+			return $this->Render(static::VIEW_TYPE_SCRIPT, $configTemplate);
+
+		} else {
+			$viewTypeWithPkg = $viewType | static::VIEW_TYPE_PACKAGE;
+			/**
+			 * If there is not prepared view dir full path for internal grid template
+			 * by method `$view::GetTypedViewsDirFullPath()`, prepare it directly here
+			 * to customize and speed up template path setup.
+			 */
+			if (isset($this->__protected['viewsDirsFullPaths']))
+				$this->__protected['viewsDirsFullPaths'] = [];
+			$viewsDirsFullPaths = & $this->__protected['viewsDirsFullPaths'];
+			if (!isset($viewsDirsFullPaths[$viewTypeWithPkg])) {
+				$viewsDirsFullPaths[$viewTypeWithPkg] = static::getViewPathByType(
+					$this->controller->GetApplication(), $viewTypeWithPkg, TRUE
+				);
+			}
+			return $this->Render($viewTypeWithPkg, $defaultTemplate);
+		}
 	}
 
 	/**
-	 * @inheritDoc
-	 * @param  string $typePath     By default: `"Layouts" | "Scripts"`. It could be `"Forms" | "Forms/Fields"` etc...
-	 * @param  string $relativePath
-	 * @param  bool   $internalTemplate
-	 * @throws \InvalidArgumentException Template not found in path: `$viewScriptFullPath`.
+	 * If view type contains view in package flag, remove the flag and return 
+	 * path to local template, absolute or relative into this composer package.
+	 * @param  \MvcCore\Application $app 
+	 * @param  int                  $viewType 
+	 * @param  bool                 $absolute 
 	 * @return string
 	 */
-	public function & Render ($typePath, $relativePath, $internalTemplate = FALSE) {
-		/** @var \MvcCore\View $this */
-		if (!$internalTemplate)
-			$typePath = static::$scriptsDir;
-		$result = '';
-		if ($internalTemplate) {
-			$viewScriptFullPath = implode('/', [
-				static::GetGridScriptsFullPathBase(),
-				$typePath,
-				$relativePath . static::$extension
-			]);
+	protected static function getViewPathByType (
+		\MvcCore\IApplication $app, $viewType, $absolute
+	) {
+		$viewInsidePackage = ($viewType & static::VIEW_TYPE_PACKAGE) != 0;
+		if (!$viewInsidePackage) {
+			return parent::getViewPathByType($app, $viewType, $absolute);
 		} else {
-			$relativePath = $this->correctRelativePath(
-				$typePath, $relativePath
-			);
-			$viewScriptFullPath = static::GetViewScriptFullPath(
-				static::GetDefaultViewsDirFullPath($this->controller->GetApplication()) . '/' . $typePath, 
-				$relativePath
-			);
+			$viewTypeNoPkg = $viewType ^ static::VIEW_TYPE_PACKAGE;
+			$packagePath = static::$viewTypes2AppPaths[$viewTypeNoPkg];
+			if ($absolute && mb_strpos($packagePath, '~/') === 0) {
+				$gridScriptsFullPathBase = static::getGridScriptsFullPathBase();
+				$packagePath = $gridScriptsFullPathBase . mb_substr($packagePath, 1);
+			}
+			return $packagePath;
 		}
+	}
 
-		if (!file_exists($viewScriptFullPath)) {
-			throw new \InvalidArgumentException(
-				"[".get_class($this)."] Template not found in path: `{$viewScriptFullPath}`."
-			);
-		}
-
-		$renderedFullPaths = & $this->__protected['renderedFullPaths'];
-		$renderedFullPaths[] = $viewScriptFullPath;
-		// get render mode
-		list($renderMode) = $this->__protected['renderArgs'];
-		$renderModeWithOb = ($renderMode & \MvcCore\IView::RENDER_WITH_OB_FROM_ACTION_TO_LAYOUT) != 0;
-
-		// if render mode is default - start output buffering
-		if ($renderModeWithOb)
-			ob_start();
-		// render the template with local variables from the store
-		$result = call_user_func(function ($viewPath, $controller, $helpers) {
-			extract($helpers, EXTR_SKIP);
-			unset($helpers);
-			extract($this->__protected['store'], EXTR_SKIP);
-			include($viewPath);
-		}, $viewScriptFullPath, $this->controller, $this->__protected['helpers']);
-
-		// if render mode is default - get result from output buffer and return the result,
-		// if render mode is continuous - result is sent to client already, so return empty string only.
-		if ($renderModeWithOb) {
-			$result = ob_get_clean();
-			\array_pop($renderedFullPaths); // unset last
-			return $result;
-		} else {
-			$result = '';
-			\array_pop($renderedFullPaths); // unset last
-			return $result;
-		}
+	/**
+	 * Return composer package root dir by currently rendered class.
+	 * Use internal static cache to speed up this method for multiple calls.
+	 * @return string
+	 */
+	protected static function getGridScriptsFullPathBase () {
+		$viewClassFullName = get_called_class();
+		if (isset(static::$gridScriptsFullPathBases[$viewClassFullName]))
+			return static::$gridScriptsFullPathBases[$viewClassFullName];
+		$type = new \ReflectionClass($viewClassFullName);
+		$gridScriptsFullPathBase = str_replace('\\', '/', dirname($type->getFileName(), 5));
+		return static::$gridScriptsFullPathBases[$viewClassFullName] = $gridScriptsFullPathBase;
 	}
 
 }
