@@ -15,11 +15,8 @@
 	$controlsWrapperCssClass = count($controlsWrapperCssClasses) > 0
 		? implode(' ', $controlsWrapperCssClasses)
 		: '';
-	$controlFilterForm = $renderConf->GetRenderFilterForm();
 	$headFiltering = $renderConf->GetRenderTableHeadFiltering();
-	if ($controlFilterForm) 
-		echo $this->RenderGridFilterForm();
-
+	echo $this->RenderGridFilterForm();
 ?><div<?php
 	if (count($gridCssClasses) > 0) 
 		echo ' class="'.implode(' ', $gridCssClasses) . '"';
