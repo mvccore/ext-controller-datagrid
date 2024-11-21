@@ -242,14 +242,6 @@ trait InternalProps {
 	protected $gridRequest = NULL;
 
 	/**
-	 * Query string param separator - used from application router, used only
-	 * when route `<grid>` param is in query string.
-	 * @internal
-	 * @var string|NULL
-	 */
-	protected $queryStringParamsSepatator = NULL;
-
-	/**
 	 * Application URL initialization processed boolean.
 	 * @internal
 	 * @var bool

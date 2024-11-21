@@ -118,7 +118,6 @@ trait InitMethods {
 		$this->GetRoute();
 		$this->GetUrlParams();
 		
-		$this->initQsParamsSeparator();
 		$this->initCountScales();
 
 		if (!$this->initUrlParams()) return; // redirect inside
@@ -182,7 +181,6 @@ trait InitMethods {
 		$this->initTranslations();
 		$this->GetConfigColumns(FALSE);
 		$this->GetGridRequest();
-		$this->initQsParamsSeparator();
 		$this->initCountScales();
 		$this->GetUrlParams();
 		$this->initOperators();
@@ -203,19 +201,6 @@ trait InitMethods {
 	}
 
 	/**
-	 * Init `$this->queryStringParamsSepatator` from router to build grid urls:
-	 * @return void
-	 */
-	protected function initQsParamsSeparator () {
-		if ($this->queryStringParamsSepatator === NULL) {
-			$routerType = new \ReflectionClass($this->router);
-			$method = $routerType->getMethod('getQueryStringParamsSepatator');
-			$method->setAccessible(TRUE);
-			$this->queryStringParamsSepatator = $method->invoke($this->router);
-		}
-	}
-	
-	/**
 	 * Set up items per page configured from script 
 	 * into count scales if it is not there.
 	 * @return void
@@ -227,8 +212,6 @@ trait InitMethods {
 	}
 
 	/**
-	 * Initialize internal property `$this->queryStringParamsSepatator`
-	 * to be able to build internal grid URL strings.
 	 * Check valid values from URL for page and items par page.
 	 * If some value is invalid, redirect to default value.
 	 * @return bool
@@ -399,9 +382,7 @@ trait InitMethods {
 		list ($gridParam) = $this->route->Url(
 			$this->gridRequest,
 			[],
-			$this->urlParams,
-			$this->queryStringParamsSepatator,
-			FALSE
+			$this->urlParams
 		);
 		$gridParam = rtrim(rawurldecode($gridParam), '/');
 		$reqPathRaw = rtrim($this->gridRequest->GetPath(TRUE), '/');
