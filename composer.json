@@ -21,9 +21,9 @@
 	}],
 	"require": {
 		"php": ">=5.4.0",
-		"mvccore/mvccore": "^5.2.33",
-		"mvccore/ext-model-db": "^v5.2.22",
-		"mvccore/ext-tool-collections": "^5.0.2"
+		"mvccore/mvccore": "^5.3",
+		"mvccore/ext-model-db": "^5.3",
+		"mvccore/ext-tool-collections": "^5.3"
 	},
 	"suggest": {
 		"mvccore/ext-model-db-*": "MvcCore model extension to work with database SQL queries in more comfortable API.",
