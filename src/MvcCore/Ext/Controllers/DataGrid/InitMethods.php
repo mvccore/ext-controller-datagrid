@@ -817,8 +817,8 @@ trait InitMethods {
 	protected function removeUnknownChars ($rawValue) {
 		// remove white spaces from both sides: `SPACE \t \n \r \0 \x0B`:
 		$rawValue = trim((string) $rawValue);
-		// Remove base ASCII characters from decimnal index 0 to 32 (included), including new lines and tabs:
-		$cleanedValue = preg_replace("#[\x00-\x20]#", '', $rawValue);
+		// Remove base ASCII characters from decimnal index 0 to 31 (included), including new lines and tabs:
+		$cleanedValue = preg_replace('#[\x00-\x19]#', '', $rawValue);
 		if (mb_strlen($cleanedValue) === 0) return NULL;
 		return $cleanedValue;
 	}
