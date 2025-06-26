@@ -232,19 +232,19 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 * @param string|array|NULL     $title        Grid heading title attribute, displayed on heading mouse over.
 	 * @param string|array|NULL     $urlName      Data grid url column name to define sorting or filtering. 
 	 *                                            If `NULL`, `$propName` is used.
-	 * @param bool|string|NULL      $urlHelper    URL helper to generate cell anchor URL.
-	 *                                            Boolean to enable/disable anchor url for filtering
-	 *                                            (`TRUE` by default) or string to declare row instance
-	 *                                            model public method to generate custom URL.
+	 * @param \string[]|NULL        $types        Property type(s), necessary for automatic formating.
 	 * @param int|NULL              $columnIndex  Datagrid column index, starting with `0`, optional.
 	 * @param string|bool|NULL      $sort         Default sorting definition with values `ASC | DESC` 
 	 *                                            or `TRUE | FALSE` to enable/disable sorting.
 	 * @param int|bool              $filter       Filtering mode flags to allow specify operators 
 	 *                                            for each column or boolean to allow filtering only.
-	 * @param \string[]|NULL        $types        Property type(s), necessary for automatic formating.
 	 * @param array|NULL            $parserArgs   Property automatic parsing arguments.
 	 * @param array|NULL            $formatArgs   Property automatic formating arguments.
 	 * @param string|NULL           $viewHelper   Property automatic formating view helper name.
+	 * @param bool|string|NULL      $urlHelper    URL helper to generate cell anchor URL.
+	 *                                            Boolean to enable/disable anchor url for filtering
+	 *                                            (`TRUE` by default) or string to declare row instance
+	 *                                            model public method to generate custom URL.
 	 * @param string|int|float|NULL $width        Column initial or current width, it can be defined 
 	 *                                            as integer for pixel value, float for flex value
 	 *                                            or string including `px` or `%` units.
@@ -273,14 +273,14 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 		$headingName = NULL, 
 		$title = NULL, 
 		$urlName = NULL, 
-		$urlHelper = NULL,
+		$types = NULL, 
 		$columnIndex = NULL,
 		$sort = NULL, 
 		$filter = NULL, 
-		$types = NULL, 
 		$parserArgs = NULL, 
 		$formatArgs = NULL, 
 		$viewHelper = NULL,
+		$urlHelper = NULL,
 		$width = NULL,
 		$minWidth = NULL,
 		$maxWidth = NULL,
