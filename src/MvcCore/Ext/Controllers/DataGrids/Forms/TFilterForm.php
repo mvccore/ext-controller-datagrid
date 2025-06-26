@@ -16,7 +16,7 @@ namespace MvcCore\Ext\Controllers\DataGrids\Forms;
 /**
  * @mixin \MvcCore\Ext\Form
  */
-trait FilterForm {
+trait TFilterForm {
 	
 	/**
 	 * Form HTTP method.
@@ -47,10 +47,10 @@ trait FilterForm {
 	/**
 	 * Set datagrid columns configuration.
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns $configColumns
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Forms\FilterForm
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Forms\TFilterForm
 	 */
 	public function SetConfigColumns ($configColumns) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Forms\FilterForm|\MvcCore\Ext\Form */
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Forms\TFilterForm|\MvcCore\Ext\Form */
 		$this->configColumns = $configColumns;
 		return $this;
 	}
@@ -60,10 +60,10 @@ trait FilterForm {
 	 * Keys are model properties column names, values are arrays 
 	 * with operator as key and raw filtering values as values.
 	 * @param  array $filtering
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Forms\FilterForm
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Forms\TFilterForm
 	 */
 	public function SetFiltering ($filtering) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Forms\FilterForm|\MvcCore\Ext\Form */
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Forms\TFilterForm|\MvcCore\Ext\Form */
 		$this->filtering = $filtering;
 		return $this;
 	}
@@ -77,7 +77,7 @@ trait FilterForm {
 	 * @return void
 	 */
 	public function __construct (\MvcCore\Ext\Controllers\IDataGrid $grid) {
-		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Forms\FilterForm|\MvcCore\Ext\Form */
+		/** @var $this \MvcCore\Ext\Controllers\DataGrids\Forms\TFilterForm|\MvcCore\Ext\Form */
 		parent::__construct($grid);
 		if ($this->action === NULL) {
 			$actionUrl = $grid->GetParentController()->Url(
