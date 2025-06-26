@@ -208,7 +208,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	 * @var \string[]
 	 */
 	#[JsonSerialize]
-	protected $cssClassesControlPagingButton		= [\MvcCore\Ext\Controllers\DataGrids\Paging\Item::PAGE_CSS_CLASS_BUTTON];
+	protected $cssClassesControlPagingButton		= [\MvcCore\Ext\Controllers\DataGrids\Paging\Item::PAGE_CSS_CLASS_BUTTON, 'grid-button'];
 	
 	/**
 	 * Css classes for datagrid paging control current text.
@@ -232,7 +232,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	 * @var \string[]
 	 */
 	#[JsonSerialize]
-	protected $cssClassesControlCountScalesButton	= ['grid-count-link'];
+	protected $cssClassesControlCountScalesButton	= ['grid-count-link', 'grid-button'];
 	
 	/**
 	 * Css classes for datagrid count scales control current scale text.
