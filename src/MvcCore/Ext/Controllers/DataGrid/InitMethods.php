@@ -24,14 +24,14 @@ trait InitMethods {
 	 * @param  string|int|NULL          $childControllerIndex Automatic name for this instance used in view.
 	 * @return void
 	 */
-	public function __construct (\MvcCore\IController $controller = NULL, $childControllerIndex = NULL) {
+	public function __construct (/*\MvcCore\IController*/ $controller = NULL, $childControllerIndex = NULL) {
 		/** @var \MvcCore\Controller $controller */
 		if (is_string($this->countScales)) 
 			$this->countScales = array_map('intval', explode(',', (string) $this->countScales));
+		$initCtrlInstance = static::GetCallerControllerInstance();
+		$dispatchCtrl = \MvcCore\Application::GetInstance()->GetController();
 		if ($controller === NULL) {
-			$controller = self::GetCallerControllerInstance();
-			if ($controller === NULL) 
-				$controller = \MvcCore\Application::GetInstance()->GetController();
+			$controller = $initCtrlInstance ?: $dispatchCtrl;
 			if ($controller === NULL) throw new \InvalidArgumentException(
 				'['.get_class($this).'] There was not possible to determinate caller controller, '
 				.'where is datagrid instance created. Provide `$controller` instance explicitly '
@@ -47,7 +47,12 @@ trait InitMethods {
 				: serialize($creationPlace);
 			$this->creationPlaceImprint = hash('crc32b', $creationPlaceStr);
 		}
+		$initCtrlClass = static::GetCallerControllerClass();
 		$this->parentController->AddChildController($this, $childControllerIndex);
+		// remove current grid from dispatching process, if creation controller place is not dispatched controller
+		if (!is_a($controller, $initCtrlClass)) {
+			self::RemoveController($this);
+		}
 	}
 	
 	/**
