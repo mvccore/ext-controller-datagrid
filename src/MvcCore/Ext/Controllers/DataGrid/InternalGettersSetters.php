@@ -601,7 +601,7 @@ trait InternalGettersSetters {
 	protected function configColumnsParseTranslateValidate () {
 		$model = $this->GetModel();
 		if ($model instanceof \MvcCore\Ext\Controllers\DataGrids\Models\IGridColumns) {
-			/** @var \MvcCore\Ext\Controllers\DataGrids\Models\GridColumns $model */
+			/** @var \MvcCore\Ext\Controllers\DataGrids\Models\TGridColumns $model */
 			$configColumnsArr = $model->SetGrid($this)->GetConfigColumns();
 		} else {
 			$configColumnsArr = $this->ParseConfigColumns();
@@ -615,14 +615,23 @@ trait InternalGettersSetters {
 				$configColumnsArr
 			);
 		} else {
-			throw new \InvalidArgumentException(
-				"There was not possible to complete datagrid columns from given model instance. \n".
-				"- 1. You can use datagrid setter method `SetConfigColumns()` to directly configure datagrid columns or \n".
-				"- 2. You can implement interface `\\MvcCore\\Ext\\Controllers\\DataGrids\\Models\\IGridColumns` \n".
-				"  on given model instance and decorate model properties with attribute class \n".
-				"  `\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column` ".
-				"  or with equivalent PHPDocs tag names."
-			);
+			throw new \InvalidArgumentException(implode("\n", array_map('rtrim', [
+				'There was not possible to complete datagrid columns from given model instance.									',
+				'																												',
+				'You can choose one of followng options:																		',
+				'1. Set columns directly by `$grid->SetConfigColumns(\MvcCore\Ext\Controllers\DataGrids\Configs\Column[])`,		',
+				'2. Implement interface `\\MvcCore\\Ext\\Controllers\\DataGrids\\Models\\IGridColumns`							',
+				'   on `$model` class given by setter `$grid->SetModel($model)`													',
+				'   and there you can define or parse columns in implemented method `GetConfigColumns()`,						',
+				'3. Set row class name by `$this->SetRowClass(...)` with implemented interface:									',
+				'   `\MvcCore\Ext\Controllers\DataGrids\AgGrids\Models\IGridRow`,												',
+				'   and there you can define columns by decorating properties with attribute class								',
+				'   `\\MvcCore\\Ext\\Controllers\\DataGrids\\Configs\\Column`													',
+				'   or with equivalent PHPDocs tag names `@var` and `@datagrid Column({})`.										',
+				'4. You can use point 2. and 3. together and parse columns from defined row model class							',
+				'   in method `GetConfigColumns()` in your grid model by call `$columns = $this->grid->ParseConfigColumns()`,	',
+				'   than you can add any more columns dynamicly.																',
+			])));
 		}
 	}
 
@@ -668,9 +677,10 @@ trait InternalGettersSetters {
 	protected function configColumnsValidateNames (array & $configColumns) {
 		$configColumnsUrlNames = array_keys($configColumns);
 		$configColumnsUrlNamesStr = implode("\n", $configColumnsUrlNames);
+		$configUrlSegments = $this->GetConfigUrlSegments();
 		$notAllowedCharsInUrlNames = [
-			$this->configUrlSegments->GetUrlDelimiterSubjectValue(),
-			$this->configUrlSegments->GetUrlDelimiterSubjects(),
+			$configUrlSegments->GetUrlDelimiterSubjectValue(),
+			$configUrlSegments->GetUrlDelimiterSubjects(),
 		];
 		foreach ($notAllowedCharsInUrlNames as $notAllowedCharInUrlNames) {
 			if (mb_strpos($configColumnsUrlNamesStr, $notAllowedCharInUrlNames) !== FALSE) {
