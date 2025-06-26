@@ -221,6 +221,8 @@ trait ColumnsParsingMethods {
 	protected function parseConfigColumnTypes (\ReflectionProperty $prop, $phpWithTypes, $phpWithUnionTypes) {
 		$phpWithTypes = PHP_VERSION_ID >= 70400;
 		$phpWithUnionTypes = PHP_VERSION_ID >= 80000;
+		$types = [];
+		$allowNull = TRUE;
 		if ($phpWithTypes && $prop->hasType()) {
 			/** @var $reflType \ReflectionUnionType|\ReflectionNamedType */
 			$refType = $prop->getType();
