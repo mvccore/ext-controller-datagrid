@@ -13,8 +13,17 @@
 
 namespace MvcCore\Ext\Controllers\DataGrids\Models;
 
-class GridRow implements \MvcCore\Ext\Controllers\DataGrids\Models\IGridRow {
+/**
+ * @mixin \MvcCore\Model|\MvcCore\Ext\Models\Db\Model
+ */
+trait TGridModel {
 
-	use \MvcCore\Ext\Controllers\DataGrids\Models\TGridRow;
+	use \MvcCore\Ext\Controllers\DataGrids\Models\GridModel\Features;
+
+	/**
+	 * Datagrid instance, always initialized by datagrid component automatically.
+	 * @var \MvcCore\Ext\Controllers\DataGrid|NULL
+	 */
+	protected $grid = NULL;
 
 }

@@ -11,18 +11,12 @@
  * @license		https://mvccore.github.io/docs/mvccore/5.0.0/LICENSE.md
  */
 
-namespace MvcCore\Ext\Controllers\DataGrids\Models;
+namespace MvcCore\Ext\Controllers\DataGrids\Models\GridModel;
 
 /**
  * @mixin \MvcCore\Model|\MvcCore\Ext\Models\Db\Model
  */
-trait GridModel {
-
-	/**
-	 * Datagrid instance, always initialized by datagrid component automatically.
-	 * @var \MvcCore\Ext\Controllers\DataGrid|NULL
-	 */
-	protected $grid = NULL;
+trait Features {
 
 	/**
 	 * Database table offset, always initialized into integer.
@@ -71,7 +65,7 @@ trait GridModel {
 	/**
 	 * Set datagrid instance, always initialized by datagrid component automatically.
 	 * @param  \MvcCore\Ext\Controllers\DataGrid|NULL $grid
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridModel
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridModel
 	 */
 	public function SetGrid (\MvcCore\Ext\Controllers\IDataGrid $grid = NULL) {
 		$this->grid = $grid;
@@ -82,7 +76,7 @@ trait GridModel {
 	 * Set database table offset, always initialized into integer.
 	 * This offset is always initialized by datagrid component automatically.
 	 * @param  int|NULL $offset 
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridModel
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridModel
 	 */
 	public function SetOffset ($offset) {
 		$this->offset = $offset;
@@ -102,7 +96,7 @@ trait GridModel {
 	 * Set database table select limit, it could be initialized into integer or `NULL`.
 	 * This limit is always initialized by datagrid component automatically.
 	 * @param  int|NULL $limit 
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridModel
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridModel
 	 */
 	public function SetLimit ($limit) {
 		$this->limit = $limit;
@@ -124,7 +118,7 @@ trait GridModel {
 	 * operator and values are raw user input values to use in column condition.
 	 * This filtering is always initialized by datagrid component automatically.
 	 * @param  array $filtering 
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridModel
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridModel
 	 */
 	public function SetFiltering (array $filtering) {
 		$this->filtering = $filtering;
@@ -147,7 +141,7 @@ trait GridModel {
 	 * and values are sorting direction strings - `ASC | DESC`.
 	 * This sorting is always initialized by datagrid component automatically.
 	 * @param  array $sorting
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridModel
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridModel
 	 */
 	public function SetSorting (array $sorting) {
 		$this->sorting = $sorting;

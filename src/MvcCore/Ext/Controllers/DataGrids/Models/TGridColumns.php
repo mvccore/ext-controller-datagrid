@@ -20,7 +20,7 @@ namespace MvcCore\Ext\Controllers\DataGrids\Models;
  * custom row model class.
  * @mixin \MvcCore\Model|\MvcCore\Ext\Models\Db\Model
  */
-trait GridColumns {
+trait TGridColumns {
 
 	/**
 	 * Return array of datagrid columns config.
