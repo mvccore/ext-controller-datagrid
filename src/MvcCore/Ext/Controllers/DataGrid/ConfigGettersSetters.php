@@ -39,8 +39,8 @@ trait ConfigGettersSetters {
 
 	/**
 	 * @inheritDoc
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\GridRow|string|NULL $rowClass
-	 * @param  int                                                           $rowClassPropsFlags
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\TGridRow|string|NULL $rowClass
+	 * @param  int                                                            $rowClassPropsFlags
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetRowClass (/*\MvcCore\Ext\Controllers\DataGrids\Models\IGridRow*/ $rowClass, $propsFlags = 0) {
@@ -52,7 +52,7 @@ trait ConfigGettersSetters {
 
 	/**
 	 * @inheritDoc
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\GridRow|string|NULL
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridRow|string|NULL
 	 */
 	public function GetRowClass () {
 		return $this->rowClass;
@@ -514,7 +514,6 @@ trait ConfigGettersSetters {
 		}
 	}
 
-	
 	/**
 	 * @inheritDoc
 	 * @param  array $controlsTexts

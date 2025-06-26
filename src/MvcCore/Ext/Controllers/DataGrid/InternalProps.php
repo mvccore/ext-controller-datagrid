@@ -170,31 +170,6 @@ trait InternalProps {
 	protected $pagesCount = NULL;
 	
 	/**
-	 * All columns default allowed SQL operators and url segments by filtering mode configuration.
-	 * Keys are (translated) url segments, values are `\stdClass`es with keys:
-	 * - `operator` - string SQL operator to use
-	 * - `multiple` - boolean if operatoc could have multiple values
-	 * - `regex`    - NULL or string with regular expression applied to match the value(s).
-	 * This collection is initialized internally.
-	 * @internal
-	 * @var array
-	 */
-	protected $defaultAllowedOperators = [];
-
-	/**
-	 * Eech column allowed SQL operators and url segments by filtering mode configuration.
-	 * Keys are column properties names and values are array with keys 
-	 * as (translated) url segments and values as `\stdClass`es with keys:
-	 * - `operator` - string SQL operator to use
-	 * - `multiple` - boolean if operatoc could have multiple values
-	 * - `regex`    - NULL or string with regular expression applied to match the value(s).
-	 * This collection is initialized internally.
-	 * @internal
-	 * @var array
-	 */
-	protected $columnsAllowedOperators = [];
-	
-	/**
 	 * Paging items, completed after model total count has been loaded.
 	 * @internal
 	 * @var \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging|NULL
@@ -223,13 +198,6 @@ trait InternalProps {
 	 * @var array|\MvcCore\Ext\Models\Db\Readers\Streams\Iterator|NULL
 	 */
 	protected $pageData = NULL;
-
-	/**
-	 * Internal grid init action method name.
-	 * @internal
-	 * @var string|NULL
-	 */
-	protected $gridInitAction = NULL;
 	
 	/**
 	 * Empty request instance only with `path` value, 
@@ -240,6 +208,38 @@ trait InternalProps {
 	 * @var \MvcCore\Request|NULL
 	 */
 	protected $gridRequest = NULL;
+
+	/**
+	 * All columns default allowed SQL operators and url segments by filtering mode configuration.
+	 * Keys are (translated) url segments, values are `\stdClass`es with keys:
+	 * - `operator` - string SQL operator to use
+	 * - `multiple` - boolean if operatoc could have multiple values
+	 * - `regex`    - NULL or string with regular expression applied to match the value(s).
+	 * This collection is initialized internally.
+	 * @internal
+	 * @var array
+	 */
+	protected $defaultAllowedOperators = [];
+
+	/**
+	 * Eech column allowed SQL operators and url segments by filtering mode configuration.
+	 * Keys are column properties names and values are array with keys 
+	 * as (translated) url segments and values as `\stdClass`es with keys:
+	 * - `operator` - string SQL operator to use
+	 * - `multiple` - boolean if operatoc could have multiple values
+	 * - `regex`    - NULL or string with regular expression applied to match the value(s).
+	 * This collection is initialized internally.
+	 * @internal
+	 * @var array
+	 */
+	protected $columnsAllowedOperators = [];
+
+	/**
+	 * Internal grid init action method name.
+	 * @internal
+	 * @var string|NULL
+	 */
+	protected $gridInitAction = NULL;
 
 	/**
 	 * Application URL initialization processed boolean.
