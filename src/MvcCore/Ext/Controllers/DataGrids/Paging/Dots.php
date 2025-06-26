@@ -43,7 +43,7 @@ class Dots extends \MvcCore\Ext\Controllers\DataGrids\Paging\Dot {
 		$isPrev = FALSE, $isNext = FALSE,
 		$isFirst = FALSE, $isLast = FALSE
 	) {
-		$this->text = mb_chr(8230); // \u{2026} - PHP 5.4 compatible
+		$this->text = json_decode("\u2026"); // "\u2026", mb_chr(8230)
 		parent::__construct($url, $text, $current, $isPrev, $isNext, $isFirst, $isLast);
 
 	}
