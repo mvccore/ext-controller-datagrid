@@ -13,7 +13,7 @@
 
 namespace MvcCore\Ext\Controllers\DataGrids\Views;
 
-trait ReverseHelper {
+trait TReverseHelper {
 
 	/**
 	 * Currently used datagrid instance.
