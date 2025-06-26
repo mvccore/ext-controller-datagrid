@@ -16,16 +16,6 @@ namespace MvcCore\Ext\Controllers\DataGrids;
 class View extends \MvcCore\View {
 
 	/**
-	 * Grid view types to package view scripts paths.
-	 * @var array<int,string>
-	 */
-	protected static $viewTypes2AppPaths= [
-		self::VIEW_TYPE_GRID_CONTENT	=> '~/MvcCore/Ext/Controllers/DataGrids/Views/Content',
-		self::VIEW_TYPE_GRID_CONTROL	=> '~/MvcCore/Ext/Controllers/DataGrids/Views/Controls',
-		self::VIEW_TYPE_GRID_FORM		=> '~/MvcCore/Ext/Controllers/DataGrids/Views/Form',
-	];
-
-	/**
 	 * Grid content view type.
 	 * @var int 
 	 */
@@ -43,6 +33,16 @@ class View extends \MvcCore\View {
 	 */
 	const VIEW_TYPE_GRID_FORM			= 128;
 	
+	/**
+	 * Grid view types to package view scripts paths.
+	 * @var array<int,string>
+	 */
+	protected static $viewTypes2AppPaths= [
+		self::VIEW_TYPE_GRID_CONTENT	=> '~/MvcCore/Ext/Controllers/DataGrids/Views/Content',
+		self::VIEW_TYPE_GRID_CONTROL	=> '~/MvcCore/Ext/Controllers/DataGrids/Views/Controls',
+		self::VIEW_TYPE_GRID_FORM		=> '~/MvcCore/Ext/Controllers/DataGrids/Views/Form',
+	];
+
 	/**
 	 * Internal cache array for templates full path bases to speed up
 	 * multiple method calls for `static::getGridScriptsFullPathBase();`.
