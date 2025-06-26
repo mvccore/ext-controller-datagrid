@@ -16,6 +16,13 @@ namespace MvcCore\Ext\Controllers\DataGrid;
 interface IConstants {
 
 	/**
+	 * Default row model class.
+	 * @var string
+	 */
+	const ROW_MODEL_CLASS_DEFAULT		= '\MvcCore\Ext\Controllers\DataGrids\Models\GridRow';
+
+
+	/**
 	 * Grid action name for table filter submit.
 	 * @var string
 	 */
