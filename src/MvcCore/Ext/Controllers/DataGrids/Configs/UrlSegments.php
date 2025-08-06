@@ -391,7 +391,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments,
 
 	/**
 	 * @inheritDoc
-	 * @return array
+	 * @return array<string, string>
 	 */
 	public function GetUrlFilterOperators () {
 		/** @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments $this */

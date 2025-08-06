@@ -13,15 +13,23 @@
 
 namespace MvcCore\Ext\Controllers\DataGrid;
 
+use \MvcCore\Ext\Controllers\DataGrids\Configs\Column as ConfigColumn,
+	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn as IConfigColumn,
+	\MvcCore\Ext\Controllers\DataGrids\Views\IReverseHelper;
+
 /**
+ * @phpstan-type Filtering array<string, array<string, array<mixed>>>
+ * @phpstan-type OperatorAndValues array<string, array<string>>
+ * @phpstan-type AllowedOperators array<string, object{"operator":string,"multiple":boolean,"regex":?string}>
+ * 
  * @mixin \MvcCore\Ext\Controllers\DataGrid
  */
 trait InitMethods {
 
 	/**
 	 * Create `\MvcCore\Ext\Controllers\DataGrid` instance.
-	 * @param  \MvcCore\Controller|NULL $controller
-	 * @param  string|int|NULL          $childControllerIndex Automatic name for this instance used in view.
+	 * @param  ?\MvcCore\Controller $controller
+	 * @param  string|int|null      $childControllerIndex Automatic name for this instance used in view.
 	 * @return void
 	 */
 	public function __construct (/*\MvcCore\IController*/ $controller = NULL, $childControllerIndex = NULL) {
@@ -251,7 +259,7 @@ trait InitMethods {
 				/** @var \MvcCore\Controller $this */
 				$this::Redirect(
 					$redirectUrl, 
-					\MvcCore\IResponse::SEE_OTHER, 
+					\MvcCore\Response\IConstants::SEE_OTHER, 
 					'Grid count is too high.'
 				);
 				return FALSE;
@@ -273,7 +281,7 @@ trait InitMethods {
 			/** @var \MvcCore\Controller $this */
 			$this::Redirect(
 				$redirectUrl, 
-				\MvcCore\IResponse::SEE_OTHER, 
+				\MvcCore\Response\IConstants::SEE_OTHER, 
 				'Grid custom count scale is not allowed.'
 			);
 			return FALSE;
@@ -297,7 +305,7 @@ trait InitMethods {
 				/** @var \MvcCore\Controller $this */
 				$this::Redirect(
 					$redirectUrl, 
-					\MvcCore\IResponse::SEE_OTHER, 
+					\MvcCore\Response\IConstants::SEE_OTHER, 
 					'Grid page is too low.'
 				);
 				return FALSE;
@@ -319,7 +327,7 @@ trait InitMethods {
 			/** @var \MvcCore\Controller $this */
 			$this::Redirect(
 				$redirectUrl, 
-				\MvcCore\IResponse::SEE_OTHER, 
+				\MvcCore\Response\IConstants::SEE_OTHER, 
 				'Grid page is too high with unlimited count.'
 			);
 			return FALSE;
@@ -406,7 +414,7 @@ trait InitMethods {
 			/** @var \MvcCore\Controller $this */
 			$this::Redirect(
 				$redirectUrl, 
-				\MvcCore\IResponse::SEE_OTHER, 
+				\MvcCore\Response\IConstants::SEE_OTHER, 
 				'Grid canonical URL redirect.'
 			);
 			return FALSE;
@@ -463,11 +471,11 @@ trait InitMethods {
 
 	/**
 	 * Initialize column config filtering flag by global filtering flag by column type.
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $columnConfig 
-	 * @param  int                                                $columnFilterCfg
+	 * @param  IConfigColumn $columnConfig 
+	 * @param  int           $columnFilterCfg
 	 * @return int
 	 */
-	protected function initColumnOperators (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $columnConfig, $columnFilterCfg) {
+	protected function initColumnOperators (IConfigColumn $columnConfig, $columnFilterCfg) {
 		$types = $columnConfig->GetTypes();
 		if (is_array($types) && count($types) > 0) {
 			$type = $types[0];
@@ -517,7 +525,7 @@ trait InitMethods {
 	 * and sorting directions `ASC | DESC` as values.
 	 * @return void
 	 */
-	protected function initSorting () {
+	/*protected function initSortingOld () {
 		if (!$this->sortingMode || !$this->urlParams[static::URL_PARAM_SORT]) return;
 		$rawSorting = trim($this->urlParams[static::URL_PARAM_SORT]);
 		if (mb_strlen($rawSorting) === 0) return;
@@ -567,14 +575,105 @@ trait InitMethods {
 			}
 		}
 		$this->sorting = $sorting;
+	}*/
+	
+	/**
+	 * Parse sorting from URL as array of databse column names as keys 
+	 * and sorting directions `ASC | DESC` as values.
+	 * @return void
+	 */
+	protected function initSorting () {
+		if (!$this->sortingMode || !$this->urlParams[static::URL_PARAM_SORT]) return;
+		$rawSorting = trim($this->urlParams[static::URL_PARAM_SORT]);
+		if (mb_strlen($rawSorting) === 0) return;
+
+		$invalidValueFound = FALSE;
+		$currentClassType = new \ReflectionClass(__CLASS__);
+		$currentParseSorting = $currentClassType->getMethod('ParseSorting');
+		$this->sorting = $currentParseSorting->invokeArgs($this, [$rawSorting, & $invalidValueFound]);
+		//$this->sorting = $this->ParseSorting($rawSorting, $invalidValueFound);
+	}
+
+	/**
+	 * @inheritDoc
+	 * @param  string $rawSorting 
+	 * @param  bool   $invalidValueFound 
+	 * @return array<string,bool|string|null>
+	 */
+	public function ParseSorting ($rawSorting, & $invalidValueFound = FALSE) {
+		$sorting = [];
+
+		$subjsDelim = $this->configUrlSegments->GetUrlDelimiterSubjects();
+		$subjValueDelim = $this->configUrlSegments->GetUrlDelimiterSubjectValue();
+		$ascSuffix = $this->configUrlSegments->GetUrlSuffixSortAsc();
+		$descSuffix = $this->configUrlSegments->GetUrlSuffixSortDesc();
+		/** @var array<string,string> $sortSuffixes */
+		$sortSuffixes = [$ascSuffix => 'ASC', $descSuffix => 'DESC'];
+		$rawSortingItems = explode($subjsDelim, $rawSorting);
+		$multiSorting = ($this->sortingMode & static::SORT_MULTIPLE_COLUMNS) != 0;
+
+		foreach ($rawSortingItems as $rawSortingItem) {
+			$delimPos = mb_strpos($rawSortingItem, $subjValueDelim);
+			$direction = 'ASC';
+			if ($delimPos === FALSE) {
+				$rawColumnName = $rawSortingItem;
+			} else {
+				$rawColumnName = mb_substr($rawSortingItem, 0, $delimPos);
+				$rawDirection = mb_substr($rawSortingItem, $delimPos + 1);
+				if (isset($sortSuffixes[$rawDirection])) 
+					$direction = $sortSuffixes[$rawDirection];
+			}
+			$rawColumnName = $this->removeUnknownChars($rawColumnName);
+			if ($rawColumnName === NULL) {
+				$invalidValueFound = TRUE;
+				continue;
+			}
+			if (!isset($this->configColumns[$rawColumnName])) {
+				$invalidValueFound = TRUE;
+				continue;
+			}
+			/** @var IConfigColumn $configColumn */
+			$configColumn = $this->configColumns[$rawColumnName];
+			if ($configColumn->GetDisabled()) {
+				if ($this->ignoreDisabledColumns) {
+					$this->enableColumn($configColumn);
+				} else {
+					$invalidValueFound = TRUE;
+					continue;
+				}
+			}
+			$columnSortCfg = $configColumn->GetSort();
+			if ($columnSortCfg === FALSE || $columnSortCfg === NULL) {
+				$invalidValueFound = TRUE;
+				continue;
+			}
+			$sorting[$configColumn->GetDbColumnName()] = $direction;
+			if (!$multiSorting) break;
+		}
+
+		// if there is no sorting, complete default sorting from columns configuration
+		if (count($sorting) === 0) {
+			foreach ($this->configColumns as $configColumn) {
+				/** @var IConfigColumn $configColumn */
+				$configColumnSort = $configColumn->GetSort();
+				if (is_string($configColumnSort)) {
+					$dbColumnName = $configColumn->GetDbColumnName();
+					$sorting[$dbColumnName] = $configColumnSort;
+					if (!$multiSorting) break;
+				}
+			}
+		}
+
+		return $sorting;
 	}
 	
 	/**
 	 * Parse filtering from URL as array of databse column names as keys 
 	 * and values as array of raw filtering values.
+	 * @deprecated
 	 * @return bool
 	 */
-	protected function initFiltering () {
+	/*protected function initFilteringOld () {
 		if (!$this->filteringMode || !isset($this->urlParams[static::URL_PARAM_FILTER])) return TRUE;
 		$rawFiltering = trim($this->urlParams[static::URL_PARAM_FILTER]);
 		if (mb_strlen($rawFiltering) === 0) return TRUE;
@@ -727,10 +826,215 @@ trait InitMethods {
 		$context = $this;
 		$context::Redirect(
 			$canonicalUrl, 
-			\MvcCore\IResponse::SEE_OTHER, 
+			\MvcCore\Response\IConstants::SEE_OTHER, 
 			'Grid filter canonical URL redirect.'
 		);
 		return FALSE;
+	}*/
+	
+	/**
+	 * Parse filtering from URL as array of databse column names as keys 
+	 * and values as array of raw filtering values.
+	 * @return bool
+	 */
+	protected function initFiltering () {
+		if (!$this->filteringMode || !isset($this->urlParams[static::URL_PARAM_FILTER])) return TRUE;
+		$rawFiltering = trim($this->urlParams[static::URL_PARAM_FILTER]);
+		if (mb_strlen($rawFiltering) === 0) return TRUE;
+
+		// set up new initial filtering:
+		$invalidValueFound = FALSE;
+		$currentClassType = new \ReflectionClass(__CLASS__);
+		$currentParseFiltering = $currentClassType->getMethod('ParseFiltering');
+		$this->filtering = $currentParseFiltering->invokeArgs($this, [$rawFiltering, & $invalidValueFound]);
+		//$this->filtering = $this->ParseFiltering($rawFiltering, $invalidValueFound);
+		if (!$invalidValueFound) return TRUE;
+
+		// if there were any invalid filter value - redirect grid to proper url:
+		$canonicalFilter = [];
+		foreach ($this->filtering as $dbColumnName => $operatorAndFilteringValues) {
+			$configColumn = $this->configColumns->GetByDbColumnName($dbColumnName);
+			$canonicalFilter[$configColumn->GetPropName()] = $operatorAndFilteringValues;
+		}
+		$gridParams = array_merge($this->urlParams, [static::URL_PARAM_FILTER => $canonicalFilter]);
+		$canonicalUrl = $this->Url(NULL, [
+			static::URL_PARAM_GRID	=> $gridParams,
+		]);
+		$context = $this;
+		$context::Redirect(
+			$canonicalUrl, 
+			\MvcCore\Response\IConstants::SEE_OTHER, 
+			'Grid filter canonical URL redirect.'
+		);
+
+		return FALSE;
+	}
+	
+	/**
+	 * @inheritDoc
+	 * @param  string $rawFiltering 
+	 * @param  bool   $invalidValueFound
+	 * @return Filtering
+	 */
+	public function ParseFiltering ($rawFiltering, & $invalidValueFound = FALSE) {
+		$subjsDelim = $this->configUrlSegments->GetUrlDelimiterSubjects();
+		$subjValueDelim = $this->configUrlSegments->GetUrlDelimiterSubjectValue();
+		
+		$urlFilterOperators = $this->configUrlSegments->GetUrlFilterOperators();
+		$filteringColumns = $this->getFilteringColumns();
+		$rawFilteringItems = explode($subjsDelim, $rawFiltering);
+		$multiFiltering = ($this->filteringMode & static::FILTER_MULTIPLE_COLUMNS) != 0;
+		$filtering = [];
+		
+		foreach ($rawFilteringItems as $rawFilteringItem) {
+			// parse column, operator and values
+			$delimPos = mb_strpos($rawFilteringItem, $subjValueDelim);
+			$rawOperatorStr = $urlFilterOperators['='];
+			$operatorValues = NULL;
+			if ($delimPos === FALSE) {
+				$rawColumnName = $rawFilteringItem;
+				$operatorValues = ['1']; // boolean 1 as default value if no operator and value defined
+			} else {
+				$rawColumnName = mb_substr($rawFilteringItem, 0, $delimPos);
+				$rawOperatorAndValuesStr = mb_substr($rawFilteringItem, $delimPos + 1);
+				$delimPos = mb_strpos($rawOperatorAndValuesStr, $subjValueDelim);
+				if ($delimPos === FALSE) {
+					$rawValuesStr = $rawOperatorAndValuesStr;
+				} else {
+					$rawOperatorStr = mb_substr($rawOperatorAndValuesStr, 0, $delimPos);
+					$rawValuesStr = mb_substr($rawOperatorAndValuesStr, $delimPos + 1);
+				}
+			}
+			$rawColumnName = $this->removeUnknownChars($rawColumnName);
+			// check if column exists
+			if ($rawColumnName === NULL || !isset($this->configColumns[$rawColumnName])) continue;
+			$configColumn = $this->configColumns[$rawColumnName];
+			$columnPropName = $configColumn->GetPropName();
+			// check if column support filtering
+			if (!isset($filteringColumns[$columnPropName])) {
+				if ($this->ignoreDisabledColumns) {
+					if ($configColumn->GetDisabled())
+						$this->enableColumn($configColumn);
+				} else {
+					continue;
+				}
+			} else {
+				if ($configColumn->GetDisabled())
+					$this->enableColumn($configColumn);
+			}
+			
+			// check parsed values
+			$operator = '';
+			if ($operatorValues === NULL) {
+				list($operator, $operatorValues) = $this->parseFilteringOperatorValues(
+					$rawValuesStr, $invalidValueFound, $configColumn,
+					$rawOperatorStr
+				);
+				if ($operator === NULL)
+					continue;
+			}
+			if (count($operatorValues) === 0) continue;
+
+			// set up filtering value
+			$columnDbName = $configColumn->GetDbColumnName();
+			if (!isset($filtering[$columnDbName]))
+				$filtering[$columnDbName] = [];
+			$filtering[$columnDbName][$operator] = $operatorValues;
+
+			if (!$multiFiltering) break;
+		}
+		return $filtering;
+	}
+
+	/**
+	 * Parse values from url string under column operator.
+	 * Remove what is not allowed, unformat values back to system values.
+	 * @param  string        $rawValuesStr 
+	 * @param  bool          $invalidValueFound 
+	 * @param  IConfigColumn $configColumn 
+	 * @param  string        $rawOperatorStr 
+	 * @return array{"0":?string,"1":array<mixed>}
+	 */
+	protected function parseFilteringOperatorValues ($rawValuesStr, &$invalidValueFound, IConfigColumn $configColumn, $rawOperatorStr) {
+		$operatorValues = [];
+		$columnPropName = $configColumn->GetPropName();
+		$valuesDelim = $this->configUrlSegments->GetUrlDelimiterValues();
+		$columnFilter = $configColumn->GetFilter();
+		$columnTypes = $configColumn->GetTypes();
+		// check if column has allowed parsed operator, if not, return NULL and continue parent forreach
+		$allowedOperators = is_integer($columnFilter)
+			? $this->columnsAllowedOperators[$columnPropName]
+			: $this->defaultAllowedOperators;
+		if (!isset($allowedOperators[$rawOperatorStr]))
+			return [NULL, []];
+		$rawValuesArr = explode($valuesDelim, $rawValuesStr);
+		$operatorCfg = $allowedOperators[$rawOperatorStr];
+		$operator = $operatorCfg->operator;
+		$multiple = $operatorCfg->multiple;
+		$regex = $operatorCfg->regex;
+		if (!$multiple && count($rawValuesArr) > 1)
+			$rawValuesArr = [$rawValuesArr[0]];
+		
+		$columnAllowNullFilter = (
+			is_int($columnFilter) && ($columnFilter & self::FILTER_ALLOW_NULL) != 0
+		);
+		$viewHelperName = $configColumn->GetViewHelper();
+		list ($useViewHelper, $viewHelper) = $this->getFilteringViewHelper($viewHelperName);
+		foreach ($rawValuesArr as $rawValue) {
+			$rawValue = $this->removeUnknownChars($rawValue);
+			if ($rawValue === NULL) continue;
+			if ($useViewHelper) {
+				$rawValue = call_user_func_array(
+					[$viewHelper, 'Unformat'],
+					array_merge([$rawValue], $configColumn->GetFormatArgs() ?: [])
+				);
+				if ($rawValue === NULL) continue;
+			}
+			$rawValueToCheckType = $rawValue;
+			// complete possible operator prefixes from submitted value
+			$containsPercentage = $this->CheckFilterValueForSpecialLikeChar($rawValue, '%');
+			$containsUnderScore = $this->CheckFilterValueForSpecialLikeChar($rawValue, '_');
+			if (($containsPercentage & 1) !== 0) 
+				$rawValueToCheckType = str_replace('%', '', $rawValueToCheckType);
+			if (($containsUnderScore & 1) !== 0) 
+				$rawValueToCheckType = str_replace('_', '', $rawValueToCheckType);
+			//  check if operator configuration allowes submitted value form
+			if ($regex !== NULL && !preg_match($regex, $rawValue)) continue;
+			// check value by configured types
+			if (strtolower($rawValue) === static::NULL_STRING_VALUE) {
+				if ($columnAllowNullFilter) {
+					$operatorValues[] = static::NULL_STRING_VALUE;
+				} else {
+					$invalidValueFound = TRUE;
+				}
+			} else {
+				if (
+					!$containsPercentage &&
+					!$containsUnderScore &&
+					is_array($columnTypes) && 
+					count($columnTypes) > 0
+				) {
+					$typeValidationSuccess = FALSE;
+					foreach ($columnTypes as $columnType) {
+						$typeValidationSuccessLocal = $this->validateRawFilterValueByType(
+							$rawValueToCheckType, $columnType
+						);
+						if ($typeValidationSuccessLocal) {
+							$typeValidationSuccess = TRUE;
+							break;
+						}
+					}
+					if (!$typeValidationSuccess) {
+						$invalidValueFound = TRUE;
+						continue;
+					}
+					$operatorValues[] = $rawValue;
+				} else {
+					$operatorValues[] = $rawValue;
+				}
+			}
+		}
+		return [$operator, $operatorValues];
 	}
 
 	/**
@@ -852,10 +1156,10 @@ trait InitMethods {
 	/**
 	 * Set column config enabled and set `$this->writeColumnsChange` to `TRUE`
 	 * to recognize column config change when request is done.
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $columnConfig 
+	 * @param  IConfigColumn $columnConfig 
 	 * @return void
 	 */
-	protected function enableColumn (\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $columnConfig) {
+	protected function enableColumn (IConfigColumn $columnConfig) {
 		$columnConfig->SetDisabled(FALSE);
 		$this->writeChangedColumnsConfigs = TRUE;
 	}

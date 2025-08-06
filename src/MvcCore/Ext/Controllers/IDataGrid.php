@@ -18,6 +18,7 @@ extends		\MvcCore\Ext\Controllers\DataGrid\IConstants,
 			\MvcCore\Ext\Controllers\DataGrid\IConfigGettersSetters,
 			\MvcCore\Ext\Controllers\DataGrid\IColumnsParsingMethods,
 			\MvcCore\Ext\Controllers\DataGrid\IInternalGettersSetters,
+			\MvcCore\Ext\Controllers\DataGrid\IInitMethods,
 			\MvcCore\Ext\Controllers\DataGrid\IActionMethods {
 
 }

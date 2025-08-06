@@ -217,7 +217,7 @@ trait InternalProps {
 	 * - `regex`    - NULL or string with regular expression applied to match the value(s).
 	 * This collection is initialized internally.
 	 * @internal
-	 * @var array
+	 * @var array<string, object{"operator":string,"multiple":boolean,"regex":?string}>
 	 */
 	protected $defaultAllowedOperators = [];
 
@@ -230,7 +230,7 @@ trait InternalProps {
 	 * - `regex`    - NULL or string with regular expression applied to match the value(s).
 	 * This collection is initialized internally.
 	 * @internal
-	 * @var array
+	 * @var array<string, object{"operator":string,"multiple":boolean,"regex":?string}>
 	 */
 	protected $columnsAllowedOperators = [];
 

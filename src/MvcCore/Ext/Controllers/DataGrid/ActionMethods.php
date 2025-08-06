@@ -595,7 +595,7 @@ trait ActionMethods {
 	/**
 	 * Get cached filtering view helper instance by name.
 	 * @param  string $viewHelperName 
-	 * @return array  [bool, \MvcCore\Ext\Controllers\DataGrids\Views\IReverseHelper]
+	 * @return array{"0":bool,"1":?\MvcCore\Ext\Controllers\DataGrids\Views\IReverseHelper}
 	 */
 	protected function getFilteringViewHelper ($viewHelperName) {
 		if (array_key_exists($viewHelperName, $this->filteringViewHelpersCache)) {
