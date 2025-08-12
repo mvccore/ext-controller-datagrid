@@ -1,2 +1,2 @@
 ### New
-- New parsing for filtering and sorting.
+- New id column property detection in column configuration to complete row id on client side automatically.

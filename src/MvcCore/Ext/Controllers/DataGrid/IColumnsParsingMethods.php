@@ -13,6 +13,8 @@
 
 namespace MvcCore\Ext\Controllers\DataGrid;
 
+use \MvcCore\Ext\Controllers\DataGrids\Configs\Column as ConfigColumn;
+
 interface IColumnsParsingMethods {
 	
 	/**
@@ -31,7 +33,7 @@ interface IColumnsParsingMethods {
 	 * Third argument is access mod flags to load model instance properties.
 	 * If value is zero, there are used all access mode flags - private, protected and public.
 	 * 
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column[]
+	 * @return array<string,ConfigColumn>
 	 */
 	public function ParseConfigColumns ();
 

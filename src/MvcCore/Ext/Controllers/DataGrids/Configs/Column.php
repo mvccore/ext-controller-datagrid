@@ -23,71 +23,71 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	/**
 	 * Model PHP code propery name.
 	 * @jsonSerialize
-	 * @var string|NULL
+	 * @var string|null
 	 */
 	#[JsonSerialize]
-	protected $propName = NULL;
+	protected $propName = null;
 	
 	/**
 	 * Grid heading human readable text.
 	 * @jsonSerialize
-	 * @var string|array|NULL
+	 * @var string|array|null
 	 */
 	#[JsonSerialize]
-	protected $headingName = NULL;
+	protected $headingName = null;
 	
 	/**
 	 * Grid heading title attribute, displayed on heading mouse over.
 	 * @jsonSerialize
-	 * @var string|array|NULL
+	 * @var string|array|null
 	 */
 	#[JsonSerialize]
-	protected $title = NULL;
+	protected $title = null;
 	
 	/**
 	 * Database column name.
-	 * @var string|NULL
+	 * @var string|null
 	 */
-	protected $dbColumnName = NULL;
+	protected $dbColumnName = null;
 	
 	/**
 	 * URL column name when sorting or filtering.
 	 * @jsonSerialize
-	 * @var string|array|NULL
+	 * @var string|array|null
 	 */
 	#[JsonSerialize]
-	protected $urlName = NULL;
+	protected $urlName = null;
 	
 	/**
 	 * URL helper to generate cell anchor URL.
 	 * Boolean to enable/disable anchor url for filtering
 	 * (`TRUE` by default) or string to declare row instance
 	 * model public method to generate custom URL.
-	 * @var bool|string|NULL
+	 * @var bool|string|null
 	 */
 	protected $urlHelper = TRUE;
 
 	/**
 	 * Datagrid column index, starting with `0`, optional.
 	 * @jsonSerialize
-	 * @var int|NULL
+	 * @var int|null
 	 */
 	#[JsonSerialize]
-	protected $columnIndex = NULL;
+	protected $columnIndex = null;
 
 	/**
 	 * Datagrid column index customized by user, starting with `0`, optional.
 	 * @jsonSerialize
-	 * @var int|NULL
+	 * @var int|null
 	 */
 	#[JsonSerialize]
-	protected $columnIndexUser = NULL;
+	protected $columnIndexUser = null;
 	
 	/**
 	 * Default sorting definition with values `ASC | DESC` 
 	 * or `TRUE | FALSE` to enable/disable sorting.
 	 * @jsonSerialize
-	 * @var string|bool|NULL
+	 * @var string|bool|null
 	 */
 	#[JsonSerialize]
 	protected $sort = FALSE;
@@ -103,10 +103,10 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	/**
 	 * Property type(s), necessary for automatic formating.
 	 * @jsonSerialize
-	 * @var \string[]|NULL
+	 * @var \string[]|null
 	 */
 	#[JsonSerialize]
-	protected $types = NULL;
+	protected $types = null;
 
 	/**
 	 * Boolean `TRUE` if first type implements `\DateTimeInterface`.
@@ -127,26 +127,35 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	/**
 	 * Property automatic parsing arguments.
 	 * @jsonSerialize
-	 * @var array|NULL
+	 * @var array|null
 	 */
 	#[JsonSerialize]
-	protected $parserArgs = NULL;
+	protected $parserArgs = null;
 
 	/**
 	 * Property automatic formating arguments.
 	 * @jsonSerialize
-	 * @var array|NULL
+	 * @var array|null
 	 */
 	#[JsonSerialize]
-	protected $formatArgs = NULL;
+	protected $formatArgs = null;
+
+	/**
+	 * Boolean `TRUE` if column has primary key 
+	 * or unique key to compute client row id.
+	 * @jsonSerialize
+	 * @var bool|null
+	 */
+	#[JsonSerialize]
+	protected $idColumn = null;
 
 	/**
 	 * Property automatic formating view helper name.
 	 * @jsonSerialize
-	 * @var string|NULL
+	 * @var string|null
 	 */
 	#[JsonSerialize]
-	protected $viewHelper = NULL;
+	protected $viewHelper = null;
 
 	/**
 	 * Column initial or current width, it can be defined 
@@ -154,30 +163,30 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 * or string including `px` or `%` units.
 	 * Width is used only for table grid type.
 	 * @jsonSerialize
-	 * @var string|int|float|NULL
+	 * @var string|int|float|null
 	 */
 	#[JsonSerialize]
-	protected $width = NULL;
+	protected $width = null;
 
 	/**
 	 * Column min. width, it can be defined as integer 
 	 * or float for pixel value or string including `px` 
 	 * or `%` units. Min. width is used only for table grid type.
 	 * @jsonSerialize
-	 * @var string|int|float|NULL
+	 * @var string|int|float|null
 	 */
 	#[JsonSerialize]
-	protected $minWidth = NULL;
+	protected $minWidth = null;
 
 	/**
 	 * Column max. width, it can be defined as integer 
 	 * or float for pixel value or string including `px` 
 	 * or `%` units. Min. width is used only for table grid type.
 	 * @jsonSerialize
-	 * @var string|int|float|NULL
+	 * @var string|int|float|null
 	 */
 	#[JsonSerialize]
-	protected $maxWidth = NULL;
+	protected $maxWidth = null;
 
 	/**
 	 * Column CSS `flex` value, it can be defined as single 
@@ -185,10 +194,10 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 * value for full CSS `flex` shorthand to define `flex-grow`, 
 	 * `flex-shrink` and `flex-basis`.
 	 * @jsonSerialize
-	 * @var string|int|float|NULL
+	 * @var string|int|float|null
 	 */
 	#[JsonSerialize]
-	protected $flex = NULL;
+	protected $flex = null;
 
 	/**
 	 * Column additional css classes for head cell and body cell.
@@ -199,141 +208,147 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	protected $cssClasses = [];
 	
 	/**
-	 * `TRUE` for editable column, `FALSE|NULL` for not editable column (by default).
+	 * `TRUE` for editable column, `FALSE|null` for not editable column (by default).
 	 * @jsonSerialize
-	 * @var bool|NULL
+	 * @var bool|null
 	 */
 	#[JsonSerialize]
-	protected $editable = NULL;
+	protected $editable = null;
 	
 	/**
-	 * `TRUE` for disabled column, `FALSE|NULL` for enabled column (enabled by default).
+	 * `TRUE` for disabled column, `FALSE|null` for enabled column (enabled by default).
 	 * @jsonSerialize
-	 * @var bool|NULL
+	 * @var bool|null
 	 */
 	#[JsonSerialize]
-	protected $disabled = NULL;
+	protected $disabled = null;
 	
 	/**
 	 * `TRUE` to always send column in AJAX response, no matter if column is active 
-	 * or not, `FALSE|NULL` to not send inactive column (`NULL` by default).
+	 * or not, `FALSE|null` to not send inactive column (`null` by default).
 	 * @jsonSerialize
-	 * @var bool|NULL
+	 * @var bool|null
 	 */
 	#[JsonSerialize]
-	protected $alwaysSend = NULL;
+	protected $alwaysSend = null;
 	
-
 	/**
 	 * Create datagrid column config item.
-	 * @param string|NULL           $propName     Data grid model property name.
-	 * @param string|NULL           $dbColumnName Database column name. If `NULL`, `$propName` is used.
-	 * @param string|array|NULL     $headingName  Data grid visible column name. If `NULL`, `$propName` is used.
-	 * @param string|array|NULL     $title        Grid heading title attribute, displayed on heading mouse over.
-	 * @param string|array|NULL     $urlName      Data grid url column name to define sorting or filtering. 
-	 *                                            If `NULL`, `$propName` is used.
-	 * @param \string[]|NULL        $types        Property type(s), necessary for automatic formating.
-	 * @param int|NULL              $columnIndex  Datagrid column index, starting with `0`, optional.
-	 * @param string|bool|NULL      $sort         Default sorting definition with values `ASC | DESC` 
+	 * @param string|null           $propName     Data grid model property name.
+	 * @param string|null           $dbColumnName Database column name. If `null`, `$propName` is used.
+	 * @param string|array|null     $headingName  Data grid visible column name. If `null`, `$propName` is used.
+	 * @param string|array|null     $title        Grid heading title attribute, displayed on heading mouse over.
+	 * @param string|array|null     $urlName      Data grid url column name to define sorting or filtering. 
+	 *                                            If `null`, `$propName` is used.
+	 * @param \string[]|null        $types        Property type(s), necessary for automatic formating.
+	 * @param int|null              $columnIndex  Datagrid column index, starting with `0`, optional.
+	 * @param string|bool|null      $sort         Default sorting definition with values `ASC | DESC` 
 	 *                                            or `TRUE | FALSE` to enable/disable sorting.
 	 * @param int|bool              $filter       Filtering mode flags to allow specify operators 
 	 *                                            for each column or boolean to allow filtering only.
-	 * @param array|NULL            $parserArgs   Property automatic parsing arguments.
-	 * @param array|NULL            $formatArgs   Property automatic formating arguments.
-	 * @param string|NULL           $viewHelper   Property automatic formating view helper name.
-	 * @param bool|string|NULL      $urlHelper    URL helper to generate cell anchor URL.
+	 * @param array|null            $parserArgs   Property automatic parsing arguments.
+	 * @param array|null            $formatArgs   Property automatic formating arguments.
+	 * @param bool|null             $idColumn     Boolean `TRUE` if column has primary key or unique key 
+	 *                                            to compute client row id.
+	 * @param string|null           $viewHelper   Property automatic formating view helper name.
+	 * @param bool|string|null      $urlHelper    URL helper to generate cell anchor URL.
 	 *                                            Boolean to enable/disable anchor url for filtering
 	 *                                            (`TRUE` by default) or string to declare row instance
 	 *                                            model public method to generate custom URL.
-	 * @param string|int|float|NULL $width        Column initial or current width, it can be defined 
+	 * @param string|int|float|null $width        Column initial or current width, it can be defined 
 	 *                                            as integer for pixel value, float for flex value
 	 *                                            or string including `px` or `%` units.
 	 *                                            Width is used only for table grid type.
-	 * @param string|int|float|NULL $minWidth     Column min. width, it can be defined as integer 
+	 * @param string|int|float|null $minWidth     Column min. width, it can be defined as integer 
 	 *                                            or float for pixel value or string including `px` 
 	 *                                            or `%` units. Min. width is used only for table grid type.
-	 * @param string|int|float|NULL $maxWidth     Column max. width, it can be defined as integer 
+	 * @param string|int|float|null $maxWidth     Column max. width, it can be defined as integer 
 	 *                                            or float for pixel value or string including `px` 
 	 *                                            or `%` units. Min. width is used only for table grid type.
-	 * @param string|int|float|NULL $flex         Column CSS `flex` value, it can be defined as single 
+	 * @param string|int|float|null $flex         Column CSS `flex` value, it can be defined as single 
 	 *                                            integer or float value for `flex-grow` only or as string 
 	 *                                            value for full CSS `flex` shorthand to define `flex-grow`, 
 	 *                                            `flex-shrink` and `flex-basis`.
 	 * @param \string[]             $cssClasses   Column additional css classes for head cell and body cell.
-	 * @param bool|NULL             $editable     `TRUE` for editable column, `FALSE|NULL` for 
+	 * @param bool|null             $editable     `TRUE` for editable column, `FALSE|null` for 
 	 *                                            not editable column (by default).
-	 * @param bool|NULL             $disabled     Force column disable (enabled by default).
-	 * @param bool|NULL             $alwaysSend   `TRUE` to always send column in AJAX response, no matter 
-	 *                                            if column is active or not, `FALSE|NULL` to not send inactive 
-	 *                                            column (`NULL` by default).
+	 * @param bool|null             $disabled     Force column disable (enabled by default).
+	 * @param bool|null             $alwaysSend   `TRUE` to always send column in AJAX response, no matter 
+	 *                                            if column is active or not, `FALSE|null` to not send inactive 
+	 *                                            column (`null` by default).
 	 */
 	public function __construct (
-		$propName = NULL, 
-		$dbColumnName = NULL, 
-		$headingName = NULL, 
-		$title = NULL, 
-		$urlName = NULL, 
-		$types = NULL, 
-		$columnIndex = NULL,
-		$sort = NULL, 
-		$filter = NULL, 
-		$parserArgs = NULL, 
-		$formatArgs = NULL, 
-		$viewHelper = NULL,
-		$urlHelper = NULL,
-		$width = NULL,
-		$minWidth = NULL,
-		$maxWidth = NULL,
-		$flex = NULL,
-		$cssClasses = NULL,
-		$editable = NULL,
-		$disabled = NULL,
-		$alwaysSend = NULL
+		$propName = null, 
+		$dbColumnName = null, 
+		$headingName = null, 
+		$title = null, 
+		$urlName = null, 
+		$types = null, 
+		$columnIndex = null,
+		$sort = null, 
+		$filter = null, 
+		$parserArgs = null, 
+		$formatArgs = null, 
+		$idColumn = null,
+		$viewHelper = null,
+		$urlHelper = null,
+		$width = null,
+		$minWidth = null,
+		$maxWidth = null,
+		$flex = null,
+		$cssClasses = null,
+		$editable = null,
+		$disabled = null,
+		$alwaysSend = null
 	) {
-		$propNameHasValue = $propName !== NULL;
+		$propNameHasValue = $propName !== null;
 		if ($propNameHasValue) 
 			$this->propName = $propName;
 
-		if ($dbColumnName !== NULL) {
+		if ($dbColumnName !== null) {
 			$this->dbColumnName = $dbColumnName;
 		} else if ($propNameHasValue) {
 			$this->dbColumnName = $propName;
 		}
 
-		if ($headingName !== NULL) {
+		if ($headingName !== null) {
 			$this->headingName = $headingName;
 		} else if ($propNameHasValue) {
 			$this->headingName = $propName;
 		}
 
-		if ($urlName !== NULL) {
+		if ($urlName !== null) {
 			$this->urlName = $urlName;
 		} else if ($propNameHasValue) {
 			$this->urlName = $propName;
 		}
-		
-		if ($title !== NULL)		$this->title		= $title;
-		if ($urlHelper !== NULL)	$this->urlHelper	= $urlHelper;
-		if ($columnIndex !== NULL)	$this->columnIndex	= $columnIndex;
-		if ($sort !== NULL)			$this->sort			= $sort;
-		if ($filter !== NULL)		$this->filter		= $filter;
-		if ($types !== NULL)		$this->SetTypes($types);
-		if ($parserArgs !== NULL)	$this->parserArgs	= $parserArgs;
-		if ($formatArgs !== NULL)	$this->formatArgs	= $formatArgs;
-		if ($viewHelper !== NULL)	$this->viewHelper	= $viewHelper;
-		if ($width !== NULL)		$this->width		= $width;
-		if ($minWidth !== NULL)		$this->minWidth		= $minWidth;
-		if ($maxWidth !== NULL)		$this->maxWidth		= $maxWidth;
-		if ($flex !== NULL)			$this->flex			= $flex;
-		if ($cssClasses !== NULL)	$this->cssClasses	= $cssClasses;
-		if ($editable !== NULL)		$this->editable		= $editable;
-		if ($disabled !== NULL)		$this->disabled		= $disabled;
-		if ($alwaysSend !== NULL)	$this->alwaysSend	= $alwaysSend;
-	}
 
+		if ($alwaysSend === null && $idColumn)
+			$alwaysSend = TRUE;
+		
+		if ($title !== null)		$this->title		= $title;
+		if ($urlHelper !== null)	$this->urlHelper	= $urlHelper;
+		if ($columnIndex !== null)	$this->columnIndex	= $columnIndex;
+		if ($sort !== null)			$this->sort			= $sort;
+		if ($filter !== null)		$this->filter		= $filter;
+		if ($types !== null)		$this->SetTypes($types);
+		if ($parserArgs !== null)	$this->parserArgs	= $parserArgs;
+		if ($formatArgs !== null)	$this->formatArgs	= $formatArgs;
+		if ($idColumn !== null)		$this->idColumn		= $idColumn;
+		if ($viewHelper !== null)	$this->viewHelper	= $viewHelper;
+		if ($width !== null)		$this->width		= $width;
+		if ($minWidth !== null)		$this->minWidth		= $minWidth;
+		if ($maxWidth !== null)		$this->maxWidth		= $maxWidth;
+		if ($flex !== null)			$this->flex			= $flex;
+		if ($cssClasses !== null)	$this->cssClasses	= $cssClasses;
+		if ($editable !== null)		$this->editable		= $editable;
+		if ($disabled !== null)		$this->disabled		= $disabled;
+		if ($alwaysSend !== null)	$this->alwaysSend	= $alwaysSend;
+	}
+	
 	/**
 	 * @inheritDoc
-	 * @return string|NULL
+	 * @return string|null
 	 */
 	public function GetPropName () {
 		return $this->propName;
@@ -341,7 +356,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  string|NULL $propName
+	 * @param  string|null $propName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetPropName ($propName) {
@@ -351,7 +366,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return string|array|NULL
+	 * @return string|array|null
 	 */
 	public function GetHeadingName () {
 		return $this->headingName;
@@ -359,7 +374,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  string|array|NULL $headingName
+	 * @param  string|array|null $headingName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetHeadingName ($headingName) {
@@ -369,7 +384,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return string|array|NULL
+	 * @return string|array|null
 	 */
 	public function GetTitle () {
 		return $this->title;
@@ -377,7 +392,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @param  string|array|NULL $title
+	 * @param  string|array|null $title
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetTitle ($title) {
@@ -387,7 +402,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return string|NULL
+	 * @return string|null
 	 */
 	public function GetDbColumnName () {
 		return $this->dbColumnName;
@@ -395,7 +410,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  string|NULL $dbColumnName
+	 * @param  string|null $dbColumnName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetDbColumnName ($dbColumnName) {
@@ -405,7 +420,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return string|array|NULL
+	 * @return string|array|null
 	 */
 	public function GetUrlName () {
 		return $this->urlName;
@@ -413,7 +428,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @param  string|array|NULL $urlName
+	 * @param  string|array|null $urlName
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetUrlName ($urlName) {
@@ -423,7 +438,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return bool|string|NULL
+	 * @return bool|string|null
 	 */
 	public function GetUrlHelper () {
 		return $this->urlHelper;
@@ -431,7 +446,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @param  bool|string|NULL $urlHelper
+	 * @param  bool|string|null $urlHelper
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetUrlHelper ($urlHelper) {
@@ -441,7 +456,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return int|NULL
+	 * @return int|null
 	 */
 	public function GetColumnIndex () {
 		return $this->columnIndex;
@@ -449,7 +464,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  int|NULL $columnIndex
+	 * @param  int|null $columnIndex
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetColumnIndex ($columnIndex) {
@@ -459,7 +474,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @return int|NULL
+	 * @return int|null
 	 */
 	public function GetColumnIndexUser () {
 		return $this->columnIndexUser;
@@ -467,7 +482,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  int|NULL $columnIndexUser
+	 * @param  int|null $columnIndexUser
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetColumnIndexUser ($columnIndexUser) {
@@ -477,7 +492,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @return string|bool|NULL
+	 * @return string|bool|null
 	 */
 	public function GetSort () {
 		return $this->sort;
@@ -485,7 +500,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  string|bool|NULL $sort
+	 * @param  string|bool|null $sort
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetSort ($sort) {
@@ -513,7 +528,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return \string[]|NULL
+	 * @return \string[]|null
 	 */
 	public function GetTypes () {
 		return $this->types;
@@ -570,7 +585,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return array|NULL
+	 * @return array|null
 	 */
 	public function GetParserArgs () {
 		return $this->parserArgs;
@@ -578,7 +593,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  array|NULL $parserArgs
+	 * @param  array|null $parserArgs
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetParserArgs ($parserArgs) {
@@ -588,7 +603,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return array|NULL
+	 * @return array|null
 	 */
 	public function GetFormatArgs () {
 		return $this->formatArgs;
@@ -596,17 +611,35 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  array|NULL $formatArgs
+	 * @param  array|null $formatArgs
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetFormatArgs ($formatArgs) {
 		$this->formatArgs = $formatArgs;
 		return $this;
 	}
-	
+
 	/**
 	 * @inheritDoc
-	 * @return string|NULL
+	 * @return bool|null
+	 */
+	public function GetIdColumn () {
+		return $this->idColumn;
+	}
+
+	/**
+	 * @inheritDoc
+	 * @param  bool|null $idColumn
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
+	 */
+	public function SetIdColumn ($idColumn) {
+		$this->idColumn = $idColumn;
+		return $this;
+	}
+
+	/**
+	 * @inheritDoc
+	 * @return string|null
 	 */
 	public function GetViewHelper () {
 		return $this->viewHelper;
@@ -614,7 +647,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  string|NULL $viewHelper
+	 * @param  string|null $viewHelper
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetViewHelper ($viewHelper) {
@@ -624,7 +657,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @return string|int|float|NULL
+	 * @return string|int|float|null
 	 */
 	public function GetWidth () {
 		return $this->width;
@@ -632,7 +665,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  string|int|float|NULL $width
+	 * @param  string|int|float|null $width
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetWidth ($width) {
@@ -642,7 +675,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @return string|int|float|NULL
+	 * @return string|int|float|null
 	 */
 	public function GetMinWidth () {
 		return $this->minWidth;
@@ -650,7 +683,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  string|int|float|NULL $minWidth
+	 * @param  string|int|float|null $minWidth
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetMinWidth ($minWidth) {
@@ -660,7 +693,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return string|int|float|NULL
+	 * @return string|int|float|null
 	 */
 	public function GetMaxWidth () {
 		return $this->maxWidth;
@@ -668,7 +701,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  string|int|float|NULL $maxWidth
+	 * @param  string|int|float|null $maxWidth
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetMaxWidth ($maxWidth) {
@@ -678,7 +711,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return string|int|float|NULL
+	 * @return string|int|float|null
 	 */
 	public function GetFlex () {
 		return $this->flex;
@@ -686,7 +719,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  string|int|float|NULL $flex
+	 * @param  string|int|float|null $flex
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetFlex ($flex) {
@@ -696,7 +729,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @return \string[]|NULL
+	 * @return \string[]|null
 	 */
 	public function GetCssClasses () {
 		return $this->cssClasses;
@@ -714,7 +747,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return bool|NULL
+	 * @return bool|null
 	 */
 	public function GetEditable () {
 		return $this->editable;
@@ -722,7 +755,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  bool|NULL $editable
+	 * @param  bool|null $editable
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetEditable ($editable) {
@@ -732,7 +765,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return bool|NULL
+	 * @return bool|null
 	 */
 	public function GetDisabled () {
 		return $this->disabled;
@@ -740,7 +773,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  bool|NULL $disabled
+	 * @param  bool|null $disabled
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetDisabled ($disabled) {
@@ -750,7 +783,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	
 	/**
 	 * @inheritDoc
-	 * @return bool|NULL
+	 * @return bool|null
 	 */
 	public function GetAlwaysSend () {
 		return $this->alwaysSend;
@@ -758,7 +791,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 
 	/**
 	 * @inheritDoc
-	 * @param  bool|NULL $alwaysSend
+	 * @param  bool|null $alwaysSend
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function SetAlwaysSend ($alwaysSend) {
