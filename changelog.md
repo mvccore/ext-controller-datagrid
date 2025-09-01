@@ -1,2 +1,2 @@
-### New
-- New id column property detection in column configuration to complete row id on client side automatically.
+### Updated
+- All PHP Docs types with `NULL` changed into `?` syntax.
