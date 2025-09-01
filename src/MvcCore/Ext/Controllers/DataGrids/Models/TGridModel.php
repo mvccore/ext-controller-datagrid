@@ -22,7 +22,7 @@ trait TGridModel {
 
 	/**
 	 * Datagrid instance, always initialized by datagrid component automatically.
-	 * @var \MvcCore\Ext\Controllers\DataGrid|NULL
+	 * @var ?\MvcCore\Ext\Controllers\DataGrid
 	 */
 	protected $grid = NULL;
 

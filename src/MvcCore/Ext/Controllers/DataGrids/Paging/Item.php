@@ -30,19 +30,19 @@ class Item {
 
 	/**
 	 * Paging data offset.
-	 * @var int|NULL
+	 * @var ?int
 	 */
 	protected $offset = NULL;
 	
 	/**
 	 * Paging link URL.
-	 * @var string|NULL
+	 * @var ?string
 	 */
 	protected $url = NULL;
 
 	/**
 	 * Paging link text.
-	 * @var string|NULL
+	 * @var ?string
 	 */
 	protected $text = NULL;
 
@@ -78,15 +78,15 @@ class Item {
 	
 	/**
 	 * Page link css class.
-	 * @var string|NULL
+	 * @var ?string
 	 */
 	protected $cssClass = NULL;
 
 	/**
 	 * Create paging item instance.
-	 * @param int|NULL        $offset 
-	 * @param string|NULL     $url 
-	 * @param string|int|NULL $text 
+	 * @param ?int            $offset 
+	 * @param ?string         $url 
+	 * @param string|int|null $text 
 	 * @param bool            $current 
 	 * @param bool            $isPrev 
 	 * @param bool            $isNext 
@@ -111,7 +111,7 @@ class Item {
 	
 	/**
 	 * Set paging data offset.
-	 * @param  int|NULL $offset
+	 * @param  ?int $offset
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Paging\Item
 	 */
 	public function SetOffset ($offset) {
@@ -121,7 +121,7 @@ class Item {
 	
 	/**
 	 * Get paging data offset.
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetOffset () {
 		return $this->offset;
@@ -129,7 +129,7 @@ class Item {
 	
 	/**
 	 * Set paging link URL.
-	 * @param  string|NULL $url
+	 * @param  ?string $url
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Paging\Item
 	 */
 	public function SetUrl ($url) {
@@ -139,7 +139,7 @@ class Item {
 	
 	/**
 	 * Get paging link URL.
-	 * @return string|NULL
+	 * @return ?string
 	 */
 	public function GetUrl () {
 		return $this->url;
@@ -147,7 +147,7 @@ class Item {
 	
 	/**
 	 * Set paging link text.
-	 * @param  string|NULL $text
+	 * @param  ?string $text
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Paging\Item
 	 */
 	public function SetText ($text) {
@@ -157,7 +157,7 @@ class Item {
 	
 	/**
 	 * Get paging link text.
-	 * @return string|NULL
+	 * @return ?string
 	 */
 	public function GetText () {
 		return $this->text;
@@ -255,7 +255,7 @@ class Item {
 
 	/**
 	 * Set paging item css class atribute.
-	 * @param  string|NULL $cssClass
+	 * @param  ?string $cssClass
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Paging\Item
 	 */
 	public function SetCssClass ($cssClass) {
@@ -265,7 +265,7 @@ class Item {
 
 	/**
 	 * Get paging item css class atribute.
-	 * @return string|NULL
+	 * @return ?string
 	 */
 	public function GetCssClass () {
 		return $this->cssClass;

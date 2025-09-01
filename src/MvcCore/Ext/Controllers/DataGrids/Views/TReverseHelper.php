@@ -17,7 +17,7 @@ trait TReverseHelper {
 
 	/**
 	 * Currently used datagrid instance.
-	 * @var \MvcCore\Ext\Controllers\DataGrid|NULL
+	 * @var ?\MvcCore\Ext\Controllers\DataGrid
 	 */
 	protected $grid = NULL;
 

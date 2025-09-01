@@ -25,37 +25,37 @@ interface IInternalGettersSetters {
 	
 	/**
 	 * Get datagrid page, always initialized into integer value by URL.
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetPage ();
 	
 	/**
 	 * Get datagrid current rows count, always initialized into integer value by URL.
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetCount ();
 
 	/**
 	 * Get database table offset, always initialized into integer value by URL.
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetOffset ();
 
 	/**
 	 * Get database table select limit, initialized into integer or `NULL` value by URL.
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetLimit ();
 	
 	/**
 	 * Get calculated pages count by items per page and total count in database.
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetPagesCount ();
 
 	/**
 	 * Get paging items, completed after model total count has been loaded.
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging|NULL
+	 * @return ?\MvcCore\Ext\Controllers\DataGrids\Iterators\Paging
 	 */
 	public function GetPaging ();
 	
@@ -68,14 +68,14 @@ interface IInternalGettersSetters {
 	/**
 	 * Get total items count in databse table, loaded from configured model.
 	 * Value is initialized in `PreDispatch()` method automatically.
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetTotalCount ();
 	
 	/**
 	 * Loaded current page data or page iterator.
 	 * Value is initialized in template rendering by first call automatically.
-	 * @return array|\MvcCore\Ext\Models\Db\Readers\Streams\Iterator|NULL
+	 * @return array|\MvcCore\Ext\Models\Db\Readers\Streams\Iterator|null
 	 */
 	public function GetPageData ();
 
@@ -110,9 +110,9 @@ interface IInternalGettersSetters {
 	 * - For all other cases is URL form like: `"index.php?controller=ctrlName&amp;action=actionName"`
 	 *   (when first param is not founded in routes configuration array).
 	 * 
-	 * @param  string|NULL $controllerActionOrRouteName Should be `"Controller:Action"` combination or just any route name as custom specific string.
-	 * @param  array       $params                      Optional, array with params, key is param name, value is param value.
-	 * @throws \InvalidArgumentException                Grid doesn't contain given column name, unknown sort direction, unknown filter format...
+	 * @param  ?string $controllerActionOrRouteName Should be `"Controller:Action"` combination or just any route name as custom specific string.
+	 * @param  array   $params                      Optional, array with params, key is param name, value is param value.
+	 * @throws \InvalidArgumentException            Grid doesn't contain given column name, unknown sort direction, unknown filter format...
 	 * @return string
 	 */
 	public function Url ($controllerActionOrRouteName = NULL, array $params = []);
@@ -121,11 +121,11 @@ interface IInternalGettersSetters {
 	 * Return grid URL. Method uses current controller route
 	 * with `<grid>` param automatically completed by given array:
 	 * First argument array could have keys and values:
-	 * - `page`        - int|string|NULL - page value.
-	 * - `count`       - int|string|NULL - items per page value.
-	 * - `sort`        - string|NULL     - completed sorting `<grid>` param part string.
-	 * - `filter`      - string|NULL     - completed filtering `<grid>` param part string.
-	 * - `grid-action` - string|NULL     - internal grid action for filter form submits.
+	 * - `page`        - int|string|null - page value.
+	 * - `count`       - int|string|null - items per page value.
+	 * - `sort`        - ?string         - completed sorting `<grid>` param part string.
+	 * - `filter`      - ?string         - completed filtering `<grid>` param part string.
+	 * - `grid-action` - ?string         - internal grid action for filter form submits.
 	 * @internal
 	 * @return string
 	 */
@@ -154,7 +154,7 @@ interface IInternalGettersSetters {
 	 * direction for given column. If there is provided direction as an empty string, 
 	 * there is used no sorting for given column.
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn|string $columnConfigOrPropName 
-	 * @param  string|NULL                                               $direction
+	 * @param  ?string                                                   $direction
 	 * @return string
 	 */
 	public function GridSortUrl ($columnConfigOrPropName, $direction = NULL);
@@ -174,7 +174,7 @@ interface IInternalGettersSetters {
 	 * Get column current sort direction as boolean. `TRUE` for `ASC` direction,
 	 * `FALSE` for `DESC` direction and `NULL` for not sorted column.
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\IColumn|string $columnConfigOrPropName 
-	 * @return bool|NULL
+	 * @return ?bool
 	 */
 	public function GetColumnSortDirection ($columnConfigOrPropName);
 

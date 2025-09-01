@@ -48,7 +48,7 @@ extends \MvcCore\Ext\Tools\Collections\Map {
 	 * @param  string $propName 
 	 * @param  bool   $thrownException
 	 * @throws \InvalidArgumentException Grid doesn't contain column config with code property name `{$propName}`.
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column|NULL
+	 * @return ?\MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function GetByPropName ($propName, $thrownException = TRUE) {
 		if (!isset($this->propsNamesMap[$propName])) {
@@ -65,7 +65,7 @@ extends \MvcCore\Ext\Tools\Collections\Map {
 	 * Get grid column config by column config database column name.
 	 * @param  string $dbColumnName 
 	 * @throws \InvalidArgumentException Grid doesn't contain column config with database column name `{$dbColumnName}`.
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\Column|NULL
+	 * @return ?\MvcCore\Ext\Controllers\DataGrids\Configs\Column
 	 */
 	public function GetByDbColumnName ($dbColumnName, $thrownException = TRUE) {
 		if (!isset($this->dbColumnsNamesMap[$dbColumnName])) {

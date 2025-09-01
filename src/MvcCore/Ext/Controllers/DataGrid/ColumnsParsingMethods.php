@@ -284,7 +284,7 @@ trait ColumnsParsingMethods {
 			$formatArgs = $propData[6];
 			/** @var bool $formatArgs */
 			$primaryKey = $propData[7];
-			/** @var bool|string|NULL $uniqueKey */
+			/** @var bool|string|null $uniqueKey */
 			$uniqueKey = $propData[9];
 			if ($dbColumnName !== NULL) {
 				$propertyName = $propData[3];

@@ -17,13 +17,13 @@ trait TGridRow {
 
 	/**
 	 * Datagrid instance, always initialized by datagrid component automatically.
-	 * @var \MvcCore\Ext\Controllers\DataGrid|NULL
+	 * @var ?\MvcCore\Ext\Controllers\DataGrid
 	 */
 	protected $grid = NULL;
 
 	/**
 	 * Cache for local instance properties to serialize in JSON data.
-	 * @var array<string, bool>|NULL
+	 * @var ?array<string, bool>
 	 */
 	protected static $jsonPropsCache = NULL;
 
@@ -39,7 +39,7 @@ trait TGridRow {
 	
 	/**
 	 * Set datagrid instance, always initialized by datagrid component automatically.
-	 * @param  \MvcCore\Ext\Controllers\DataGrid|NULL $grid
+	 * @param  ?\MvcCore\Ext\Controllers\DataGrid $grid
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridRow
 	 */
 	public function SetGrid (\MvcCore\Ext\Controllers\IDataGrid $grid = NULL) {
@@ -52,15 +52,17 @@ trait TGridRow {
 	 * into datagrid table cell (convertable into string).
 	 * @param  \MvcCore\Ext\Controllers\DataGrid $grid
 	 * @param  string                            $columnPropName 
-	 * @param  \MvcCore\View|NULL                $view
+	 * @param  ?\MvcCore\View                    $view
 	 * @return string
 	 */
 	public function RenderCellByPropName (
 		\MvcCore\Ext\Controllers\IDataGrid $grid,
 		$columnPropName,
-		\MvcCore\IView $view = NULL 
+		$view = NULL 
 	) {
 		$columnConfig = $grid->GetConfigColumns(FALSE)->GetByPropName($columnPropName);
+		if ($view !== NULL && !($view instanceof \MvcCore\IView))
+			throw new \RuntimeException("View instance doesn't implement interface `\MvcCore\IView`.");
 		return $this->RenderCell(
 			$columnConfig, $view
 		);
@@ -70,12 +72,12 @@ trait TGridRow {
 	 * Render value with by possible view helper as scalar value 
 	 * into datagrid table cell (convertable into string).
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $columnConfig 
-	 * @param  \MvcCore\View|NULL                                $view
+	 * @param  ?\MvcCore\View                                    $view
 	 * @return string
 	 */
 	public function RenderCell (
 		\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $columnConfig,
-		\MvcCore\IView $view = NULL
+		$view = NULL
 	) {
 		$propName = $columnConfig->GetPropName();
 		$value = $this->{'Get' . ucfirst($propName)}();
@@ -84,6 +86,8 @@ trait TGridRow {
 		$viewHelperName = $columnConfig->GetViewHelper();
 		if ($viewHelperName) {
 			$formatArgs = $columnConfig->GetFormatArgs() ?: [];
+			if ($view !== NULL && !($view instanceof \MvcCore\IView))
+				throw new \RuntimeException("View instance doesn't implement interface `\MvcCore\IView`.");
 			return call_user_func_array(
 				[$view, $viewHelperName], 
 				// ipass into view helper only first format arg, 

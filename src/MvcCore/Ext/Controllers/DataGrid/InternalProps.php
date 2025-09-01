@@ -137,49 +137,49 @@ trait InternalProps {
 	/**
 	 * Datagrid page, always initialized into integer value by URL.
 	 * @internal
-	 * @var int|NULL
+	 * @var ?int
 	 */
 	protected $page = NULL;
 
 	/**
 	 * Datagrid current rows count, always initialized into integer value by URL.
 	 * @internal
-	 * @var int|NULL
+	 * @var ?int
 	 */
 	protected $count = NULL;
 
 	/**
 	 * Database table offset, always initialized into integer value by URL.
 	 * @internal
-	 * @var int|NULL
+	 * @var ?int
 	 */
 	protected $offset = NULL;
 
 	/**
 	 * Database table select limit, initialized into integer or `NULL` value by URL.
 	 * @internal
-	 * @var int|NULL
+	 * @var ?int
 	 */
 	protected $limit = NULL;
 
 	/**
 	 * Calculated pages count by items per page and total count in database.
 	 * @internal
-	 * @var int|NULL
+	 * @var ?int
 	 */
 	protected $pagesCount = NULL;
 	
 	/**
 	 * Paging items, completed after model total count has been loaded.
 	 * @internal
-	 * @var \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging|NULL
+	 * @var ?\MvcCore\Ext\Controllers\DataGrids\Iterators\Paging
 	 */
 	protected $paging = NULL;
 
 	/**
 	 * Initialized into `TRUE` if any translator callable defined.
 	 * @internal
-	 * @var bool|NULL
+	 * @var ?bool
 	 */
 	protected $translate = NULL;
 
@@ -187,7 +187,7 @@ trait InternalProps {
 	 * Total items count in databse table, loaded from configured model.
 	 * Value is initialized in `PreDispatch()` method automatically.
 	 * @internal
-	 * @var int|NULL
+	 * @var ?int
 	 */
 	protected $totalCount = NULL;
 
@@ -195,7 +195,7 @@ trait InternalProps {
 	 * Loaded current page data or page iterator.
 	 * Value is initialized in template rendering by first call automatically.
 	 * @internal
-	 * @var array|\MvcCore\Ext\Models\Db\Readers\Streams\Iterator|NULL
+	 * @var array|\MvcCore\Ext\Models\Db\Readers\Streams\Iterator|null
 	 */
 	protected $pageData = NULL;
 	
@@ -205,7 +205,7 @@ trait InternalProps {
 	 * `<grid>` param for `self` url back again.
 	 * Define this object by your own externally only for your own risk.
 	 * @internal
-	 * @var \MvcCore\Request|NULL
+	 * @var ?\MvcCore\Request
 	 */
 	protected $gridRequest = NULL;
 
@@ -237,7 +237,7 @@ trait InternalProps {
 	/**
 	 * Internal grid init action method name.
 	 * @internal
-	 * @var string|NULL
+	 * @var ?string
 	 */
 	protected $gridInitAction = NULL;
 
@@ -269,7 +269,7 @@ trait InternalProps {
 	/**
 	 * If `TRUE`, row class implements extended model interface.
 	 * @internal
-	 * @var bool|NULL
+	 * @var ?bool
 	 */
 	protected $rowClassIsExtendedModel = NULL;
 

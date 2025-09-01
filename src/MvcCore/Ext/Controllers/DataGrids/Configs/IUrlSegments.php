@@ -231,7 +231,7 @@ interface IUrlSegments {
 	/**
 	 * Set URL route pattern. This is automatically completed 
 	 * from other configuration properties of this object.
-	 * @param  string|NULL $routePattern
+	 * @param  ?string $routePattern
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function SetRoutePattern ($routePattern);

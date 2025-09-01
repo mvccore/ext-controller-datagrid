@@ -17,9 +17,9 @@ class Page extends \MvcCore\Ext\Controllers\DataGrids\Paging\Item {
 	
 	/**
 	 * @inheritDoc
-	 * @param int|NULL        $offset 
-	 * @param string|NULL     $url 
-	 * @param string|int|NULL $text 
+	 * @param ?int            $offset 
+	 * @param ?string         $url 
+	 * @param string|int|null $text 
 	 * @param bool            $current 
 	 * @param bool            $isPrev 
 	 * @param bool            $isNext 

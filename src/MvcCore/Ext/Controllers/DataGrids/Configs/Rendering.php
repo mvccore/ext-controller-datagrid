@@ -254,63 +254,63 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IRendering,
 	/**
 	 * Custom datagrid base content template.
 	 * Relative from `/App/Views/Scripts` without file extension.
-	 * @var string|NULL
+	 * @var ?string
 	 */
 	protected $templateContent						= NULL;
 	
 	/**
 	 * Custom datagrid (table type) table head template.
 	 * Relative from `/App/Views/Scripts` without file extension.
-	 * @var string|NULL
+	 * @var ?string
 	 */
 	protected $templateTableHead					= NULL;
 	
 	/**
 	 * Custom datagrid (table type) table body template.
 	 * Relative from `/App/Views/Scripts` without file extension.
-	 * @var string|NULL
+	 * @var ?string
 	 */
 	protected $templateTableBody					= NULL;
 	
 	/**
 	 * Custom datagrid (grid type) table body template.
 	 * Relative from `/App/Views/Scripts` without file extension.
-	 * @var string|NULL
+	 * @var ?string
 	 */
 	protected $templateGridBody						= NULL;
 	
 	/**
 	 * Custom datagrid paging control template.
 	 * Relative from `/App/Views/Scripts` without file extension.
-	 * @var string|NULL
+	 * @var ?string
 	 */
 	protected $templateControlPaging				= NULL;
 	
 	/**
 	 * Custom datagrid sorting control template.
 	 * Relative from `/App/Views/Scripts` without file extension.
-	 * @var string|NULL
+	 * @var ?string
 	 */
 	protected $templateControlSorting				= NULL;
 	
 	/**
 	 * Custom datagrid items per page control template.
 	 * Relative from `/App/Views/Scripts` without file extension.
-	 * @var string|NULL
+	 * @var ?string
 	 */
 	protected $templateControlCountScales			= NULL;
 	
 	/**
 	 * Custom datagrid status control template.
 	 * Relative from `/App/Views/Scripts` without file extension.
-	 * @var string|NULL
+	 * @var ?string
 	 */
 	protected $templateControlStatus				= NULL;
 	
 	/**
 	 * Custom datagrid custom filter form control template.
 	 * Relative from `/App/Views/Scripts` without file extension.
-	 * @var string|NULL
+	 * @var ?string
 	 */
 	protected $templateFilterForm					= NULL;
 	

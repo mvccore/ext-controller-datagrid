@@ -17,7 +17,7 @@ interface IGridRow {
 	
 	/**
 	 * Set datagrid instance, always initialized by datagrid component automatically.
-	 * @param  \MvcCore\Ext\Controllers\IDataGrid|NULL $grid
+	 * @param  ?\MvcCore\Ext\Controllers\IDataGrid $grid
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\IGridRow
 	 */
 	public function SetGrid (\MvcCore\Ext\Controllers\IDataGrid $grid = NULL);
@@ -27,7 +27,7 @@ interface IGridRow {
 	 * into datagrid table cell (convertable into string).
 	 * @param  \MvcCore\Ext\Controllers\DataGrid $grid
 	 * @param  string                            $columnPropName 
-	 * @param  \MvcCore\View|NULL                $view
+	 * @param  ?\MvcCore\View                $view
 	 * @return string
 	 */
 	public function RenderCellByPropName (
@@ -40,7 +40,7 @@ interface IGridRow {
 	 * Render value with by possible view helper as scalar value 
 	 * into datagrid table cell (convertable into string).
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column $columnConfig 
-	 * @param  \MvcCore\View|NULL                                $view
+	 * @param  ?\MvcCore\View                                $view
 	 * @return string
 	 */
 	public function RenderCell (

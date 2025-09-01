@@ -153,7 +153,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments,
 	/**
 	 * URL route pattern. This is automatically completed 
 	 * from other configuration properties of this object.
-	 * @var string|NULL
+	 * @var ?string
 	 */
 	protected $routePattern = NULL;
 
@@ -400,7 +400,7 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IUrlSegments,
 
 	/**
 	 * @inheritDoc
-	 * @param  string|NULL $routePattern
+	 * @param  ?string $routePattern
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	public function SetRoutePattern ($routePattern) {

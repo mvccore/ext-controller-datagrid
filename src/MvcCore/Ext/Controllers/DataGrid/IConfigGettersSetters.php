@@ -25,14 +25,14 @@ interface IConfigGettersSetters {
 
 	/**
 	 * Get model class instance.
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridModel|NULL
+	 * @return ?\MvcCore\Ext\Controllers\DataGrids\Models\TGridModel
 	 */
 	public function GetModel ();
 
 	/**
 	 * Set row model class full name, not required, 
 	 * if `NULL`, grid model class is used.
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\TGridRow|string|NULL $rowClass
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\TGridRow|string|null $rowClass
 	 * @param  int                                                            $propsFlags
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -41,7 +41,7 @@ interface IConfigGettersSetters {
 	/**
 	 * Get row model class full name, not required, 
 	 * if `NULL`, grid model class is used.
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridRow|string|NULL
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridRow|string|null
 	 */
 	public function GetRowClass ();
 
@@ -267,13 +267,13 @@ interface IConfigGettersSetters {
 	 * Form has to return filtering array configuration by `GetValues()` 
 	 * method of by `Submit()` method in second position.
 	 * There is no custom filter form by default.
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm|NULL
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm|null
 	 */
 	public function GetControlFilterForm ();
 
 	/**
 	 * Set cache instance or `FALSE` to disable cache.
-	 * @param  \MvcCore\Ext\ICache|FALSE|NULL $cache
+	 * @param  \MvcCore\Ext\ICache|FALSE|null $cache
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetCache ($cache);
@@ -281,7 +281,7 @@ interface IConfigGettersSetters {
 	/**
 	 * Get cache instance or `FALSE` if cache is disabled.
 	 * If cache is `NULL`, cache is automatically initialized.
-	 * @return \MvcCore\Ext\ICache|FALSE|NULL
+	 * @return \MvcCore\Ext\ICache|FALSE|null
 	 */
 	public function GetCache ();
 	
@@ -298,7 +298,7 @@ interface IConfigGettersSetters {
 	 * Get translator instance. Any callable accepting first argument
 	 * as string translation key and second argument as array with replacements.
 	 * There is no translator by default.
-	 * @return callable|NULL
+	 * @return ?callable
 	 */
 	public function GetTranslator ();
 	
@@ -324,7 +324,7 @@ interface IConfigGettersSetters {
 	 * and datagrid internal URL compilation.
 	 * This route is created internally by default.
 	 * Define this route by your own externally only for your own risk.
-	 * @param  \MvcCore\IRoute|NULL $route
+	 * @param  ?\MvcCore\IRoute $route
 	 * @return \MvcCore\Ext\Controllers\IDataGrid
 	 */
 	public function SetRoute (\MvcCore\IRoute $route);
@@ -334,7 +334,7 @@ interface IConfigGettersSetters {
 	 * and datagrid internal URL compilation.
 	 * This route is created internally by default.
 	 * Define this route by your own externally only for your own risk.
-	 * @return \MvcCore\IRoute|NULL
+	 * @return ?\MvcCore\IRoute
 	 */
 	public function GetRoute ();
 
@@ -424,7 +424,7 @@ interface IConfigGettersSetters {
 	 * `\MvcCore\Ext\Controllers\DataGrids\Models\IGridColumns`
 	 * to create this iterator automatically from decorated properties.
 	 * @param  bool $activeOnly `TRUE` by default.
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns|NULL
+	 * @return ?\MvcCore\Ext\Controllers\DataGrids\Iterators\Columns
 	 */
 	public function GetConfigColumns ($activeOnly = TRUE);
 	
@@ -454,7 +454,7 @@ interface IConfigGettersSetters {
 	 * Key is pointer into texts array, result
 	 * is configured text or translated text
 	 * if there is provided translator.
-	 * @return string|NULL
+	 * @return ?string
 	 */
 	public function GetControlText ($textKey);
 
@@ -492,13 +492,13 @@ interface IConfigGettersSetters {
 
 	/**
 	 * Get custom handler to define client TS row model generating.
-	 * @return \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|NULL
+	 * @return \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|null
 	 */
 	public function GetHandlerClientRowModelDefinition ();
 
 	/**
 	 * Set custom handler to define client TS row model generating.
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|NULL $handlerClientRowModelDefinition
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|null $handlerClientRowModelDefinition
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetHandlerClientRowModelDefinition ($handlerClientRowModelDefinition);

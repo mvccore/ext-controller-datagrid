@@ -29,8 +29,8 @@ class Dots extends \MvcCore\Ext\Controllers\DataGrids\Paging\Dot {
 	
 	/**
 	 * @inheritDoc
-	 * @param string|NULL     $url 
-	 * @param string|int|NULL $text 
+	 * @param ?string         $url 
+	 * @param string|int|null $text 
 	 * @param bool            $current 
 	 * @param bool            $isPrev 
 	 * @param bool            $isNext 

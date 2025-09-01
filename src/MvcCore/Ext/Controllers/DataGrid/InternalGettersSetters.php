@@ -30,7 +30,7 @@ trait InternalGettersSetters {
 
 	/**
 	 * @inheritDoc
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetPage () {
 		return $this->page;
@@ -38,7 +38,7 @@ trait InternalGettersSetters {
 	
 	/**
 	 * @inheritDoc
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetCount () {
 		return $this->count;
@@ -46,7 +46,7 @@ trait InternalGettersSetters {
 
 	/**
 	 * @inheritDoc
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetOffset () {
 		return $this->offset;
@@ -54,7 +54,7 @@ trait InternalGettersSetters {
 
 	/**
 	 * @inheritDoc
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetLimit () {
 		return $this->limit;
@@ -62,7 +62,7 @@ trait InternalGettersSetters {
 
 	/**
 	 * @inheritDoc
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetPagesCount () {
 		return $this->pagesCount;
@@ -70,7 +70,7 @@ trait InternalGettersSetters {
 
 	/**
 	 * @inheritDoc
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Paging|NULL
+	 * @return ?\MvcCore\Ext\Controllers\DataGrids\Iterators\Paging
 	 */
 	public function GetPaging () {
 		return $this->paging;
@@ -86,7 +86,7 @@ trait InternalGettersSetters {
 	
 	/**
 	 * @inheritDoc
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetTotalCount () {
 		return $this->totalCount;
@@ -94,7 +94,7 @@ trait InternalGettersSetters {
 	
 	/**
 	 * @inheritDoc
-	 * @return array|\MvcCore\Ext\Models\Db\Readers\Streams\Iterator|NULL
+	 * @return array|\MvcCore\Ext\Models\Db\Readers\Streams\Iterator|null
 	 */
 	public function GetPageData () {
 		return $this->pageData;
@@ -119,9 +119,9 @@ trait InternalGettersSetters {
 
 	/**
 	 * @inheritDoc
-	 * @param  string|NULL $controllerActionOrRouteName Should be `"Controller:Action"` combination or just any route name as custom specific string.
-	 * @param  array       $params                      Optional, array with params, key is param name, value is param value.
-	 * @throws \InvalidArgumentException                Grid doesn't contain given column name, unknown sort direction, unknown filter format...
+	 * @param  ?string $controllerActionOrRouteName Should be `"Controller:Action"` combination or just any route name as custom specific string.
+	 * @param  array   $params                      Optional, array with params, key is param name, value is param value.
+	 * @throws \InvalidArgumentException            Grid doesn't contain given column name, unknown sort direction, unknown filter format...
 	 * @return string
 	 */
 	public function Url ($controllerActionOrRouteName = NULL, array $params = []) {
@@ -234,7 +234,7 @@ trait InternalGettersSetters {
 	/**
 	 * @inheritDoc
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column|string $columnConfigOrPropName 
-	 * @param  string|NULL                                              $direction
+	 * @param  ?string                                                  $direction
 	 * @return string
 	 */
 	public function GridSortUrl ($columnConfigOrPropName, $direction = NULL) {
@@ -410,7 +410,7 @@ trait InternalGettersSetters {
 	/**
 	 * @inheritDoc
 	 * @param  \MvcCore\Ext\Controllers\DataGrids\Configs\Column|string $columnConfigOrPropName 
-	 * @return bool|NULL
+	 * @return ?bool
 	 */
 	public function GetColumnSortDirection ($columnConfigOrPropName) {
 		/** @var \MvcCore\Ext\Controllers\DataGrid $this */
@@ -762,7 +762,7 @@ trait InternalGettersSetters {
 	 * Complete grid `sort` URL param for standard application `Url()` method.
 	 * @param  array|string $sortGridParams 
 	 * @param  bool         $clear
-	 * @return string|NULL
+	 * @return ?string
 	 */
 	protected function urlCompleteSortParam ($sortGridParams, $clear = FALSE) {
 		$invalidSortParamMsg = implode("\n", [
@@ -826,7 +826,7 @@ trait InternalGettersSetters {
 	 * Complete grid `filter` URL param for standard application `Url()` method.
 	 * @param  array|string $filterGridParams 
 	 * @param  bool         $clear
-	 * @return string|NULL
+	 * @return ?string
 	 */
 	protected function urlCompleteFilterParam ($filterGridParams, $clear = FALSE) {
 		$invalidFilterParamMsg = implode("\n", [

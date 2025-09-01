@@ -53,7 +53,7 @@ class View extends \MvcCore\View {
 	
 	/**
 	 * Grid rendering config pointer.
-	 * @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering|NULL
+	 * @var ?\MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	protected $configRendering			= NULL;
 	

@@ -17,7 +17,7 @@ interface IGridModel {
 
 	/**
 	 * Set datagrid instance, always initialized by datagrid component automatically.
-	 * @param  \MvcCore\Ext\Controllers\IDataGrid|NULL $grid
+	 * @param  ?\MvcCore\Ext\Controllers\IDataGrid $grid
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel
 	 */
 	public function SetGrid (\MvcCore\Ext\Controllers\IDataGrid $grid = NULL);
@@ -33,14 +33,14 @@ interface IGridModel {
 	/**
 	 * Get database table offset, always initialized into integer.
 	 * This offset is always initialized by datagrid component automatically.
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetOffset ();
 	
 	/**
 	 * Set database table select limit, it could be initialized into integer or `NULL`.
 	 * This limit is always initialized by datagrid component automatically.
-	 * @param  int|NULL $limit 
+	 * @param  ?int $limit 
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel
 	 */
 	public function SetLimit ($limit);
@@ -48,7 +48,7 @@ interface IGridModel {
 	/**
 	 * Get database table select limit, it could be initialized into integer or `NULL`.
 	 * This limit is always initialized by datagrid component automatically.
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetLimit ();
 

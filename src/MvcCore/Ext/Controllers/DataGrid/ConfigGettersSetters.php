@@ -31,7 +31,7 @@ trait ConfigGettersSetters {
 
 	/**
 	 * @inheritDoc
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\IGridModel|NULL
+	 * @return ?\MvcCore\Ext\Controllers\DataGrids\Models\IGridModel
 	 */
 	public function GetModel () {
 		return $this->model;
@@ -39,7 +39,7 @@ trait ConfigGettersSetters {
 
 	/**
 	 * @inheritDoc
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\TGridRow|string|NULL $rowClass
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\Models\TGridRow|string|null $rowClass
 	 * @param  int                                                            $rowClassPropsFlags
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
@@ -52,7 +52,7 @@ trait ConfigGettersSetters {
 
 	/**
 	 * @inheritDoc
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridRow|string|NULL
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridRow|string|null
 	 */
 	public function GetRowClass () {
 		return $this->rowClass;
@@ -239,7 +239,7 @@ trait ConfigGettersSetters {
 	
 	/**
 	 * @inheritDoc
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm|NULL
+	 * @return \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm|null
 	 */
 	public function GetControlFilterForm () {
 		return $this->controlFilterForm;
@@ -247,7 +247,7 @@ trait ConfigGettersSetters {
 	
 	/**
 	 * @inheritDoc
-	 * @param  \MvcCore\Ext\ICache|FALSE|NULL $cache
+	 * @param  \MvcCore\Ext\ICache|FALSE|null $cache
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetCache ($cache) {
@@ -257,14 +257,14 @@ trait ConfigGettersSetters {
 	
 	/**
 	 * @inheritDoc
-	 * @return \MvcCore\Ext\ICache|FALSE|NULL
+	 * @return \MvcCore\Ext\ICache|FALSE|null
 	 */
 	public function GetCache () {
 		if ($this->cache === NULL) {
 			$cache = FALSE;
 			$cacheClassName = static::$cacheClass;
 			if (class_exists($cacheClassName)) {
-				/** @var \MvcCore\Ext\ICache|NULL $cache */
+				/** @var \MvcCore\Ext\ICache|null $cache */
 				$cache = $cacheClassName::GetStore();
 				if ($cache === NULL)
 					throw new \RuntimeException("Cache has not configured default store.");
@@ -288,7 +288,7 @@ trait ConfigGettersSetters {
 	
 	/**
 	 * @inheritDoc
-	 * @return callable|\Closure|NULL
+	 * @return callable|\Closure|null
 	 */
 	public function GetTranslator () {
 		return $this->translator;
@@ -314,7 +314,7 @@ trait ConfigGettersSetters {
 
 	/**
 	 * @inheritDoc
-	 * @param  \MvcCore\Route|NULL $route
+	 * @param  ?\MvcCore\Route $route
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetRoute (\MvcCore\IRoute $route) {
@@ -325,7 +325,7 @@ trait ConfigGettersSetters {
 
 	/**
 	 * @inheritDoc
-	 * @return \MvcCore\Route|NULL
+	 * @return ?\MvcCore\Route
 	 */
 	public function GetRoute () {
 		if ($this->route === NULL) {
@@ -482,7 +482,7 @@ trait ConfigGettersSetters {
 	 * @inheritDoc
 	 * @param  bool $activeOnly `TRUE` by default.
 	 * @throws \RuntimeException|\InvalidArgumentException
-	 * @return \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns|NULL
+	 * @return ?\MvcCore\Ext\Controllers\DataGrids\Iterators\Columns
 	 */
 	public function GetConfigColumns ($activeOnly = TRUE) {
 		if ($this->configColumns === NULL) {
@@ -534,7 +534,7 @@ trait ConfigGettersSetters {
 	
 	/**
 	 * @inheritDoc
-	 * @return string|NULL
+	 * @return ?string
 	 */
 	public function GetControlText ($textKey) {
 		if (isset($this->controlsTexts[$textKey]))
@@ -582,7 +582,7 @@ trait ConfigGettersSetters {
 
 	/**
 	 * @inheritDoc
-	 * @return \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|NULL
+	 * @return \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|null
 	 */
 	public function GetHandlerClientRowModelDefinition () {
 		return $this->handlerClientRowModelDefinition;
@@ -590,7 +590,7 @@ trait ConfigGettersSetters {
 
 	/**
 	 * @inheritDoc
-	 * @param  \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|NULL $handlerClientRowModelDefinition
+	 * @param  \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|null $handlerClientRowModelDefinition
 	 * @return \MvcCore\Ext\Controllers\DataGrid
 	 */
 	public function SetHandlerClientRowModelDefinition ($handlerClientRowModelDefinition) {

@@ -27,13 +27,13 @@ trait ConfigProps {
 	/**
 	 * Row model class full name, not required, 
 	 * if `NULL`, grid model class is used.
-	 * @var string|NULL
+	 * @var ?string
 	 */
 	protected $rowClass = NULL;
 
 	/**
 	 * Row model class properties flags, not required, `0` by default.
-	 * @var string|NULL
+	 * @var ?string
 	 */
 	protected $rowClassPropsFlags = 0;
 
@@ -119,13 +119,13 @@ trait ConfigProps {
 	 * Form has to return filtering array configuration by `GetValues()` 
 	 * method of by `Submit()` method in second position.
 	 * There is no custom filter form by default.
-	 * @var \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm|NULL
+	 * @var \MvcCore\Ext\Controllers\DataGrids\Forms\IFilterForm|\MvcCore\Ext\IForm|null
 	 */
 	protected $controlFilterForm = NULL;
 
 	/**
 	 * MvcCore cache extension instance or false for disabled or not installed cache.
-	 * @var \MvcCore\Ext\ICache|FALSE|NULL
+	 * @var \MvcCore\Ext\ICache|FALSE|null
 	 */
 	protected $cache = NULL;
 
@@ -150,7 +150,7 @@ trait ConfigProps {
 	 * and datagrid internal URL compilation.
 	 * This route is created internally by default.
 	 * Define this route by your own externally only for your own risk.
-	 * @var \MvcCore\Route|NULL
+	 * @var ?\MvcCore\Route
 	 */
 	protected $route = NULL;
 
@@ -164,7 +164,7 @@ trait ConfigProps {
 	/**
 	 * URL params parsed automatically from URL inside datagrid component.
 	 * Define those values by your own externally only for your own risk.
-	 * @var array|NULL
+	 * @var ?array
 	 */
 	protected $urlParams = NULL;
 
@@ -173,7 +173,7 @@ trait ConfigProps {
 	 * You can easily configure datagrid component URL 
 	 * parts by providing this object custom instance.
 	 * This object is created automatically by default if not provided.
-	 * @var \MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments|NULL
+	 * @var ?\MvcCore\Ext\Controllers\DataGrids\Configs\UrlSegments
 	 */
 	protected $configUrlSegments = NULL;
 
@@ -182,7 +182,7 @@ trait ConfigProps {
 	 * You can easily configure datagrid component parts, style 
 	 * and controls by providing this object custom instance.
 	 * This object is created automatically by default if not provided.
-	 * @var \MvcCore\Ext\Controllers\DataGrids\Configs\Rendering|NULL
+	 * @var ?\MvcCore\Ext\Controllers\DataGrids\Configs\Rendering
 	 */
 	protected $configRendering = NULL;
 
@@ -191,7 +191,7 @@ trait ConfigProps {
 	 * You have to define datagrid columns by this iterator declaration or by 
 	 * model class properties decoration. Model has to implementing interface
 	 * `\MvcCore\Ext\Controllers\DataGrids\Models\IGridColumns`.
-	 * @var \MvcCore\Ext\Controllers\DataGrids\Iterators\Columns|NULL
+	 * @var ?\MvcCore\Ext\Controllers\DataGrids\Iterators\Columns
 	 */
 	protected $configColumns = NULL;
 	
@@ -213,7 +213,7 @@ trait ConfigProps {
 	 * Internal table heading filter form instance in grid table type.
 	 * This object is created automatically by default if not provided.
 	 * Define this form instance by your own externally only for your own risk.
-	 * @var \MvcCore\Ext\Form|NULL
+	 * @var ?\MvcCore\Ext\Form
 	 */
 	protected $tableHeadFilterForm = NULL;
 	
@@ -226,7 +226,7 @@ trait ConfigProps {
 
 	/**
 	 * Custom handler to define client TS row model generating.
-	 * @var \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|NULL
+	 * @var \MvcCore\Ext\Controllers\DataGrids\IClientRowModelDefinitionHandler|callable|null
 	 */
 	protected $handlerClientRowModelDefinition = NULL;
 	

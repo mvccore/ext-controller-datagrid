@@ -21,26 +21,26 @@ trait Features {
 	/**
 	 * Database table offset, always initialized into integer.
 	 * This offset is always initialized by datagrid component automatically.
-	 * @var int|NULL
+	 * @var ?int
 	 */
 	protected $offset = NULL;
 	
 	/**
 	 * Database table select limit, it could be initialized into integer or `NULL`.
 	 * This limit is always initialized by datagrid component automatically.
-	 * @var int|NULL
+	 * @var ?int
 	 */
 	protected $limit = NULL;
 	
 	/**
 	 * Total count of database table rows by initialized fitering.
-	 * @var int|NULL
+	 * @var ?int
 	 */
 	protected $totalCount = NULL;
 	
 	/**
 	 * Page data rows or database result iterator.
-	 * @var \MvcCore\Ext\Models\Db\Readers\Streams\Iterator|array|NULL
+	 * @var \MvcCore\Ext\Models\Db\Readers\Streams\Iterator|array|null
 	 */
 	protected $pageData = NULL;
 
@@ -49,7 +49,7 @@ trait Features {
 	 * and values are arrays. Each key in value array is condition 
 	 * operator and values are raw user input values to use in column condition.
 	 * This filtering is always initialized by datagrid component automatically.
-	 * @var array|NULL
+	 * @var ?array
 	 */
 	protected $filtering = NULL;
 	
@@ -57,14 +57,14 @@ trait Features {
 	 * Database table sorting, keys are database table column names 
 	 * and values are sorting direction strings - `ASC | DESC`.
 	 * This sorting is always initialized by datagrid component automatically.
-	 * @var array|NULL
+	 * @var ?array
 	 */
 	protected $sorting = NULL;
 
 	
 	/**
 	 * Set datagrid instance, always initialized by datagrid component automatically.
-	 * @param  \MvcCore\Ext\Controllers\DataGrid|NULL $grid
+	 * @param  ?\MvcCore\Ext\Controllers\DataGrid $grid
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridModel
 	 */
 	public function SetGrid (\MvcCore\Ext\Controllers\IDataGrid $grid = NULL) {
@@ -75,7 +75,7 @@ trait Features {
 	/**
 	 * Set database table offset, always initialized into integer.
 	 * This offset is always initialized by datagrid component automatically.
-	 * @param  int|NULL $offset 
+	 * @param  ?int $offset 
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridModel
 	 */
 	public function SetOffset ($offset) {
@@ -86,7 +86,7 @@ trait Features {
 	/**
 	 * Get database table offset, always initialized into integer.
 	 * This offset is always initialized by datagrid component automatically.
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetOffset () {
 		return $this->offset;
@@ -95,7 +95,7 @@ trait Features {
 	/**
 	 * Set database table select limit, it could be initialized into integer or `NULL`.
 	 * This limit is always initialized by datagrid component automatically.
-	 * @param  int|NULL $limit 
+	 * @param  ?int $limit 
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridModel
 	 */
 	public function SetLimit ($limit) {
@@ -106,7 +106,7 @@ trait Features {
 	/**
 	 * Get database table select limit, it could be initialized into integer or `NULL`.
 	 * This limit is always initialized by datagrid component automatically.
-	 * @return int|NULL
+	 * @return ?int
 	 */
 	public function GetLimit () {
 		return $this->limit;
@@ -171,7 +171,7 @@ trait Features {
 	/**
 	 * Get page data rows or database result iterator.
 	 * You have to implement this method usually by your own.
-	 * @return \MvcCore\Ext\Models\Db\Readers\Streams\Iterator|array|NULL
+	 * @return \MvcCore\Ext\Models\Db\Readers\Streams\Iterator|array|null
 	 */
 	public function GetPageData () {
 		if ($this->pageData === NULL) $this->load();
@@ -181,9 +181,9 @@ trait Features {
 	
 	/**
 	 * Complete ORDER BY condition SQL part by `$this->sorting` array given from datagrid.
-	 * @param  bool        $includeOrderBy Include ` WHERE ` keyword.
-	 * @param  string|NULL $columnsAlias   Optional SQL alias for each column.
-	 * @param  string      $driverName     Driver specific name, optional.
+	 * @param  bool    $includeOrderBy Include ` WHERE ` keyword.
+	 * @param  ?string $columnsAlias   Optional SQL alias for each column.
+	 * @param  string  $driverName     Driver specific name, optional.
 	 * @return string
 	 */
 	protected function getSortingSql ($includeOrderBy = TRUE, $columnsAlias = NULL, $driverName = 'default') {
@@ -206,12 +206,12 @@ trait Features {
 
 	/**
 	 * Complete WHERE condition SQL part by `$this->filtering` array given from datagrid.
-	 * @param  bool        $includeWhere  Include ` WHERE ` keyword.
-	 * @param  string|NULL $columnsAlias  Optional SQL alias for each column.
-	 * @param  array       $params        Optional query params array, empty or with any initialized value from before.
-	 * @param  string      $driverName    Driver specific name, optional.
-	 * @param  string      $paramBaseName Base name for every created param inside this method, optional.
-	 * @return array [string $conditionsSql, array $params]
+	 * @param  bool    $includeWhere  Include ` WHERE ` keyword.
+	 * @param  ?string $columnsAlias  Optional SQL alias for each column.
+	 * @param  array   $params        Optional query params array, empty or with any initialized value from before.
+	 * @param  string  $driverName    Driver specific name, optional.
+	 * @param  string  $paramBaseName Base name for every created param inside this method, optional.
+	 * @return array{"0":string,"1":array<string,mixed>} [$conditionsSql, $params]
 	 */
 	protected function getConditionSqlAndParams ($includeWhere = TRUE, $columnsAlias = NULL, $params = [], $driverName = 'default', $paramBaseName = ':p') {
 		static $inOperators = [
