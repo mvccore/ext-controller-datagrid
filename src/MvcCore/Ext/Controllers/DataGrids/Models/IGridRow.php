@@ -20,7 +20,7 @@ interface IGridRow {
 	 * @param  ?\MvcCore\Ext\Controllers\IDataGrid $grid
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\IGridRow
 	 */
-	public function SetGrid (\MvcCore\Ext\Controllers\IDataGrid $grid = NULL);
+	public function SetGrid (/*\MvcCore\Ext\Controllers\IDataGrid*/ $grid = NULL);
 
 	/**
 	 * Render value with by possible view helper as scalar value 
@@ -33,7 +33,7 @@ interface IGridRow {
 	public function RenderCellByPropName (
 		\MvcCore\Ext\Controllers\IDataGrid $grid,
 		$columnPropName,
-		\MvcCore\IView $view = NULL
+		$view = NULL
 	);
 
 	/**
@@ -45,7 +45,7 @@ interface IGridRow {
 	 */
 	public function RenderCell (
 		\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn $columnConfig,
-		\MvcCore\IView $view = NULL
+		$view = NULL
 	);
 
 }

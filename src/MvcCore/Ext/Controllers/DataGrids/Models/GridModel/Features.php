@@ -67,7 +67,11 @@ trait Features {
 	 * @param  ?\MvcCore\Ext\Controllers\DataGrid $grid
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridModel
 	 */
-	public function SetGrid (\MvcCore\Ext\Controllers\IDataGrid $grid = NULL) {
+	public function SetGrid (/*\MvcCore\Ext\Controllers\IDataGrid*/ $grid = NULL) {
+		if ($grid !== NULL && !($grid instanceof \MvcCore\Ext\Controllers\IDataGrid)) {
+			$className = PHP_VERSION_ID >= 50500 ? static::class : get_class();
+			throw new \InvalidArgumentException("[{$className}] Grid is not instanceof `\\MvcCore\\Ext\\Controllers\\IDataGrid`.");
+		}
 		$this->grid = $grid;
 		return $this;
 	}

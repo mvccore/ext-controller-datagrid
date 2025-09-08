@@ -43,6 +43,10 @@ trait TGridRow {
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\TGridRow
 	 */
 	public function SetGrid (\MvcCore\Ext\Controllers\IDataGrid $grid = NULL) {
+		if ($grid !== NULL && !($grid instanceof \MvcCore\Ext\Controllers\IDataGrid)) {
+			$className = PHP_VERSION_ID >= 50500 ? static::class : get_class();
+			throw new \InvalidArgumentException("[{$className}] Grid is not instanceof `\\MvcCore\\Ext\\Controllers\\IDataGrid`.");
+		}
 		$this->grid = $grid;
 		return $this;
 	}
@@ -61,8 +65,10 @@ trait TGridRow {
 		$view = NULL 
 	) {
 		$columnConfig = $grid->GetConfigColumns(FALSE)->GetByPropName($columnPropName);
-		if ($view !== NULL && !($view instanceof \MvcCore\IView))
-			throw new \RuntimeException("View instance doesn't implement interface `\MvcCore\IView`.");
+		if ($view !== NULL && !($view instanceof \MvcCore\IView)) {
+			$className = PHP_VERSION_ID >= 50500 ? static::class : get_class();
+			throw new \RuntimeException("[{$className}] View instance doesn't implement interface `\\MvcCore\\IView`.");
+		}
 		return $this->RenderCell(
 			$columnConfig, $view
 		);
@@ -86,8 +92,10 @@ trait TGridRow {
 		$viewHelperName = $columnConfig->GetViewHelper();
 		if ($viewHelperName) {
 			$formatArgs = $columnConfig->GetFormatArgs() ?: [];
-			if ($view !== NULL && !($view instanceof \MvcCore\IView))
-				throw new \RuntimeException("View instance doesn't implement interface `\MvcCore\IView`.");
+			if ($view !== NULL && !($view instanceof \MvcCore\IView)) {
+				$className = PHP_VERSION_ID >= 50500 ? static::class : get_class();
+				throw new \RuntimeException("[{$className}] View instance doesn't implement interface `\\MvcCore\\IView`.");
+			}
 			return call_user_func_array(
 				[$view, $viewHelperName], 
 				// ipass into view helper only first format arg, 
