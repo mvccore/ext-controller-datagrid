@@ -20,7 +20,7 @@ interface IGridRow {
 	 * @param  ?\MvcCore\Ext\Controllers\IDataGrid $grid
 	 * @return \MvcCore\Ext\Controllers\DataGrids\Models\IGridRow
 	 */
-	public function SetGrid (/*\MvcCore\Ext\Controllers\IDataGrid*/ $grid = NULL);
+	public function SetGrid (/*\MvcCore\Ext\Controllers\IDataGrid */$grid = NULL);
 
 	/**
 	 * Render value with by possible view helper as scalar value 
