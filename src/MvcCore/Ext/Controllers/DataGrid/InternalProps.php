@@ -90,7 +90,7 @@ trait InternalProps {
 	protected static $filterValuesTypeValidators = [
 		'string'	=> "#.*#",
 		'int'		=> "#^([0-9\-\+]+)$#",
-		'float'		=> "#^([0-9\.\-\+]+)$#",
+		'float'		=> "#^([eE0-9\.\-\+]+)$#",
 		'bool'		=> "#^[01]{1}$#",
 		'\Date'		=> "#^\d{4}\-\d{2}\-\d{2}$#",
 		'\DateTime'	=> "#^\d{4}\-\d{2}\-\d{2} \d{2}\:\d{2}\:\d{2}(\.[\d]{1,6})?$#",

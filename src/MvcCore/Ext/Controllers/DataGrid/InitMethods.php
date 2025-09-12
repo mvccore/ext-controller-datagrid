@@ -1047,9 +1047,12 @@ trait InitMethods {
 	 * @return bool
 	 */
 	protected function validateRawFilterValueByType ($rawFilterValueStr, $typeStr) {
-		if (!isset(static::$filterValuesTypeValidators[$typeStr]))
+		$typeStrKey = mb_substr($typeStr, 0, 1) === '?'
+			? mb_substr($typeStr, 1)
+			: $typeStr;
+		if (!isset(static::$filterValuesTypeValidators[$typeStrKey]))
 			return TRUE;
-		$typeValidator = static::$filterValuesTypeValidators[$typeStr];
+		$typeValidator = static::$filterValuesTypeValidators[$typeStrKey];
 		return (bool) preg_match($typeValidator, $rawFilterValueStr);
 	}
 
