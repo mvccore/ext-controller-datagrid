@@ -634,6 +634,8 @@ implements	\MvcCore\Ext\Controllers\DataGrids\Configs\IColumn,
 	 */
 	public function SetIdColumn ($idColumn) {
 		$this->idColumn = $idColumn;
+		if ($idColumn) 
+			$this->alwaysSend = TRUE;
 		return $this;
 	}
 
